@@ -10,6 +10,19 @@
   text-align: center;
 }
 
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: #efefef;
+}
+*::-webkit-scrollbar-thumb {
+  background: #c2c2c2;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
