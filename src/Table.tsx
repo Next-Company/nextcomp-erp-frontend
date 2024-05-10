@@ -3,10 +3,12 @@ export function Table(){
     <>
       <table border={1} className="w-[100%] border">
         <thead>
-          <th>sdf</th>
-          <th>sdf</th>
-          <th>sdf</th>
-          <th>sdf</th>
+          <tr>
+            <th>sdf</th>
+            <th>sdf</th>
+            <th>sdf</th>
+            <th>sdf</th>
+          </tr>
         </thead>
         <tbody>
           <tr>
