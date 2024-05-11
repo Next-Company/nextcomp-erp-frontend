@@ -1,30 +1,57 @@
 export function Table(){
   return(
     <>
-      <table border={1} className="w-[100%] border">
-        <thead>
-          <tr>
-            <th>sdf</th>
-            <th>sdf</th>
-            <th>sdf</th>
-            <th>sdf</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>sdfsdf</td>
-            <td>sdfsdf</td>
-            <td>sdfsdf</td>
-            <td>sdfsdf</td>
-          </tr>
-          <tr>
-            <td>sdfsdf</td>
-            <td>sdfsdf</td>
-            <td>sdfsdf</td>
-            <td>sdfsdf</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="bg-white p-3 text-left">
+        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:pt-3 [&_td]:pb-3 [&_tr:nth-child(even)]:bg-orange-300">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Role</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>
+                <button>Edit</button>
+              </td>
+            </tr>
+            <tr>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>
+                <button>Edit</button>
+              </td>
+            </tr>
+            <tr>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>
+                <button>Edit</button>
+              </td>
+            </tr>
+            <tr>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>sdfsdf</td>
+              <td>
+                <button>Edit</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </>
   )
 }

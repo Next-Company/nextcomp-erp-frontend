@@ -1,16 +1,28 @@
+import { useRef } from "react"
 export function Sidenav(){
+  const scroll_sidenav = useRef();
   const onscroll = (e)=>{
-    console.log('hola')
-    // e.target.scroll(300,0)
+    scroll_sidenav.current.style.top = `${e.target.scrollTop}px`
+    // console.log(e.target.clientHeight,e.target.scrollHeight,e.target.scrollTop)
+  }
+  const mouseenter = (e)=>{
+    // e.target.style.height = `${scroll_sidenav.current.clientHeight}`
+    // scroll_sidenav.current.style.height = `${(scroll_sidenav.current.clientHeight/scroll_sidenav.current.scrollHeight) * e.target.clientHeight}px`
+    console.log(e.target,e.target.clientHeight,e.target.scrollHeight)
   }
   return(
     <>
       <nav 
-        className="flex flex-col text-[12px] [&_div]:p-3 flex-none gap-y-3 w-[15%] bg-[white]"
+        className="flex flex-col text-[12px] flex-none gap-y-3 w-[15%] bg-[white] overflow-hidden relative"
       >
         <div 
-          className="flex flex-col gap-3 flex-1 overflow-y-scroll"
+          className="block w-[6px] rounded-xl right-0 absolute bg-gray-400 h-[50%]"
+          ref={scroll_sidenav}
+        ></div>
+        <div 
+          className="flex flex-col gap-3 flex-1 overflow-y-scroll min-w-[100%] mr-[-17px] p-3"
           onScroll={onscroll}
+          onMouseEnter={mouseenter}
         >
           <ul className="[&_a]:flex [&_a]:gap-2 [&_a]:items-center [&_svg]:h-[20px] [&_a]:h-[40px] [&_a]:p-2 [&_a]:text-black/50 [&_a:hover]:text-black/50 [&_a:hover]:bg-[rgb(232,232,232)] [&_a:hover]:rounded-md flex flex-col gap-2">
             <li>
@@ -132,7 +144,7 @@ export function Sidenav(){
             </li>
           </ul>
         </div>
-        <div className="border-t h-14">
+        <div className="border-t h-14 p-3">
           <span className="before:content-['\eb7d']">Vista colapsada</span>
         </div>
       </nav>
