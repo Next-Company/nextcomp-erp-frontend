@@ -19,7 +19,7 @@ export function Table(){
               <td>sdfsdf</td>
               <td>sdfsdf</td>
               <td>
-                <button>Edit</button>
+                <button className="">Edit</button>
               </td>
             </tr>
             <tr>
