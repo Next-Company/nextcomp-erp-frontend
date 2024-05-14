@@ -1,6 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@keyframes transition_background{
+
+}
+
 #root {
   /* max-width: 1280px; */
   width: 100vw;
