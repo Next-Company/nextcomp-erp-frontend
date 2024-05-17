@@ -1,9 +1,12 @@
-import { useRef,useEffect } from "react"
+import { useRef, useEffect} from "react"
 export function Sidenav(){
   const scroll_sidenav = useRef();
   const onscroll = (e)=>{
-    scroll_sidenav.current.style.top = `${e.target.scrollTop}px`
-    // console.log(e.target.clientHeight,e.target.scrollHeight,e.target.scrollTop)
+    scroll_sidenav.current.style.top = `${(e.target.clientHeight/e.target.scrollHeight) * e.target.scrollTop}px`
+    // scroll_sidenav.current.style.animationPlayState = 'paused'
+    // scroll_sidenav.current.style.animationPlayState = 'running'
+    // scroll_sidenav.current.style.setProperty('--estado_animation','paused')
+    // scroll_sidenav.current.style.setProperty('--estado_animation','running')
   }
   const mouseenter = (e)=>{
     // e.target.style.height = `${scroll_sidenav.current.clientHeight}`
@@ -11,16 +14,19 @@ export function Sidenav(){
     // console.log(e.target,e.target.clientHeight,e.target.scrollHeight)
     if(e.target.matches('.pepe')){
       // scroll_sidenav.current.style.height = `${(scroll_sidenav.current.clientHeight/scroll_sidenav.current.scrollHeight) * e.target.clientHeight}px`
-      scroll_sidenav.current.style.height = `${(e.target.clientHeight/e.target.scrollHeight) * e.target.clientHeight}px`
-      scroll_sidenav.current.style.visibility = 'visible'
-      console.log(e.target.clientHeight,e.target.scrollHeight,scroll_sidenav.current.clientHeight)
+      scroll_sidenav.current.style.height = `${(e.target.clientHeight / e.target.scrollHeight) * e.target.clientHeight}px`
+      // scroll_sidenav.current.style.visibility = 'visible'
+      scroll_sidenav.current.classList.add('vanish_scroll')
+      // console.log(e.target.clientHeight,e.target.scrollHeight,scroll_sidenav.current.clientHeight)
       // console.log(scroll_sidenav.current.clientHeight,e.target.clientHeight)
     }
     // console.log(e.target.clientHeight)
     // console.log(scroll_sidenav.current.style.height)
   }
   const onanimationend = (e)=>{
-
+    if(e.target.matches('.personal_scroll')){
+      e.target.classList.remove('vanish_scroll')
+    }
   }
   useEffect(()=>{
 
@@ -28,10 +34,10 @@ export function Sidenav(){
   return(
     <>
       <nav 
-        className="flex flex-col text-[12px] flex-none gap-y-3 w-[15%] bg-[white] overflow-hidden relative"
+        className="flex flex-col text-[12px] flex-none gap-y-3 w-[15%] bg-white overflow-hidden relative"
       >
         <div 
-          className="block w-[6px] rounded-xl right-0 absolute bg-gray-400 h-[50%] invisible"
+          className="block w-[6px] rounded-xl right-0 absolute bg-gray-400 opacity-0 personal_scroll"
           ref={scroll_sidenav}
           onAnimationEnd={onanimationend}
         ></div>

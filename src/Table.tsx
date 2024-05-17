@@ -1,8 +1,8 @@
-export function Table(){
+export function Table({setedit}){
   return(
     <>
       <div className="bg-white p-3 text-left">
-        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:pt-3 [&_td]:pb-3 [&_tr:nth-child(even)]:bg-orange-300">
+        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:pt-1 [&_td]:pb-1 [&_tr:nth-child(even)]:bg-orange-300">
           <thead>
             <tr>
               <th>Name</th>
@@ -19,7 +19,7 @@ export function Table(){
               <td>sdfsdf</td>
               <td>sdfsdf</td>
               <td>
-                <button className="">Edit</button>
+                <button onClick={()=>setedit(false)} className="">Edit</button>
               </td>
             </tr>
             <tr>
