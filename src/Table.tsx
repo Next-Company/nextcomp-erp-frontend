@@ -1,54 +1,34 @@
-export function Table({setedit}){
+export function Table({setedit,info}){
   return(
     <>
-      <div className="bg-white p-3 text-left">
-        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:pt-1 [&_td]:pb-1 [&_tr:nth-child(even)]:bg-orange-300">
+      <div className="bg-white text-left h-[700px] overflow-scroll scrollbar-special">
+        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[5px] [&_tr:nth-child(even)]:bg-[rgb(233,233,233)] text-[12px] [&_tr:hover]:outline-red-600 [&_tr:hover]:outline-1 [&_tr:hover]:outline-double [&_tr:hover]:cursor-pointer">
           <thead>
-            <tr>
-              <th>Name</th>
-              <th>Title</th>
-              <th>Status</th>
-              <th>Role</th>
-              <th></th>
+            <tr className="sticky top-0 bg-white">
+              <th>Id</th>
+              <th>Tipo</th>
+              <th>Serie</th>
+              <th>Nom</th>
+              <th>Dir</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>
-                <button onClick={()=>setedit(false)} className="">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>
-                <button>Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>
-                <button>Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>sdfsdf</td>
-              <td>
-                <button>Edit</button>
-              </td>
-            </tr>
+            {
+              info.map(row=>
+                <tr>
+                  <td>{row.idx}</td>
+                  <td>{row.tipo}</td>
+                  <td>{row.serie}</td>
+                  <td>{row.nom}</td>
+                  <td>{row.dir}</td>
+                  <td>
+                    <button onClick={()=>setedit(false)} className="">Edit</button>
+                    <button onClick={()=>setedit(false)} className="">Delete</button>
+                  </td>
+                </tr>
+              )
+            }
           </tbody>
         </table>
       </div>
