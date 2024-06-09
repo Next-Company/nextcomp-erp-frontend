@@ -17,14 +17,15 @@ export function Header(){
               <li><Link to="/" className='text-zinc-500'>Operaciones</Link></li>
               <li><Link to="/" className='text-zinc-500'>Ventas</Link></li>
               <li><Link to="/" className='text-zinc-500'>Contabilidad</Link></li>
-              <li><Link to="/" className='text-zinc-500'>Oficina</Link></li>
-              <li><Link to="/main" className='text-zinc-500'>Soporte</Link></li>
+              {/* <li><Link to="/" className='text-zinc-500'>Configuracion</Link></li> */}
+              {/* <li><Link to="/" className='text-zinc-500'>Oficina</Link></li>
+              <li><Link to="/main" className='text-zinc-500'>Soporte</Link></li> */}
             </ul>
           </div>
         </div>
         <div onClick={onclick} className="rounded-full w-10 h-10 border bg-gray-300 cursor-pointer relative">
           { isvisible 
-            ? <div className="w-[250px] h-[300px] bg-white rounded-md absolute right-2 top-10 shadow-lg shadow-gray-500/50 border">
+            ? <div className="w-[350px] h-[600px] p-2 bg-white rounded-sm absolute right-2 top-10 shadow-lg shadow-gray-500/10 border z-50">
                 <ul>
                   <li><Link to="/">Login</Link></li>
                   <li><Link to="/config">Config</Link></li>

@@ -18,7 +18,8 @@
 .scrollbar-special::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background: #efefef;
+  /* background: #efefef; */
+  background: transparent;
 }
 .scrollbar-special::-webkit-scrollbar-thumb {
   background: #c2c2c2;
@@ -27,7 +28,9 @@
 .scrollbar-special::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-
+svg{
+  pointer-events: none;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
