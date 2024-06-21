@@ -1,21 +1,18 @@
-import { useState, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
+import { AuthPermitions } from "./contexts/contexts"
+import { useNavigate } from "react-router-dom"
 export function Login(){
-  const [login,setLogin] = useState(false)
+  // const [login,setLogin] = useState(false)
+  const {isAuthenticated,login} = useContext(AuthPermitions)
+  const navigate = useNavigate()
   const onsubmit = (e)=>{
-      e.preventDefault()
-      const inicia = async ()=>{
-        return await fetch('http://localhost:4000/login',{
-          method:'POST',
-          credentials: 'include'
-        }).then(resp=>resp.json())
-      }
-      inicia().then(resp=>{
-        console.log(resp)
-        if(resp.ok){
-          // setLogin(true)
-        }
-      })
+    e.preventDefault()
+    const data = new FormData(e.target)
+    login(data)
   }
+  useEffect(()=>{
+    if(isAuthenticated) navigate("/main")
+  },[isAuthenticated])
   return(
     <>
       {/* {login ? '' : ''} */}
@@ -51,7 +48,7 @@ export function Login(){
                   type="email"
                   autoComplete="email"
                   // required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-3 pr-3"
                   />
                 </div>
               </div>
@@ -73,7 +70,7 @@ export function Login(){
                   type="password"
                   autoComplete="current-password"
                   // required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-3 pr-3"
                   />
                 </div>
               </div>
@@ -83,7 +80,7 @@ export function Login(){
                   className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   {/* <Link to="/main">Sign in</Link> */}
-                  Sign in
+                  Iniciar Sesión
                 </button>
               </div>
             </form>

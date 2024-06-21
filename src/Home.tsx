@@ -1,4 +1,13 @@
+import { useContext, useEffect } from "react"
+import { AuthPermitions } from "./contexts/contexts"
+import { useNavigate } from "react-router-dom"
+
 export function Home(){
+    const {isAuthenticated,logout} = useContext(AuthPermitions)
+    const navigate = useNavigate()
+    useEffect(()=>{
+      if(!isAuthenticated) navigate("/")
+    },[isAuthenticated])
     return(
       <>
         <div className="bg-white">
@@ -55,7 +64,7 @@ export function Home(){
                 </a>
               </div>
               <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+                <a onClick={logout} className="text-sm font-semibold leading-6 text-gray-900">
                   Log in <span aria-hidden="true">→</span>
                 </a>
               </div>

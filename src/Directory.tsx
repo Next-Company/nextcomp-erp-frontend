@@ -37,7 +37,7 @@ export function Directory(){
   const [lista,setLista] = useState([1,2,3])
   useEffect(()=>{
     Consulta().then(resp=>{
-      console.log(resp)
+      // console.log(resp)
       setLista(resp)
     })
   },[])

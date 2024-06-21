@@ -5,6 +5,14 @@ export function Header(){
   const onclick = (e)=>{
     if(e.target.matches('*')){
       setIsvisible(isvisible => !isvisible)
+      e.target.querySelector('.config').focus()
+      console.log(e.target)
+    }
+  }
+  const onblur = (e)=>{
+    console.log(e.target)
+    if(e.target.matches('.config')){
+      setIsvisible(false)
     }
   }
   return(
@@ -24,15 +32,21 @@ export function Header(){
           </div>
         </div>
         <div onClick={onclick} className="rounded-full w-10 h-10 border bg-gray-300 cursor-pointer relative">
-          { isvisible 
-            ? <div className="w-[350px] h-[600px] p-2 bg-white rounded-sm absolute right-2 top-10 shadow-lg shadow-gray-500/10 border z-50">
+          <div className="config w-[350px] h-[600px] p-2 bg-white rounded-sm absolute right-2 top-10 shadow-lg shadow-gray-500/10 border z-50" onBlur={onblur}>
+            <ul>
+              <li><Link to="/">Login</Link></li>
+              <li><Link to="/config">Config</Link></li>
+            </ul>
+          </div> 
+          {/* { isvisible 
+            ? <div className="config w-[350px] h-[600px] p-2 bg-white rounded-sm absolute right-2 top-10 shadow-lg shadow-gray-500/10 border z-50" onBlur={onblur}>
                 <ul>
                   <li><Link to="/">Login</Link></li>
                   <li><Link to="/config">Config</Link></li>
                 </ul>
               </div> 
             : '' 
-          }
+          } */}
         </div>
       </div>
     </>
