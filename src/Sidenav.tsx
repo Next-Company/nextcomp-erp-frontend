@@ -1,4 +1,5 @@
 import { useRef, useEffect} from "react"
+import { useNavigate } from "react-router-dom";
 
 
 function ChatUser(){
@@ -13,15 +14,17 @@ function ChatUser(){
   )
 }
 
-export function Sidenav({setcontent}){
+export function Sidenav(){
   const scroll_sidenav = useRef();
+  const navigate = useNavigate()
   const onccc = (e)=>{
     if(e.target.matches('li')){
-      setcontent(e.target.dataset.fd)
+      navigate(e.target.dataset.fd)
+      // setcontent(e.target.dataset.fd)
     }
   }
   const onclick = (e)=>{
-    console.log(e.target)
+    // console.log(e.target)
     if(e.target.matches('.navclose')){
       e.target.closest('nav').classList.toggle('collapsee')
     }
@@ -76,7 +79,7 @@ export function Sidenav({setcontent}){
                 Equipo
               </a>
             </li>
-            <li data-fd='Directory'>
+            <li data-fd='directorio'>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" className="ayb brz oc se ur"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"></path></svg>
               <a href="">
                 Directorio

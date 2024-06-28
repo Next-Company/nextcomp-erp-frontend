@@ -9,6 +9,8 @@ import { Config } from './Config'
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Authorization from './Authorization.tsx'
+import { Directory } from './Directory.tsx'
+import { Soporte } from './Soporte.tsx'
 
 
 const routes = [
@@ -22,7 +24,12 @@ const routes = [
   },
   {
     path: "/main",
-    element: <Dasboard/>
+    element: <Dasboard/>,
+    children: [
+      {path: "directorio", element: <Directory/>},
+      {path: "directorio/:directoryId", element: <Directory/>},
+      {path: "soporte", element: <Soporte/>}
+    ]
   },
   {
     path: "/config",
