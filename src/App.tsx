@@ -44,20 +44,6 @@ function App() {
     <Authorization>
       <RouterProvider router={router}/>
     </Authorization>
-    // <>
-    //   <h1>Hola mudno</h1>
-    //   <Router>
-    //     <Routes>
-    //       <Route path='/' element={
-    //         !status ? <Login/> : <Navigate to={'/main'}/>
-    //       }/>
-    //       <Route path="/about" element={<About/>} />
-    //       <Route path="/main" element={<Dasboard/>}/>
-    //       <Route path="/home" element={<Home/>} />
-    //       <Route path="/config" element={<Config/>} />
-    //     </Routes>
-    //   </Router>
-    // </>
   )
 }
 
