@@ -1,17 +1,14 @@
 import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, redirect, Navigate } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { ModalWindowProvider } from './components/ModalWindow/ModalWindowProvider.tsx'
 import './App.css'
 import { Home } from './Home'
 import { Login } from './Login'
 import { Dasboard } from './Dasboard'
-// import { About } from './About'
 import { Config } from './Config'
-
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Authorization from './Authorization.tsx'
 import { Directory } from './Directory.tsx'
 import { Soporte } from './Soporte.tsx'
-
 
 const routes = [
   {
@@ -42,7 +39,9 @@ function App() {
   const [status,setStatus] = useState(false)
   return (
     <Authorization>
-      <RouterProvider router={router}/>
+      <ModalWindowProvider>
+        <RouterProvider router={router}/>
+      </ModalWindowProvider>
     </Authorization>
   )
 }

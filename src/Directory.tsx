@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { ModalContext } from "./contexts/contexts"
 import { ContextualMenuContext } from "./components/ContextMenu/ContextualMenuContext"
 import { convertToHex } from "./utils/utils"
+import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
 
 const files_icon = {
   'folder':<svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>,
@@ -122,10 +122,10 @@ const contextual_content = {
     </>
 }
 
-function Carpeta({name,ondoubleclick}){
+function Carpeta({name,ondoubleclick,onclick}){
   return(
     <>
-      <tr className="text-left" tabIndex={-1} data-path={name.path} onDoubleClick={ondoubleclick}>
+      <tr className="text-left" tabIndex={-1} data-path={name.path} onClick={onclick} onDoubleClick={ondoubleclick}>
         <td className="">
           <div className="flex items-center flex-1 gap-2">
             {name.isDirectory ? files_icon['folder'] : files_icon['file']}
@@ -144,7 +144,7 @@ function Carpeta({name,ondoubleclick}){
         <td>
           <ul className="flex flex-row justify-end">
             <li>
-              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center">
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path}>
                 <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
               </div>
             </li>
@@ -200,7 +200,28 @@ export function Directory(){
   const navigate = useNavigate()
   const params = useParams()
   const {open} = useContext(ContextualMenuContext)
+  const {openModal} = useContext(ModalWindowContext)
 
+  const onclick = (e)=>{
+    if(e.target.matches("div[data-action='delete']")){
+      const path_file = convertToHex(e.target.dataset.path)
+      openModal({
+        open:true,
+        content:<div>Hola mundo</div>,
+        action: async ()=>{
+          try {
+            await fetch("http://localhost:4000/directorio/delete/" + path_file,{
+              method: 'POST'
+            }).then(resp=>{
+              console.log(resp)
+            })  
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      })
+    }
+  }
   const onrightclick = (e)=>{
     e.preventDefault()
     const content = e.target.matches('div') ? contextual_content.context2 : contextual_content.context1
@@ -215,8 +236,9 @@ export function Directory(){
           async function subirfile(){
             try {
               const formdata = new FormData()
-              formdata.append('file',filebox.files[0])
-              await fetch("http://localhost:4000/directorio/postFile",{
+              formdata.append('filenext',filebox.files[0])
+              console.log(params.directoryId)
+              await fetch("http://localhost:4000/directorio/upload/" + params.directoryId,{
                 method:'POST',
                 body: formdata
               })
@@ -290,7 +312,7 @@ export function Directory(){
             </thead>
             <tbody>
               {
-                lista.map((row,key)=><Carpeta key={key} name={row} ondoubleclick={ondoubleclick}/>)
+                lista.map((row,key)=><Carpeta key={key} name={row} onclick={onclick} ondoubleclick={ondoubleclick}/>)
               }
             </tbody>
           </table>

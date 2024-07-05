@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { Header } from "./Header";
 import { Sidenav } from "./Sidenav";
 import { Outlet } from "react-router-dom";
-// import { ModalContext } from "./contexts/contexts";
 import { ContextualMenuProvider } from "./components/ContextMenu/ContextualMenuProvider";
 
 export function Dasboard(){
