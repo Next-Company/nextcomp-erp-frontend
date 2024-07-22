@@ -1,19 +1,24 @@
 import { useContext, useEffect, useState } from "react"
 import { AuthPermitions } from "./contexts/contexts"
 import { useNavigate } from "react-router-dom"
-export function Login(){
+export function Login() {
   // const [login,setLogin] = useState(false)
-  const {isAuthenticated,login} = useContext(AuthPermitions)
+  const { isAuthenticated, login, loading, error } = useContext(AuthPermitions)
   const navigate = useNavigate()
-  const onsubmit = (e)=>{
+  const onsubmit = (e) => {
     e.preventDefault()
     const data = new FormData(e.target)
     login(data)
   }
-  useEffect(()=>{
-    if(isAuthenticated) navigate("/main")
-  },[isAuthenticated])
-  return(
+  useEffect(() => {
+    if (sessionStorage.getItem('login')) {
+      console.log('HOla mundo:' + sessionStorage.getItem('login'))
+    }
+  })
+  useEffect(() => {
+    if (isAuthenticated) navigate("/main")
+  }, [isAuthenticated])
+  return (
     <>
       {/* {login ? '' : ''} */}
       <div className="w-[100vw] h-[100vh] relative">
@@ -36,41 +41,42 @@ export function Login(){
             </h2>
           </div>
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form className="space-y-6" action="#" method="POST" onSubmit={onsubmit}>
+            <form className={`space-y-6`} action="#" method="POST" onSubmit={onsubmit}>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                   Nombre de usuario
                 </label>
                 <div className="mt-2">
                   <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  // required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-3 pr-3"
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-3 pr-3"
+                    disabled={loading}
                   />
                 </div>
               </div>
               <div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                  Contraseña
+                    Contraseña
                   </label>
                   <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
                       Olvidaste tu contraseña?
-                  </a>
+                    </a>
                   </div>
                 </div>
                 <div className="mt-2">
                   <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  // required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-3 pr-3"
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    // required
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-3 pr-3"
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -78,11 +84,21 @@ export function Login(){
                 <button
                   type="submit"
                   className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  disabled={loading}
                 >
-                  {/* <Link to="/main">Sign in</Link> */}
-                  Iniciar Sesión
+                  {
+                    loading
+                      ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-loader-2 loading"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3a9 9 0 1 0 9 9" /></svg>
+                      : 'Iniciar Sesión'
+                  }
                 </button>
               </div>
+              {error &&
+                <div className="text-[14px] text-red-500 flex justify-center items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-alert-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+                  <span>Credenciales incorrectas</span>
+                </div>
+              }
             </form>
             <p className="mt-10 text-center text-sm text-gray-500"></p>
           </div>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ModalWindowProvider } from './components/ModalWindow/ModalWindowProvider.tsx'
 import './App.css'
-import { Home } from './Home'
+import { Home } from './pages/Home'
 import { Login } from './Login'
 import { Dasboard } from './Dasboard'
 import { Config } from './Config'
@@ -13,37 +13,37 @@ import { Soporte } from './Soporte.tsx'
 const routes = [
   {
     path: "/otro",
-    element: <Home/>
+    element: <Home />
   },
   {
     path: "/",
-    element: <Login/>
+    element: <Login />
   },
   {
     path: "/main",
-    element: <Dasboard/>,
+    element: <Dasboard />,
     children: [
-      {path: "directorio", element: <Directory/>},
-      {path: "directorio/:directoryId", element: <Directory/>},
-      {path: "soporte", element: <Soporte/>}
+      { path: "home", element: <Home /> },
+      { path: "directorio", element: <Directory /> },
+      { path: "directorio/:directoryId", element: <Directory /> },
+      { path: "soporte", element: <Soporte /> }
     ]
   },
   {
     path: "/config",
-    element: <Config/>
+    element: <Config />
   }
 ]
 const router = createBrowserRouter(routes)
 
 function App() {
-  const [status,setStatus] = useState(false)
+  const [status, setStatus] = useState(false)
   return (
     <Authorization>
       <ModalWindowProvider>
-        <RouterProvider router={router}/>
+        <RouterProvider router={router} />
       </ModalWindowProvider>
     </Authorization>
   )
 }
-
 export default App

@@ -1,9 +1,9 @@
-import { useRef, useEffect} from "react"
+import { useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom";
 
 
-function ChatUser(){
-  return(
+function ChatUser() {
+  return (
     <>
       <div className="flex justify-start gap-3 items-center hover:rounded-md hover:bg-slate-200 p-2 cursor-pointer">
         <div className="rounded-full bg-slate-400 w-7 h-7"></div>
@@ -14,60 +14,60 @@ function ChatUser(){
   )
 }
 
-export function Sidenav(){
+export function Sidenav() {
   const scroll_sidenav = useRef();
   const navigate = useNavigate()
-  const onccc = (e)=>{
-    if(e.target.matches('li')){
+  const onccc = (e) => {
+    if (e.target.matches('li')) {
       navigate(e.target.dataset.fd)
       // setcontent(e.target.dataset.fd)
     }
   }
-  const onclick = (e)=>{
+  const onclick = (e) => {
     // console.log(e.target)
-    if(e.target.matches('.navclose')){
+    if (e.target.matches('.navclose')) {
       e.target.closest('nav').classList.toggle('collapsee')
     }
   }
-  const onscroll = (e)=>{
-    scroll_sidenav.current.style.top = `${(e.target.clientHeight/e.target.scrollHeight) * e.target.scrollTop}px`
+  const onscroll = (e) => {
+    scroll_sidenav.current.style.top = `${(e.target.clientHeight / e.target.scrollHeight) * e.target.scrollTop}px`
   }
-  const mouseenter = (e)=>{
-    if(e.target.matches('.pepe')){
+  const mouseenter = (e) => {
+    if (e.target.matches('.pepe')) {
       // scroll_sidenav.current.style.height = `${(e.target.clientHeight / e.target.scrollHeight) * e.target.clientHeight}px`
       // scroll_sidenav.current.classList.add('vanish_scroll')
     }
   }
-  const onanimationend = (e)=>{
-    if(e.target.matches('.personal_scroll')){
+  const onanimationend = (e) => {
+    if (e.target.matches('.personal_scroll')) {
       e.target.classList.remove('vanish_scroll')
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
 
-  },[])
-  return(
+  }, [])
+  return (
     <>
-      <nav 
+      <nav
         className="flex flex-col text-[12px] flex-none gap-y-3 w-[15%] overflow-hidden relative transition-[width] group collapsee [&.collapsee]:w-[60px] bg-[rgb(253,253,253)]"
       >
-        <div 
+        <div
           className="block w-[6px] rounded-xl right-0 absolute bg-gray-400 opacity-0 personal_scroll"
           ref={scroll_sidenav}
           onAnimationEnd={onanimationend}
         ></div>
-        <div 
+        <div
           className="flex flex-col gap-3 flex-1 overflow-y-scroll mr-[-17px] p-3 pepe"
           onScroll={onscroll}
           onMouseEnter={mouseenter}
         >
           <div className="flex justify-end">
             <div className="cursor-pointer navclose" onClick={onclick}>
-              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-layout-sidebar-left-collapse select-none"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M9 4v16" /><path d="M15 10l-2 2l2 2" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-layout-sidebar-left-collapse select-none"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M9 4v16" /><path d="M15 10l-2 2l2 2" /></svg>
             </div>
           </div>
           <ul className="[&_li]:flex [&_li]:cursor-pointer [&_li]:gap-2 [&_li]:items-center [&_svg]:h-[20px] [&_li]:h-[40px] [&_li]:p-2 [&_li]:text-black/50 [&_li:hover]:text-black/50 [&_li:hover]:bg-[rgb(232,232,232)] [&_li:hover]:rounded-md flex flex-col gap-2 group-[.collapsee]:[&_a]:hidden [&_a]:cursor-default" onClick={onccc}>
-            <li>
+            <li data-fd='home'>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" className="bag oc se ur"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path></svg>
               <a href="/">
                 Dasboard
@@ -92,7 +92,7 @@ export function Sidenav(){
               </a>
             </li>
             <li data-fd='Soporte'>
-              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-hours-24"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 13c.325 2.532 1.881 4.781 4 6" /><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2" /><path d="M4 5v4h4" /><path d="M12 15h2a1 1 0 0 1 1 1v1a1 1 0 0 1 -1 1h-1a1 1 0 0 0 -1 1v1a1 1 0 0 0 1 1h2" /><path d="M18 15v2a1 1 0 0 0 1 1h1" /><path d="M21 15v6" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-hours-24"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 13c.325 2.532 1.881 4.781 4 6" /><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2" /><path d="M4 5v4h4" /><path d="M12 15h2a1 1 0 0 1 1 1v1a1 1 0 0 1 -1 1h-1a1 1 0 0 0 -1 1v1a1 1 0 0 0 1 1h2" /><path d="M18 15v2a1 1 0 0 0 1 1h1" /><path d="M21 15v6" /></svg>
               <a href="">
                 Soporte
               </a>
@@ -106,9 +106,9 @@ export function Sidenav(){
           </ul>
           <hr />
           <div className="group-[.collapsee]:[&_>div]:p-0 group-[.collapsee]:[&_div>span]:hidden">
-          {/* <div className="[&_div]:bg-fuchsia-600"> */}
-            <ChatUser/>
-            <ChatUser/>
+            {/* <div className="[&_div]:bg-fuchsia-600"> */}
+            <ChatUser />
+            <ChatUser />
           </div>
         </div>
         <div className="border-t h-14 p-3">

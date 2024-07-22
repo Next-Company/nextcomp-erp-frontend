@@ -1,26 +1,51 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export function useAuth(){
-  const [isAuthenticated,setIsAuthenticated] = useState(false)
-  const login = (data)=>{    
-    // const inicia = async ()=>{
-    //   return await fetch('http://localhost:4000/login',{
-    //     method:'POST',
-    //     credentials: 'include',
-    //     body:data
-    //   }).then(resp=>resp.json())
-    // }
-    // inicia().then(resp=>{
-    //   console.log(resp)
-    // })
-    setIsAuthenticated(true)
+export function useAuth() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('user_data') ? true : false
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  // const navigate = useNavigate()
+  console.log(localStorage)
+  const login = (data) => {
+    const inicia = async () => {
+      return await fetch('http://localhost:4000/login', {
+        method: 'POST',
+        credentials: 'include',
+        body: data
+      }).then(resp => resp.json())
+    }
+    setLoading(true)
+    setError(null)
+    inicia().then(resp => {
+      if (resp.ok) {
+        localStorage.setItem('user_data', JSON.stringify(resp.datos))
+        setIsAuthenticated(true)
+      } else {
+        setError(resp)
+      }
+      setLoading(false)
+    })
   }
-  const logout = ()=>{
-    // console.log("jsofasoifd")
+  const logout = () => {
+    localStorage.removeItem('user_data')
     setIsAuthenticated(false)
   }
-  useEffect(()=>{
-
-  })
-  return {isAuthenticated,login,logout}
+  useEffect(() => {
+    // console.log("comprobando")
+    // if (localStorage.getItem('user_data')) {
+    //   setIsAuthenticated(true)
+    // } else {
+    //   setIsAuthenticated(false)
+    // }
+    // console.log(localStorage.getItem('user_datas'))
+    // console.log("cargando datos de session storage")
+  }, [])
+  useEffect(() => {
+    console.log("Esta logeado:" + isAuthenticated)
+    if (!isAuthenticated) console.log("saliendo del sistema")
+  }, [isAuthenticated])
+  return { isAuthenticated, login, logout, loading, error }
 }

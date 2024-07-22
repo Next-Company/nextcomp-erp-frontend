@@ -144,6 +144,11 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+@keyframes loader{
+  to{
+    transform: rotateZ(360deg)
+  }
+}
 @keyframes midu{
   to{
     display: none;
@@ -159,4 +164,10 @@ div.other{
 div.other > div{
   transform: translateY(-50px);
   opacity: 0;
+}
+.loading{
+  animation: loader;
+  animation-duration: 1.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
