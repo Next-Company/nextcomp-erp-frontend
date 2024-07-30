@@ -1,10 +1,12 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { ContextualMenuContext } from "./components/ContextMenu/ContextualMenuContext"
 import { convertToHex } from "./utils/utils"
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
-import { useFetch } from "./hooks/useFetch"
+// import { useFetch } from "./hooks/useFetch"
 import { AuthPermitions } from "./contexts/contexts"
+// import { createPortal } from "react-dom"
+// import { LoadingWindow } from "./components/LoadingWindow/LoadingWindow"
 
 const files_icon = {
   'folder': <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>,
@@ -187,7 +189,8 @@ function Breadcrumb({ params }) {
 async function Consulta(url, method = 'GET') {
   try {
     return await fetch(url, {
-      method: method
+      method: method,
+      credentials: 'include'
     })
       .then(resp => resp.ok ? resp.json() : Promise.reject())
   } catch (error) {
@@ -272,40 +275,55 @@ export function Directory() {
       navigate(path)
     }
   }
-  useFetch({
-    method: 'GET',
-    url: 'http://localhost:4000/directorio/',
-    callbackSucces: (resp) => {
-      setLista(resp)
-    },
-    callbackError: () => {
-      logout()
-    }
-  })
-
-  useEffect(() => {
-
-    // Consulta('http://localhost:4000/directorio').then(resp=>{
-    //   setLista(resp)
-    // }).catch(resp=>{
-    //   console.log('hola')
-    // })
-  }, [])
-  // useEffect(() => {
-  //   if (Object.keys(params).length > 0) {
-  //     Consulta('http://localhost:4000/directorio/' + params.directoryId, 'POST').then(resp => {
-  //       setLista(resp)
-  //     }).catch(resp => {
-  //       console.log('hola')
-  //     })
-  //   } else {
-  //     Consulta('http://localhost:4000/directorio').then(resp => {
-  //       setLista(resp)
-  //     }).catch(resp => {
-  //       console.log('hola')
-  //     })
+  // const options = useMemo(() => ({
+  //   url: 'http://localhost:4000/directorio/',
+  //   options: {
+  //     method: 'GET',
+  //     credentials: 'include'
   //   }
-  // }, [params])
+  // }), [])
+  // let lista = [{ createdAt: '', isDirectory: '', isFile: '', name: '', path: '', size: '', updateAt: '' }]
+  // const { data, loading, error } = useFetch(options)
+  // console.log({ data, loading, error })
+  // if (data) {
+  //   lista = data
+  // }
+  // const { data, loading, error } = useFetch({
+  //   method: 'GET',
+  //   url: 'http://localhost:4000/directorio/',
+  //   callbackSucces: (resp) => {
+  //     setLista(resp)
+  //   },
+  //   callbackError: () => {
+  //     logout()
+  //   }
+  // })
+  // if (data) {
+  //   setLista(data)
+  // }
+  // useEffect(() => {
+
+  // }, [data])
+  // Consulta('http://localhost:4000/directorio').then(resp=>{
+  //   setLista(resp)
+  // }).catch(resp=>{
+  //   console.log('hola')
+  // })
+  useEffect(() => {
+    if (Object.keys(params).length > 0) {
+      Consulta('http://localhost:4000/directorio/' + params.directoryId, 'POST').then(resp => {
+        setLista(resp)
+      }).catch(resp => {
+        console.log('hola')
+      })
+    } else {
+      Consulta('http://localhost:4000/directorio').then(resp => {
+        setLista(resp)
+      }).catch(resp => {
+        console.log('hola')
+      })
+    }
+  }, [params])
 
   return (
     <>
@@ -333,6 +351,7 @@ export function Directory() {
           </table>
         </div>
       </div>
+      {/* {loading && createPortal(<LoadingWindow />, document.querySelector('#root'))} */}
     </>
   )
 }

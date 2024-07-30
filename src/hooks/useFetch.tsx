@@ -1,30 +1,29 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import { DataFetch } from "../utils/utils"
 
-export function useFetch(options) {
-  const { method = 'POST', body = null, url = '', callbackSucces = () => { }, callbackError = () => { } } = options
-  // const [info, setInfo] = useState(null)
-  // const [error, setError] = useState({})
+export function useFetch(params) {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const callFetch = useCallback(async () => {
-    try {
-      const resp = await fetch(url, {
-        method: method,
-        body: body,
-        credentials: 'include'
-      })
-      if (!resp.ok) throw new Error('Error al ejecutar la peticion')
-      const dataApi = await resp.json()
-      // setInfo(dataApi.result)
-      callbackSucces(dataApi)
-    } catch (error) {
-      callbackError()
-      // setError({ ok: false, message: error })
-    }
-
-  }, [method, body, url])
-  // callFetch()
   useEffect(() => {
-    callFetch()
-  }, [options, callFetch])
-  // return { info, error }
+    let ignore = false
+    const buscar = async () => {
+      setLoading(true)
+      const result = await DataFetch(params)
+      setLoading(false)
+      if (result.ok) {
+        setData(result.info)
+      } else {
+        setError(result.info)
+      }
+    }
+    if (!ignore) {
+      buscar()
+    }
+    return () => {
+      ignore = true
+    }
+  }, [params])
+  return { data, loading, error }
 }

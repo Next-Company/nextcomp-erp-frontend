@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-:root{
+:root {
   /* --estado_animation: paused; */
-  --estado_animation: paused ;
+  --estado_animation: paused;
 }
+
 #root {
   /* max-width: 1280px; */
   width: 100vw;
@@ -22,25 +23,31 @@
   /* background: #efefef; */
   background: transparent;
 }
+
 .scrollbar-special::-webkit-scrollbar-thumb {
   background: #c2c2c2;
   border-radius: 8px;
 }
+
 .scrollbar-special::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-svg{
+
+svg {
   pointer-events: none;
 }
+
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -49,6 +56,7 @@ svg{
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -60,15 +68,14 @@ svg{
   }
 }
 
-@keyframes transition_background{
+@keyframes transition_background {}
 
-}
-
-@keyframes scroll_vanish{
-  from{
+@keyframes scroll_vanish {
+  from {
     opacity: 1;
   }
-  to{
+
+  to {
     opacity: 0;
   }
 }
@@ -80,11 +87,12 @@ svg{
 .read-the-docs {
   color: #888;
 }
+
 /* .scrollbar{
   opacity: 0;
   transition: opacity .2s ease;  
 } */
-.vanish_scroll{
+.vanish_scroll {
   animation-name: scroll_vanish;
   /* animation-play-state: running; */
   animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
@@ -93,6 +101,27 @@ svg{
   /* animation-play-state: running; */
   animation-play-state: paused;
 }
-/* input{
-  border:thin solid black;
-} */
+
+@keyframes loading {
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+#loading_logo {
+  animation: loading;
+  animation-play-state: running;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+}
+
+.grid_article {
+  /* background-color: greenyellow; */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  overflow-y: scroll;
+  gap: 15px;
+  padding: 15px;
+}

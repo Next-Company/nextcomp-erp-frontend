@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ModalWindowProvider } from './components/ModalWindow/ModalWindowProvider.tsx'
 import './App.css'
@@ -37,7 +36,6 @@ const routes = [
 const router = createBrowserRouter(routes)
 
 function App() {
-  const [status, setStatus] = useState(false)
   return (
     <Authorization>
       <ModalWindowProvider>
