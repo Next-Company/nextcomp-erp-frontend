@@ -9,7 +9,7 @@ const API_KEY = 'a0765f5398ae4694bf2d5b0093660c73'
 export function Home() {
   const { logout } = useContext(AuthPermitions)
   const options = useMemo(() => ({
-    url: 'https://newsapi.org/v2/everything?q=fashion&from=2024-06-29&sortBy=publishedAt&apiKey=' + API_KEY + '&pageSize=20&language=es'
+    url: 'https://newsapi.org/v2/everything?q=fashion&sortBy=publishedAt&apiKey=' + API_KEY + '&pageSize=20&language=es'
   }), [])
   const { data, loading, error } = useFetch(options)
   console.log({ data, loading, error })

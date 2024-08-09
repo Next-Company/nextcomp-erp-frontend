@@ -5,13 +5,17 @@ export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('user_data') ? true : false
   })
+  const [credentials, setCredentials] = useState(()=>{
+    return localStorage.getItem('user_data') ? localStorage.getItem('user_data') : []
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   // const navigate = useNavigate()
   console.log(localStorage)
   const login = (data) => {
     const inicia = async () => {
-      return await fetch('http://localhost:4000/login', {
+      // return await fetch('http://localhost:4000/login', {
+      return await fetch('http://192.168.18.20:4000/login', {
         method: 'POST',
         credentials: 'include',
         body: data
@@ -23,6 +27,7 @@ export function useAuth() {
       if (resp.ok) {
         localStorage.setItem('user_data', JSON.stringify(resp.datos))
         setIsAuthenticated(true)
+        setCredentials(JSON.stringify(resp.datos))
       } else {
         setError(resp)
       }
@@ -47,5 +52,5 @@ export function useAuth() {
     console.log("Esta logeado:" + isAuthenticated)
     if (!isAuthenticated) console.log("saliendo del sistema")
   }, [isAuthenticated])
-  return { isAuthenticated, login, logout, loading, error }
+  return { isAuthenticated, login, logout, loading, error, credentials }
 }

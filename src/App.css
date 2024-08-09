@@ -120,8 +120,8 @@ svg {
 .grid_article {
   /* background-color: greenyellow; */
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   overflow-y: scroll;
-  gap: 15px;
+  gap: 18px;
   padding: 15px;
 }

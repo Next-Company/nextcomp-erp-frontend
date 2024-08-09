@@ -1,9 +1,10 @@
 import { useCallback, useState, useEffect } from "react";
 import { Table } from "./Table";
 import { ListaSoportes } from "./ListaSoportes";
+import { createPortal } from "react-dom";
 
 async function CargarInfo() {
-  return await fetch('http://localhost:4000/soporte', {
+  return await fetch('http://192.168.18.20:4000/soporte', {
     credentials: 'include'
   })
     .then(resp => resp.json())
@@ -14,7 +15,7 @@ async function CargarInfo() {
 async function GuardarInfo(form) {
   const data = new FormData(form)
   console.log(Array.from(data))
-  return await fetch(`http://localhost:4000/soporte/`, {
+  return await fetch(`http://192.168.18.20:4000/soporte/`, {
     method: 'POST',
     credentials: 'include',
     // headers: {
@@ -33,6 +34,7 @@ async function GuardarInfo(form) {
 export function Soporte() {
   const [isedit, setIsedit] = useState(true)
   const [info, setInfo] = useState([])
+  const [modal,setModal] = useState(false)
   // const saveSoporte = useCallback(async ()=>{
   //   await GuardarInfo()
   //   setIsedit(true)
@@ -42,6 +44,10 @@ export function Soporte() {
       .then(resp => {
         setIsedit(true)
       })
+  }
+  const showcredentials = () => {
+    const credentials = JSON.parse(window.localStorage.user_data)
+    console.log(credentials)
   }
 
   useEffect(() => {
@@ -78,7 +84,7 @@ export function Soporte() {
             {/* <p className="uppercase">A list of all the users in your account including their name, title, email and role.</p> */}
           </div>
           {isedit
-            ? <Table setedit={setIsedit} info={info} />
+            ? <Table setedit={setIsedit} info={info} setmodal={setModal}/>
             : <ListaSoportes save={saveSoporte}>
               <div className="lg:w-[50%] md:w-full columns-2 gap-5">
                 <div className="flex flex-col">
@@ -86,12 +92,6 @@ export function Soporte() {
                   <input name='asunto' className="" type="text" />
                 </div>
                 <div className="break-before-column">
-                  {/* <label className="block" htmlFor=""><strong>Prioridad:</strong></label>
-                    <select className="border flex-1" name="" id="">
-                      <option value="0">Baja</option>
-                      <option value="1">Media</option>
-                      <option value="2">Alta</option>
-                    </select> */}
                   <div className="flex flex-col h-[50px]">
                     <label className="block" htmlFor=""><strong>Prioridad:</strong></label>
                     <select className="border-b flex-1" name="prioridad" id="">
@@ -109,16 +109,54 @@ export function Soporte() {
                 </div>
               </div>
               <div className="flex justify-end">
-                <a href="" className="button">asfas</a>
+                {/* <a href="" className="button">asfas</a> */}
                 <button type="button" onClick={() => setIsedit(true)}>Cancelar</button>
+                <button className="bg-yellow-600" type="button" onClick={showcredentials}>Mostrar Credenciales</button>
                 <button type="submit" className="bg-blue-600 text-white hover:bg-blue-700">Guardar</button>
               </div>
             </ListaSoportes>
-            // <UserContext.Provider value={isedit}>
-            // </UserContext.Provider>
           }
         </div>
       </div>
+      {modal && createPortal(
+        <>
+          <div className="absolute top-0 left-0 w-full h-full bg-red-500/20 flex justify-center items-center">
+            <div className="w-[800px] h-[550px] bg-white rounded-lg shadow-lg p-4">
+              
+              <form className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col gap-4">
+                <div className="lg:w-[50%] md:w-full columns-2 gap-5">
+                  <div className="flex flex-col">
+                    <label htmlFor=""><strong>Asunto:</strong></label>
+                    <input name='asunto' className="" type="text" />
+                  </div>
+                  <div className="break-before-column">
+                    <div className="flex flex-col h-[50px]">
+                      <label className="block" htmlFor=""><strong>Prioridad:</strong></label>
+                      <select className="border-b flex-1" name="prioridad" id="">
+                        <option value="BAJA">Baja</option>
+                        <option value="MEDIA">Media</option>
+                        <option value="ALTA">Alta</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-1">
+                  <div className="flex flex-col">
+                    <label htmlFor=""><strong>Detalle soporte:</strong></label>
+                    <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id=""></textarea>
+                  </div>
+                </div>
+                <div className="col-1">
+                  <button onClick={()=>setModal(false)} className="bg-blue-600 text-white hover:bg-blue-700">Cerrar</button>
+                </div>
+              </form>
+
+
+            </div>
+          </div>
+        </>
+        ,document.querySelector("#root")
+        )}
     </>
   )
 }

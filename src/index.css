@@ -171,3 +171,7 @@ div.other > div{
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
+.oculto{
+  /* transition: transform .3s ease; */
+  transform: translateY(200px);
+}

@@ -58,14 +58,14 @@ export function Login() {
                 </div>
               </div>
               <div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-center">
                   <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                     Contraseña
                   </label>
                   <div className="text-sm">
-                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                    {/* <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
                       Olvidaste tu contraseña?
-                    </a>
+                    </a> */}
                   </div>
                 </div>
                 <div className="mt-2">

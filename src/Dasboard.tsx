@@ -6,9 +6,10 @@ import { AuthPermitions } from "./contexts/contexts";
 import { useContext, useEffect } from "react";
 
 export function Dasboard() {
-  const { isAuthenticated, logout } = useContext(AuthPermitions)
+  const { isAuthenticated, logout, credentials } = useContext(AuthPermitions)
   const navigate = useNavigate()
   console.log("entrando a children")
+  console.log(JSON.parse(credentials))
   useEffect(() => {
     if (!isAuthenticated) {
       console.log("redirigiendo")
@@ -19,7 +20,7 @@ export function Dasboard() {
     <>
       <div className="flex flex-col h-[100%] overflow-hidden text-[14px] relative">
         <ContextualMenuProvider>
-          <Header logout={logout} />
+          <Header logout={logout} credentials={credentials} />
           <div className="relative flex flex-1 overflow-hidden bg-[rgba(187,187,187,0.12)]">
             <Sidenav />
             <Outlet />

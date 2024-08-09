@@ -5,7 +5,7 @@ async function EliminarItem(id) {
     .then(resp => resp.json())
 }
 
-export function Table({ setedit, info }) {
+export function Table({ setedit, info, setmodal }) {
   const onclick = async (id) => {
     await EliminarItem(id)
       .then(resp => {
@@ -43,7 +43,9 @@ export function Table({ setedit, info }) {
                   <td>
                     <div className="flex items-center gap-2">
                       <div className="w-[150px] h-1 rounded-full bg-gray-200">
-                        <div className="w-[20px] h-1 rounded-full bg-red-500"></div>
+                        {/* <div className={`w-[${((row.avance / 150)*100).toFixed(0)}px] h-1 rounded-full bg-red-500`}></div> */}
+                        <div className={`w-[${((parseFloat(row.avance) * 150)/100).toFixed(0)}px] h-1 rounded-full bg-red-500`}></div>
+                        {/* <div className={`w-[38px] h-1 rounded-full bg-red-500`}></div> */}
                       </div>
                       <span><strong>{row.avance}%</strong></span>
                     </div>
@@ -64,8 +66,8 @@ export function Table({ setedit, info }) {
                         </div>
                       </li>
                       <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={editarFila}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-pencil-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 19h6" /></svg>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={setmodal}>
+                          <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                         </div>
                       </li>
                       <li>

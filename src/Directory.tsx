@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom"
 import { ContextualMenuContext } from "./components/ContextMenu/ContextualMenuContext"
 import { convertToHex } from "./utils/utils"
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
-// import { useFetch } from "./hooks/useFetch"
 import { AuthPermitions } from "./contexts/contexts"
+// import { useFetch } from "./hooks/useFetch"
 // import { createPortal } from "react-dom"
 // import { LoadingWindow } from "./components/LoadingWindow/LoadingWindow"
 
@@ -207,6 +207,7 @@ export function Directory() {
   const { open } = useContext(ContextualMenuContext)
   const { openModal } = useContext(ModalWindowContext)
   const { logout } = useContext(AuthPermitions)
+  const gdrive =  useRef()
 
   const onclick = (e) => {
     if (e.target.matches("div[data-action='delete']")) {
@@ -275,6 +276,19 @@ export function Directory() {
       navigate(path)
     }
   }
+  const onmouseover = (e) => {
+    if(e.target.closest('div.directory')){
+      console.log('hola mundo')
+    }
+  }
+  const ondragover = (e) => {
+    console.log("sosteniendo archivos sobre el contenedor")
+    gdrive.current.classList.remove('oculto')
+  }
+  const ondragleave = (e) => {
+    console.log("sosteniendo archivos sobre el contenedor")
+    gdrive.current.classList.add('oculto')
+  }
   // const options = useMemo(() => ({
   //   url: 'http://localhost:4000/directorio/',
   //   options: {
@@ -311,23 +325,25 @@ export function Directory() {
   // })
   useEffect(() => {
     if (Object.keys(params).length > 0) {
-      Consulta('http://localhost:4000/directorio/' + params.directoryId, 'POST').then(resp => {
+      Consulta('http://192.168.18.20:4000/directorio/' + params.directoryId, 'POST').then(resp => {
         setLista(resp)
       }).catch(resp => {
         console.log('hola')
+        logout()
       })
     } else {
-      Consulta('http://localhost:4000/directorio').then(resp => {
+      Consulta('http://192.168.18.20:4000/directorio').then(resp => {
         setLista(resp)
       }).catch(resp => {
         console.log('hola')
+        logout()
       })
     }
   }, [params])
 
   return (
     <>
-      <div onContextMenu={onrightclick} className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
+      <div onContextMenu={onrightclick} onMouseOver={onmouseover} onDragOver={ondragover} onDragLeave={ondragleave} className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
         <div className="text-left">
           <Breadcrumb params={params} />
           <hr />
@@ -350,6 +366,25 @@ export function Directory() {
             </tbody>
           </table>
         </div>
+
+        <div className="absolute bottom-0 border-red-500 flex w-full justify-center items-center">
+          <div className="transition-transform oculto" ref={gdrive}>
+
+            <div className="bg-blue-600 w-[330px] h-[80px] rounded-full flex flex-col justify-center items-center text-white animate-bounce">
+              Suelta los archivos para subirlos a
+              <div className="flex justify-center items-center gap-2">
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="14"  height="14"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-database-import"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6c0 1.657 3.582 3 8 3s8 -1.343 8 -3s-3.582 -3 -8 -3s-8 1.343 -8 3" /><path d="M4 6v6c0 1.657 3.582 3 8 3c.856 0 1.68 -.05 2.454 -.144m5.546 -2.856v-6" /><path d="M4 12v6c0 1.657 3.582 3 8 3c.171 0 .341 -.002 .51 -.006" /><path d="M19 22v-6" /><path d="M22 19l-3 -3l-3 3" /></svg>
+                <span>Mi unidad</span>
+              </div>
+              <div className="absolute top-[-50px] bg-blue-600 h-10 w-20 rounded-full flex justify-center items-center">
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="26"  height="26"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-arrow-big-up text-white z-10 relative"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.586 3l-6.586 6.586a2 2 0 0 0 -.434 2.18l.068 .145a2 2 0 0 0 1.78 1.089h2.586v7a2 2 0 0 0 2 2h4l.15 -.005a2 2 0 0 0 1.85 -1.995l-.001 -7h2.587a2 2 0 0 0 1.414 -3.414l-6.586 -6.586a2 2 0 0 0 -2.828 0z" /></svg>
+                <div className="absolute top-[-15px] left-[15px] bg-blue-600 h-12 w-12 rounded-full z-[1px]"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
       {/* {loading && createPortal(<LoadingWindow />, document.querySelector('#root'))} */}
     </>
