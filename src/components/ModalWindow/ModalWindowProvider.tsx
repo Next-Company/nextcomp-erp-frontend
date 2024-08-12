@@ -6,6 +6,7 @@ export function ModalWindowProvider({ children }) {
   const [config, setParams] = useState({})
   const openModal = (pr) => {
     setParams(pr)
+    // sdf
   }
   return (
     <>

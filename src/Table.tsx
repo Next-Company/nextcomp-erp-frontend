@@ -1,3 +1,6 @@
+import { useContext } from "react"
+import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
+
 async function EliminarItem(id) {
   return await fetch(`http://localhost:4000/soporte/` + id, {
     method: 'DELETE'
@@ -5,7 +8,8 @@ async function EliminarItem(id) {
     .then(resp => resp.json())
 }
 
-export function Table({ setedit, info, setmodal }) {
+export function Table({ setedit, info, setselect, setmodal }) {
+  const { openModal, config } = useContext(ModalWindowContext)
   const onclick = async (id) => {
     await EliminarItem(id)
       .then(resp => {
@@ -13,8 +17,23 @@ export function Table({ setedit, info, setmodal }) {
         console.log(resp)
       })
   }
-  const editarFila = () => {
+  const editarFila = (id) => {
+    const select = info.find(row => row.idx == id)
+    setselect(select)
     setedit(false)
+  }
+  const newFila = () => {
+    setselect({})
+    setedit(false)
+  }
+  const showModal = () => {
+    openModal({
+      open: true,
+      content: <div>Hola mundo as asdfa</div>,
+      action: async () => {
+
+      }
+    })
   }
   return (
     <>
@@ -44,13 +63,13 @@ export function Table({ setedit, info, setmodal }) {
                     <div className="flex items-center gap-2">
                       <div className="w-[150px] h-1 rounded-full bg-gray-200">
                         {/* <div className={`w-[${((row.avance / 150)*100).toFixed(0)}px] h-1 rounded-full bg-red-500`}></div> */}
-                        <div className={`w-[${((parseFloat(row.avance) * 150)/100).toFixed(0)}px] h-1 rounded-full bg-red-500`}></div>
+                        <div className={`w-[${((parseFloat(row.avance) * 150) / 100).toFixed(0)}px] h-1 rounded-full bg-red-500`}></div>
                         {/* <div className={`w-[38px] h-1 rounded-full bg-red-500`}></div> */}
                       </div>
                       <span><strong>{row.avance}%</strong></span>
                     </div>
                   </td>
-                  <td>{row.prioridad}</td>
+                  <td><div className={`w-[45px] h-[15px] ${row.prioridad == 'ALTA' ? 'bg-red-400' : row.prioridad == 'MEDIA' ? 'bg-orange-400' : 'bg-green-400'}  text-[8px] text-white flex justify-center items-center`}>{row.prioridad}</div></td>
                   <td>{row.estado}</td>
                   <td>
                     <ul className="flex flex-row justify-end">
@@ -67,26 +86,20 @@ export function Table({ setedit, info, setmodal }) {
                       </li>
                       <li>
                         <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={setmodal}>
-                          <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                         </div>
                       </li>
                       <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center">
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={showModal}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                         </div>
                       </li>
-                    </ul>
-                    {/* <div className="flex justify-center" onClick={() => editarFila()}>
-                      <div className="w-7 h-7 rounded-full p-1 flex justify-center items-center bg-gray-200 relative [&_div]:hover:w-[200px] [&_div]:hover:visible [&_div]:hover:opacity-100 [&_div]:hover:bg-green-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-dots-vertical z-10"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
-                        <div className="h-7 rounded-full bg-gray-200 flex justify-between p-1 transition-all opacity-0 w-[0px] invisible absolute right-[0px]">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-dots-vertical z-10"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={() => editarFila(row.idx)}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                         </div>
-                      </div>
-                    </div> */}
+                      </li>
+                    </ul>
                   </td>
                 </tr>
               )
@@ -95,8 +108,7 @@ export function Table({ setedit, info, setmodal }) {
         </table>
       </div>
       <div className="flex justify-end">
-        {/* <button>Cancelar</button> */}
-        <button className="bg-blue-600 text-white hover:bg-blue-700" onClick={() => setedit(false)}>Nuevo</button>
+        <button className="bg-blue-600 text-white hover:bg-blue-700" onClick={newFila}>Nuevo</button>
       </div>
     </>
   )

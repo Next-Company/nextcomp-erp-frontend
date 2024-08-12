@@ -1,3 +1,4 @@
+const apiUrl = import.meta.env.VITE_API_URL
 export function convertToHex(str) {
   let hex = '';
   for (let i = 0; i < str.length; i++) {
@@ -26,3 +27,22 @@ export async function DataFetch(params) {
     return { ok: false, info: error }
   }
 }
+export async function Consulta({ url, params = {} }) {
+  try {
+    return await fetch(apiUrl + url,
+      {
+        credentials: 'include', ...params
+      })
+      .then(resp => resp.ok ? resp.json() : Promise.reject())
+  } catch (error) {
+    Promise.reject()
+    console.log('sdofo')
+    // console.log(error)
+  }
+}
+// export async function CargarInfo() {
+//   return await fetch(apiUrl + 'soporte', {
+//     credentials: 'include'
+//   })
+//     .then(resp => resp.json())
+// }

@@ -1,57 +1,56 @@
-import { useCallback, useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Table } from "./Table";
 import { ListaSoportes } from "./ListaSoportes";
 import { createPortal } from "react-dom";
+import { Consulta } from "./utils/utils";
+import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext";
+import { Input } from "./components/Atoms/Input/Input";
 
-async function CargarInfo() {
-  return await fetch('http://192.168.18.20:4000/soporte', {
-    credentials: 'include'
-  })
-    .then(resp => resp.json())
-  // .then(resp=>{
-  //   Promise.resolve(resp)
-  // })
-}
-async function GuardarInfo(form) {
-  const data = new FormData(form)
-  console.log(Array.from(data))
-  return await fetch(`http://192.168.18.20:4000/soporte/`, {
-    method: 'POST',
-    credentials: 'include',
-    // headers: {
-    //   'Content-Type': 'application/json'
-    // },
-    // body:JSON.stringify({mensaje:'hola mundo'})
-    body: data
-  })
-    .then(resp => resp.json())
-  // .then(resp=>{
-  //   Promise.resolve(resp)
-  // })
-}
-
-// const UserContext = createContext(false)
 export function Soporte() {
+  const { openModal, config } = useContext(ModalWindowContext)
   const [isedit, setIsedit] = useState(true)
   const [info, setInfo] = useState([])
-  const [modal,setModal] = useState(false)
-  // const saveSoporte = useCallback(async ()=>{
-  //   await GuardarInfo()
-  //   setIsedit(true)
-  // },[])
+  const [select, setSelect] = useState({})
+  const [modal, setModal] = useState(false)
+
   const saveSoporte = async (form) => {
-    await GuardarInfo(form)
-      .then(resp => {
-        setIsedit(true)
-      })
-  }
-  const showcredentials = () => {
-    const credentials = JSON.parse(window.localStorage.user_data)
-    console.log(credentials)
+    const data = new FormData(form)
+    // setModal(true)
+    openModal({
+      open: true,
+      content: <div>Hola mundo as</div>,
+      action: async () => {
+
+        await Consulta({
+          url: 'soporte/', params: {
+            method: 'POST', body: data
+          }
+        })
+          .then(resp => {
+            setIsedit(true)
+          })
+      }
+    })
+
+    // try {
+    //   await fetch("http://localhost:4000/directorio/delete/" + path_file, {
+    //     method: 'POST'
+    //   }).then(resp => {
+    //     console.log(resp)
+    //     navigate(params.directoryId)
+    //   })
+    // } catch (error) {
+    //   console.log(error)
+    // }
+
   }
 
   useEffect(() => {
-    CargarInfo()
+    Consulta({
+      url: 'soporte', params: {
+        method: 'GET'
+      }
+    })
       .then(resp => {
         console.log(resp)
         setInfo(resp)
@@ -62,7 +61,11 @@ export function Soporte() {
   }, [])
   useEffect(() => {
     if (isedit) {
-      CargarInfo()
+      Consulta({
+        url: 'soporte', params: {
+          method: 'GET'
+        }
+      })
         .then(resp => {
           console.log(resp)
           setInfo(resp)
@@ -80,16 +83,19 @@ export function Soporte() {
           <div className="flex flex-col gap-2">
             <span className=""><a href="">Soporte/</a></span>
             <hr />
-            <h2 className="font-medium text-[18px]">Ingreso soportee</h2>
-            {/* <p className="uppercase">A list of all the users in your account including their name, title, email and role.</p> */}
+            <div className="flex justify-between mb-3">
+              <h2 className="font-medium text-[18px]">Ingreso soportee</h2>
+              <Input />
+            </div>
           </div>
           {isedit
-            ? <Table setedit={setIsedit} info={info} setmodal={setModal}/>
+            ? <Table setedit={setIsedit} info={info} setselect={setSelect} setmodal={setModal} />
             : <ListaSoportes save={saveSoporte}>
               <div className="lg:w-[50%] md:w-full columns-2 gap-5">
                 <div className="flex flex-col">
                   <label htmlFor=""><strong>Asunto:</strong></label>
-                  <input name='asunto' className="" type="text" />
+                  <input name='asunto' type="text" defaultValue={select.asunto ?? ''} />
+                  <input name='idx' type="hidden" defaultValue={select.idx ?? ''} />
                 </div>
                 <div className="break-before-column">
                   <div className="flex flex-col h-[50px]">
@@ -105,13 +111,12 @@ export function Soporte() {
               <div className="col-1">
                 <div className="flex flex-col">
                   <label htmlFor=""><strong>Detalle soporte:</strong></label>
-                  <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id=""></textarea>
+                  <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id="" defaultValue={select.descripcion ?? ''}></textarea>
                 </div>
               </div>
               <div className="flex justify-end">
-                {/* <a href="" className="button">asfas</a> */}
                 <button type="button" onClick={() => setIsedit(true)}>Cancelar</button>
-                <button className="bg-yellow-600" type="button" onClick={showcredentials}>Mostrar Credenciales</button>
+                {/* <button className="bg-yellow-600" type="button" onClick={showcredentials}>Mostrar Credenciales</button> */}
                 <button type="submit" className="bg-blue-600 text-white hover:bg-blue-700">Guardar</button>
               </div>
             </ListaSoportes>
@@ -122,7 +127,7 @@ export function Soporte() {
         <>
           <div className="absolute top-0 left-0 w-full h-full bg-red-500/20 flex justify-center items-center">
             <div className="w-[800px] h-[550px] bg-white rounded-lg shadow-lg p-4">
-              
+
               <form className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col gap-4">
                 <div className="lg:w-[50%] md:w-full columns-2 gap-5">
                   <div className="flex flex-col">
@@ -147,7 +152,7 @@ export function Soporte() {
                   </div>
                 </div>
                 <div className="col-1">
-                  <button onClick={()=>setModal(false)} className="bg-blue-600 text-white hover:bg-blue-700">Cerrar</button>
+                  <button onClick={() => setModal(false)} className="bg-blue-600 text-white hover:bg-blue-700">Cerrar</button>
                 </div>
               </form>
 
@@ -155,8 +160,8 @@ export function Soporte() {
             </div>
           </div>
         </>
-        ,document.querySelector("#root")
-        )}
+        , document.querySelector("#root")
+      )}
     </>
   )
 }

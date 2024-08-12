@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react"
 import { AuthPermitions } from "./contexts/contexts"
 import { useNavigate } from "react-router-dom"
+
 export function Login() {
-  // const [login,setLogin] = useState(false)
+  // const [login,setLogin] = useState(false)  
   const { isAuthenticated, login, loading, error } = useContext(AuthPermitions)
   const navigate = useNavigate()
   const onsubmit = (e) => {

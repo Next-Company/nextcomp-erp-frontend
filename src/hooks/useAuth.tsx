@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('user_data') ? true : false
   })
-  const [credentials, setCredentials] = useState(()=>{
+  const [credentials, setCredentials] = useState(() => {
     return localStorage.getItem('user_data') ? localStorage.getItem('user_data') : []
   })
   const [loading, setLoading] = useState(false)
@@ -15,7 +15,7 @@ export function useAuth() {
   const login = (data) => {
     const inicia = async () => {
       // return await fetch('http://localhost:4000/login', {
-      return await fetch('http://192.168.18.20:4000/login', {
+      return await fetch(apiUrl + 'login', {
         method: 'POST',
         credentials: 'include',
         body: data

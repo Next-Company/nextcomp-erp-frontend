@@ -8,6 +8,7 @@ import { Config } from './Config'
 import Authorization from './Authorization.tsx'
 import { Directory } from './Directory.tsx'
 import { Soporte } from './Soporte.tsx'
+import { Settings } from './pages/Settings/Settings.tsx'
 
 const routes = [
   {
@@ -30,7 +31,11 @@ const routes = [
   },
   {
     path: "/config",
-    element: <Config />
+    element: <Config />,
+    children: [
+      { path: "home", element: <Home /> },
+      { path: "settings", element: <Settings /> }
+    ]
   }
 ]
 const router = createBrowserRouter(routes)
