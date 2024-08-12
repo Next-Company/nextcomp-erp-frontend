@@ -183,10 +183,22 @@ button:focus-visible {
   }
 }
 
-@keyframes bouncing {}
+@keyframes bouncing {
+  25%{
+    transform: translateX(3px);
+  }
+  50%{
+      transform: translateX(-3px);
+  }
+  75%{
+      transform: translateX(3px);
+  }
+}
 
 .bouncing {
   animation-name: bouncing;
+  animation-duration: .2s;
+  animation-timing-function:cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
 /* div.other {
@@ -209,5 +221,6 @@ div.other>div {
 
 .oculto {
   /* transition: transform .3s ease; */
+  opacity: 0;
   transform: translateY(200px);
 }

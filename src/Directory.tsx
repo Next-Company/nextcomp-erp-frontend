@@ -3,10 +3,8 @@ import { useNavigate, useParams } from "react-router-dom"
 import { ContextualMenuContext } from "./components/ContextMenu/ContextualMenuContext"
 import { Consulta, convertToHex } from "./utils/utils"
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
-import { AuthPermitions } from "./contexts/contexts"
-// import { useFetch } from "./hooks/useFetch"
-// import { createPortal } from "react-dom"
-// import { LoadingWindow } from "./components/LoadingWindow/LoadingWindow"
+import { AuthPermitions, ModalContext } from "./contexts/contexts"
+import { toast } from "react-toastify"
 
 const files_icon = {
   'folder': <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>,
@@ -127,6 +125,37 @@ const contextual_content = {
 }
 
 function Carpeta({ name, ondoubleclick, onclick }) {
+  const { openModal, config } = useContext(ModalWindowContext)
+  const borrarDirectorio = (e)=> {
+    openModal({
+      open: true,
+      header: false,
+      content: <div>Desea continuar con el registro del soporte ingresado?</div>,
+      action: async () => {
+        // await Consulta({
+        //   url: 'soporte/', params: {
+        //     method: 'POST', body: data
+        //   }
+        // })
+        //   .then(resp => {
+        //     toast.success('Soporte guardado con éxito!!',{theme: "colored"})
+        //     setIsedit(true)
+        //   })
+      }
+    })
+  }
+  const configurarPermisos = (e)=> {
+    openModal({
+      open: true,
+      header: false,
+      content: <>
+        <div>Desea continuar con el registro del soporte ingresado?</div>
+      </>,
+      controls: false,
+      action: async () => {
+      }
+    })
+  }
   return (
     <>
       <tr className="text-left" tabIndex={-1} data-path={name.path} onClick={onclick} onDoubleClick={ondoubleclick}>
@@ -148,7 +177,7 @@ function Carpeta({ name, ondoubleclick, onclick }) {
         <td>
           <ul className="flex flex-row justify-end">
             <li>
-              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path}>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} onClick={borrarDirectorio}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
               </div>
             </li>
@@ -165,6 +194,11 @@ function Carpeta({ name, ondoubleclick, onclick }) {
             <li>
               <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+              </div>
+            </li>
+            <li>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={configurarPermisos}>
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-lock-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 21h-5a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10c.564 0 1.074 .234 1.437 .61" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
               </div>
             </li>
           </ul>
@@ -277,54 +311,22 @@ export function Directory() {
     console.log("sosteniendo archivos sobre el contenedor")
     gdrive.current.classList.add('oculto')
   }
-  // const options = useMemo(() => ({
-  //   url: 'http://localhost:4000/directorio/',
-  //   options: {
-  //     method: 'GET',
-  //     credentials: 'include'
-  //   }
-  // }), [])
-  // let lista = [{ createdAt: '', isDirectory: '', isFile: '', name: '', path: '', size: '', updateAt: '' }]
-  // const { data, loading, error } = useFetch(options)
-  // console.log({ data, loading, error })
-  // if (data) {
-  //   lista = data
-  // }
-  // const { data, loading, error } = useFetch({
-  //   method: 'GET',
-  //   url: 'http://localhost:4000/directorio/',
-  //   callbackSucces: (resp) => {
-  //     setLista(resp)
-  //   },
-  //   callbackError: () => {
-  //     logout()
-  //   }
-  // })
-  // if (data) {
-  //   setLista(data)
-  // }
-  // useEffect(() => {
-
-  // }, [data])
-  // Consulta('http://localhost:4000/directorio').then(resp=>{
-  //   setLista(resp)
-  // }).catch(resp=>{
-  //   console.log('hola')
-  // })
   useEffect(() => {
     if (Object.keys(params).length > 0) {
-      Consulta('directorio/' + params.directoryId, 'POST').then(resp => {
+      Consulta({url: 'directorio/' + params.directoryId, params: {method: 'POST'}}).then(resp => {
         setLista(resp)
       }).catch(resp => {
         console.log('hola')
         logout()
       })
     } else {
-      Consulta('directorio').then(resp => {
+      Consulta({url: 'directorio/',params:{
+        method: 'GET'
+      }}).then(resp => {
         setLista(resp)
       }).catch(resp => {
         console.log('hola')
-        logout()
+        // logout()
       })
     }
   }, [params])
@@ -337,14 +339,14 @@ export function Directory() {
           <hr />
         </div>
         <div className="bg-white text-left h-[700px] overflow-scroll scrollbar-special">
-          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[10px] text-[12px] [&_tr:hover]:outline-red-600 [&_tr:hover]:outline-1 [&_tr:hover]:outline-double [&_tr:hover]:cursor-pointer [&_tr:hover]:bg-slate-100 focus:[&_tr:hover]:bg-blue-200 [&_tr:hover_ul]:visible focus:[&_tr]:bg-blue-200 table-fixed [&_ul]:invisible">
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[10px] text-[12px] [&_tr:hover]:outline-red-600 [&_tr:hover]:outline-1 [&_tr:hover]:outline-double [&_tr:hover]:cursor-pointer [&_tbody_tr:hover]:bg-slate-100 focus:[&_tbody_tr:hover]:bg-blue-200 [&_tbody_tr:hover_ul]:visible focus:[&_tr]:bg-blue-200 table-fixed [&_ul]:invisible">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th>Nombre</th>
                 <th className="w-[650px]">Ruta</th>
                 <th>Size</th>
                 <th>Ultima Modificacion</th>
-                <th></th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -356,8 +358,7 @@ export function Directory() {
         </div>
 
         <div className="absolute bottom-0 border-red-500 flex w-full justify-center items-center">
-          <div className="transition-transform oculto" ref={gdrive}>
-
+          <div className="transition-all oculto" ref={gdrive}>
             <div className="bg-blue-600 w-[330px] h-[80px] rounded-full flex flex-col justify-center items-center text-white animate-bounce">
               Suelta los archivos para subirlos a
               <div className="flex justify-center items-center gap-2">
@@ -369,7 +370,6 @@ export function Directory() {
                 <div className="absolute top-[-15px] left-[15px] bg-blue-600 h-12 w-12 rounded-full z-[1px]"></div>
               </div>
             </div>
-
           </div>
         </div>
 

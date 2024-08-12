@@ -33,11 +33,23 @@ export async function Consulta({ url, params = {} }) {
       {
         credentials: 'include', ...params
       })
-      .then(resp => resp.ok ? resp.json() : Promise.reject())
+      // .then(resp => resp.ok ? resp.json() : Promise.reject())
+      .then(resp =>{
+        console.log(resp)
+        if(resp.ok){
+          return resp.json()
+        }else{
+          throw new Error('Se prodyctro un roble')
+        }
+      })
+      .catch(resp=>{
+        // Promise.reject()
+        console.log("errortttttt_ss")
+        return Promise.reject('Errorrraaa')
+        // throw new Error('Se prodyctro un rble')
+      })
   } catch (error) {
-    Promise.reject()
-    console.log('sdofo')
-    // console.log(error)
+    return Promise.reject('itri error')
   }
 }
 // export async function CargarInfo() {

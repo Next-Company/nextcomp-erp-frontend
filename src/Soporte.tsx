@@ -4,45 +4,37 @@ import { ListaSoportes } from "./ListaSoportes";
 import { createPortal } from "react-dom";
 import { Consulta } from "./utils/utils";
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext";
-import { Input } from "./components/Atoms/Input/Input";
+import { toast } from 'react-toastify';
+import { AuthPermitions } from "./contexts/contexts";
 
 export function Soporte() {
   const { openModal, config } = useContext(ModalWindowContext)
-  const [isedit, setIsedit] = useState(true)
-  const [info, setInfo] = useState([])
-  const [select, setSelect] = useState({})
-  const [modal, setModal] = useState(false)
+  const { logout } = useContext(AuthPermitions)
+  const [ isedit, setIsedit ] = useState(true)
+  const [ refresh, setRefresh ] = useState(false)
+  const [ info, setInfo ] = useState([])
+  const [ select, setSelect ] = useState({})
+  const [ modal, setModal ] = useState(false)
 
   const saveSoporte = async (form) => {
     const data = new FormData(form)
     // setModal(true)
     openModal({
       open: true,
-      content: <div>Hola mundo as</div>,
+      header: false,
+      content: <div>Desea continuar con el registro del soporte ingresado?</div>,
       action: async () => {
-
         await Consulta({
           url: 'soporte/', params: {
             method: 'POST', body: data
           }
         })
           .then(resp => {
+            toast.success('Soporte guardado con éxito!!',{theme: "colored"})
             setIsedit(true)
           })
       }
     })
-
-    // try {
-    //   await fetch("http://localhost:4000/directorio/delete/" + path_file, {
-    //     method: 'POST'
-    //   }).then(resp => {
-    //     console.log(resp)
-    //     navigate(params.directoryId)
-    //   })
-    // } catch (error) {
-    //   console.log(error)
-    // }
-
   }
 
   useEffect(() => {
@@ -52,50 +44,48 @@ export function Soporte() {
       }
     })
       .then(resp => {
-        console.log(resp)
+        console.log('Hola jupiters:',resp)
         setInfo(resp)
       })
       .catch(error => {
-        console.log(error)
+        // window.localStorage.removeItem('user_data')
+        logout()
       })
   }, [])
   useEffect(() => {
-    if (isedit) {
+    if (isedit || refresh) {
       Consulta({
         url: 'soporte', params: {
           method: 'GET'
         }
       })
         .then(resp => {
-          console.log(resp)
+          console.log('otrororooo',resp)
+          setRefresh(false)
           setInfo(resp)
         })
         .catch(error => {
-          console.log(error)
+          console.log('asdfasdfasdf',error)
         })
     }
-  }, [isedit])
+  }, [isedit,refresh])
   return (
     <>
       {/* <div className="flex p-3 flex-col flex-1 w-64 bg-white border-l overflow-y-auto"> */}
       <div className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
         <div className="p-2 text-left">
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             <span className=""><a href="">Soporte/</a></span>
             <hr />
-            <div className="flex justify-between mb-3">
-              <h2 className="font-medium text-[18px]">Ingreso soportee</h2>
-              <Input />
-            </div>
-          </div>
+          </div> */}
           {isedit
-            ? <Table setedit={setIsedit} info={info} setselect={setSelect} setmodal={setModal} />
+            ? <Table setedit={setIsedit} info={info} setselect={setSelect} setrefresh={setRefresh} />
             : <ListaSoportes save={saveSoporte}>
               <div className="lg:w-[50%] md:w-full columns-2 gap-5">
                 <div className="flex flex-col">
                   <label htmlFor=""><strong>Asunto:</strong></label>
                   <input name='asunto' type="text" defaultValue={select.asunto ?? ''} />
-                  <input name='idx' type="hidden" defaultValue={select.idx ?? ''} />
+                  <input name='idx' type="hidden" defaultValue={select.idx ?? ''} required={true} />
                 </div>
                 <div className="break-before-column">
                   <div className="flex flex-col h-[50px]">

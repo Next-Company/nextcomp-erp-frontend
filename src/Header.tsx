@@ -12,7 +12,7 @@ export function Header({ logout, credentials }) {
       e.target.querySelector('.config').classList.remove('invisible')
       e.target.querySelector('.config').focus()
     }
-    if(e.target.matches('.settings')){
+    if(e.target.matches('.settings, .settings *')){
       navigate('/config')
     }
   }

@@ -9,6 +9,7 @@ import Authorization from './Authorization.tsx'
 import { Directory } from './Directory.tsx'
 import { Soporte } from './Soporte.tsx'
 import { Settings } from './pages/Settings/Settings.tsx'
+import { ChatRoom } from './pages/ChatRoom.tsx'
 
 const routes = [
   {
@@ -26,6 +27,7 @@ const routes = [
       { path: "home", element: <Home /> },
       { path: "directorio", element: <Directory /> },
       { path: "directorio/:directoryId", element: <Directory /> },
+      { path: "chatroom", element: <ChatRoom /> },
       { path: "soporte", element: <Soporte /> }
     ]
   },
