@@ -3,14 +3,17 @@ import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
 import { toast } from 'react-toastify';
 import { Consulta } from "./utils/utils";
 import { Search } from "./components/Atoms/Search/Search";
+import { Button } from "./components/Atoms/Button/Button";
 
-export function Table({ setedit, info, setselect, setrefresh }) {
-  const { openModal, config } = useContext(ModalWindowContext)
+export function Table({ setedit, info, setselect, setrefresh, loading }) {
+  const { openModal } = useContext(ModalWindowContext)
+  
   const eliminarSoporte = async (id) => {
     openModal({
       open: true,
       title: 'Pregunta',
       header: false,
+      controls: true,
       content: <div className="text-[14px] h-[100%] flex items-center justify-center">¿Desea eliminar el soporte seleccionado?</div>,
       action: async () => {
         await Consulta({
@@ -90,14 +93,35 @@ export function Table({ setedit, info, setselect, setrefresh }) {
   }
   return (
     <>
-      <div className="bg-white text-left h-[500px] overflow-scroll scrollbar-special">
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="font-medium text-[18px]">Soportes programados</h2>
-            <Search/>
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="font-medium text-[18px]">Soportes programados</h2>
+          <div className="w-[400px]">
+            <Search config = {{width:'200px'}} />
           </div>
-          <hr />
         </div>
+      </div>
+      <div>
+        {/* <ul className="list-none min-w-[300px] flex [&_li:hover]:bg-gray-50 [&_li]:cursor-pointer [&_li]:text-nowrap [&_li]:p-6 [&_li]:flex [&_li]:justify-center [&_li]:items-center [&_li]:h-[40px] [&_li.active]:border-b-[3px] [&_li.active]:border-b-blue-500 [&_li.active]:text-blue-500">
+          <li className="active">Recientes</li>
+          <li>Mi unidad</li>
+          <li>Compartido conmigo</li>
+          <li>Destacados</li>
+          <li>Subir</li>
+        </ul> */}
+        <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-50 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_span.colored]:transition-[width]">
+          <button className="active otro">
+            <span className="relative h-[100%] flex items-center">
+              Pendientes
+              <span className="absolute bottom-0 border-b-[3px] border-b-blue-500 flex items-center w-[100%] h-[100%] colored"></span>
+            </span>
+          </button>
+          <button>Terminados</button>
+          <button>Compartido conmigo</button>
+        </ul>
+      </div>
+      <hr />
+      <div className="bg-white text-left h-[65%] overflow-scroll scrollbar-special">
         <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[8px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tr:hover_ul]:visible [&_ul]:invisible">
           <thead>
             <tr className="sticky top-0 bg-white">
@@ -114,17 +138,13 @@ export function Table({ setedit, info, setselect, setrefresh }) {
             {
               info && info.map((row, id) =>
                 <tr key={id}>
-                  {/* <td>{String(row.idx).padStart(6,'0')}</td> */}
                   <td>{row.idx}</td>
                   <td>{row.asunto}</td>
                   <td>{row.created_at}</td>
-                  {/* <td>{row.avance}</td> */}
                   <td>
                     <div className="flex items-center gap-2">
                       <div className="w-[150px] h-1 rounded-full bg-gray-200">
-                        {/* <div className={`w-[${((row.avance / 150)*100).toFixed(0)}px] h-1 rounded-full bg-red-500`}></div> */}
                         <div className={`w-[${((parseFloat(row.avance) * 150) / 100).toFixed(0)}px] h-1 rounded-full bg-green-500`}></div>
-                        {/* <div className={`w-[38px] h-1 rounded-full bg-red-500`}></div> */}
                       </div>
                       <span><strong>{row.avance}%</strong></span>
                     </div>
@@ -134,7 +154,6 @@ export function Table({ setedit, info, setselect, setrefresh }) {
                   <td>
                     <ul className="flex flex-row justify-end">
                       <li>
-                        {/* <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path}> */}
                         <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={() => eliminarSoporte(row.idx)}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                         </div>
@@ -145,7 +164,6 @@ export function Table({ setedit, info, setselect, setrefresh }) {
                         </div>
                       </li>
                       <li>
-                        {/* <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={setmodal}> */}
                         <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={() => verEstado(row)}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                         </div>
@@ -168,7 +186,9 @@ export function Table({ setedit, info, setselect, setrefresh }) {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-end">
+      <hr/>
+      <div className="flex justify-end mt-3">
+        <button className="flex" onClick={()=>{setrefresh(true)}}>Actualizar</button>
         <button className="bg-blue-600 text-white hover:bg-blue-700" onClick={newFila}>Nuevo</button>
       </div>
     </>

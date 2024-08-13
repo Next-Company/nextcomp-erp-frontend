@@ -6,6 +6,7 @@ import { Consulta } from "./utils/utils";
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext";
 import { toast } from 'react-toastify';
 import { AuthPermitions } from "./contexts/contexts";
+// import { LoadingWindow } from "./components/LoadingWindow/LoadingWindow";
 
 export function Soporte() {
   const { openModal, config } = useContext(ModalWindowContext)
@@ -15,13 +16,14 @@ export function Soporte() {
   const [ info, setInfo ] = useState([])
   const [ select, setSelect ] = useState({})
   const [ modal, setModal ] = useState(false)
+  const [ loading, setLoading ] = useState(false)
 
   const saveSoporte = async (form) => {
     const data = new FormData(form)
-    // setModal(true)
     openModal({
       open: true,
       header: false,
+      controls: true,
       content: <div>Desea continuar con el registro del soporte ingresado?</div>,
       action: async () => {
         await Consulta({
@@ -54,6 +56,7 @@ export function Soporte() {
   }, [])
   useEffect(() => {
     if (isedit || refresh) {
+      setLoading(true)
       Consulta({
         url: 'soporte', params: {
           method: 'GET'
@@ -67,6 +70,9 @@ export function Soporte() {
         .catch(error => {
           console.log('asdfasdfasdf',error)
         })
+        .finally(()=>{
+          setLoading(false)
+        })
     }
   }, [isedit,refresh])
   return (
@@ -74,12 +80,8 @@ export function Soporte() {
       {/* <div className="flex p-3 flex-col flex-1 w-64 bg-white border-l overflow-y-auto"> */}
       <div className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
         <div className="p-2 text-left">
-          {/* <div className="flex flex-col gap-2">
-            <span className=""><a href="">Soporte/</a></span>
-            <hr />
-          </div> */}
           {isedit
-            ? <Table setedit={setIsedit} info={info} setselect={setSelect} setrefresh={setRefresh} />
+            ? <Table setedit={setIsedit} info={info} setselect={setSelect} setrefresh={setRefresh} loading={loading} />
             : <ListaSoportes save={saveSoporte}>
               <div className="lg:w-[50%] md:w-full columns-2 gap-5">
                 <div className="flex flex-col">
@@ -113,11 +115,10 @@ export function Soporte() {
           }
         </div>
       </div>
-      {modal && createPortal(
+      {/* {modal && createPortal(
         <>
           <div className="absolute top-0 left-0 w-full h-full bg-red-500/20 flex justify-center items-center">
             <div className="w-[800px] h-[550px] bg-white rounded-lg shadow-lg p-4">
-
               <form className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col gap-4">
                 <div className="lg:w-[50%] md:w-full columns-2 gap-5">
                   <div className="flex flex-col">
@@ -145,13 +146,11 @@ export function Soporte() {
                   <button onClick={() => setModal(false)} className="bg-blue-600 text-white hover:bg-blue-700">Cerrar</button>
                 </div>
               </form>
-
-
             </div>
           </div>
         </>
         , document.querySelector("#root")
-      )}
+      )} */}
     </>
   )
 }
