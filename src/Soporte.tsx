@@ -6,6 +6,7 @@ import { Consulta } from "./utils/utils";
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext";
 import { toast } from 'react-toastify';
 import { AuthPermitions } from "./contexts/contexts";
+import { Button } from "./components/Atoms/Button/Button";
 // import { LoadingWindow } from "./components/LoadingWindow/LoadingWindow";
 
 export function Soporte() {
@@ -107,9 +108,11 @@ export function Soporte() {
                 </div>
               </div>
               <div className="flex justify-end">
-                <button type="button" onClick={() => setIsedit(true)}>Cancelar</button>
-                {/* <button className="bg-yellow-600" type="button" onClick={showcredentials}>Mostrar Credenciales</button> */}
-                <button type="submit" className="bg-blue-600 text-white hover:bg-blue-700">Guardar</button>
+                {/* <Button action={() => setIsedit(true)} tipo={'default'}>Cancelar</Button> */}
+                {/* <button type="button" onClick={() => setIsedit(true)}>Cancelar</button> */}
+                <Button action={() => setIsedit(true)} tipo={'default'}>Cancelar</Button>
+                <Button type={'submit'} tipo={'accept'}>Guardar</Button>
+                {/* <button type="submit" className="bg-blue-600 text-white hover:bg-blue-700">Guardar</button> */}
               </div>
             </ListaSoportes>
           }

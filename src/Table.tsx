@@ -94,34 +94,29 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
   return (
     <>
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="font-medium text-[18px]">Soportes programados</h2>
+        {/* <div className="flex justify-between items-center mb-3"> */}
+        <div className="flex justify-between items-center">
+          <h2 className="font-medium text-[18px]">Soportes registrados</h2>
           <div className="w-[400px]">
             <Search config = {{width:'200px'}} />
           </div>
         </div>
+        <hr />
       </div>
       <div>
-        {/* <ul className="list-none min-w-[300px] flex [&_li:hover]:bg-gray-50 [&_li]:cursor-pointer [&_li]:text-nowrap [&_li]:p-6 [&_li]:flex [&_li]:justify-center [&_li]:items-center [&_li]:h-[40px] [&_li.active]:border-b-[3px] [&_li.active]:border-b-blue-500 [&_li.active]:text-blue-500">
-          <li className="active">Recientes</li>
-          <li>Mi unidad</li>
-          <li>Compartido conmigo</li>
-          <li>Destacados</li>
-          <li>Subir</li>
-        </ul> */}
-        <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-50 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_span.colored]:transition-[width]">
+        <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-50 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_span.colored]:transition-[width] [&_button.active:hover]:bg-blue-50">
           <button className="active otro">
             <span className="relative h-[100%] flex items-center">
-              Pendientes
+              Todos
               <span className="absolute bottom-0 border-b-[3px] border-b-blue-500 flex items-center w-[100%] h-[100%] colored"></span>
             </span>
           </button>
+          <button>Pendientes</button>
           <button>Terminados</button>
-          <button>Compartido conmigo</button>
         </ul>
       </div>
       <hr />
-      <div className="bg-white text-left h-[65%] overflow-scroll scrollbar-special">
+      <div className="bg-white text-left h-[70%] overflow-scroll scrollbar-special">
         <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[8px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tr:hover_ul]:visible [&_ul]:invisible">
           <thead>
             <tr className="sticky top-0 bg-white">
@@ -187,9 +182,9 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
         </table>
       </div>
       <hr/>
-      <div className="flex justify-end mt-3">
-        <button className="flex" onClick={()=>{setrefresh(true)}}>Actualizar</button>
-        <button className="bg-blue-600 text-white hover:bg-blue-700" onClick={newFila}>Nuevo</button>
+      <div className="flex justify-end mt-3 gap-2">
+        <Button action={()=>{setrefresh(true)}} tipo={'default'}>Actualizar</Button>
+        <Button action={newFila} tipo={'accept'}>Nuevo</Button>
       </div>
     </>
   )

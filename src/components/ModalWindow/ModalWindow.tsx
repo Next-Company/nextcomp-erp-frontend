@@ -38,7 +38,7 @@ export function ModalWindow() {
   }, [config])
   return (
     <>
-      <div ref={modalref} className={`absolute ${open ? 'z-[100] bg-gray-600/30' : 'z-[-1] other'} flex justify-center items-center opacity-[1] top-0 left-0 w-[100vw] h-[100vh] transition-all text-[14px]`} onClick={actionBackground}>
+      <div ref={modalref} className={`absolute ${open ? 'z-[100] bg-black/50' : 'z-[-1] other'} flex justify-center items-center opacity-[1] top-0 left-0 w-[100vw] h-[100vh] transition-all text-[14px]`} onClick={actionBackground}>
         <div id="conc" onAnimationEnd={onanimationend} className="min-w-[500px] min-h-[250px] p-[5px] bg-white rounded-md flex flex-col justify-between transition-all" onClick={onclick}>
           {
             (config.header && true)
@@ -56,7 +56,7 @@ export function ModalWindow() {
             </div>
           </header>
             : 
-            <header className={`h-[45px] bg-green-400/0 rounded-t-md flex justify-end items-center`}>
+          <header className={`h-[45px] bg-green-400/0 rounded-t-md flex justify-end items-center`}>
             <div className="flex gap-2">
               <div className="w-[30px] h-[30px] hover:bg-gray-200 rounded-full flex justify-center items-center cursor-pointer transition-[background-color]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-fullscreen" viewBox="0 0 16 16">
@@ -78,8 +78,8 @@ export function ModalWindow() {
               {config.content}
             </div>
             <div className={`flex gap-3 justify-center ${(config.controls && 'true') ? 'block' : 'hidden' }`}>
-              <Button action={acceptFunction} text={'Aceptar'}/>
-              <Button action={cerrarModal} text={'Cancelar'}/>
+              <Button action={acceptFunction} tipo={'accept'}>Aceptar</Button>
+              <Button action={cerrarModal} tipo={'default'}>Cancelar</Button>
             </div>
           </section>
           <footer className="h-[40px] bg-green-400/0 rounded-b-md flex justify-center items-center border-t-[1px] border-gray-200">
