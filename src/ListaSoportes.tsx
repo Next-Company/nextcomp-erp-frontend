@@ -19,7 +19,8 @@ export function ListaSoportes({save,children}){
           </div>
           <hr />
         </div>
-      <form onSubmit={onclick} className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col gap-4" was-validated>
+      {/* <form onSubmit={onclick} className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col gap-4" was-validated> */}
+      <form onSubmit={onclick} className="pt-4 flex flex-col gap-4" was-validated>
         {/* <input type="text" name="nombre" id="juan" />
         <button type="submit" onSubmit={onclick}>Enviar</button> */}
         {children}

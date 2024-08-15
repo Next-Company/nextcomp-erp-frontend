@@ -58,11 +58,11 @@ export function ModalWindow() {
             : 
           <header className={`h-[45px] bg-green-400/0 rounded-t-md flex justify-end items-center`}>
             <div className="flex gap-2">
-              <div className="w-[30px] h-[30px] hover:bg-gray-200 rounded-full flex justify-center items-center cursor-pointer transition-[background-color]">
+              {/* <div className="w-[30px] h-[30px] hover:bg-gray-200 rounded-full flex justify-center items-center cursor-pointer transition-[background-color]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-fullscreen" viewBox="0 0 16 16">
                   <path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5"></path>
                 </svg>
-              </div>
+              </div> */}
               <div className="w-[30px] h-[30px] rounded-full hover:bg-gray-200 flex justify-center items-center cursor-pointer transition-[background-color] close-modal">
                 <svg viewBox="0 0 24 24" width="20" height="20" preserveAspectRatio="xMidYMid meet" focusable="false" className="style-scope yt-icon"><g className="style-scope yt-icon"><path d="M12.7,12l6.6,6.6l-0.7,0.7L12,12.7l-6.6,6.6l-0.7-0.7l6.6-6.6L4.6,5.4l0.7-0.7l6.6,6.6l6.6-6.6l0.7,0.7L12.7,12z" className="style-scope yt-icon"></path></g></svg>
               </div>
@@ -77,13 +77,13 @@ export function ModalWindow() {
               {/* <p className="text-[14px] text-blue-600 h-[100%] flex items-center justify-center"></p> */}
               {config.content}
             </div>
-            <div className={`flex gap-3 justify-center ${(config.controls && 'true') ? 'block' : 'hidden' }`}>
-              <Button action={acceptFunction} tipo={'accept'}>Aceptar</Button>
+            <div className={`flex gap-1 justify-end ${(config.controls && 'true') ? 'block' : 'hidden' }`}>
               <Button action={cerrarModal} tipo={'default'}>Cancelar</Button>
+              <Button action={acceptFunction} tipo={'default'}>Aceptar</Button>
             </div>
           </section>
-          <footer className="h-[40px] bg-green-400/0 rounded-b-md flex justify-center items-center border-t-[1px] border-gray-200">
-          </footer>
+          {/* <footer className="h-[40px] bg-green-400/0 rounded-b-md flex justify-center items-center border-t-[1px] border-gray-200">
+          </footer> */}
         </div>
       </div>
     </>

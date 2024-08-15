@@ -7,6 +7,9 @@ import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
 import { toast } from 'react-toastify';
 import { AuthPermitions } from "./contexts/contexts";
 import { Button } from "./components/Atoms/Button/Button";
+import { InputG } from "./components/Atoms/Input/InputG";
+import { InputSelect } from "./components/Atoms/Input/InputSelect";
+import { TextArea } from "./components/Atoms/Input/TextArea";
 // import { LoadingWindow } from "./components/LoadingWindow/LoadingWindow";
 
 export function Soporte() {
@@ -86,25 +89,33 @@ export function Soporte() {
             : <ListaSoportes save={saveSoporte}>
               <div className="lg:w-[50%] md:w-full columns-2 gap-5">
                 <div className="flex flex-col">
-                  <label htmlFor=""><strong>Asunto:</strong></label>
+                  {/* <label htmlFor=""><strong>Asunto:</strong></label>
                   <input name='asunto' type="text" defaultValue={select.asunto ?? ''} />
-                  <input name='idx' type="hidden" defaultValue={select.idx ?? ''} required={true} />
+                  <input name='idx' type="hidden" defaultValue={select.idx ?? ''} required={true} /> */}
+                  <InputG>Nombre</InputG>
                 </div>
                 <div className="break-before-column">
                   <div className="flex flex-col h-[50px]">
-                    <label className="block" htmlFor=""><strong>Prioridad:</strong></label>
+                    {/* <label className="block" htmlFor=""><strong>Prioridad:</strong></label>
                     <select className="border-b flex-1" name="prioridad" id="">
                       <option value="BAJA">Baja</option>
                       <option value="MEDIA">Media</option>
                       <option value="ALTA">Alta</option>
-                    </select>
+                    </select> */}
+                    <InputSelect title={'Prioridad'} nombre={"prioridad"}>
+                      <option value=""></option>
+                      <option value="Baja">Baja</option>
+                      <option value="Media">Media</option>
+                      <option value="Alta">Alta</option>
+                    </InputSelect>
                   </div>
                 </div>
               </div>
               <div className="col-1">
                 <div className="flex flex-col">
-                  <label htmlFor=""><strong>Detalle soporte:</strong></label>
-                  <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id="" defaultValue={select.descripcion ?? ''}></textarea>
+                  {/* <label htmlFor=""><strong>Detalle soporte:</strong></label>
+                  <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id="" defaultValue={select.descripcion ?? ''}></textarea> */}
+                  <TextArea>Descripcion</TextArea>
                 </div>
               </div>
               <div className="flex justify-end">
