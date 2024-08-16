@@ -83,7 +83,7 @@ export function Soporte() {
     <>
       {/* <div className="flex p-3 flex-col flex-1 w-64 bg-white border-l overflow-y-auto"> */}
       <div className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
-        <div className="p-2 text-left">
+        <div className="p-2 text-left flex flex-col h-full overflow-hidden">
           {isedit
             ? <Table setedit={setIsedit} info={info} setselect={setSelect} setrefresh={setRefresh} loading={loading} />
             : <ListaSoportes save={saveSoporte}>
