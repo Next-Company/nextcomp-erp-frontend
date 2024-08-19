@@ -7,7 +7,7 @@ import { Button } from "./components/Atoms/Button/Button";
 
 export function Table({ setedit, info, setselect, setrefresh, loading }) {
   const { openModal } = useContext(ModalWindowContext)
-  
+
   const eliminarSoporte = async (id) => {
     openModal({
       open: true,
@@ -17,7 +17,7 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
       content: <div className="text-[14px] h-[100%] flex items-center justify-center">¿Desea eliminar el soporte seleccionado?</div>,
       action: async () => {
         await Consulta({
-          url: 'soporte/' + id, 
+          url: 'soporte/' + id,
           params: {
             method: 'DELETE'
           }
@@ -25,7 +25,7 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
           .then(resp => {
             console.log(resp)
             setrefresh(true)
-            toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
+            toast.success('Soporte eliminado con éxito!!', { theme: "colored" })
             // resp.ok 
             // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
             // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
@@ -39,18 +39,18 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
       open: true,
       header: true,
       title: 'Estado soporte',
-      content: 
-      <div className="w-[900px] h-[500px] text-left">
-        <form className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col text-left gap-4">
+      content:
+        <div className="w-[900px] h-[500px] text-left">
+          <form className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col text-left gap-4">
             <div className="lg:w-[50%] md:w-full columns-2 gap-5">
               <div className="flex flex-col">
                 <label htmlFor=""><strong>Asunto:</strong></label>
-                <input name='asunto' className="" type="text" defaultValue={row.asunto} onKeyDown={()=>{return false;}}/>
+                <input name='asunto' className="" type="text" defaultValue={row.asunto} onKeyDown={() => { return false; }} />
               </div>
               <div className="break-before-column">
                 <div className="flex flex-col h-[50px]">
                   <label className="block" htmlFor=""><strong>Prioridad:</strong></label>
-                  <input name='prioridad' className="" type="text" defaultValue={row.prioridad}/>
+                  <input name='prioridad' className="" type="text" defaultValue={row.prioridad} />
                 </div>
               </div>
             </div>
@@ -65,7 +65,7 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
               <button onClick={() => setModal(false)} className="bg-blue-600 text-white hover:bg-blue-700">Cerrar</button>
             </div> */}
           </form>
-      </div>
+        </div>
       ,
       action: async () => {
 
@@ -98,7 +98,7 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
         <div className="flex justify-between items-center">
           <h2 className="font-medium text-[18px]">Soportes registrados</h2>
           <div className="w-[400px]">
-            <Search config = {{width:'200px'}} />
+            <Search config={{ width: '200px' }} />
           </div>
         </div>
         <hr />
@@ -117,7 +117,7 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
       </div>
       <hr />
       <div className="bg-white text-left h-[80%] overflow-scroll scrollbar-special flex-1">
-        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tr:hover_ul]:visible [&_ul]:invisible">
+        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tr:hover_ul]:visible [&_ul]:invisible ">
           <thead>
             <tr className="sticky top-0 bg-white">
               <th>Id</th>
@@ -183,9 +183,9 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
           </tbody>
         </table>
       </div>
-      <hr/>
+      {/* <hr /> */}
       <div className="flex justify-end mt-3 gap-2">
-        <Button action={()=>{setrefresh(true)}} tipo={'default'}>Actualizar</Button>
+        <Button action={() => { setrefresh(true) }} tipo={'default'}>Actualizar</Button>
         <Button action={newFila} tipo={'accept'}>Nuevo</Button>
       </div>
     </>
