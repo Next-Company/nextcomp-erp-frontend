@@ -21,48 +21,6 @@ export function Agenda() {
           <InputTest>Cambio</InputTest>
           <InputTest>Cambio</InputTest>
         </div>
-        {/* <section className="grid grid-flow-col [&_div]:border-purple-500 [&_div]:border-[1px]">
-          <div>ds</div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </section> */}
       </div>
       {
         loading && createPortal(
