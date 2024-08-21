@@ -1,5 +1,6 @@
 import { Search } from "../components/Atoms/Search/Search";
 import { InputG } from "../components/Atoms/Input/InputG";
+import { InputSelect } from "../components/Atoms/Input/InputSelect";
 
 export function Agenda() {
   return (
@@ -14,6 +15,7 @@ export function Agenda() {
         <div className="w-[400px]">
           <form action="">
             <InputG>Documento</InputG>
+            {/* <InputSelect>Datos</InputSelect> */}
           </form>
         </div>
       </div>

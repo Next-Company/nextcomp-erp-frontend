@@ -92,7 +92,7 @@ export function Soporte() {
                   {/* <label htmlFor=""><strong>Asunto:</strong></label>
                   <input name='asunto' type="text" defaultValue={select.asunto ?? ''} />
                   <input name='idx' type="hidden" defaultValue={select.idx ?? ''} required={true} /> */}
-                  <InputG>Nombre</InputG>
+                  <InputG name={'asunto'} defaults={select.asunto ?? ''}>Nombre</InputG>
                 </div>
                 <div className="break-before-column">
                   <div className="flex flex-col h-[50px]">
@@ -118,7 +118,7 @@ export function Soporte() {
                   <TextArea>Descripcion</TextArea>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-2">
                 {/* <Button action={() => setIsedit(true)} tipo={'default'}>Cancelar</Button> */}
                 {/* <button type="button" onClick={() => setIsedit(true)}>Cancelar</button> */}
                 <Button action={() => setIsedit(true)} tipo={'default'}>Cancelar</Button>
