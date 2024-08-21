@@ -1,12 +1,7 @@
-import { useState } from "react";
 import { Search } from "../components/Atoms/Search/Search";
-import { LoadingWindow } from "../components/LoadingWindow/LoadingWindow";
-import { createPortal } from "react-dom";
 import { InputG } from "../components/Atoms/Input/InputG";
-import { InputTest } from "../components/Atoms/Input/InputTest";
 
 export function Agenda() {
-  const [loading, setLoading] = useState(false)
   return (
     <>
       <div className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
@@ -16,17 +11,12 @@ export function Agenda() {
             <Search config={{ width: '200px' }} />
           </div>
         </div>
-        <InputG>Documento</InputG>
-        <div className="flex">
-          <InputTest>Cambio</InputTest>
-          <InputTest>Cambio</InputTest>
+        <div className="w-[400px]">
+          <form action="">
+            <InputG>Documento</InputG>
+          </form>
         </div>
       </div>
-      {
-        loading && createPortal(
-          <LoadingWindow />, document.querySelector("#root")
-        )
-      }
     </>
   )
 }
