@@ -95,7 +95,7 @@ export function Soporte() {
                   <InputG name={'asunto'} defaults={select.asunto ?? ''}>Nombre</InputG>
                 </div>
                 <div className="break-before-column">
-                  <div className="flex flex-col h-[50px]">
+                  <div className="flex flex-col">
                     {/* <label className="block" htmlFor=""><strong>Prioridad:</strong></label>
                     <select className="border-b flex-1" name="prioridad" id="">
                       <option value="BAJA">Baja</option>
