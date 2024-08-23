@@ -92,7 +92,38 @@ export function Soporte() {
                   {/* <label htmlFor=""><strong>Asunto:</strong></label>
                   <input name='asunto' type="text" defaultValue={select.asunto ?? ''} />
                   <input name='idx' type="hidden" defaultValue={select.idx ?? ''} required={true} /> */}
-                  <InputG name={'asunto'} defaults={select.asunto ?? ''}>Nombre</InputG>
+                  {/* <InputG name={'asunto'} defaults={select.asunto ?? ''}>Nombre</InputG> */}
+
+                  <div className="w-[100px] h-[100px] bg-orange-400 relative">
+                    <div className="w-[100px] h-[100px] bg-green-400 absolute z-50 top-3 left-[40px]">
+                      asdfal
+                    </div>
+                  </div>
+
+
+                  <div className="rounded-md bg-gray-100 flex flex-col justify-start items-start pl-[16px] pr-[16px] pt-[5px] pb-[8px] hover:bg-gray-200 relative box-content group selected">
+                    <label className="text-[12px] text-blue-600 transition-all mover pointer-events-none">sdflksdjf</label>
+                    <input type="text" className="inp bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" />
+                    <span className="after:absolute after:bottom-0 after:left-0 after:transition-all after:opacity-1 after:w-full after:border-b-[2px] 
+                    after:border-b-transparent group-[.selected]:after:border-b-blue-600"></span>
+                    {/* <div className="w-[1550px] h-[300px] bg-red-400 absolute z-50 top-[60px] left-[120px]">
+                      asdfal
+                    </div> */}
+                    <div>asdfasklñ</div>
+                    {/* <div className="left-0 top-[100%] h-[300px] z-50 bg-green-400 w-[300px] absolute">
+                      
+                    </div> */}
+                    {/* <ul className="hidden left-0 top-[100%] z-10 border-[1px] border-gray-100 bg-white shadow-xl rounded-sm w-full pt-3 pb-3 [&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer [&_li]:pl-[10px] [&_li]:pt-[8px] [&_li]:pb-[8px] transition-all origin-center opacity-0 scale-90 group-[.selected]:opacity-100 group-[.selected]:scale-100 group-[.selected]:absolute group-[.selected]:flex group-[.selected]:flex-col">
+                      <li>Opcion1</li>
+                      <li>Opcion2</li>
+                      <li>Opcion3</li>
+                    </ul> */}
+                  </div>
+
+
+
+
+
                 </div>
                 <div className="break-before-column">
                   <div className="flex flex-col">
@@ -115,7 +146,7 @@ export function Soporte() {
                 <div className="flex flex-col">
                   {/* <label htmlFor=""><strong>Detalle soporte:</strong></label>
                   <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id="" defaultValue={select.descripcion ?? ''}></textarea> */}
-                  <TextArea>Descripcion</TextArea>
+                  {/* <TextArea>Descripcion</TextArea> */}
                 </div>
               </div>
               <div className="flex justify-end gap-2">
