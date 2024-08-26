@@ -1,0 +1,101 @@
+import { useEffect, useRef, useState } from "react"
+
+const DEFAULT_VALUE = 0
+export function InputSelect2({ title, nombre, options }) {
+  const ref_menu = useRef(null)
+  const [valores, setValores] = useState(options)
+  const [select, setSelect] = useState(DEFAULT_VALUE)
+  // console.log(select)
+  // console.log(valores)
+  const onclick = (e) => {
+    if (e.target.matches('div')) {
+      e.target.querySelector('input').focus()
+    }
+    if (e.target.matches('li')) {
+      console.log(e.target)
+    }
+  }
+  const onfocus = (e) => {
+    e.target.parentElement.querySelector('label').classList.remove('mover')
+    e.target.parentElement.classList.add('selected')
+  }
+  const onblur = (e) => {
+    if (e.target.value == '') {
+      e.target.parentElement.querySelector('label').classList.add('mover')
+    }
+    e.target.parentElement.classList.remove('selected')
+  }
+  const ontransition = (e) => {
+    if (e.propertyName == 'opacity') {
+
+      // console.log(e.propertyName, '-', e.target.classList)
+      console.log(e.target.getComputedStyle())
+      // if (e.target.classList.contains('scale-100')) {
+      //   e.target.classList.remove('scale-100')
+      // } else {
+      //   setTimeout(() => {
+      //     e.target.classList.add('scale-100')
+      //     e.target.classList.add('w-0')
+      //     e.target.classList.add('h-0')
+      //   }, 200)
+      // }
+
+      // if (!e.target.C) {
+
+      // }
+
+      if (!e.target.classList.contains('opacity-100')) {
+        // e.target.classList.remove('scale-100')
+        // e.target.classList.add('w-full')
+        e.target.classList.add('scale-100')
+        e.target.classList.remove('scale-90')
+
+        // e.target.classList.remove('w-0')
+        // e.target.classList.remove('h-0')
+        console.log('sin opacity')
+        setTimeout(() => {
+        }, 200)
+      } else {
+        console.log('con opacity')
+        // e.target.classList.remove('w-0')
+        e.target.classList.remove('h-0')
+        e.target.classList.remove('scale-100')
+        e.target.classList.add('scale-90')
+
+      }
+    }
+  }
+  const editando = (key) => {
+    setSelect(key)
+  }
+  useEffect(() => {
+
+  }, [])
+  return (
+    <>
+      <div onClick={onclick} className="rounded-md bg-gray-100 flex flex-col justify-start items-start pl-[16px] pr-[16px] pt-[5px] pb-[8px] hover:bg-gray-200 relative box-content group flex-1">
+        <label className={`text-[12px] text-blue-600 transition-all ${select ?? 'mover'} pointer-events-none`}>{title}</label>
+
+        <input onClick={e => e.stopPropagation()} readOnly value={valores[select]} type="text" onFocus={onfocus} onBlur={onblur} className="inp cursor-default bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" />
+
+        <span className="after:absolute after:bottom-0 after:left-0 after:transition-all after:opacity-1 after:w-full after:border-b-[2px] 
+        after:border-b-transparent group-[.selected]:after:border-b-blue-600"></span>
+        {/* <span className="after:absolute after:bottom-0 after:left-0 after:transition-all after:opacity-1 after:w-full after:border-b-[2px] 
+        after:border-b-transparent after:border-b-blue-600"></span> */}
+
+        <ul onClick={onclick} ref={ref_menu} onTransitionEnd={ontransition} className="absolute left-0 top-[100%] z-10 border-[1px] border-gray-100 bg-white shadow-xl rounded-sm pt-3 pb-3 [&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer [&_li]:pl-[10px] [&_li]:pt-[8px] [&_li]:pb-[8px] transition-all origin-center 
+        opacity-0
+        group-[.selected]:opacity-100 
+        group-[.selected]:flex flex-col
+        group-[.selected]:w-full
+        ">
+          {/* group-[.selected]:scale-100 group-[.selected]:w-full group-[.selected]:h-[200px] */}
+          {
+            // valores.map((op, key) => <li key={key} onClick={() => setSelect(key)}>{op}</li>)
+            valores.map((op, key) => <li key={key} onClick={() => editando(key)}>{op}</li>)
+          }
+        </ul>
+      </div>
+    </>
+  )
+}

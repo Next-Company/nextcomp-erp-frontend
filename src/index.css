@@ -186,21 +186,23 @@ button:focus-visible {
 }
 
 @keyframes bouncing {
-  25%{
+  25% {
     transform: translateX(3px);
   }
-  50%{
-      transform: translateX(-3px);
+
+  50% {
+    transform: translateX(-3px);
   }
-  75%{
-      transform: translateX(3px);
+
+  75% {
+    transform: translateX(3px);
   }
 }
 
 .bouncing {
   animation-name: bouncing;
   animation-duration: .2s;
-  animation-timing-function:cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  animation-timing-function: cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
 /* div.other {
@@ -225,6 +227,7 @@ div.other>div {
   opacity: 0;
   transform: translateY(200px);
 }
+
 /* .otro{
   transition: background .3s ease;
   background: rgb(198, 198, 255);
@@ -247,9 +250,12 @@ div.other>div {
 ::view-transition-new(figure-caption) {
   height: 100%;
 }
-.mover{
-  transform: scale(1.25) translate(5px,50%);
-  color:gray;
+
+.mover {
+  transform: scale(1.25) translate(5px, 50%);
+  color: gray;
 }
 
-
+/* .special {
+  transition: display 1s ease allow-discrete;
+} */
