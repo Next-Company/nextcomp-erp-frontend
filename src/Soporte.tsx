@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Table } from "./Table";
 import { ListaSoportes } from "./ListaSoportes";
-import { createPortal } from "react-dom";
 import { Consulta } from "./utils/utils";
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext";
 import { toast } from 'react-toastify';
@@ -19,7 +18,7 @@ export function Soporte() {
   const [refresh, setRefresh] = useState(false)
   const [info, setInfo] = useState([])
   const [select, setSelect] = useState({})
-  const [modal, setModal] = useState(false)
+  // const [modal, setModal] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const saveSoporte = async (form) => {
@@ -42,6 +41,10 @@ export function Soporte() {
       }
     })
   }
+  const cancelarEdicion = () => {
+    setIsedit(true)
+  }
+  console.log(select)
 
   useEffect(() => {
     Consulta({
@@ -87,22 +90,15 @@ export function Soporte() {
           {isedit
             ? <Table setedit={setIsedit} info={info} setselect={setSelect} setrefresh={setRefresh} loading={loading} />
             : <ListaSoportes save={saveSoporte}>
-              {/* <InputG>Documento</InputG> */}
-              {/* <div className="lg:w-[50%] md:w-full lg:columns-2 lg:gap-5"> */}
-              {/* <div className="w-[50%] columns-2 gap-5"> */}
               <div className="flex w-[50%] gap-2">
-                <InputG name={'asunto'} defaults={''}>Nombre</InputG>
-                <InputSelect title={'Prioridad'} options={['Baja', 'Media', 'Alta']} nombre={"prioridad"}>
-                </InputSelect>
-                {/* <div className="relative">
-                <div className="absolute w-[500px] h-[100px] bg-red-400 z-20">laksjd</div>
-              </div> */}
+                <InputG name={'asunto'} defaults={select.asunto} title="Asunto" />
+                <InputSelect title={'Prioridad'} options={['Baja', 'Media', 'Alta']} name={"prioridad"} />
               </div>
               <div>
-                <TextArea>sdf</TextArea>
+                <TextArea name={'detalle'} title={'Detalle'} valor={select.descripcion} />
               </div>
               <div className="flex justify-end gap-2">
-                <Button action={() => { }} tipo={'default'}>Cancelar</Button>
+                <Button action={cancelarEdicion} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button type={'submit'} tipo={'accept'}>Guardar</Button>
               </div>
             </ListaSoportes>
