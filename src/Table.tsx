@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { Consulta } from "./utils/utils";
 import { Search } from "./components/Atoms/Search/Search";
 import { Button } from "./components/Atoms/Button/Button";
+import { TextArea } from "./components/Atoms/Input/TextArea";
+import { InputG } from "./components/Atoms/Input/InputG";
 
 export function Table({ setedit, info, setselect, setrefresh, loading }) {
   const { openModal } = useContext(ModalWindowContext)
@@ -38,11 +40,12 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
     openModal({
       open: true,
       header: true,
-      title: 'Estado soporte',
+      title: 'Vista previa',
       content:
         <div className="w-[900px] h-[500px] text-left">
-          <form className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col text-left gap-4">
-            <div className="lg:w-[50%] md:w-full columns-2 gap-5">
+          {/* <form className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col text-left gap-4"> */}
+          <form className="pt-4 flex flex-col text-left gap-4">
+            {/* <div className="lg:w-[50%] md:w-full columns-2 gap-5">
               <div className="flex flex-col">
                 <label htmlFor=""><strong>Asunto:</strong></label>
                 <input name='asunto' className="" type="text" defaultValue={row.asunto} onKeyDown={() => { return false; }} />
@@ -59,6 +62,17 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
                 <label htmlFor=""><strong>Detalle soporte:</strong></label>
                 <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id="" defaultValue={row.descripcion}></textarea>
               </div>
+            </div> */}
+            <div className="lg:w-[70%] md:w-full flex gap-5">
+              <InputG name="asdf" defaults={row.asunto} title="Asunto"/>
+              <InputG name="asdf" defaults={row.prioridad} title="Prioridad"/>
+            </div>
+            <div className="col-1">
+              <div className="flex flex-col">
+                {/* <label htmlFor=""><strong>Detalle soporte:</strong></label>
+                <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id="" defaultValue={row.descripcion}></textarea> */}
+                <TextArea name='sdfsdf' valor={row.descripcion} title='Descripcion' />
+              </div>
             </div>
             {/* <div className="col-1">
               <button onClick={() => setModal(false)} className="bg-blue-600 text-white hover:bg-blue-700">Cerrar</button>
@@ -67,8 +81,8 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
           </form>
         </div>
       ,
-      action: async () => {
-
+      action: async (row) => {
+        console.log(row)
       }
     })
   }

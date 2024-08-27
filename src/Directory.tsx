@@ -300,7 +300,7 @@ export function Directory() {
   }
   const onmouseover = (e) => {
     if (e.target.closest('div.directory')) {
-      console.log('hola mundo')
+      // console.log('hola mundo')
     }
   }
   const ondragover = (e) => {

@@ -44,8 +44,6 @@ export function Soporte() {
   const cancelarEdicion = () => {
     setIsedit(true)
   }
-  console.log(select)
-
   useEffect(() => {
     Consulta({
       url: 'soporte', params: {

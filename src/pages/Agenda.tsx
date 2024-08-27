@@ -28,7 +28,7 @@ export function Agenda() {
               </div> */}
             </div>
             <div>
-              <TextArea>sdf</TextArea>
+              {/* <TextArea>sdf</TextArea> */}
             </div>
             <div className="flex justify-end gap-2">
               <Button action={() => { }} tipo={'default'}>Cancelar</Button>

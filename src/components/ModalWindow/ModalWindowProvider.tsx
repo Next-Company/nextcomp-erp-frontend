@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ModalWindow } from "./ModalWindow"
 import { ModalWindowContext } from "./ModalWindowContext"
 import { ToastContainer } from 'react-toastify';
@@ -8,6 +8,10 @@ export function ModalWindowProvider({ children }) {
   const openModal = (pr) => {
     setParams(pr)
   }
+  useEffect(()=>{
+    console.log(config)
+    return () => console.log(config)
+  },[config])
   return (
     <>
       <ModalWindowContext.Provider value={{ openModal, config }}>
