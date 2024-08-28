@@ -1,13 +1,15 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { ModalWindowContext } from "./ModalWindowContext"
 import { Button } from "../Atoms/Button/Button"
-import { InputG } from "../Atoms/Input/InputG"
 
 export function ModalWindow() {
   const modalref = useRef(null)
   const { config } = useContext(ModalWindowContext)
+  const [content,setContent] = useState(config.content)
   const [open, setOpen] = useState(true)
+  const [clear, setClear] = useState(false)
 
+  console.log("primero: renderizanbdo")
   const onclick = (e) => {
     e.stopPropagation()
     if(e.target.matches('div.close-modal')){
@@ -31,7 +33,14 @@ export function ModalWindow() {
     setOpen(false)
   }
   useEffect(() => {
+    console.log("segudno: ejecutando efecto",config)
+    // console.log(config.content)
     setOpen(config.open)
+    setContent(content=> content = config.content)
+    return ()=>{
+      console.log("tercero: limpiando")
+      setContent(content=> content = <><div></div></>)
+    }
   }, [config])
   // useEffect(() => {
   //   console.log("primer cambio open")
@@ -72,8 +81,16 @@ export function ModalWindow() {
               <title>Pregunta</title> */}
               {/* <p className="text-[14px] text-blue-600 h-[100%] flex items-center justify-center"></p> */}
               {/* {open && config.content} */}
-              {config.content}
+              <div className="p-3 border-r-[1px] h-[300px] flex-1 border-gray-900">
+                <p>Otro concepto</p>
+                <p>Otro concepto</p>
+                <p>Otro concepto</p>
+                <p>Otro concepto</p>
+              </div>
+              {/* {config.content} */}
+              {content}
             </div>
+            <button className="bt-vite" onClick={()=>setContent(<><p>HOla mudo</p></>)}>limpiar</button>
             <div className={`flex gap-1 justify-end ${(config.controls && 'true') ? 'block' : 'hidden' }`}>
               <Button action={cerrarModal} tipo={'default'}>Cancelar</Button>
               <Button action={acceptFunction} tipo={'default'}>Aceptar</Button>

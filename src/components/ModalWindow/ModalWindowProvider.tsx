@@ -9,8 +9,8 @@ export function ModalWindowProvider({ children }) {
     setParams(pr)
   }
   useEffect(()=>{
-    console.log(config)
-    return () => console.log(config)
+    // console.log(config)
+    // return () => console.log(config)
   },[config])
   return (
     <>

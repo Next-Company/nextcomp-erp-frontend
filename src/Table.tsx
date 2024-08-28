@@ -37,9 +37,11 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
   }
 
   const verEstado = (row) => {
+    console.log(row)
     openModal({
       open: true,
       header: true,
+      row:row,
       title: 'Vista previa',
       content:
         <div className="w-[900px] h-[500px] text-left">
