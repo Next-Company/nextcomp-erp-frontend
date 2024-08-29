@@ -7,7 +7,7 @@ export function ListaSoportes({ save, children }) {
     // console.log(form.current.elements)
     // console.log(form.current)
     console.log(e.target.elements)
-    // save(e.target)
+    save(e.target)
     // console.log('hola mundo')
   }
   return (

@@ -79,19 +79,12 @@ export function ModalWindow() {
             <div className="flex-1 flex items-center justify-center">
               {/* <strong className="">Pregunta</strong>
               <title>Pregunta</title> */}
-              {/* <p className="text-[14px] text-blue-600 h-[100%] flex items-center justify-center"></p> */}
               {/* {open && config.content} */}
-              <div className="p-3 border-r-[1px] h-[300px] flex-1 border-gray-900">
-                <p>Otro concepto</p>
-                <p>Otro concepto</p>
-                <p>Otro concepto</p>
-                <p>Otro concepto</p>
-              </div>
               {/* {config.content} */}
               {content}
             </div>
-            <button className="bt-vite" onClick={()=>setContent(<><p>HOla mudo</p></>)}>limpiar</button>
-            <div className={`flex gap-1 justify-end ${(config.controls && 'true') ? 'block' : 'hidden' }`}>
+            {/* <button className="bt-vite" onClick={()=>setContent(<><p>HOla mudo</p></>)}>Cerrar</button> */}
+            <div className={`flex gap-1 [&_button]:flex-1 ${(config.controls && 'true') ? 'block' : 'hidden' }`}>
               <Button action={cerrarModal} tipo={'default'}>Cancelar</Button>
               <Button action={acceptFunction} tipo={'default'}>Aceptar</Button>
             </div>

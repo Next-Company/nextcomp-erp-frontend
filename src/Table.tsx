@@ -1,13 +1,15 @@
-import { useContext } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
 import { toast } from 'react-toastify';
 import { Consulta } from "./utils/utils";
 import { Search } from "./components/Atoms/Search/Search";
 import { Button } from "./components/Atoms/Button/Button";
 import { TextArea } from "./components/Atoms/Input/TextArea";
-import { InputG } from "./components/Atoms/Input/InputG";
+import { Input } from "./components/Atoms/Input/Input";
 
 export function Table({ setedit, info, setselect, setrefresh, loading }) {
+  const [data,setData] = useState(info)
+  const [estado,setEstado] = useState('ALL')
   const { openModal } = useContext(ModalWindowContext)
 
   const eliminarSoporte = async (id) => {
@@ -45,34 +47,13 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
       title: 'Vista previa',
       content:
         <div className="w-[900px] h-[500px] text-left">
-          {/* <form className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col text-left gap-4"> */}
           <form className="pt-4 flex flex-col text-left gap-4">
-            {/* <div className="lg:w-[50%] md:w-full columns-2 gap-5">
-              <div className="flex flex-col">
-                <label htmlFor=""><strong>Asunto:</strong></label>
-                <input name='asunto' className="" type="text" defaultValue={row.asunto} onKeyDown={() => { return false; }} />
-              </div>
-              <div className="break-before-column">
-                <div className="flex flex-col h-[50px]">
-                  <label className="block" htmlFor=""><strong>Prioridad:</strong></label>
-                  <input name='prioridad' className="" type="text" defaultValue={row.prioridad} />
-                </div>
-              </div>
-            </div>
-            <div className="col-1">
-              <div className="flex flex-col">
-                <label htmlFor=""><strong>Detalle soporte:</strong></label>
-                <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id="" defaultValue={row.descripcion}></textarea>
-              </div>
-            </div> */}
             <div className="lg:w-[70%] md:w-full flex gap-5">
-              <InputG name="asdf" defaults={row.asunto} title="Asunto"/>
-              <InputG name="asdf" defaults={row.prioridad} title="Prioridad"/>
+              <Input name="asunto" defaults={row.asunto} title="Asunto"/>
+              <Input name="prioridad" defaults={row.prioridad} title="Prioridad"/>
             </div>
             <div className="col-1">
               <div className="flex flex-col">
-                {/* <label htmlFor=""><strong>Detalle soporte:</strong></label>
-                <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id="" defaultValue={row.descripcion}></textarea> */}
                 <TextArea name='sdfsdf' valor={row.descripcion} title='Descripcion' />
               </div>
             </div>
@@ -107,6 +88,18 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
       }
     })
   }
+  const removeActive = (e)=>{
+    for (const element of e.target.parentElement.querySelectorAll('button')) {
+      if(element.classList.contains('active')){
+        element.classList.remove('active')
+      }
+    }
+    e.target.classList.add('active')
+    setEstado(e.target.dataset.estado)
+  }
+  useEffect(()=>{
+    setData(info)
+  },[info])
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -120,15 +113,25 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
         <hr />
       </div>
       <div>
-        <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-50 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_span.colored]:transition-[width] [&_button.active:hover]:bg-blue-50">
-          <button className="active otro">
-            <span className="relative h-[100%] flex items-center">
+        <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+          <button className="group active" data-estado="ALL" onClick={removeActive}>
+            <span className="relative h-[100%] flex items-center pointer-events-none">
               Todos
-              <span className="absolute bottom-0 border-b-[3px] border-b-blue-500 flex items-center w-[100%] h-[100%] colored"></span>
+              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
             </span>
           </button>
-          <button>Pendientes</button>
-          <button>Terminados</button>
+          <button className="group" data-estado="EMIT" onClick={removeActive}>
+            <span className="relative h-[100%] flex items-center pointer-events-none">
+              Pendientes
+              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+            </span>
+          </button>
+          <button className="group" data-estado="FNLZ" onClick={removeActive}>
+            <span className="relative h-[100%] flex items-center pointer-events-none">
+              Terminados
+              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+            </span>
+          </button>
         </ul>
       </div>
       <hr />
@@ -148,7 +151,7 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
           </thead>
           <tbody>
             {
-              info && info.map((row, id) =>
+              data && (estado !== 'ALL' ? data.filter(row=>row.estado == estado) : data).map((row, id) =>
                 <tr key={id}>
                   <td>{row.idx}</td>
                   <td>{row.asunto}</td>
@@ -163,7 +166,13 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
                     </div>
                   </td>
                   <td><div className={`w-[45px] h-[15px] ${row.prioridad == 'ALTA' ? 'bg-red-400' : row.prioridad == 'MEDIA' ? 'bg-orange-400' : 'bg-green-400'}  text-[8px] text-white flex justify-center items-center`}>{row.prioridad}</div></td>
-                  <td>{row.estado}</td>
+                  <td>
+                    {
+                      row.estado == 'EMIT' 
+                      ? <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-line-dotted"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12v.01" /><path d="M8 12v.01" /><path d="M12 12v.01" /><path d="M16 12v.01" /><path d="M20 12v.01" /></svg>
+                      : <svg  xmlns="http://www.w3.org/2000/svg"  width="21"  height="21"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  className="text-green-600 icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
+                    }
+                  </td>
                   <td>
                     <ul className="flex flex-row justify-end">
                       <li>

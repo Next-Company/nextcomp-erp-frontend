@@ -18,7 +18,6 @@ export function Soporte() {
   const [refresh, setRefresh] = useState(false)
   const [info, setInfo] = useState([])
   const [select, setSelect] = useState({})
-  // const [modal, setModal] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const saveSoporte = async (form) => {
@@ -93,7 +92,7 @@ export function Soporte() {
                 <InputSelect title={'Prioridad'} options={['Baja', 'Media', 'Alta']} name={"prioridad"} />
               </div>
               <div>
-                <TextArea name={'detalle'} title={'Detalle'} valor={select.descripcion} />
+                <TextArea name={'descripcion'} title={'Detalle'} valor={select.descripcion} />
               </div>
               <div className="flex justify-end gap-2">
                 <Button action={cancelarEdicion} type={'button'} tipo={'default'}>Cancelar</Button>
@@ -103,42 +102,6 @@ export function Soporte() {
           }
         </div>
       </div>
-      {/* {modal && createPortal(
-        <>
-          <div className="absolute top-0 left-0 w-full h-full bg-red-500/20 flex justify-center items-center">
-            <div className="w-[800px] h-[550px] bg-white rounded-lg shadow-lg p-4">
-              <form className="pt-4 [&_input]:border-b [&_input]:p-1 [&_input]:text-[14px] [&_input]:outline-0 [&_input:focus-visible]:border-blue-700 [&_label]:text-[12px] [&_label]:font-medium flex flex-col gap-4">
-                <div className="lg:w-[50%] md:w-full columns-2 gap-5">
-                  <div className="flex flex-col">
-                    <label htmlFor=""><strong>Asunto:</strong></label>
-                    <input name='asunto' className="" type="text" />
-                  </div>
-                  <div className="break-before-column">
-                    <div className="flex flex-col h-[50px]">
-                      <label className="block" htmlFor=""><strong>Prioridad:</strong></label>
-                      <select className="border-b flex-1" name="prioridad" id="">
-                        <option value="BAJA">Baja</option>
-                        <option value="MEDIA">Media</option>
-                        <option value="ALTA">Alta</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-1">
-                  <div className="flex flex-col">
-                    <label htmlFor=""><strong>Detalle soporte:</strong></label>
-                    <textarea name="descripcion" className="border rounded-sm p-2" rows={10} id=""></textarea>
-                  </div>
-                </div>
-                <div className="col-1">
-                  <button onClick={() => setModal(false)} className="bg-blue-600 text-white hover:bg-blue-700">Cerrar</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </>
-        , document.querySelector("#root")
-      )} */}
     </>
   )
 }
