@@ -6,7 +6,14 @@ export function ListaSoportes({ save, children }) {
     e.preventDefault()
     // console.log(form.current.elements)
     // console.log(form.current)
-    console.log(e.target.elements)
+    const data = new FormData(e.target)
+    for (const element of data.entries()) {
+      console.log(element)
+    }
+    // data.entries()).forEach(element => {
+      
+    // });
+    // console.log()
     save(e.target)
     // console.log('hola mundo')
   }

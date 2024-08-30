@@ -6,6 +6,7 @@ import { Search } from "./components/Atoms/Search/Search";
 import { Button } from "./components/Atoms/Button/Button";
 import { TextArea } from "./components/Atoms/Input/TextArea";
 import { Input } from "./components/Atoms/Input/Input";
+import { InputG } from "./components/Atoms/Input/InputG";
 
 export function Table({ setedit, info, setselect, setrefresh, loading }) {
   const [data,setData] = useState(info)
@@ -46,11 +47,11 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
       row:row,
       title: 'Vista previa',
       content:
-        <div className="w-[900px] h-[500px] text-left">
-          <form className="pt-4 flex flex-col text-left gap-4">
+        <div className="w-[50vw] h-[60vh] text-left">
+          <form className="pt-3 flex flex-col text-left gap-4">
             <div className="lg:w-[70%] md:w-full flex gap-5">
-              <Input name="asunto" defaults={row.asunto} title="Asunto"/>
-              <Input name="prioridad" defaults={row.prioridad} title="Prioridad"/>
+              <Input name="asunto" defaults={row.asunto} title="Asunto" type="text"/>
+              <Input name="prioridad" defaults={row.prioridad} title="Prioridad" type="text"/>
             </div>
             <div className="col-1">
               <div className="flex flex-col">
@@ -169,8 +170,8 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
                   <td>
                     {
                       row.estado == 'EMIT' 
-                      ? <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-line-dotted"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12v.01" /><path d="M8 12v.01" /><path d="M12 12v.01" /><path d="M16 12v.01" /><path d="M20 12v.01" /></svg>
-                      : <svg  xmlns="http://www.w3.org/2000/svg"  width="21"  height="21"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  className="text-green-600 icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
+                      ? <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-line-dotted"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12v.01" /><path d="M8 12v.01" /><path d="M12 12v.01" /><path d="M16 12v.01" /><path d="M20 12v.01" /></svg>
+                      : <svg  xmlns="http://www.w3.org/2000/svg"  width="21"  height="21"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-green-600 icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
                     }
                   </td>
                   <td>

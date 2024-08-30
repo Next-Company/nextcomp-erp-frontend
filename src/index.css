@@ -147,14 +147,15 @@ button.bt-vite {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-
+button.bt-vite:active{
+  border-color: #646cff;
+}
 button.bt-vite:hover {
   border-color: #646cff;
 }
-
 button.bt-vite:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  /* outline: 4px auto -webkit-focus-ring-color; */
 }
 
 @media (prefers-color-scheme: light) {

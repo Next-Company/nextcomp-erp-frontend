@@ -83,8 +83,8 @@ export function ModalWindow() {
               {/* {config.content} */}
               {content}
             </div>
-            {/* <button className="bt-vite" onClick={()=>setContent(<><p>HOla mudo</p></>)}>Cerrar</button> */}
-            <div className={`flex gap-1 [&_button]:flex-1 ${(config.controls && 'true') ? 'block' : 'hidden' }`}>
+            {/* <div className={`flex gap-1 [&_button]:flex-1 ${(config.controls && 'true') ? 'block' : 'hidden' }`}> */}
+            <div className={`flex gap-1 justify-end ${(config.controls && 'true') ? 'block' : 'hidden' }`}>
               <Button action={cerrarModal} tipo={'default'}>Cancelar</Button>
               <Button action={acceptFunction} tipo={'default'}>Aceptar</Button>
             </div>

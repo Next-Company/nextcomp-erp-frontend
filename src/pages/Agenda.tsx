@@ -1,9 +1,7 @@
 import { Search } from "../components/Atoms/Search/Search";
-import { InputG } from "../components/Atoms/Input/InputG";
 import { InputSelect } from "../components/Atoms/Input/InputSelect";
 import { Button } from "../components/Atoms/Button/Button";
 import { TextArea } from "../components/Atoms/Input/TextArea";
-import { InputSelect2 } from "../components/Atoms/Input/InputSelect2";
 import { Input } from "../components/Atoms/Input/Input";
 
 export function Agenda() {

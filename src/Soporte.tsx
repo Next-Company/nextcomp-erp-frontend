@@ -9,6 +9,8 @@ import { Button } from "./components/Atoms/Button/Button";
 import { InputG } from "./components/Atoms/Input/InputG";
 import { InputSelect } from "./components/Atoms/Input/InputSelect";
 import { TextArea } from "./components/Atoms/Input/TextArea";
+import { Input } from "./components/Atoms/Input/Input";
+import { InputSelectT } from "./components/Atoms/Input/InputSelectT";
 // import { LoadingWindow } from "./components/LoadingWindow/LoadingWindow";
 
 export function Soporte() {
@@ -29,7 +31,8 @@ export function Soporte() {
       content: <div>Desea continuar con el registro del soporte ingresado?</div>,
       action: async () => {
         await Consulta({
-          url: 'soporte/', params: {
+          url: 'soporte/', 
+          params: {
             method: 'POST', body: data
           }
         })
@@ -88,8 +91,10 @@ export function Soporte() {
             ? <Table setedit={setIsedit} info={info} setselect={setSelect} setrefresh={setRefresh} loading={loading} />
             : <ListaSoportes save={saveSoporte}>
               <div className="flex w-[50%] gap-2">
-                <InputG name={'asunto'} defaults={select.asunto} title="Asunto" />
-                <InputSelect title={'Prioridad'} options={['Baja', 'Media', 'Alta']} name={"prioridad"} />
+                <Input name={'idx'} defaults={select.idx} title="" type="hidden" />
+                <Input name={'asunto'} defaults={select.asunto} title="Asunto" type="text" />
+                <InputSelectT title={'Prioridad'} indices={['BAJA','MEDIA','ALTA']} options={['Baja', 'Media', 'Alta']} name={"prioridad"} />
+                <InputSelectT title={'Prioridad'} indices={['BAJA','MEDIA','ALTA']} options={['Baja', 'Media', 'Alta']} name={"prioridad"} />
               </div>
               <div>
                 <TextArea name={'descripcion'} title={'Detalle'} valor={select.descripcion} />
