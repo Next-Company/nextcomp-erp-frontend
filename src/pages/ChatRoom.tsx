@@ -4,8 +4,8 @@ function UserChat() {
   return (
     <>
       <div className="relative flex">
-        <div className="p-2">
-          <div className="rounded-full w-[45px] h-[45px] bg-gray-200"></div>
+        <div className="p-3">
+          <div className="rounded-full w-[35px] h-[35px] bg-gray-200"></div>
         </div>
         <div className="flex flex-col flex-1 text-left [&_div]:flex-1 [&_div]:flex [&_div]:pl-2 border-t-[1px] border-t-gray-200">
           <div className="items-end text-[15px] font-semibold">Juan Pablo</div>
@@ -58,7 +58,7 @@ export function ChatRoom() {
                   {/* <div className="flex-1 rounded-full pl-4 pt-1 pr-4 pb-1 bg-white flex items-center" contentEditable="plaintext-only"> */}
                   <div className="flex-1 rounded-full pl-4 pt-1 pr-4 pb-1 bg-white flex items-center">
                     {/* <input type="text" multiple /> */}
-                    <textarea name="" id="" className="w-full p-1" rows={1} style={{resize:'none'}}></textarea>
+                    <textarea name="" id="" className="w-full p-1" rows={1} style={{ resize: 'none' }}></textarea>
                     {/* <input type="text" className="w-full p-1" /> */}
                     {/* <div className="flex-1 h-[20px] rounded-full bg-white"></div> */}
                   </div>

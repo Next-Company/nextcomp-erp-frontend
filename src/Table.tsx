@@ -9,8 +9,8 @@ import { Input } from "./components/Atoms/Input/Input";
 import { InputG } from "./components/Atoms/Input/InputG";
 
 export function Table({ setedit, info, setselect, setrefresh, loading }) {
-  const [data,setData] = useState(info)
-  const [estado,setEstado] = useState('ALL')
+  const [data, setData] = useState(info)
+  const [estado, setEstado] = useState('ALL')
   const { openModal } = useContext(ModalWindowContext)
 
   const eliminarSoporte = async (id) => {
@@ -44,14 +44,14 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
     openModal({
       open: true,
       header: true,
-      row:row,
+      row: row,
       title: 'Vista previa',
       content:
         <div className="w-[50vw] h-[60vh] text-left">
           <form className="pt-3 flex flex-col text-left gap-4">
             <div className="lg:w-[70%] md:w-full flex gap-5">
-              <Input name="asunto" defaults={row.asunto} title="Asunto" type="text"/>
-              <Input name="prioridad" defaults={row.prioridad} title="Prioridad" type="text"/>
+              <Input name="asunto" defaults={row.asunto} title="Asunto" type="text" />
+              <Input name="prioridad" defaults={row.prioridad} title="Prioridad" type="text" />
             </div>
             <div className="col-1">
               <div className="flex flex-col">
@@ -89,18 +89,18 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
       }
     })
   }
-  const removeActive = (e)=>{
+  const removeActive = (e) => {
     for (const element of e.target.parentElement.querySelectorAll('button')) {
-      if(element.classList.contains('active')){
+      if (element.classList.contains('active')) {
         element.classList.remove('active')
       }
     }
     e.target.classList.add('active')
     setEstado(e.target.dataset.estado)
   }
-  useEffect(()=>{
+  useEffect(() => {
     setData(info)
-  },[info])
+  }, [info])
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -136,8 +136,8 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
         </ul>
       </div>
       <hr />
-      <div className="bg-white text-left h-[80%] overflow-scroll scrollbar-special flex-1">
-        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tr:hover_ul]:visible [&_ul]:invisible ">
+      <div className={`bg-white text-left h-[80%] overflow-scroll scrollbar-special flex-1`}>
+        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tr:hover_ul]:visible [&_ul]:invisible">
           <thead>
             <tr className="sticky top-0 bg-white">
               <th>Id</th>
@@ -152,26 +152,33 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
           </thead>
           <tbody>
             {
-              data && (estado !== 'ALL' ? data.filter(row=>row.estado == estado) : data).map((row, id) =>
+              data && (estado !== 'ALL' ? data.filter(row => row.estado == estado) : data).map((row, id) =>
                 <tr key={id}>
                   <td>{row.idx}</td>
                   <td>{row.asunto}</td>
                   <td>ADMIN</td>
                   <td>{row.created_at}</td>
                   <td>
-                    <div className="flex items-center gap-2">
-                      <div className="w-[150px] h-1 rounded-full bg-gray-200">
+                    <div className="flex items-center text-[10px] gap-2">
+                      {/* <div className="w-[150px] h-1 rounded-full bg-gray-200">
                         <div className={`w-[${((parseFloat(row.avance) * 150) / 100).toFixed(0)}px] h-1 rounded-full bg-green-500`}></div>
+                      </div> */}
+                      <div className="w-4 h-4 rounded-full relative" style={{ background: `conic-gradient(#00df0f 0% ${parseFloat(row.avance == 0 ? 1 : row.avance)}%,#e1e1e1 ${parseFloat(row.avance == 1 ? 2 : row.avance)}% 100%)` }}>
+                        {/* <div className="w-3 h-3 rounded-full bg-white absolute left-[2.34px] top-[2.34px]"></div> */}
                       </div>
                       <span><strong>{row.avance}%</strong></span>
                     </div>
                   </td>
-                  <td><div className={`w-[45px] h-[15px] ${row.prioridad == 'ALTA' ? 'bg-red-400' : row.prioridad == 'MEDIA' ? 'bg-orange-400' : 'bg-green-400'}  text-[8px] text-white flex justify-center items-center`}>{row.prioridad}</div></td>
+                  {/* <td><div className={`w-[45px] h-[15px] ${row.prioridad == 'ALTA' ? 'bg-red-400' : row.prioridad == 'MEDIA' ? 'bg-orange-400' : 'bg-green-400'}  text-[8px] text-white flex justify-center items-center`}>{row.prioridad}</div></td> */}
+                  <td>
+                    <div className={`w-[25px] h-[4px] rounded-[2px] ${row.prioridad == 'ALTA' ? 'bg-red-400' : row.prioridad == 'MEDIA' ? 'bg-orange-400' : 'bg-green-400'}  text-[8px] text-white flex justify-center items-center`}>
+                    </div>
+                  </td>
                   <td>
                     {
-                      row.estado == 'EMIT' 
-                      ? <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-line-dotted"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12v.01" /><path d="M8 12v.01" /><path d="M12 12v.01" /><path d="M16 12v.01" /><path d="M20 12v.01" /></svg>
-                      : <svg  xmlns="http://www.w3.org/2000/svg"  width="21"  height="21"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-green-600 icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
+                      row.estado == 'EMIT'
+                        ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-line-dotted"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 12v.01" /><path d="M8 12v.01" /><path d="M12 12v.01" /><path d="M16 12v.01" /><path d="M20 12v.01" /></svg>
+                        : <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600 icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
                     }
                   </td>
                   <td>
@@ -208,12 +215,12 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
             }
           </tbody>
         </table>
-      </div>
+      </div >
       {/* <hr /> */}
-      <div className="flex justify-end mt-3 gap-2">
+      < div className="flex justify-end mt-3 gap-2" >
         <Button action={() => { setrefresh(true) }} tipo={'default'}>Actualizar</Button>
         <Button action={newFila} tipo={'accept'}>Nuevo</Button>
-      </div>
+      </div >
     </>
   )
 }

@@ -6,21 +6,21 @@ import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
 import { toast } from 'react-toastify';
 import { AuthPermitions } from "./contexts/contexts";
 import { Button } from "./components/Atoms/Button/Button";
-import { InputG } from "./components/Atoms/Input/InputG";
 import { InputSelect } from "./components/Atoms/Input/InputSelect";
 import { TextArea } from "./components/Atoms/Input/TextArea";
 import { Input } from "./components/Atoms/Input/Input";
-import { InputSelectT } from "./components/Atoms/Input/InputSelectT";
 // import { LoadingWindow } from "./components/LoadingWindow/LoadingWindow";
 
 export function Soporte() {
   const { openModal, config } = useContext(ModalWindowContext)
-  const { logout } = useContext(AuthPermitions)
+  const { logout, credentials } = useContext(AuthPermitions)
   const [isedit, setIsedit] = useState(true)
   const [refresh, setRefresh] = useState(false)
   const [info, setInfo] = useState([])
   const [select, setSelect] = useState({})
   const [loading, setLoading] = useState(false)
+  const userdata = JSON.parse(credentials)
+  // console.log(JSON.parse(credentials))
 
   const saveSoporte = async (form) => {
     const data = new FormData(form)
@@ -31,7 +31,7 @@ export function Soporte() {
       content: <div>Desea continuar con el registro del soporte ingresado?</div>,
       action: async () => {
         await Consulta({
-          url: 'soporte/', 
+          url: 'soporte/',
           params: {
             method: 'POST', body: data
           }
@@ -90,11 +90,23 @@ export function Soporte() {
           {isedit
             ? <Table setedit={setIsedit} info={info} setselect={setSelect} setrefresh={setRefresh} loading={loading} />
             : <ListaSoportes save={saveSoporte}>
-              <div className="flex w-[50%] gap-2">
+              <div className="flex w-[70%] gap-2">
                 <Input name={'idx'} defaults={select.idx} title="" type="hidden" />
                 <Input name={'asunto'} defaults={select.asunto} title="Asunto" type="text" />
-                <InputSelectT title={'Prioridad'} indices={['BAJA','MEDIA','ALTA']} options={['Baja', 'Media', 'Alta']} name={"prioridad"} />
-                <InputSelectT title={'Prioridad'} indices={['BAJA','MEDIA','ALTA']} options={['Baja', 'Media', 'Alta']} name={"prioridad"} />
+                <InputSelect title={'Prioridad'} name={"prioridad"} data={[{ indice: 'ALTA', option: 'Alta', selected: true }, { indice: 'MEDIA', option: 'Media' }, { indice: 'BAJA', option: 'Baja' },]} df={select.prioridad} />
+                {
+                  userdata.niv == 0 &&
+                  <InputSelect
+                    title={'Estado'}
+                    name={"estado"}
+                    data={[
+                      { indice: 'PROC', option: 'En proceso' },
+                      { indice: 'FNLZ', option: 'Finalizado' },
+                      { indice: 'ANUL', option: 'Anulado' },
+                      { indice: 'EMIT', option: 'Emitido' }
+                    ]}
+                    df={select.estado} />
+                }
               </div>
               <div>
                 <TextArea name={'descripcion'} title={'Detalle'} valor={select.descripcion} />

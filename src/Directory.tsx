@@ -5,6 +5,8 @@ import { Consulta, convertToHex } from "./utils/utils"
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
 import { AuthPermitions, ModalContext } from "./contexts/contexts"
 import { toast } from "react-toastify"
+import { Input } from "./components/Atoms/Input/Input"
+import { Button } from "./components/Atoms/Button/Button"
 
 const files_icon = {
   'folder': <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>,
@@ -73,8 +75,8 @@ const contextual_content = {
     </>,
   context2:
     <>
-      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center'>
-        <li>
+      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer [&_div]:pointer-events-none'>
+        <li data-action='new_folder'>
           <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
             <div className="pl-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folder-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 19h-7a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v3.5" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
@@ -84,13 +86,13 @@ const contextual_content = {
         </li>
       </ul>
       <hr />
-      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center'>
-        <li>
+      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer [&_div]:pointer-events-none'>
+        <li data-action='subir'>
           <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
             <div className="pl-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-file-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M12 11v6" /><path d="M9.5 13.5l2.5 -2.5l2.5 2.5" /></svg>
             </div>
-            <div className='flex items-center text-left flex-1' data-action='subir'>Subir archivo</div>
+            <div className='flex items-center text-left flex-1'>Subir archivo</div>
           </div>
         </li>
         <li>
@@ -126,11 +128,13 @@ const contextual_content = {
 
 function Carpeta({ name, ondoubleclick, onclick }) {
   const { openModal, config } = useContext(ModalWindowContext)
-  const borrarDirectorio = (e)=> {
+  const borrarDirectorio = (e) => {
+    console.log('bateria')
     openModal({
       open: true,
       header: false,
       content: <div>Desea continuar con el registro del soporte ingresado?</div>,
+      controls: true,
       action: async () => {
         // await Consulta({
         //   url: 'soporte/', params: {
@@ -144,7 +148,7 @@ function Carpeta({ name, ondoubleclick, onclick }) {
       }
     })
   }
-  const configurarPermisos = (e)=> {
+  const configurarPermisos = (e) => {
     openModal({
       open: true,
       header: false,
@@ -177,7 +181,8 @@ function Carpeta({ name, ondoubleclick, onclick }) {
         <td>
           <ul className="flex flex-row justify-end">
             <li>
-              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} onClick={borrarDirectorio}>
+              {/* <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} onClick={borrarDirectorio}> */}
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} data-directory={name.isDirectory ? 1 : 0}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
               </div>
             </li>
@@ -198,7 +203,7 @@ function Carpeta({ name, ondoubleclick, onclick }) {
             </li>
             <li>
               <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={configurarPermisos}>
-                <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-lock-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 21h-5a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10c.564 0 1.074 .234 1.437 .61" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-lock-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10c.564 0 1.074 .234 1.437 .61" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
               </div>
             </li>
           </ul>
@@ -221,7 +226,6 @@ function Breadcrumb({ params }) {
   )
 }
 
-
 export function Directory() {
   const [lista, setLista] = useState([{ createdAt: '', isDirectory: '', isFile: '', name: '', path: '', size: '', updateAt: '' }])
   const navigate = useNavigate()
@@ -233,22 +237,47 @@ export function Directory() {
 
   const onclick = (e) => {
     if (e.target.matches("div[data-action='delete']")) {
+      const data = new FormData()
       const path_file = convertToHex(e.target.dataset.path)
+      data.append('tipo', e.target.dataset.directory)
+      console.log(params)
       openModal({
         open: true,
-        content: <div>Hola mundo</div>,
-        action: async () => {
-          try {
-            await fetch("http://localhost:4000/directorio/delete/" + path_file, {
-              method: 'POST'
-            }).then(resp => {
+        content: <div>Desea proceder con la eliminación del registro seleccionado?</div>,
+        controls: true,
+        // action: async () => {
+        //   try {
+        //     await fetch("http://localhost:4000/directorio/delete/" + path_file, {
+        //       method: 'DELETE',
+        //       body: data
+        //     }).then(resp => {
+        //       console.log(resp)
+        //       navigate(params.directoryId)
+        //     })
+        //   } catch (error) {
+        //     console.log(error)
+        //   }
+        // },
+        action: async (container) => {
+          // const data = new FormData(container.querySelector('form'))
+          await Consulta({
+            url: 'directorio/' + path_file,
+            params: {
+              method: 'DELETE',
+              body: data
+            }
+          })
+            .then(resp => {
               console.log(resp)
+              // setrefresh(true)
               navigate(params.directoryId)
+              toast.success('Carpeta eliminada con éxito!!', { theme: "colored" })
+              // resp.ok 
+              // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
+              // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
             })
-          } catch (error) {
-            console.log(error)
-          }
         }
+
       })
     }
   }
@@ -258,7 +287,7 @@ export function Directory() {
     const actions =
       e.target.matches('div')
         ? (e) => {
-          if (e.target.matches("div[data-action='subir'")) {
+          if (e.target.matches("li[data-action='subir'")) {
             const filebox = document.createElement('input')
             filebox.type = 'file'
             filebox.click()
@@ -280,6 +309,42 @@ export function Directory() {
                 }
               }
               subirfile()
+            })
+          }
+          if (e.target.matches("li[data-action='new_folder'")) {
+            openModal({
+              open: true,
+              header: false,
+              controls: true,
+              content:
+                <div className="w-full h-[200px]">
+                  <form action="">
+                    Nuevo nombre
+                    <Input name="name" title="Nombre carpeta" type="text" defaults="" />
+                  </form>
+                </div>,
+              action: async (container) => {
+                const data = new FormData(container.querySelector('form'))
+                data.append('path', Object.keys(params).length > 0 ? params.directoryId : '/')
+                await Consulta({
+                  url: 'directorio/create/',
+                  params: {
+                    method: 'POST',
+                    body: data
+                  }
+                })
+                  .then(resp => {
+                    console.log(resp)
+
+                    // navigate(params.directoryId)
+                    // toast.success('Carperta creada con éxito!!', { theme: "colored" })
+
+                    // resp.ok 
+                    // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
+                    // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
+                  })
+              }
+
             })
           }
         }
@@ -313,16 +378,18 @@ export function Directory() {
   }
   useEffect(() => {
     if (Object.keys(params).length > 0) {
-      Consulta({url: 'directorio/' + params.directoryId, params: {method: 'POST'}}).then(resp => {
+      Consulta({ url: 'directorio/' + params.directoryId, params: { method: 'POST' } }).then(resp => {
         setLista(resp)
       }).catch(resp => {
         console.log('hola')
         logout()
       })
     } else {
-      Consulta({url: 'directorio/',params:{
-        method: 'GET'
-      }}).then(resp => {
+      Consulta({
+        url: 'directorio/', params: {
+          method: 'GET'
+        }
+      }).then(resp => {
         setLista(resp)
       }).catch(resp => {
         console.log('hola')

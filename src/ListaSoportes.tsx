@@ -11,7 +11,7 @@ export function ListaSoportes({ save, children }) {
       console.log(element)
     }
     // data.entries()).forEach(element => {
-      
+
     // });
     // console.log()
     save(e.target)
