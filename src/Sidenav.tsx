@@ -56,7 +56,8 @@ export function Sidenav() {
           onAnimationEnd={onanimationend}
         ></div>
         <div
-          className="flex flex-col gap-3 flex-1 overflow-y-scroll mr-[-17px] p-1 pepe"
+          // className="flex flex-col gap-3 flex-1 overflow-y-scroll mr-[-17px] p-1 pepe"
+          className="flex flex-col gap-3 flex-1 p-1 pepe"
           // className="flex flex-col gap-3 flex-1 p-1 pepe"
           onScroll={onscroll}
           onMouseEnter={mouseenter}

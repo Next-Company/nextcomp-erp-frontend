@@ -13,7 +13,6 @@ export function Home() {
     url: 'https://newsapi.org/v2/everything?q=fashion&sortBy=publishedAt&apiKey=' + API_KEY + '&pageSize=20&language=es'
   }), [])
   const { data, loading, error } = useFetch(options)
-  console.log({ data, loading, error })
   return (
     <>
       <div className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">

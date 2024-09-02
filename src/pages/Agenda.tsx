@@ -18,7 +18,7 @@ export function Agenda() {
             </div>
             <div>
               {/* <TextArea>sdf</TextArea> */}
-              <TextArea title={'Mensaje'} name='message' />
+              {/* <TextArea title={'Mensaje'} name='message' /> */}
             </div>
           </form>
 

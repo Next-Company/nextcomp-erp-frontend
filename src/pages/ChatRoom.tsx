@@ -8,7 +8,7 @@ function UserChat() {
           <div className="rounded-full w-[35px] h-[35px] bg-gray-200"></div>
         </div>
         <div className="flex flex-col flex-1 text-left [&_div]:flex-1 [&_div]:flex [&_div]:pl-2 border-t-[1px] border-t-gray-200">
-          <div className="items-end text-[15px] font-semibold">Juan Pablo</div>
+          <div className="items-end text-[15px] font-semibold">Usuario</div>
           <div className="text-[12px]">ultimo mensaje</div>
         </div>
         <div className="absolute flex gap-[3px] right-2 top-4 [&_div]:w-1 [&_div]:h-1 [&_div]:rounded-full [&_div]:bg-gray-300">

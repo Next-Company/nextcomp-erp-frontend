@@ -25,9 +25,13 @@ export function Login() {
       <div className="w-[100vw] h-[100vh] relative">
         <div className="backback absolute w-[100vw] h-[100vh] z-1 [&_img]:absolute [&_img]:w-[100%] [&_img]:h-[100%]">
           <img className="bg-contain bg-red-400" src="./src/images/store.jpg" alt="" />
-          <img className="bg-contain bg-green-400" src="./src/images/brown.jpg" alt="" />
+          <img className="bg-contain bg-green-400" src="./src/images/jeans.jpg" alt="" />
+          <img className="bg-contain bg-orange-400" src="./src/images/gorro_new.jpg" alt="" />
+          <img className="bg-contain bg-violet-400" src="./src/images/jeans.jpg" alt="" />
+          {/* <img className="bg-contain bg-red-400" src="./src/images/store.jpg" alt="" />
+          <img className="bg-contain bg-green-400" src="./src/images/gorro.jpg" alt="" />
           <img className="bg-contain bg-orange-400" src="./src/images/jeans.jpg" alt="" />
-          <img className="bg-contain bg-violet-400" src="./src/images/background.jpg" alt="" />
+          <img className="bg-contain bg-violet-400" src="./src/images/background.jpg" alt="" /> */}
         </div>
         <div className="absolute z-0 w-[500px] h-[100vh] bg-white opacity-[.9]"></div>
         <div className="flex w-[500px] min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative">
