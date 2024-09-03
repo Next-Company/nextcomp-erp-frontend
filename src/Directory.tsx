@@ -240,10 +240,10 @@ export function Directory() {
       const data = new FormData()
       const path_file = convertToHex(e.target.dataset.path)
       data.append('tipo', e.target.dataset.directory)
-      console.log(params)
+      console.log('Dentro del click :',params)
       openModal({
         open: true,
-        content: <div>Desea proceder con la eliminación del registro seleccionado?</div>,
+        content: <div>Desea proceder con la eliminación del registro seleccionadooooooo?</div>,
         controls: true,
         // action: async () => {
         //   try {
@@ -266,16 +266,16 @@ export function Directory() {
               method: 'DELETE',
               body: data
             }
+          }).then(resp => {
+            console.log(resp)
+            // setrefresh(true)
+            console.log(params.directoryId)
+            // navigate(params.directoryId)
+            toast.success('Registro eliminado con éxito!!', { theme: "colored" })
+            // resp.ok 
+            // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
+            // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
           })
-            .then(resp => {
-              console.log(resp)
-              // setrefresh(true)
-              navigate(params.directoryId)
-              toast.success('Carpeta eliminada con éxito!!', { theme: "colored" })
-              // resp.ok 
-              // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
-              // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
-            })
         }
 
       })
@@ -294,16 +294,36 @@ export function Directory() {
             filebox.addEventListener('change', (ec) => {
               async function subirfile() {
                 try {
-                  const formdata = new FormData()
-                  formdata.append('filenext', filebox.files[0])
-                  console.log(params.directoryId)
-                  await fetch("http://localhost:4000/directorio/upload/" + params.directoryId, {
-                    method: 'POST',
-                    body: formdata
+                  // const formdata = new FormData()
+                  // formdata.append('filenext', filebox.files[0])
+                  // console.log(params.directoryId)
+                  // await fetch("http://localhost:4000/directorio/upload/" + params.directoryId, {
+                  //   method: 'POST',
+                  //   body: formdata
+                  // }).then(resp => {
+                  //   console.log(resp)
+                  //   navigate(params.directoryId)
+                  // })
+
+                  const data = new FormData()
+                  data.append('filenext', filebox.files[0])
+                  await Consulta({
+                    url: 'directorio/upload/' + params.directoryId,
+                    params: {
+                      method: 'POST',
+                      body: data
+                    }
                   }).then(resp => {
                     console.log(resp)
                     navigate(params.directoryId)
+                    // navigate(params.directoryId)
+                    // toast.success('Carperta creada con éxito!!', { theme: "colored" })
+
+                    // resp.ok 
+                    // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
+                    // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
                   })
+
                 } catch (error) {
                   console.log(error)
                 }
@@ -332,17 +352,16 @@ export function Directory() {
                     method: 'POST',
                     body: data
                   }
+                }).then(resp => {
+                  console.log(resp)
+
+                  // navigate(params.directoryId)
+                  // toast.success('Carperta creada con éxito!!', { theme: "colored" })
+
+                  // resp.ok 
+                  // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
+                  // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
                 })
-                  .then(resp => {
-                    console.log(resp)
-
-                    // navigate(params.directoryId)
-                    // toast.success('Carperta creada con éxito!!', { theme: "colored" })
-
-                    // resp.ok 
-                    // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
-                    // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
-                  })
               }
 
             })

@@ -144,6 +144,7 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
               <th>Asunto</th>
               <th>Usuario</th>
               <th>Emisión</th>
+              <th>Tipo</th>
               <th>Avance</th>
               <th>Prioridad</th>
               <th>Estado</th>
@@ -156,8 +157,9 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
                 <tr key={id}>
                   <td>{row.idx}</td>
                   <td>{row.asunto}</td>
-                  <td>ADMIN</td>
+                  <td>{row.nom}</td>
                   <td>{row.created_at}</td>
+                  <td>{row.categoria_nom}</td>
                   <td>
                     <div className="flex items-center text-[10px] gap-2">
                       {/* <div className="w-[150px] h-1 rounded-full bg-gray-200">

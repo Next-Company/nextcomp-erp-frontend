@@ -24,7 +24,7 @@ export function Login() {
       {/* {login ? '' : ''} */}
       <div className="w-[100vw] h-[100vh] relative">
         <div className="backback absolute w-[100vw] h-[100vh] z-1 [&_img]:absolute [&_img]:w-[100%] [&_img]:h-[100%]">
-          <img className="bg-contain bg-red-400" src="./src/images/store.jpg" alt="" />
+          <img className="bg-contain bg-white" src="./src/images/store.jpg" alt="" />
           <img className="bg-contain bg-green-400" src="./src/images/jeans.jpg" alt="" />
           <img className="bg-contain bg-orange-400" src="./src/images/gorro_new.jpg" alt="" />
           <img className="bg-contain bg-violet-400" src="./src/images/jeans.jpg" alt="" />
