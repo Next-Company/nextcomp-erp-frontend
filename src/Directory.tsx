@@ -182,7 +182,7 @@ function Carpeta({ name, ondoubleclick, onclick }) {
           <ul className="flex flex-row justify-end">
             <li>
               {/* <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} onClick={borrarDirectorio}> */}
-              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} data-directory={name.isDirectory ? 1 : 0}>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
               </div>
             </li>
@@ -239,8 +239,9 @@ export function Directory() {
     if (e.target.matches("div[data-action='delete']")) {
       const data = new FormData()
       const path_file = convertToHex(e.target.dataset.path)
+      const dir_path = convertToHex(e.target.dataset.dirpath)
       data.append('tipo', e.target.dataset.directory)
-      console.log('Dentro del click :',params)
+      console.log('Dentro del click :', params)
       openModal({
         open: true,
         content: <div>Desea proceder con la eliminación del registro seleccionadooooooo?</div>,
@@ -270,7 +271,7 @@ export function Directory() {
             console.log(resp)
             // setrefresh(true)
             console.log(params.directoryId)
-            // navigate(params.directoryId)
+            navigate(dir_path)
             toast.success('Registro eliminado con éxito!!', { theme: "colored" })
             // resp.ok 
             // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
