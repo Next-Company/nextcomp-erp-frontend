@@ -66,9 +66,10 @@ const contextual_content = {
         <li>
           <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
             <div className="pl-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg>
+              {/* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg> */}
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" /></svg>
             </div>
-            <div className='flex flex-col items-center text-left'>Cerrar sesión</div>
+            <div className='flex flex-col items-center text-left'>Ocultar</div>
           </div>
         </li>
       </ul>
@@ -117,9 +118,9 @@ const contextual_content = {
         <li>
           <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
             <div className="pl-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg>
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" /></svg>
             </div>
-            <div className='flex flex-col items-center text-left'>Cerrar sesión</div>
+            <div className='flex flex-col items-center text-left'>Ocultar</div>
           </div>
         </li>
       </ul>
@@ -128,26 +129,6 @@ const contextual_content = {
 
 function Carpeta({ name, ondoubleclick, onclick }) {
   const { openModal, config } = useContext(ModalWindowContext)
-  const borrarDirectorio = (e) => {
-    console.log('bateria')
-    openModal({
-      open: true,
-      header: false,
-      content: <div>Desea continuar con el registro del soporte ingresado?</div>,
-      controls: true,
-      action: async () => {
-        // await Consulta({
-        //   url: 'soporte/', params: {
-        //     method: 'POST', body: data
-        //   }
-        // })
-        //   .then(resp => {
-        //     toast.success('Soporte guardado con éxito!!',{theme: "colored"})
-        //     setIsedit(true)
-        //   })
-      }
-    })
-  }
   const configurarPermisos = (e) => {
     openModal({
       open: true,
@@ -187,12 +168,12 @@ function Carpeta({ name, ondoubleclick, onclick }) {
               </div>
             </li>
             <li>
-              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center">
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
               </div>
             </li>
             <li>
-              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center">
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-pencil-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 19h6" /></svg>
               </div>
             </li>
@@ -202,7 +183,7 @@ function Carpeta({ name, ondoubleclick, onclick }) {
               </div>
             </li>
             <li>
-              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={configurarPermisos}>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="authorization" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-lock-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10c.564 0 1.074 .234 1.437 .61" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
               </div>
             </li>
@@ -244,21 +225,8 @@ export function Directory() {
       console.log('Dentro del click :', params)
       openModal({
         open: true,
-        content: <div>Desea proceder con la eliminación del registro seleccionadooooooo?</div>,
+        content: <div>Desea proceder con la eliminación del registro seleccionado?</div>,
         controls: true,
-        // action: async () => {
-        //   try {
-        //     await fetch("http://localhost:4000/directorio/delete/" + path_file, {
-        //       method: 'DELETE',
-        //       body: data
-        //     }).then(resp => {
-        //       console.log(resp)
-        //       navigate(params.directoryId)
-        //     })
-        //   } catch (error) {
-        //     console.log(error)
-        //   }
-        // },
         action: async (container) => {
           // const data = new FormData(container.querySelector('form'))
           await Consulta({
@@ -271,7 +239,13 @@ export function Directory() {
             console.log(resp)
             // setrefresh(true)
             console.log(params.directoryId)
-            navigate(dir_path)
+
+            Consulta({ url: 'directorio/' + params.directoryId, params: { method: 'POST' } }).then(resp => {
+              setLista(resp)
+            }).catch(resp => {
+              logout()
+            })
+            // navigate(dir_path)
             toast.success('Registro eliminado con éxito!!', { theme: "colored" })
             // resp.ok 
             // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
@@ -280,6 +254,75 @@ export function Directory() {
         }
 
       })
+    }
+    if (e.target.matches("div[data-action='download']")) {
+      const data = new FormData()
+      const path_file = convertToHex(e.target.dataset.path)
+      const dir_path = convertToHex(e.target.dataset.dirpath)
+      data.append('tipo', e.target.dataset.directory)
+      console.log('Dentro del click :', params)
+      openModal({
+        open: true,
+        content: <div>Desea proceder con la descarga del archivo seleccionado?</div>,
+        controls: true,
+        action: async (container) => {
+          await Consulta({
+            url: 'directorio/' + path_file,
+            params: {
+              method: 'DELETE',
+              body: data
+            }
+          }).then(resp => {
+            Consulta({ url: 'directorio/' + params.directoryId, params: { method: 'POST' } }).then(resp => {
+              setLista(resp)
+            }).catch(resp => {
+              logout()
+            })
+            toast.success('Registro eliminado con éxito!!', { theme: "colored" })
+          })
+        }
+
+      })
+    }
+    if (e.target.matches("div[data-action='edit']")) {
+      const data = new FormData()
+      const path_file = convertToHex(e.target.dataset.path)
+      const dir_path = convertToHex(e.target.dataset.dirpath)
+      data.append('tipo', e.target.dataset.directory)
+
+      openModal({
+        open: true,
+        header: false,
+        controls: true,
+        content:
+          <div className="w-full h-[200px]">
+            <form action="">
+              Nuevo nombre
+              <Input name="name" title="Nombre carpeta" type="text" defaults="" />
+            </form>
+          </div>,
+        action: async (container) => {
+          const data = new FormData(container.querySelector('form'))
+          data.append('path', Object.keys(params).length > 0 ? params.directoryId : '/')
+          await Consulta({
+            url: 'directorio/create/',
+            params: {
+              method: 'POST',
+              body: data
+            }
+          }).then(resp => {
+            console.log(resp)
+            // navigate(params.directoryId)
+            // toast.success('Carperta creada con éxito!!', { theme: "colored" })
+
+            // resp.ok 
+            // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
+            // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
+          })
+        }
+
+      })
+
     }
   }
   const onrightclick = (e) => {
@@ -291,21 +334,11 @@ export function Directory() {
           if (e.target.matches("li[data-action='subir'")) {
             const filebox = document.createElement('input')
             filebox.type = 'file'
+            filebox.multiple = true
             filebox.click()
             filebox.addEventListener('change', (ec) => {
               async function subirfile() {
                 try {
-                  // const formdata = new FormData()
-                  // formdata.append('filenext', filebox.files[0])
-                  // console.log(params.directoryId)
-                  // await fetch("http://localhost:4000/directorio/upload/" + params.directoryId, {
-                  //   method: 'POST',
-                  //   body: formdata
-                  // }).then(resp => {
-                  //   console.log(resp)
-                  //   navigate(params.directoryId)
-                  // })
-
                   const data = new FormData()
                   data.append('filenext', filebox.files[0])
                   await Consulta({
@@ -316,10 +349,13 @@ export function Directory() {
                     }
                   }).then(resp => {
                     console.log(resp)
-                    navigate(params.directoryId)
-                    // navigate(params.directoryId)
-                    // toast.success('Carperta creada con éxito!!', { theme: "colored" })
-
+                    console.log(params)
+                    Consulta({ url: 'directorio/' + params.directoryId, params: { method: 'POST' } }).then(resp => {
+                      setLista(resp)
+                    }).catch(resp => {
+                      logout()
+                    })
+                    toast.success('Carperta creada con éxito!!', { theme: "colored" })
                     // resp.ok 
                     // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
                     // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
@@ -357,7 +393,12 @@ export function Directory() {
                   console.log(resp)
 
                   // navigate(params.directoryId)
-                  // toast.success('Carperta creada con éxito!!', { theme: "colored" })
+                  Consulta({ url: 'directorio/'}).then(resp => {
+                    setLista(resp)
+                  }).catch(resp => {
+                    logout()
+                  })
+                  toast.success('Carperta creada con éxito!!', { theme: "colored" })
 
                   // resp.ok 
                   // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
