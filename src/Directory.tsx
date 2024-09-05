@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { ContextualMenuContext } from "./components/ContextMenu/ContextualMenuContext"
-import { Consulta, convertToHex } from "./utils/utils"
+import { Consulta, convertToHex, convertToStr } from "./utils/utils"
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
 import { AuthPermitions, ModalContext } from "./contexts/contexts"
 import { toast } from "react-toastify"
@@ -382,7 +382,11 @@ export function Directory() {
                 </div>,
               action: async (container) => {
                 const data = new FormData(container.querySelector('form'))
-                data.append('path', Object.keys(params).length > 0 ? params.directoryId : '/')
+                const path = Object.keys(params).length > 0 ? params.directoryId : '/'
+                data.append('path', path)
+                console.log('Nueva direccion:', convertToStr(path))
+                // console.log('Datos de la variable directorio :',params.directoryId ? params.directoryId : '/')
+                // toast.success('Carperta creada con éxito!!', { theme: "colored" })
                 await Consulta({
                   url: 'directorio/create/',
                   params: {
@@ -391,21 +395,14 @@ export function Directory() {
                   }
                 }).then(resp => {
                   console.log(resp)
-
-                  // navigate(params.directoryId)
-                  Consulta({ url: 'directorio/'}).then(resp => {
+                  Consulta({ url: 'directorio/' +  path}).then(resp => {
                     setLista(resp)
                   }).catch(resp => {
                     logout()
                   })
                   toast.success('Carperta creada con éxito!!', { theme: "colored" })
-
-                  // resp.ok 
-                  // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
-                  // : toast.error('Ocurrión un problema durante la tarea',{theme: "colored"})
                 })
               }
-
             })
           }
         }
