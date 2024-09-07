@@ -6,7 +6,7 @@ import { Search } from "./components/Atoms/Search/Search";
 import { Button } from "./components/Atoms/Button/Button";
 import { TextArea } from "./components/Atoms/Input/TextArea";
 import { Input } from "./components/Atoms/Input/Input";
-import { InputG } from "./components/Atoms/Input/InputG";
+
 
 export function Table({ setedit, info, setselect, setrefresh, loading }) {
   const [data, setData] = useState(info)
