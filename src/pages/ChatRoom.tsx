@@ -50,7 +50,7 @@ export function ChatRoom() {
                   <br></br>
                 </div>
                 <div>
-                  <Button action={() => { }} type="button" tipo="default">CLick me!</Button>
+                  {/* <Button action={() => { }} type="button" tipo="default">CLick me!</Button> */}
                 </div>
               </form>
 

@@ -144,7 +144,7 @@ function Carpeta({ name, ondoubleclick, onclick }) {
   }
   return (
     <>
-      <tr className="text-left" tabIndex={-1} data-path={name.path} onClick={onclick} onDoubleClick={ondoubleclick}>
+      <tr className="text-left" tabIndex={-1} data-path={name.path} data-directory={name.isDirectory ? 1 : 0} data-name={name.name} onClick={onclick} onDoubleClick={ondoubleclick}>
         <td className="">
           <div className="flex items-center flex-1 gap-2">
             {name.isDirectory ? files_icon['folder'] : files_icon['file']}
@@ -270,34 +270,12 @@ export function Directory() {
       })
     }
     if (e.target.matches("div[data-action='download']")) {
-      const data = new FormData()
-      console.log(e.target.dataset)
-      // return 0
-      // const path_file = convertToHex(e.target.dataset.path)
-      // const dir_file = convertToHex(e.target.dataset.dirpath)
-      // let info = JSON.stringify({name:e.target.dataset.name,path:e.target.dataset.path})
       let info = convertToHex(JSON.stringify({ name: e.target.dataset.name, path: e.target.dataset.path }))
-
-      // data.append('tipo', e.target.dataset.directory)
       openModal({
         open: true,
         content: <div>Desea proceder con la descarga del archivo seleccionado?</div>,
         controls: true,
         action: async () => {
-          // console.log(info.toString())
-
-
-          // await Consulta({
-          //   url: 'directorio/download/',
-          //   params: {
-          //     method: 'GET',
-          //     body: data
-          //   }
-          // }).then(resp => {
-          //   console.log(resp)
-
-          // })
-
           window.location.href = apiUrl + 'directorio/download/' + info.toString()
         }
 
@@ -444,7 +422,14 @@ export function Directory() {
   const ondoubleclick = async (e) => {
     if (e.target.matches("tr *")) {
       const path = convertToHex(e.target.closest('tr').dataset.path)
-      navigate('/main/directorio/' + path)
+      const tipo = parseInt(e.target.closest('tr').dataset.directory)
+      console.log(tipo)
+      if(tipo){
+        navigate('/main/directorio/' + path)
+      }else{
+        let info = convertToHex(JSON.stringify({ name: e.target.closest('tr').dataset.name, path: e.target.closest('tr').dataset.path }))
+        window.location.href = apiUrl + 'directorio/download/' + info.toString()
+      }
     }
   }
   const onmouseover = (e) => {
