@@ -68,7 +68,7 @@ const contextual_content = {
           <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
             <div className="pl-1">
               {/* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg> */}
-              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye-off"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" /></svg>
             </div>
             <div className='flex flex-col items-center text-left'>Ocultar</div>
           </div>
@@ -119,7 +119,7 @@ const contextual_content = {
         <li>
           <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
             <div className="pl-1">
-              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye-off"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" /></svg>
             </div>
             <div className='flex flex-col items-center text-left'>Ocultar</div>
           </div>
@@ -174,7 +174,7 @@ function Carpeta({ name, ondoubleclick, onclick }) {
               </div>
             </li>
             <li>
-              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0} data-name={name.name}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-pencil-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 19h6" /></svg>
               </div>
             </li>
@@ -205,15 +205,15 @@ function Breadcrumb({ params }) {
     <div className="flex gap-2">
       <div className="text-[18px] flex flex-row items-center mb-3 flex-1">
         {
-          list.map((valor,key) => 
-          <>
-            {
-              key > 0 && <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 6l6 6l-6 6" /></svg>
-            }
-            <span className="hover:bg-gray-200 cursor-pointer pl-3 pt-1 pb-1 pr-3 rounded-e-full rounded-l-full block">
-              <strong>{valor.name}</strong>
-            </span>
-          </>)
+          list.map((valor, key) =>
+            <>
+              {
+                key > 0 && <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 6l6 6l-6 6" /></svg>
+              }
+              <span className="hover:bg-gray-200 cursor-pointer pl-3 pt-1 pb-1 pr-3 rounded-e-full rounded-l-full block">
+                <strong>{valor.name}</strong>
+              </span>
+            </>)
         }
       </div>
       <div className="w-[400px]">
@@ -276,8 +276,8 @@ export function Directory() {
       // const path_file = convertToHex(e.target.dataset.path)
       // const dir_file = convertToHex(e.target.dataset.dirpath)
       // let info = JSON.stringify({name:e.target.dataset.name,path:e.target.dataset.path})
-      let info = convertToHex(JSON.stringify({name:e.target.dataset.name,path:e.target.dataset.path}))
-      
+      let info = convertToHex(JSON.stringify({ name: e.target.dataset.name, path: e.target.dataset.path }))
+
       // data.append('tipo', e.target.dataset.directory)
       openModal({
         open: true,
@@ -285,7 +285,7 @@ export function Directory() {
         controls: true,
         action: async () => {
           // console.log(info.toString())
-          
+
 
           // await Consulta({
           //   url: 'directorio/download/',
@@ -304,10 +304,9 @@ export function Directory() {
       })
     }
     if (e.target.matches("div[data-action='edit']")) {
-      const data = new FormData()
+      // const data = new FormData()
       const path_file = convertToHex(e.target.dataset.path)
       const dir_path = convertToHex(e.target.dataset.dirpath)
-      data.append('tipo', e.target.dataset.directory)
 
       openModal({
         open: true,
@@ -317,22 +316,29 @@ export function Directory() {
           <div className="w-full h-[200px]">
             <form action="">
               Nuevo nombre
-              <Input name="name" title="Nombre carpeta" type="text" defaults="" />
+              <Input name="new_name" title="Nombre carpeta" type="text" defaults="" />
             </form>
           </div>,
         action: async (container) => {
           const data = new FormData(container.querySelector('form'))
-          data.append('path', Object.keys(params).length > 0 ? params.directoryId : '/')
+          const path = Object.keys(params).length > 0 ? params.directoryId : ''
+          data.append('path', path)
+          data.append('name', e.target.dataset.name)
+          data.append('tipo', e.target.dataset.directory)
           await Consulta({
-            url: 'directorio/create/',
+            url: 'directorio/rename/',
             params: {
               method: 'POST',
               body: data
             }
           }).then(resp => {
-            console.log(resp)
+            Consulta({ url: 'directorio/' + path, params: { method: path == '' ? 'GET' : 'POST' } }).then(resp => {
+              setLista(resp)
+            }).catch(resp => {
+              logout()
+            })
             // navigate(params.directoryId)
-            // toast.success('Carperta creada con éxito!!', { theme: "colored" })
+            toast.success('Carperta creada con éxito!!', { theme: "colored" })
 
             // resp.ok 
             // ? toast.success('Soporte eliminado con éxito!!',{theme: "colored"})
@@ -354,25 +360,25 @@ export function Directory() {
             const filebox = document.createElement('input')
             filebox.type = 'file'
             filebox.multiple = true
+            // filebox.webkitdirectory = true
             filebox.click()
             filebox.addEventListener('change', (ec) => {
               async function subirfile() {
                 try {
                   const data = new FormData()
                   const path = Object.keys(params).length > 0 ? params.directoryId : ''
-                  data.append('filenext', filebox.files[0])
+                  console.log(filebox.files)
+                  for (const element of filebox.files) {
+                    data.append('filenext', element)
+                  }
                   data.append('path', path)
-                  console.log("Haber haber :",path,'-:',params.directoryId)
                   await Consulta({
-                    // url: 'directorio/upload/' + params.directoryId,
                     url: 'directorio/upload/',
                     params: {
                       method: 'POST',
                       body: data
                     }
                   }).then(resp => {
-                    // console.log(resp)
-                    // console.log(params)
                     Consulta({ url: 'directorio/' + path, params: { method: path == '' ? 'GET' : 'POST' } }).then(resp => {
                       setLista(resp)
                     }).catch(resp => {
@@ -380,7 +386,6 @@ export function Directory() {
                     })
                     toast.success('Carperta creada con éxito!!', { theme: "colored" })
                   })
-
                 } catch (error) {
                   console.log(error)
                 }
@@ -416,7 +421,7 @@ export function Directory() {
                   }
                 }).then(resp => {
                   console.log(resp)
-                  Consulta({ url: 'directorio/' +  path, params: { method : path == '' ? 'GET' : 'POST' } }).then(resp => {
+                  Consulta({ url: 'directorio/' + path, params: { method: path == '' ? 'GET' : 'POST' } }).then(resp => {
                     setLista(resp)
                   }).catch(resp => {
                     logout()
@@ -439,7 +444,7 @@ export function Directory() {
   const ondoubleclick = async (e) => {
     if (e.target.matches("tr *")) {
       const path = convertToHex(e.target.closest('tr').dataset.path)
-      navigate(path)
+      navigate('/main/directorio/' + path)
     }
   }
   const onmouseover = (e) => {
@@ -485,7 +490,7 @@ export function Directory() {
             <Breadcrumb params={params} />
             <hr />
           </div>
-          <div className="bg-white text-left h-[700px] overflow-scroll scrollbar-special">
+          <div className="bg-white text-left overflow-scroll scrollbar-special">
             {/* <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tbody_tr]:border-b [&_td]:p-[10px] text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tbody_tr:hover]:bg-slate-100 focus:[&_tbody_tr:hover]:bg-blue-200 [&_tbody_tr:hover_ul]:visible focus:[&_tr]:bg-blue-200 table-fixed [&_ul]:invisible"> */}
             <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tr:hover_ul]:visible [&_ul]:invisible">
               <thead className="text-left sticky top-0 bg-white">
