@@ -49,7 +49,7 @@ export function Sidenav() {
   return (
     <>
       {/* <nav className="flex flex-col text-[12px] flex-none gap-y-3 w-[15%] overflow-hidden relative transition-[width] group collapsee [&.collapsee]:w-[55px] bg-[rgb(253,253,253)]"> */}
-      <nav className="flex flex-col text-[12px] flex-none gap-y-3 w-[15%] relative transition-[width] group collapsee [&.collapsee]:w-[55px] bg-[rgb(253,253,253)]">
+      <nav className="flex flex-col text-[12px] flex-none gap-y-3 w-[15%] relative transition-[width] group collapsee [&.collapsee]:w-[55px] bg-[rgb(253,253,253)] sm:hidden">
         <div
           className="block w-[6px] rounded-xl right-0 absolute bg-gray-400 opacity-0 personal_scroll"
           ref={scroll_sidenav}
@@ -140,13 +140,14 @@ export function Sidenav() {
               </div>
             </li>            
             <li data-fd='home' className="group/sub">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" className="ayb brz oc se ur"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"></path><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"></path></svg>
+              {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" className="ayb brz oc se ur"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"></path><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"></path></svg> */}
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-coins"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 14c0 1.657 2.686 3 6 3s6 -1.343 6 -3s-2.686 -3 -6 -3s-6 1.343 -6 3z" /><path d="M9 14v4c0 1.656 2.686 3 6 3s6 -1.344 6 -3v-4" /><path d="M3 6c0 1.072 1.144 2.062 3 2.598s4.144 .536 6 0c1.856 -.536 3 -1.526 3 -2.598c0 -1.072 -1.144 -2.062 -3 -2.598s-4.144 -.536 -6 0c-1.856 .536 -3 1.526 -3 2.598z" /><path d="M3 6v10c0 .888 .772 1.45 2 2" /><path d="M3 11c0 .888 .772 1.45 2 2" /></svg>
               <a href="">
-                Reportes
+                Caja
               </a>
               <div className="absolute h-8 rounded-md bg-gray-800 text-white hidden items-center left-[55px] z-20 p-2 group-hover/sub:flex">
                 <div className="absolute border-r-[6px] border-r-gray-800 border-b-[6px] border-b-transparent border-t-[6px] border-t-transparent left-[-5px]"></div>
-                Reportes
+                Caja
               </div>
             </li>
           </ul>

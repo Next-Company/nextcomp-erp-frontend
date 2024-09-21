@@ -46,6 +46,11 @@ const router = createBrowserRouter(routes)
 
 function App() {
   return (
+    // <>
+    //   <div className="w-[100v] h-full bg-red-500 text-left">
+    //     hola mundo
+    //   </div>
+    // </>
     <Authorization>
       <ModalWindowProvider>
         <RouterProvider router={router} />

@@ -21,20 +21,18 @@ export function Login() {
   }, [isAuthenticated])
   return (
     <>
-      {/* {login ? '' : ''} */}
-      <div className="w-[100vw] h-[100vh] relative">
-        <div className="backback absolute w-[100vw] h-[100vh] z-1 [&_img]:absolute [&_img]:w-[100%] [&_img]:h-[100%]">
+      {/* <div className="w-[100v] h-full bg-red-200 text-left">
+        hola mundo
+      </div> */}
+      <div className="w-[100vw] overflow-hidden h-[100vh] relative">
+        <div className="backback absolute w-[100vw] h-[100vh] z-1 [&_img]:absolute [&_img]:w-[100%] [&_img]:h-[100%] sm:hidden">
           <img className="bg-contain bg-white" src="./src/images/store.jpg" alt="" />
           <img className="bg-contain bg-green-400" src="./src/images/jeans.jpg" alt="" />
           <img className="bg-contain bg-orange-400" src="./src/images/gorro_new.jpg" alt="" />
           <img className="bg-contain bg-violet-400" src="./src/images/jeans.jpg" alt="" />
-          {/* <img className="bg-contain bg-red-400" src="./src/images/store.jpg" alt="" />
-          <img className="bg-contain bg-green-400" src="./src/images/gorro.jpg" alt="" />
-          <img className="bg-contain bg-orange-400" src="./src/images/jeans.jpg" alt="" />
-          <img className="bg-contain bg-violet-400" src="./src/images/background.jpg" alt="" /> */}
         </div>
-        <div className="absolute z-0 w-[500px] h-[100vh] bg-white opacity-[.9]"></div>
-        <div className="flex w-[500px] min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative">
+        <div className="absolute z-0 w-[500px] h-[100vh] sm:h-[100vh] bg-white opacity-[.9]"></div>
+        <div className="flex w-[500px] sm:w-[100vw] sm:h-[100vh] min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative sm:bg-gray-100">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img
               className="mx-auto h-10 w-auto"
@@ -67,11 +65,6 @@ export function Login() {
                   <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                     Contraseña
                   </label>
-                  <div className="text-sm">
-                    {/* <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                      Olvidaste tu contraseña?
-                    </a> */}
-                  </div>
                 </div>
                 <div className="mt-2">
                   <input
