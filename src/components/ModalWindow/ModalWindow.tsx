@@ -43,7 +43,7 @@ export function ModalWindow() {
   return (
     <>
       {
-        1 
+        0
         ?
           <div ref={modalref} className={`absolute ${open ? 'z-[100] bg-black/50' : 'z-[-1] other'} flex justify-center items-center opacity-[1] top-0 left-0 w-[100vw] h-[100vh] transition-all text-[14px]`} onClick={actionBackground} tabIndex={-1}>
 

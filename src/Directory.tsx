@@ -151,13 +151,13 @@ function Carpeta({ name, ondoubleclick, onclick }) {
             <span>{name.name}</span>
           </div>
         </td>
-        <td>
+        <td className="sm:hidden">
           {name.path}
         </td>
-        <td>
+        <td className="sm:hidden">
           {name.size}
         </td>
-        <td>
+        <td className="sm:hidden">
           {name.updatedAt}
         </td>
         <td>
@@ -203,7 +203,7 @@ function Breadcrumb({ params }) {
   return (
     // <div className="flex gap-2 justify-between">
     <div className="flex gap-2">
-      <div className="text-[18px] flex flex-row items-center mb-3 flex-1">
+      <div className="text-[18px] lg:flex lg:flex-row sm:hidden items-center mb-3 flex-1">
         {
           list.map((valor, key) =>
             <>
@@ -216,7 +216,7 @@ function Breadcrumb({ params }) {
             </>)
         }
       </div>
-      <div className="w-[400px]">
+      <div className="lg:w-[400px] sm:w-full">
         <Search config={{ width: '200px' }} />
       </div>
     </div>
@@ -468,23 +468,21 @@ export function Directory() {
 
   return (
     <>
-      <div onContextMenu={onrightclick} onMouseOver={onmouseover} onDragOver={ondragover} onDragLeave={ondragleave} className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
+      <div onContextMenu={onrightclick} onMouseOver={onmouseover} onDragOver={ondragover} onDragLeave={ondragleave} className="directory flex flex-col lg:p-4 sm:p-1 lg:m-3 rounded-md bg-white w-full relative">
         <div className="p-2">
-
           <div className="text-left">
             <Breadcrumb params={params} />
             <hr />
           </div>
           <div className="bg-white text-left overflow-scroll scrollbar-special">
-            {/* <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tbody_tr]:border-b [&_td]:p-[10px] text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tbody_tr:hover]:bg-slate-100 focus:[&_tbody_tr:hover]:bg-blue-200 [&_tbody_tr:hover_ul]:visible focus:[&_tr]:bg-blue-200 table-fixed [&_ul]:invisible"> */}
             <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tr:hover_ul]:visible [&_ul]:invisible">
               <thead className="text-left sticky top-0 bg-white">
                 <tr>
                   <th>Nombre</th>
-                  <th className="w-[650px]">Ruta</th>
-                  <th>Size</th>
-                  <th>Ultima Modificacion</th>
-                  <th>Acciones</th>
+                  <th className="lg:w-[650px] sm:hidden">Ruta</th>
+                  <th className="sm:hidden">Size</th>
+                  <th className="sm:hidden">Ultima Modificacion</th>
+                  <th className="">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -495,7 +493,7 @@ export function Directory() {
             </table>
           </div>
 
-          <div className="absolute bottom-0 border-red-500 flex w-full justify-center items-center">
+          {/* <div className="absolute bottom-0 border-red-500 flex w-full justify-center items-center">
             <div className="transition-all oculto" ref={gdrive}>
               <div className="bg-blue-600 w-[330px] h-[80px] rounded-full flex flex-col justify-center items-center text-white animate-bounce">
                 Suelta los archivos para subirlos a
@@ -509,7 +507,7 @@ export function Directory() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
         </div>
 
