@@ -3,11 +3,12 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { ContextualMenuContext } from "./components/ContextMenu/ContextualMenuContext"
 import { Consulta, convertToHex, convertToStr } from "./utils/utils"
-import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
+// import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
 import { AuthPermitions } from "./contexts/contexts"
 import { toast } from "react-toastify"
 import { Input } from "./components/Atoms/Input/Input"
 import { Search } from "./components/Atoms/Search/Search"
+import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
 
 const files_icon = {
   'folder': <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>,
@@ -128,6 +129,41 @@ const contextual_content = {
     </>
 }
 
+function MenuOptions({closeMenuOptions, name, onclick }){
+  return(
+    <>
+      <ul className="flex flex-row justify-around" onClick={onclick}>
+        <li>
+          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+          </div>
+        </li>
+        <li>
+          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0} data-name={name.name}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+          </div>
+        </li>
+        <li>
+          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0} data-name={name.name}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-pencil-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 19h6" /></svg>
+          </div>
+        </li>
+        <li>
+          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+          </div>
+        </li>
+        <li>
+          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="authorization" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-lock-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10c.564 0 1.074 .234 1.437 .61" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
+          </div>
+        </li>
+      </ul>
+      <button onClick={closeMenuOptions}>Close</button>
+    </>
+  )
+}
+
 function Carpeta({ name, ondoubleclick, onclick }) {
   const { openModal, config } = useContext(ModalWindowContext)
   const configurarPermisos = (e) => {
@@ -151,19 +187,18 @@ function Carpeta({ name, ondoubleclick, onclick }) {
             <span>{name.name}</span>
           </div>
         </td>
-        <td className="sm:hidden">
+        <td className="sm:hidden lg:table-cell">
           {name.path}
         </td>
-        <td className="sm:hidden">
+        <td className="sm:hidden lg:table-cell">
           {name.size}
         </td>
-        <td className="sm:hidden">
+        <td className="sm:hidden lg:table-cell">
           {name.updatedAt}
         </td>
-        <td>
+        <td className="sm:hidden lg:table-cell">
           <ul className="flex flex-row justify-end">
             <li>
-              {/* <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} onClick={borrarDirectorio}> */}
               <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
               </div>
@@ -186,6 +221,16 @@ function Carpeta({ name, ondoubleclick, onclick }) {
             <li>
               <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="authorization" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-lock-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10c.564 0 1.074 .234 1.437 .61" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
+              </div>
+            </li>
+          </ul>
+        </td>
+        <td className="lg:hidden sm:table-cell">
+          <ul className="flex flex-row justify-end">
+            <li>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download" data-path={name.path} data-dirpath={name.dirpath} data-directory={name.isDirectory ? 1 : 0}>
+                {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg> */}
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-dots-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
               </div>
             </li>
           </ul>
@@ -231,8 +276,13 @@ export function Directory() {
   const { openModal } = useContext(ModalWindowContext)
   const { logout } = useContext(AuthPermitions)
   const gdrive = useRef()
+  const menuOptions = useRef() 
 
   const onclick = (e) => {
+    if (e.target.matches("div[data-action='options']")) {
+      e.stopPropagation()
+      alert("Hola mundo")
+    }
     if (e.target.matches("div[data-action='delete']")) {
       const data = new FormData()
       const path_file = convertToHex(e.target.dataset.path)
@@ -465,7 +515,15 @@ export function Directory() {
       })
     }
   }, [params])
-
+  const viewOptions = ()=>{
+    menuOptions.current.classList.add("translate-y-[-50vh]")
+  }
+  const closeMenuOptions = ()=>{
+    menuOptions.current.classList.remove("translate-y-[-50vh]")
+  }
+  const testdrag = (e)=>{
+    console.log(e)
+  }
   return (
     <>
       <div onContextMenu={onrightclick} onMouseOver={onmouseover} onDragOver={ondragover} onDragLeave={ondragleave} className="directory flex flex-col lg:p-4 sm:p-1 lg:m-3 rounded-md bg-white w-full relative">
@@ -475,14 +533,15 @@ export function Directory() {
             <hr />
           </div>
           <div className="bg-white text-left overflow-scroll scrollbar-special">
-            <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer [&_tr:hover_ul]:visible [&_ul]:invisible">
+            <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible">
               <thead className="text-left sticky top-0 bg-white">
                 <tr>
                   <th>Nombre</th>
-                  <th className="lg:w-[650px] sm:hidden">Ruta</th>
-                  <th className="sm:hidden">Size</th>
-                  <th className="sm:hidden">Ultima Modificacion</th>
-                  <th className="">Acciones</th>
+                  <th className="lg:w-[650px] sm:hidden lg:table-cell">Ruta</th>
+                  <th className="sm:hidden lg:table-cell">Size</th>
+                  <th className="sm:hidden lg:table-cell">Ultima Modificacion</th>
+                  <th className="sm:hidden lg:table-cell">Acciones</th>
+                  <th className="sm:table-cell lg:hidden">Opciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -492,7 +551,6 @@ export function Directory() {
               </tbody>
             </table>
           </div>
-
           {/* <div className="absolute bottom-0 border-red-500 flex w-full justify-center items-center">
             <div className="transition-all oculto" ref={gdrive}>
               <div className="bg-blue-600 w-[330px] h-[80px] rounded-full flex flex-col justify-center items-center text-white animate-bounce">
@@ -508,10 +566,43 @@ export function Directory() {
               </div>
             </div>
           </div> */}
+          <button className="bg-orange-400" onClick={()=>viewOptions()}>Click me!!</button>
 
         </div>
 
+        <div ref={menuOptions} className="absolute bg-red-300 rounded-t-xl z-20 w-full left-0 h-full bottom-[-100%] transition-transform " onTouchMove={testdrag}>
+          {/* <MenuOptions  name={row} onclick={onclick} /> */}
+          {/* <ul className="flex flex-row justify-around">
+            <li>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+              </div>
+            </li>
+            <li>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+              </div>
+            </li>
+            <li>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-pencil-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 19h6" /></svg>
+              </div>
+            </li>
+            <li>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+              </div>
+            </li>
+            <li>
+              <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="authorization">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-lock-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10c.564 0 1.074 .234 1.437 .61" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
+              </div>
+            </li>
+          </ul>
+          <button onClick={closeMenuOptions}>Close</button> */}
+        </div>
       </div>
+      
       {/* {loading && createPortal(<LoadingWindow />, document.querySelector('#root'))} */}
     </>
   )
