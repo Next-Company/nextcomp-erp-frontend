@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 
-export function Input({ name, defaults, title, type }) {
+export function Input({ name, defaults = "", title = "", type }) {
   const ref = useRef(null)
   const [initial,setInitial] = useState(defaults)
   const onclick = (e) => {
@@ -22,8 +22,13 @@ export function Input({ name, defaults, title, type }) {
   useEffect(() => {
     if (defaults && defaults !== '') {
       ref.current.parentElement.querySelector('label').classList.remove('mover')
-      setInitial(defaults)
+      setInitial( defaults )
       // ref.current.parentElement.classList.add('selected')
+    }else{
+      if(type == 'date'){
+        ref.current.parentElement.querySelector('label').classList.remove('mover')
+        setInitial((new Date()).toLocaleDateString().split("/").reverse().reduce((acumulador,current)=>{acumulador.push(current.length < 2 ? '0'+current : current);return acumulador},[]).join("-"))
+      }
     }
   }, [defaults])
   return (

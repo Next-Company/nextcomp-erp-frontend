@@ -18,15 +18,15 @@
 }
 
 .scrollbar-special::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   /* background: #efefef; */
   background: transparent;
 }
 
 .scrollbar-special::-webkit-scrollbar-thumb {
   background: #c2c2c2;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .scrollbar-special::-webkit-scrollbar-thumb:hover {

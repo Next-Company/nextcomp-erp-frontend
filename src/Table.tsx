@@ -106,7 +106,7 @@ export function Table({ setedit, info, setselect, setrefresh, loading }) {
       <div className="flex flex-col gap-2">
         {/* <div className="flex justify-between items-center mb-3"> */}
         <div className="flex justify-between items-center">
-          <h2 className="font-medium text-[18px]">Soportes registrados</h2>
+          <h2 className="font-medium text-[16px]">Soportes registrados</h2>
           <div className="w-[400px]">
             <Search config={{ width: '200px' }} />
           </div>

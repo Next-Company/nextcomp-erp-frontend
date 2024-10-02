@@ -20,6 +20,16 @@
   animation-duration: 40s;
   border: thin solid black
 }
+.backback div {  
+  animation-iteration-count: infinite;
+  animation-play-state: running;
+  animation-timing-function: linear;
+  animation-duration: 40s;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  /* [&_div]:absolute [&_div]:w-full [&_div]:h-full */
+}
 
 @keyframes p1 {
 
@@ -39,9 +49,12 @@
   }
 }
 
-.backback img:nth-child(1) {
+.backback div:nth-child(1) {
   animation-name: p1;
   opacity: 0;
+  background-image: url('../src/images/interior.jpg');
+  background-size:cover;
+  background-position: center;
 }
 
 @keyframes p2 {
@@ -62,8 +75,11 @@
   }
 }
 
-.backback img:nth-child(2) {
+.backback div:nth-child(2) {
   animation-name: p2;
+  background-image: url('../src/images/prendas.jpg');
+  background-size:cover;
+  background-position: center;
 }
 
 @keyframes p3 {
@@ -84,8 +100,11 @@
   }
 }
 
-.backback img:nth-child(3) {
+.backback div:nth-child(3) {
   animation-name: p3;
+  background-image: url('../src/images/gorro_new.jpg');
+  background-size:cover;
+  background-position: center;
 }
 
 @keyframes p4 {
@@ -106,9 +125,12 @@
   }
 }
 
-.backback img:nth-child(4) {
+.backback div:nth-child(4) {
   animation-name: p4;
   opacity: 0;
+  background-image: url('../src/images/jeans.jpg');
+  background-size:cover;
+  background-position: center;
 }
 
 a {
