@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ModalWindowProvider } from './components/ModalWindow/ModalWindowProvider.tsx'
 import './App.css'
 import { Home } from './pages/Home'
 import { Login } from './Login'
@@ -48,15 +47,8 @@ const router = createBrowserRouter(routes)
 
 function App() {
   return (
-    // <>
-    //   <div className="w-[100v] h-full bg-red-500 text-left">
-    //     hola mundo
-    //   </div>
-    // </>
     <Authorization>
-      <ModalWindowProvider>
-        <RouterProvider router={router} />
-      </ModalWindowProvider>
+      <RouterProvider router={router} />
     </Authorization>
   )
 }
