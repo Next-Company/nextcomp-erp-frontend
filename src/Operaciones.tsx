@@ -7,6 +7,7 @@ import { TextArea } from "./components/Atoms/Input/TextArea";
 import OrdenProduccion from "./OrdenProduccion";
 import { Consulta } from "./utils/utils";
 import { AuthPermitions } from "./contexts/contexts";
+import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext";
 
 // const ListaSoportes = ({ save, children })=>{
 const ListaSoportes = ({ children })=>{
@@ -166,6 +167,8 @@ export default function Operaciones(){
   const [onedit,setOnedit] = useState(false)
   const [ordenes,setOrdenes] = useState([])
   const { logout, credentials } = useContext(AuthPermitions)
+  const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  const [refresh,setRefresh] = useState(false)
   useEffect(()=>{
     Consulta({
       url: 'produccion', params: {
@@ -181,6 +184,31 @@ export default function Operaciones(){
         logout()
       })
   },[])
+  useEffect(()=>{
+    if(refresh){
+      console.log("hola refresh")
+      setOpenloader(true)
+      Consulta({
+        url: 'produccion', params: {
+          method: 'GET'
+        }
+      })
+        .then(resp => {
+          // console.log('Hola jupiters:', resp)
+          setRefresh(false)
+          setOpenloader(false)
+          setOrdenes(resp)
+        })
+        .catch(error => {
+          // console.log(error)
+          setOpenloader(false)
+          logout()
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
+    }
+  },[refresh])
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -204,35 +232,30 @@ export default function Operaciones(){
                     <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
                       <button className="group active" data-estado="ALL">
                         <span className="relative h-[100%] flex items-center pointer-events-none">
-                          Ordenes en proceso
+                          Órdenes en proceso
                           <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                         </span>
                       </button>
                       <button className="group" data-estado="EMIT">
                         <span className="relative h-[100%] flex items-center pointer-events-none">
-                          Ordenes finalizas
+                          Órdenes finalizadas
                           <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                         </span>
                       </button>
                       <button className="group" data-estado="FNLZ">
                         <span className="relative h-[100%] flex items-center pointer-events-none">
-                          Ordenes anuladas
-                          <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                        </span>
-                      </button>
-                      <button className="group" data-estado="FNLZ">
-                        <span className="relative h-[100%] flex items-center pointer-events-none">
-                          Hoja de corte
+                          Órdenes anuladas
                           <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                         </span>
                       </button>
                     </ul>
                   </div>
                   <hr/>
-                  <div className="h-[500px] overflow-hidden">
+                  <div className="h-[80%] overflow-y-scroll scrollbar-special">
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
+                          <th className="lg:table-cell">#</th>
                           <th className="lg:table-cell">OC</th>
                           <th className="lg:table-cell">Cliente</th>
                           <th className="lg:table-cell">Fecha Emision</th>
@@ -253,6 +276,7 @@ export default function Operaciones(){
                           ? ordenes.map((row, key) =>(
                             <tr>
                               <td>{row.idx}</td>
+                              <td>{row.oc}</td>
                               <td>{row.cliente}</td>
                               <td>{row.fec_emitida}</td>
                               <td>{row.fec_entrega}</td>
@@ -301,7 +325,7 @@ export default function Operaciones(){
                     </table>
                   </div>
                   < div className="flex justify-end mt-3 gap-2">
-                    <Button action={() => { }} tipo={'default'}>Actualizar</Button>
+                    <Button action={() => setRefresh(true)} tipo={'default'}>Actualizar</Button>
                     <Button action={() => setOnedit(true)} tipo={'accept'}>Nuevo</Button>
                     <Button action={() => setOnedit(true)} tipo={'success'}>Incidencia</Button>
                   </div >
