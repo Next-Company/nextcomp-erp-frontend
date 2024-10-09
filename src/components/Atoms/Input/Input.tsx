@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 
-export function Input({ name, defaults = "", title = "", type }) {
+export function Input({ name, defaults = null, title = "", type }) {
   const ref = useRef(null)
   const [initial,setInitial] = useState(defaults)
   const onclick = (e) => {

@@ -4,11 +4,57 @@ import { Search } from "../Atoms/Search/Search";
 import { useNavigate } from "react-router-dom";
 import { AuthPermitions } from "../../contexts/contexts";
 import { Consulta } from "../../utils/utils";
+import { ModalWindowContext } from "../ModalWindow/ModalWindowContext";
+import { toast } from "react-toastify";
 
 export default function Inicio() {
   const [ordenes, setOrdenes] = useState([])
   const { logout, credentials } = useContext(AuthPermitions)
+  const { openModal, config, setOpenloader, openloader } = useContext(ModalWindowContext)
+  const [ refresh, setRefresh ] = useState(false)
   const navigate = useNavigate()
+
+  const onclick = (e) => {
+    const action = e.target.dataset.action
+    const id = e.target.dataset.id
+    let params_modal = null
+    switch (action) {
+      case 'delete':
+        params_modal = {
+          open:true,
+          content: <div>Desea eliminar el registro seleccionado?. Tenga en cuenta de que el <br/> proceso no es reversible.</div>,
+          controls: true,
+          header: true,
+          action:()=>{
+            setOpenloader(true)
+            Consulta({
+              url: 'produccion/' + id, params: {
+                method: 'DELETE'
+              }
+            })
+              .then(resp => {
+                // setOrdenes(resp)
+                toast.success('Orden eliminada con éxito!', { theme: "colored" })
+                setRefresh(true)
+                setOpenloader(false)
+              })
+              .catch(() => {
+                setOpenloader(false)
+                logout()
+              })
+              .finally(()=>{
+                setOpenloader(false)
+              })
+          }
+        }
+        break;
+    
+      default:
+        break;
+    }
+    openModal(params_modal)
+  }
+
   useEffect(() => {
     Consulta({
       url: 'produccion', params: {
@@ -22,6 +68,24 @@ export default function Inicio() {
         logout()
       })
   }, [])
+  useEffect(() => {
+    if(refresh){
+      setOpenloader(true)
+      Consulta({
+        url: 'produccion', params: {
+          method: 'GET'
+        }
+      })
+        .then(resp => {
+          setOrdenes(resp)
+          setOpenloader(false)
+          setRefresh(false)
+        })
+        .catch(() => {
+          logout()
+        })
+    }
+  }, [refresh])
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -40,7 +104,7 @@ export default function Inicio() {
             {
               <>
                 <div>
-                  <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+                  <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
                     <button className="group active" data-estado="ALL">
                       <span className="relative h-[100%] flex items-center pointer-events-none">
                         Órdenes en proceso
@@ -101,7 +165,7 @@ export default function Inicio() {
                               <td>
                                 <ul className="flex flex-row justify-end">
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={() => { }}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                     </div>
                                   </li>
@@ -130,15 +194,15 @@ export default function Inicio() {
                             </tr>
                           ))
                           :
-                          <span>Datos no encontrados</span>
+                          <tr className="h-[40px]"><td colSpan={13} className="text-center"><span>Datos no encontrados</span></td></tr>
                       }
                     </tbody>
                   </table>
                 </div>
                 <div className="flex justify-end mt-3 gap-2">
-                  <Button action={() => { }} tipo={'default'}>Actualizar</Button>
+                  <Button action={() => setRefresh(true)} tipo={'default'}>Actualizar</Button>
                   <Button action={() => navigate('/main/operaciones/nuevo')} tipo={'accept'}>Nuevo</Button>
-                  <Button action={() => { }} tipo={'success'}>Incidencia</Button>
+                  {/* <Button action={() => { }} tipo={'success'}>Incidencia</Button> */}
                 </div >
               </>
             }

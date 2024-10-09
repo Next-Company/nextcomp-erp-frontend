@@ -172,11 +172,11 @@ export default function Operaciones() {
   // const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   const [refresh, setRefresh] = useState(false)
   useEffect(() => {
-    Consulta({
-      url: 'produccion', params: {
-        method: 'GET'
-      }
-    })
+    // Consulta({
+    //   url: 'produccion', params: {
+    //     method: 'GET'
+    //   }
+    // })
     // .then(resp => {
     //   setOrdenes(resp)
     // })

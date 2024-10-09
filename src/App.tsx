@@ -12,6 +12,7 @@ import { ChatRoom } from './pages/ChatRoom.tsx'
 import { Agenda } from './pages/Agenda.tsx'
 import Operaciones from './Operaciones.tsx'
 import Inicio from './components/operaciones/inicio.tsx'
+import { NuevaOrdenProduccion } from './components/operaciones/nuevo.tsx'
 
 const routes = [
   {
@@ -37,7 +38,8 @@ const routes = [
         element: <Operaciones />,
         children: [
           { path: "inicio", element: <Inicio /> },
-          { path: "nuevo", element: <><h1>Editando el detalle</h1></> }
+          // { path: "nuevo", element: <><h1>Editando el detalle</h1></> }
+          { path: "nuevo", element: <NuevaOrdenProduccion/> }
         ]
       }
     ]
