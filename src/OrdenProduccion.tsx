@@ -6,7 +6,7 @@ import { Consulta } from "./utils/utils";
 import { toast } from "react-toastify";
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext";
 
-function FormFase({setOnedit,position}){
+function FormFase({ setOnedit, position }) {
   const contenido = [
     <div className="flex flex-col gap-3 pt-4">
       <div className="flex gap-3">
@@ -23,12 +23,12 @@ function FormFase({setOnedit,position}){
         <Input name={'producto'} defaults={'otro'} title="Producto" type="text" />
         <Input name={'base'} defaults={'otro'} title="Base" type="text" />
         <Input name={'modelos'} defaults={'otro'} title="Modelo" type="text" />
-      </div>          
+      </div>
       <div className="flex-1">
         {/* <TextArea name={'descripcion'} title={'Detalle'} valor={''} /> */}
       </div>
       <div className="flex justify-end gap-2">
-        <Button action={()=>setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
+        <Button action={() => setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
         <Button type={'submit'} tipo={'accept'}>Guardar</Button>
       </div>
     </div>
@@ -46,7 +46,7 @@ function FormFase({setOnedit,position}){
         <Input name={'estado_telas'} defaults={'otro'} title="Estado" type="text" />
       </div>
       <div className="flex justify-end gap-2">
-        <Button action={()=>setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
+        <Button action={() => setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
         <Button type={'submit'} tipo={'accept'}>Guardar</Button>
       </div>
     </div>
@@ -64,7 +64,7 @@ function FormFase({setOnedit,position}){
         <Input name={'estado_molde'} defaults={'otro'} title="Estado" type="text" />
       </div>
       <div className="flex justify-end gap-2">
-        <Button action={()=>setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
+        <Button action={() => setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
         <Button type={'submit'} tipo={'accept'}>Guardar</Button>
       </div>
     </div>
@@ -83,7 +83,7 @@ function FormFase({setOnedit,position}){
         <Input name={'estado_molde'} defaults={'otro'} title="Estado" type="text" />
       </div>
       <div className="flex justify-end gap-2">
-        <Button action={()=>setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
+        <Button action={() => setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
         <Button type={'submit'} tipo={'accept'}>Guardar</Button>
       </div>
     </div>
@@ -91,7 +91,7 @@ function FormFase({setOnedit,position}){
     <div className="flex flex-col gap-3 pt-4">
       <div className="flex gap-3">
         <Input name={'responsable_confeccion'} defaults={'otro'} title="Responsable" type="text" />
-        <Input name={'precio_confeccion'} defaults="" title="Precio" type="number" />        
+        <Input name={'precio_confeccion'} defaults="" title="Precio" type="number" />
         <Input name={'fec_salida_confeccion'} defaults="" title="FechaSalida" type="date" />
         <Input name={'guia_salida_confeccion'} defaults={'otro'} title="GuiaSalida" type="text" />
       </div>
@@ -110,17 +110,17 @@ function FormFase({setOnedit,position}){
         <Input name={'estado_confeccion'} defaults={'otro'} title="Estado" type="text" />
       </div>
       <div className="flex justify-end gap-2">
-        <Button action={()=>setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
+        <Button action={() => setOnedit(false)} type={'button'} tipo={'default'}>Cancelar</Button>
         <Button type={'submit'} tipo={'accept'}>Guardar</Button>
       </div>
     </div>
   ]
   return contenido[position]
 }
-export default function OrdenProduccion({setOnedit}){
+export default function OrdenProduccion({ setOnedit }) {
   const form = useRef()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
-  const [ position,setPosition ] = useState(0)
+  const [position, setPosition] = useState(0)
   const [estado, setEstado] = useState('ALL')
   // const onsubmit = (e)=>{
   //   e.preventDefault()
@@ -164,107 +164,106 @@ export default function OrdenProduccion({setOnedit}){
       }
     })
   }
-  return(
+  return (
     <>
-        <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-          <button className={`group ${position == 0 && 'active'}`} onClick={()=>setPosition(0)} data-estado="ALL">
+      <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+        <button className={`group ${position == 0 && 'active'}`} onClick={() => setPosition(0)} data-estado="ALL">
           {/* <button className="grounp active" onClick={()=>setPosition(0)} data-estado="ALL"></button> */}
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Ordenes
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
-          <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Ordenes
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
+        {/* <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
             <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-          </div>
-          {/* <button className="group flex-row items-center gap-1" onClick={()=>setPosition(1)} data-estado="EMIT"> */}
-          <button className={`group flex-row items-center gap-1 ${position == 1 && 'active'}`} onClick={()=>setPosition(1)} data-estado="EMIT">
-            {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-exclamation-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg> */}
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Telas
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
-          <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-          </div>
-          <button className={`group flex-row items-center gap-1 ${position == 2 && 'active'}`} onClick={()=>setPosition(2)} data-estado="FNLZ">
-            {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-exclamation-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg> */}
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Molde
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
-          <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-          </div>
-          <button className={`group ${position == 3 && 'active'}`} onClick={()=>setPosition(3)} data-estado="FNLZ">
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Hoja de corte
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
+          </div> */}
+        {/* <button className="group flex-row items-center gap-1" onClick={()=>setPosition(1)} data-estado="EMIT"> */}
+        <button className={`group flex-row items-center gap-1 ${position == 1 && 'active'}`} onClick={() => setPosition(1)} data-estado="EMIT">
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Telas
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
+        {/* <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
+        </div> */}
+        <button className={`group flex-row items-center gap-1 ${position == 2 && 'active'}`} onClick={() => setPosition(2)} data-estado="FNLZ">
+          {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-exclamation-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg> */}
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Molde
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
+        {/* <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
+        </div> */}
+        <button className={`group ${position == 3 && 'active'}`} onClick={() => setPosition(3)} data-estado="FNLZ">
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Hoja de corte
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
 
-          <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-          </div>
-          <button className={`group ${position == 4 && 'active'}`} onClick={()=>setPosition(4)} data-estado="FNLZ">
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Confeccion
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
-          <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-          </div>
-          <button className={`group ${position == 5 && 'active'}`} onClick={()=>setPosition(5)} data-estado="FNLZ">
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Ojal y botón
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
-          <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-          </div>
-          <button className={`group ${position == 6 && 'active'}`} onClick={()=>setPosition(6)} data-estado="FNLZ">
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Estampado
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
-          <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-          </div>
-          <button className={`group ${position == 7 && 'active'}`} onClick={()=>setPosition(7)} data-estado="FNLZ">
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Lavanderia
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
-          <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-          </div>
-          <button className={`group ${position == 8 && 'active'}`} onClick={()=>setPosition(8)} data-estado="FNLZ">
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Bordado
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
-          <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
-          </div>
-          <button className={`group ${position == 9 && 'active'}`} onClick={()=>setPosition(9)} data-estado="FNLZ">
-            <span className="relative h-[100%] flex items-center pointer-events-none">
-              Acabados
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
+        {/* <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
+        </div> */}
+        <button className={`group ${position == 4 && 'active'}`} onClick={() => setPosition(4)} data-estado="FNLZ">
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Confeccion
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
+        {/* <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
+        </div> */}
+        <button className={`group ${position == 5 && 'active'}`} onClick={() => setPosition(5)} data-estado="FNLZ">
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Ojal y botón
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
+        {/* <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
+        </div> */}
+        <button className={`group ${position == 6 && 'active'}`} onClick={() => setPosition(6)} data-estado="FNLZ">
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Estampado
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
+        {/* <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
+        </div> */}
+        <button className={`group ${position == 7 && 'active'}`} onClick={() => setPosition(7)} data-estado="FNLZ">
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Lavanderia
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
+        {/* <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
+        </div> */}
+        <button className={`group ${position == 8 && 'active'}`} onClick={() => setPosition(8)} data-estado="FNLZ">
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Bordado
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
+        {/* <div className="flex justify-center items-center h-[50px] pl-4 pr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M15 16l4 -4" /><path d="M15 8l4 4" /></svg>
+        </div> */}
+        <button className={`group ${position == 9 && 'active'}`} onClick={() => setPosition(9)} data-estado="FNLZ">
+          <span className="relative h-[100%] flex items-center pointer-events-none">
+            Acabados
+            <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+          </span>
+        </button>
 
-        </ul>
-        <hr/>
-        <form ref={form} onSubmit={onsubmit}>
-          <FormFase position={position} setOnedit={setOnedit}/>
-          {/* <div className="flex flex-col gap-3 pt-4">
+      </ul>
+      <hr />
+      <form ref={form} onSubmit={onsubmit}>
+        <FormFase position={position} setOnedit={setOnedit} />
+        {/* <div className="flex flex-col gap-3 pt-4">
               <div className="flex gap-3">
                 <Input name={'idx'} defaults='' type="hidden" />
                 <Input name={'oc'} defaults={'otro'} title="OC" type="text" />
@@ -286,7 +285,7 @@ export default function OrdenProduccion({setOnedit}){
                 <Button type={'submit'} tipo={'accept'}>Guardar</Button>
               </div>
           </div> */}
-        </form>
+      </form>
       {/* <div className="">
       </div> */}
     </>

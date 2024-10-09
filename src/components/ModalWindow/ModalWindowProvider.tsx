@@ -10,16 +10,16 @@ export function ModalWindowProvider({ children }) {
   const openModal = (pr) => {
     setParams(pr)
   }
-  useEffect(()=>{
+  useEffect(() => {
     // console.log(config)
     // return () => console.log(config)
-  },[config])
+  }, [config])
   return (
     <>
-      <ModalWindowContext.Provider value={{ openModal, config, setOpenloader, openloader}}>
+      <ModalWindowContext.Provider value={{ openModal, config, setOpenloader, openloader }}>
         {children}
         <ModalWindow />
-        <ToastContainer 
+        <ToastContainer
           position="bottom-right"
           autoClose={5000}
           hideProgressBar={false}
@@ -32,7 +32,7 @@ export function ModalWindowProvider({ children }) {
           theme="light"
         />
         {/* <div className="bg-gray-600/40 absolute top-0 w-full h-full flex justify-center items-center"> */}
-        <LoadingWindow/>
+        <LoadingWindow />
         {/* <div className="bg-white/40 absolute top-0 w-full h-full flex justify-center items-center">
           <div className="loader_juan scale-50 rotate-90">
             <div className="w-[50px] h-[50px] bg-yellow-500 rounded-full"></div>
