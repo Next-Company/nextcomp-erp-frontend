@@ -39,7 +39,8 @@ const routes = [
         children: [
           { path: "inicio", element: <Inicio /> },
           // { path: "nuevo", element: <><h1>Editando el detalle</h1></> }
-          { path: "nuevo", element: <NuevaOrdenProduccion/> }
+          { path: "nuevo", element: <NuevaOrdenProduccion/> },
+          { path: "nuevo/:id", element: <NuevaOrdenProduccion/> }
         ]
       }
     ]

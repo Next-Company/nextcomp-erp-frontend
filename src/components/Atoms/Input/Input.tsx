@@ -11,7 +11,7 @@ export function Input({ name, defaults = null, title = "", type }) {
     e.target.parentElement.classList.add('selected')
   }
   const onblur = (e) => {
-    if (e.target.value == '') {
+    if (e.target.value == '' && type !== 'date') {
       e.target.parentElement.querySelector('label').classList.add('mover')
     }
     e.target.parentElement.classList.remove('selected')
@@ -27,7 +27,17 @@ export function Input({ name, defaults = null, title = "", type }) {
     }else{
       if(type == 'date'){
         ref.current.parentElement.querySelector('label').classList.remove('mover')
-        setInitial((new Date()).toLocaleDateString().split("/").reverse().reduce((acumulador,current)=>{acumulador.push(current.length < 2 ? '0'+current : current);return acumulador},[]).join("-"))
+        // ref.current.parentElement.querySelector('label').classList.remove('mover')
+        // setInitial((new Date())
+        // .toLocaleDateString()
+        // .split("/")
+        // .reverse()
+        // .reduce(
+        //   (acumulador,current)=>{
+        //     acumulador.push(current.length < 2 ? '0'+current : current);
+        //     return acumulador
+        //   },[]
+        // ).join("-"))
       }
     }
   }, [defaults])
