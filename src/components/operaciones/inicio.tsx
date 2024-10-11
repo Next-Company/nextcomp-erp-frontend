@@ -143,7 +143,7 @@ export default function Inicio() {
                   <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible">
                     <thead className="text-left sticky top-0 bg-white">
                       <tr>
-                        <th className="lg:table-cell">#</th>
+                        {/* <th className="lg:table-cell">#</th> */}
                         <th className="lg:table-cell">OC</th>
                         <th className="lg:table-cell">Cliente</th>
                         <th className="lg:table-cell">Fecha Emision</th>
@@ -153,7 +153,7 @@ export default function Inicio() {
                         <th className="lg:table-cell">Base</th>
                         <th className="lg:table-cell">Precio</th>
                         <th className="lg:table-cell">Modelo</th>
-                        <th className="lg:table-cell">Total</th>
+                        {/* <th className="lg:table-cell">Total</th> */}
                         <th className="lg:table-cell">Dias Producción</th>
                         <th className="lg:table-cell">Accciones</th>
                       </tr>
@@ -163,7 +163,7 @@ export default function Inicio() {
                         ordenes.length > 0
                           ? ordenes.map((row, key) => (
                             <tr>
-                              <td>{row.idx}</td>
+                              {/* <td>{row.idx}</td> */}
                               <td>{row.oc}</td>
                               <td>{row.cliente}</td>
                               <td>{row.fec_emitida}</td>
@@ -171,10 +171,10 @@ export default function Inicio() {
                               <td>{row.marca}</td>
                               <td>{row.producto}</td>
                               <td>{row.base}</td>
+                              <td>{row.precio}</td>
                               <td>{row.modelos}</td>
-                              <td>22</td>
-                              <td>22</td>
-                              <td>22</td>
+                              <td>{22}</td>
+                              {/* <td>{row.modelos}</td> */}
                               <td>
                                 <ul className="flex flex-row justify-end">
                                   <li>

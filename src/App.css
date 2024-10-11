@@ -125,3 +125,6 @@ svg {
   gap: 18px;
   padding: 15px;
 }
+a.active{
+  color: red;
+}

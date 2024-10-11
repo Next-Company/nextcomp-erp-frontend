@@ -8,6 +8,7 @@ import { Consulta } from "../../utils/utils";
 import { Search } from "../Atoms/Search/Search";
 import { useNavigate, useParams } from "react-router-dom";
 import { InputMultiSelect } from "../Atoms/Input/InputMultiSelect";
+import { TextArea } from "../Atoms/Input/TextArea";
 
 const listTables = [
   'tbl2_fases_prod_ordenes',
@@ -32,7 +33,6 @@ function FormFase({ position, info}) {
           <InputSelect title={'Cliente'} name={"cliente"} data={[{ indice: 'ESTILOS', option: 'ESTILOS', selected: true }, { indice: 'NEXT COMPANY', option: 'NEXT COMPANY' }]} df={info.length > 0 ? info[0].cliente : null} />
           <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" />
           <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaEntrega" type="date" />
-          <InputSelect title={'Categoria'} name={"categoria"} data={[{ indice: 'IMPL', option: 'CONFECCION', selected: true }, { indice: 'SOPT', option: 'OJAL Y BOTON' }, { indice: 'PRCT', option: 'ESTAMPADO' }, { indice: 'PRCT', option: 'LAVANDERIA' }, { indice: 'PRCT', option: 'BORDADO' }, { indice: 'PRCT', option: 'ACABADOS' }]} df={'PRCT'} />
         </div>
         <div className="flex gap-3">
           <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" />
@@ -41,9 +41,6 @@ function FormFase({ position, info}) {
           <Input name={'precio'} defaults={info.length > 0 ? info[0].precio : null} title="Precio" type="number" />
           <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" />
         </div>
-        {/* <div className="flex-col gap-3 w-[250px]"> */}
-        {/* <div className="flex gap-3 flex-wrap justify-start"> */}
-          
         <div className="flex gap-3 flex-wrap">
           <div className="flex-1 min-w-[200px]">
             <Input name={'combo1_orden'} defaults={info.length > 0 ? info[0].combo1_orden : null} title="Combo1" type="number" />
@@ -88,6 +85,9 @@ function FormFase({ position, info}) {
             <Input name={'combo14_orden'} defaults={info.length > 0 ? info[0].combo14_orden : null} title="Combo14" type="number" />
           </div>
         </div>
+        <div>
+          <TextArea title="Observaciones" valor={info.length > 0 ? info[0].observaciones_fase_orden : null} name="observaciones_fase_orden" />
+        </div>
       </div>
       <div className={` flex-col gap-3 pt-4 ${position == 1 ? 'flex' : 'hidden'}`}>
         <div className="flex gap-3">
@@ -102,38 +102,37 @@ function FormFase({ position, info}) {
           <Input name={'guia_ingreso'} defaults={info.length > 0 && info[0].guia_ingreso ? info[0].guia_ingreso : null} title="GuiaIngreso" type="text" />
           <Input name={'estado_telas'} defaults={info.length > 0 && info[0].estado ? info[0].estado : null} title="Estado" type="text" />
         </div>
+        <div>
+          <TextArea title="Observaciones" name="observaciones_fase_telas" />
+        </div>
       </div>
       <div className={` flex-col gap-3 pt-4 ${position == 2 ? 'flex' : 'hidden'}`}>
         <div className="flex gap-3">
           {/* <Input name={'id_cab_orden'} defaults={info.length > 0 && info[0].idx ? info[0].idx : null}  type="hidden" /> */}
           <Input name={'responsable'} defaults={info.length > 0 && info[0].responsable ? info[0].responsable : null} title="Responsable" type="text" />
-          <Input name={'molde'} defaults={info.length > 0 && info[0].molde ? info[0].molde : null}  title="Molde" type="date" />
+          <Input name={'molde'} defaults={info.length > 0 && info[0].molde ? info[0].molde : null}  title="Molde" type="text" />
           <Input name={'muestra'} defaults={info.length > 0 && info[0].muestra ? info[0].muestra : null} title="Muestra" type="text" />
           <Input name={'lavado'} defaults={info.length > 0 && info[0].lavado ? info[0].lavado : null} title="Lavado" type="text" />
         </div>
         <div className="flex gap-3">
-          <Input name={'cliente_corte'} defaults={info.length > 0 && info[0].cliente_corte ? info[0].cliente_corte : null} title="ClienteCorte" type="text" />
+          <Input name={'cliente_corte'} defaults={info.length > 0 && info[0].cliente_corte ? info[0].cliente_corte : null} title="Cliente" type="text" />
           <Input name={'tizado'} defaults={info.length > 0 && info[0].tizado ? info[0].tizado : null} title="Tizado" type="text" />
           <Input name={'estado_molde'} defaults={info.length > 0 && info[0].estado_molde ? info[0].estado_molde : null} title="Estado" type="text" />
+        </div>
+        <div>
+          <TextArea title="Observaciones" name="observaciones_fase_molde" />
         </div>
       </div>
       <div className={` flex-col gap-3 pt-4 ${position == 3 ? 'flex' : 'hidden'}`}>
         <div className="flex gap-3 flex-wrap">
           <div className="flex-1 min-w-[250px]">
             {/* <Input name={'id_cab_orden'} defaults={info.length > 0 && info[0].idx ? info[0].idx : null} type="hidden" /> */}
-            <Input name={'nro_corte'} defaults={info.length > 0 && info[0].nro_corte ? info[0].nro_corte : null} title="#HojaCorte" type="text" />
+            <Input name={'numero_corte'} defaults={info.length > 0 && info[0].numero_corte ? info[0].numero_corte : null} title="#HojaCorte" type="text" />
           </div>
-          {/* <div className="flex-1 min-w-[350px]">
-            <InputMultiSelect title={'RutaProceso'} name={"cliente"} data={[
-              { indice: 'CONFECCION', option: 'CONFECCION', selected: true }, 
-              { indice: 'OJAL_BOTON', option: 'OJAL_BOTON' },
-              { indice: 'ESTAMPADO', option: 'ESTAMPADO' },
-              { indice: 'LAVANDERIA', option: 'LAVANDERIA' },
-              { indice: 'BORDADO', option: 'BORDADO' },
-              { indice: 'ACABADOS', option: 'ACABADOS' },
-              ]} df={'PRCT'} 
-            />
-          </div> */}
+          <div className="flex-1 min-w-[350px]">
+            {/* <InputSelect title={'Ruta'} name={"ruta"} data={[{ indice: 'IMPL', option: 'CONFECCION', selected: true }, { indice: 'SOPT', option: 'OJAL Y BOTON' }, { indice: 'PRCT', option: 'ESTAMPADO' }, { indice: 'PRCT', option: 'LAVANDERIA' }, { indice: 'PRCT', option: 'BORDADO' }, { indice: 'PRCT', option: 'ACABADOS' }]} df={'PRCT'} /> */}
+            <InputMultiSelect title={'Ruta'} name={"ruta"} data={[{ indice: 'IMPL', option: 'CONFECCION', selected: true }, { indice: 'SOPT', option: 'OJAL Y BOTON' }, { indice: 'PRCT', option: 'ESTAMPADO' }, { indice: 'PRCT', option: 'LAVANDERIA' }, { indice: 'PRCT', option: 'BORDADO' }, { indice: 'PRCT', option: 'ACABADOS' }]} df={'PRCT'} />
+          </div>
           <div className="flex-1 min-w-[200px]">
             <Input name={'combo1_corte'} defaults={info.length > 0 && info[0].combo1_corte ? info[0].combo1_corte : null} title="Combo1" type="number" />
           </div>
@@ -177,6 +176,9 @@ function FormFase({ position, info}) {
             <Input name={'combo14_corte'} defaults={info.length > 0 && info[0].combo14_corte ? info[0].combo14_corte : null} title="Combo14" type="number" />
           </div>
         </div>
+        <div>
+          <TextArea title="Observaciones" name="observaciones_fase_corte" />
+        </div>
       </div>
       <div className={` flex-col gap-3 pt-4 ${position == 4 ? 'flex' : 'hidden'}`}>
         <div className="flex gap-3">
@@ -185,20 +187,37 @@ function FormFase({ position, info}) {
           <Input name={'precio_confeccion'} defaults={info.length > 0 && info[0].precio_confeccion ? info[0].precio_confeccion : null} title="Precio" type="number" />
           <Input name={'fec_salida_confeccion'} defaults={info.length > 0 && info[0].fec_salida_confeccion ? info[0].fec_salida_confeccion : null} title="FechaSalida" type="date" />
           <Input name={'guia_salida_confeccion'} defaults={info.length > 0 && info[0].guia_salida_confeccion ? info[0].guia_salida_confeccion : null} title="GuiaSalida" type="text" />
-        </div>
-        <div className="flex gap-3">
           <Input name={'cantidad_salida_confeccion'} defaults={info.length > 0 && info[0].cantidad_salida_confeccion ? info[0].cantidad_salida_confeccion : null} title="CantidadSalida" type="number" />
-          <Input name={'fec_ingreso_confeccion'} defaults={info.length > 0 && info[0].fec_ingreso_confeccion ? info[0].fec_ingreso_confeccion : null} title="FechaIngreso" type="date" />
-          <Input name={'guia_ingreso_confeccion'} defaults={info.length > 0 && info[0].guia_ingreso_confeccion ? info[0].guia_ingreso_confeccion : null} title="GuiaIngreso" type="text" />
-          <Input name={'cantidad_ingreso_confeccion'} defaults={info.length > 0 && info[0].cantidad_ingreso_confeccion ? info[0].cantidad_ingreso_confeccion : null} title="CantidadIngreso" type="number" />
-          <Input name={'fec_termino_confeccion'} defaults={info.length > 0 && info[0].fec_termino_confeccion ? info[0].fec_termino_confeccion : null} title="FechaTermino" type="date" />
+        </div>
+        {/* <hr></hr> */}
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-3">
+            <Input name={'fec_ingreso_confeccion'} defaults={info.length > 0 && info[0].fec_ingreso_confeccion ? info[0].fec_ingreso_confeccion : null} title="FechaIngreso" type="date" />
+            <Input name={'guia_ingreso_confeccion'} defaults={info.length > 0 && info[0].guia_ingreso_confeccion ? info[0].guia_ingreso_confeccion : null} title="GuiaIngreso" type="text" />
+            <Input name={'cantidad_ingreso_confeccion'} defaults={info.length > 0 && info[0].cantidad_ingreso_confeccion ? info[0].cantidad_ingreso_confeccion : null} title="CantidadIngreso" type="number" />
+          </div>
+          <div className="flex gap-3">
+            <Input name={'fec_ingreso_confeccion'} defaults={info.length > 0 && info[0].fec_ingreso_confeccion ? info[0].fec_ingreso_confeccion : null} title="FechaIngreso" type="date" />
+            <Input name={'guia_ingreso_confeccion'} defaults={info.length > 0 && info[0].guia_ingreso_confeccion ? info[0].guia_ingreso_confeccion : null} title="GuiaIngreso" type="text" />
+            <Input name={'cantidad_ingreso_confeccion'} defaults={info.length > 0 && info[0].cantidad_ingreso_confeccion ? info[0].cantidad_ingreso_confeccion : null} title="CantidadIngreso" type="number" />
+          </div>
+          <div className="flex gap-3">
+            <Input name={'fec_ingreso_confeccion'} defaults={info.length > 0 && info[0].fec_ingreso_confeccion ? info[0].fec_ingreso_confeccion : null} title="FechaIngreso" type="date" />
+            <Input name={'guia_ingreso_confeccion'} defaults={info.length > 0 && info[0].guia_ingreso_confeccion ? info[0].guia_ingreso_confeccion : null} title="GuiaIngreso" type="text" />
+            <Input name={'cantidad_ingreso_confeccion'} defaults={info.length > 0 && info[0].cantidad_ingreso_confeccion ? info[0].cantidad_ingreso_confeccion : null} title="CantidadIngreso" type="number" />
+          </div>
+
         </div>
         <div className="flex gap-3">
+          <Input name={'fec_termino_confeccion'} defaults={info.length > 0 && info[0].fec_termino_confeccion ? info[0].fec_termino_confeccion : null} title="FechaTermino" type="date" />
           <Input name={'fallas_confeccion'} defaults={info.length > 0 && info[0].fallas_confeccion ? info[0].fallas_confeccion : null} title="FallasConfeccion" type="number" />
           <Input name={'fallas_tela_confeccion'} defaults={info.length > 0 && info[0].fallas_tela_confeccion ? info[0].fallas_tela_confeccion : null} title="FallasTelas" type="number" />
           <Input name={'piezas_incomp_confeccion'} defaults={info.length > 0 && info[0].piezas_incomp_confeccion ? info[0].piezas_incomp_confeccion : null} title="PiezasIncompletas" type="number" />
           <Input name={'auditoria_confeccion'} defaults={info.length > 0 && info[0].auditoria_confeccion ? info[0].auditoria_confeccion : null} title="Auditoria" type="text" />
           <Input name={'estado_confeccion'} defaults={info.length > 0 && info[0].estado_confeccion ? info[0].estado_confeccion : null} title="Estado" type="text" />
+        </div>
+        <div>
+          <TextArea title="Observaciones" name="observaciones_fase_confeccion" />
         </div>
       </div>
 
@@ -224,6 +243,9 @@ function FormFase({ position, info}) {
           <Input name={'auditoria_ojalboton'} defaults={info.length > 0 && info[0].auditoria_ojalboton ? info[0].auditoria_ojalboton : null} title="Auditoria" type="text" />
           <Input name={'estado_ojalboton'} defaults={info.length > 0 && info[0].estado_ojalboton ? info[0].estado_ojalboton : null} title="Estado" type="text" />
         </div>
+        <div>
+          <TextArea title="Observaciones" name="observaciones_fase_ojalboton" />
+        </div>
       </div>
 
       <div className={` flex-col gap-3 pt-4 ${position == 6 ? 'flex' : 'hidden'}`}>
@@ -247,6 +269,9 @@ function FormFase({ position, info}) {
           <Input name={'piezas_incomp_estampado'} defaults={info.length > 0 && info[0].piezas_incomp_estampado ? info[0].piezas_incomp_estampado : null} title="PiezasIncompletas" type="number" />
           <Input name={'auditoria_estampado'} defaults={info.length > 0 && info[0].auditoria_estampado ? info[0].auditoria_estampado : null} title="Auditoria" type="text" />
           <Input name={'estado_estampado'} defaults={info.length > 0 && info[0].estado_estampado ? info[0].estado_estampado : null} title="Estado" type="text" />
+        </div>
+        <div>
+          <TextArea title="Observaciones" name="observaciones_fase_estampado" />
         </div>
       </div>
 
@@ -272,6 +297,9 @@ function FormFase({ position, info}) {
           <Input name={'auditoria_lavanderia'} defaults={info.length > 0 && info[0].auditoria_lavanderia ? info[0].auditoria_lavanderia : null} title="Auditoria" type="text" />
           <Input name={'estado_lavanderia'} defaults={info.length > 0 && info[0].estado_lavanderia ? info[0].estado_lavanderia : null} title="Estado" type="text" />
         </div>
+        <div>
+          <TextArea title="Observaciones" name="observaciones_fase_lavanderia" />
+        </div>
       </div>
 
       <div className={` flex-col gap-3 pt-4 ${position == 8 ? 'flex' : 'hidden'}`}>
@@ -296,6 +324,9 @@ function FormFase({ position, info}) {
           <Input name={'auditoria_bordado'} defaults={info.length > 0 && info[0].auditoria_bordado ? info[0].auditoria_bordado : null} title="Auditoria" type="text" />
           <Input name={'estado_bordado'} defaults={info.length > 0 && info[0].estado_bordado ? info[0].estado_bordado : null} title="Estado" type="text" />
         </div>
+        <div>
+          <TextArea title="Observaciones" name="observaciones_fase_bordado" />
+        </div>
       </div>
 
       <div className={` flex-col gap-3 pt-4 ${position == 9 ? 'flex' : 'hidden'}`}>
@@ -319,6 +350,9 @@ function FormFase({ position, info}) {
           <Input name={'piezas_incomp_acabados'} defaults={info.length > 0 && info[0].piezas_incomp_acabados ? info[0].piezas_incomp_acabados : null} title="PiezasIncompletas" type="number" />
           <Input name={'auditoria_acabados'} defaults={info.length > 0 && info[0].auditoria_acabados ? info[0].auditoria_acabados : null} title="Auditoria" type="text" />
           <Input name={'estado_acabados'} defaults={info.length > 0 && info[0].estado_acabados ? info[0].estado_acabados : null} title="Estado" type="text" />
+        </div>
+        <div>
+          <TextArea title="Observaciones" name="observaciones_fase_acabados" />
         </div>
       </div>
     </>
@@ -470,7 +504,7 @@ export function NuevaOrdenProduccion() {
             <hr />
             <form ref={form} onSubmit={onsubmit}>
               <FormFase position={position} info={orden} />
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button type={'submit'} tipo={'accept'}>Guardar</Button>
               </div>
