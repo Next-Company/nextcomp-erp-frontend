@@ -20,6 +20,7 @@ export function Input({ name, defaults = null, title = "", type }) {
     setInitial(e.target.value)
   }
   useEffect(() => {
+    console.log("Cargando otra vez y otra vez y otra vez")
     if (defaults && defaults !== '') {
       ref.current.parentElement.querySelector('label').classList.remove('mover')
       setInitial( defaults )
