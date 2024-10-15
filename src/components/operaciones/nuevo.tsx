@@ -23,14 +23,15 @@ const listTables = [
   'tbl2_fases_prod_acabados'
 ]
 function FormFase({ position, info}) {
-  // console.log(info)
+  console.log(info)
   return(
     <>
       <div className={` flex-col gap-3 pt-4 ${position == 0 ? 'flex' : 'hidden'}`}>
         <div className="flex gap-3">
           <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
           <Input name={'oc'} title="OC" defaults={info.length > 0 ? info[0].oc : null} type="text" />
-          <InputSelect title={'Cliente'} name={"cliente"} data={[{ indice: 'ESTILOS', option: 'ESTILOS', selected: true }, { indice: 'NEXT COMPANY', option: 'NEXT COMPANY' }]} df={info.length > 0 ? info[0].cliente : null} />
+          {/* <InputSelect title={'Cliente'} name={"cliente"} data={[{ indice: 'ESTILOS', option: 'ESTILOS', selected: true }, { indice: 'NEXT COMPANY', option: 'NEXT COMPANY' }]} df={info.length > 0 ? info[0].cliente : null} /> */}
+          <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" />
           <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" />
           <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaEntrega" type="date" />
         </div>
@@ -84,9 +85,13 @@ function FormFase({ position, info}) {
           <div className="flex-1 min-w-[200px]">
             <Input name={'combo14_orden'} defaults={info.length > 0 ? info[0].combo14_orden : null} title="Combo14" type="number" />
           </div>
-        </div>
-        <div>
-          <TextArea title="Observaciones" valor={info.length > 0 ? info[0].observaciones_fase_orden : null} name="observaciones_fase_orden" />
+          <div className="flex-1 min-w-[200px]">
+            {/* <Input name={'estado_orden'} defaults={info.length > 0 ? info[0].combo14_orden : null} title="Combo14" type="number" /> */}
+            <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null} />
+          </div>
+          {/* <div className="flex-1 min-w-[200px]">
+            <Input name={'total'} defaults={info.length > 0 ? Object.keys(info[0]).filter(key=>key.substring(0,5)=='combo').map(row=>(info[0][row] ? info[0][row] : 0)).reduce((carry,current)=>(carry+current),0) : null} title="Total" type="number" />
+          </div> */}
         </div>
       </div>
       <div className={` flex-col gap-3 pt-4 ${position == 1 ? 'flex' : 'hidden'}`}>
@@ -100,7 +105,7 @@ function FormFase({ position, info}) {
         <div className="flex gap-3">
           <Input name={'articulo'} defaults={info.length > 0 && info[0].articulo ? info[0].articulo : null} title="Articulo" type="text" />
           <Input name={'guia_ingreso'} defaults={info.length > 0 && info[0].guia_ingreso ? info[0].guia_ingreso : null} title="GuiaIngreso" type="text" />
-          <Input name={'estado_telas'} defaults={info.length > 0 && info[0].estado ? info[0].estado : null} title="Estado" type="text" />
+          <InputSelect title={'Estado'} name={"estado_telas"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_telas : null} />
         </div>
         <div>
           <TextArea title="Observaciones" name="observaciones_fase_telas" />
@@ -117,7 +122,8 @@ function FormFase({ position, info}) {
         <div className="flex gap-3">
           <Input name={'cliente_corte'} defaults={info.length > 0 && info[0].cliente_corte ? info[0].cliente_corte : null} title="Cliente" type="text" />
           <Input name={'tizado'} defaults={info.length > 0 && info[0].tizado ? info[0].tizado : null} title="Tizado" type="text" />
-          <Input name={'estado_molde'} defaults={info.length > 0 && info[0].estado_molde ? info[0].estado_molde : null} title="Estado" type="text" />
+          <InputSelect title={'Estado'} name={"estado_molde"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_molde : null} />
+          {/* <Input name={'estado_molde'} defaults={info.length > 0 && info[0].estado_molde ? info[0].estado_molde : null} title="Estado" type="text" /> */}
         </div>
         <div>
           <TextArea title="Observaciones" name="observaciones_fase_molde" />
@@ -175,6 +181,9 @@ function FormFase({ position, info}) {
           </div>
           <div className="flex-1 min-w-[200px]">
             <Input name={'combo14_corte'} defaults={info.length > 0 && info[0].combo14_corte ? info[0].combo14_corte : null} title="Combo14" type="number" />
+          </div>
+          <div className="flex-1 min-w-[200px]">
+            <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_corte : null} />
           </div>
         </div>
         <div>
@@ -247,7 +256,8 @@ function FormFase({ position, info}) {
             <Input name={'auditoria_confeccion'} defaults={info.length > 0 && info[0].auditoria_confeccion ? info[0].auditoria_confeccion : null} title="Auditoria" type="text" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'estado_confeccion'} defaults={info.length > 0 && info[0].estado_confeccion ? info[0].estado_confeccion : null} title="Estado" type="text" />
+            <InputSelect title={'Estado'} name={"estado_confeccion"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_confeccion : null} />
+            {/* <Input name={'estado_confeccion'} defaults={info.length > 0 && info[0].estado_confeccion ? info[0].estado_confeccion : null} title="Estado" type="text" /> */}
           </div>
         </div>
         <div>
@@ -321,7 +331,8 @@ function FormFase({ position, info}) {
             <Input name={'auditoria_ojalboton'} defaults={info.length > 0 && info[0].auditoria_ojalboton ? info[0].auditoria_ojalboton : null} title="Auditoria" type="text" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'estado_ojalboton'} defaults={info.length > 0 && info[0].estado_ojalboton ? info[0].estado_ojalboton : null} title="Estado" type="text" />
+            <InputSelect title={'Estado'} name={"estado_ojalboton"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_ojalboton : null} />
+            {/* <Input name={'estado_ojalboton'} defaults={info.length > 0 && info[0].estado_ojalboton ? info[0].estado_ojalboton : null} title="Estado" type="text" /> */}
           </div>
         </div>
         <div>
@@ -394,7 +405,8 @@ function FormFase({ position, info}) {
             <Input name={'auditoria_estampado'} defaults={info.length > 0 && info[0].auditoria_estampado ? info[0].auditoria_estampado : null} title="Auditoria" type="text" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'estado_estampado'} defaults={info.length > 0 && info[0].estado_estampado ? info[0].estado_estampado : null} title="Estado" type="text" />
+            <InputSelect title={'Estado'} name={"estado_estampado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_estampado : null} />
+            {/* <Input name={'estado_estampado'} defaults={info.length > 0 && info[0].estado_estampado ? info[0].estado_estampado : null} title="Estado" type="text" /> */}
           </div>
         </div>
         <div>
@@ -491,7 +503,8 @@ function FormFase({ position, info}) {
             <Input name={'auditoria_lavanderia'} defaults={info.length > 0 && info[0].auditoria_lavanderia ? info[0].auditoria_lavanderia : null} title="Auditoria" type="text" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'estado_lavanderia'} defaults={info.length > 0 && info[0].estado_lavanderia ? info[0].estado_lavanderia : null} title="Estado" type="text" />
+            <InputSelect title={'Estado'} name={"estado_lavanderia"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_lavanderia : null} />
+            {/* <Input name={'estado_lavanderia'} defaults={info.length > 0 && info[0].estado_lavanderia ? info[0].estado_lavanderia : null} title="Estado" type="text" /> */}
           </div>
         </div>
         <div>
@@ -587,7 +600,8 @@ function FormFase({ position, info}) {
             <Input name={'auditoria_bordado'} defaults={info.length > 0 && info[0].auditoria_bordado ? info[0].auditoria_bordado : null} title="Auditoria" type="text" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'estado_bordado'} defaults={info.length > 0 && info[0].estado_bordado ? info[0].estado_bordado : null} title="Estado" type="text" />
+            <InputSelect title={'Estado'} name={"estado_bordado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_bordado : null} />
+            {/* <Input name={'estado_bordado'} defaults={info.length > 0 && info[0].estado_bordado ? info[0].estado_bordado : null} title="Estado" type="text" /> */}
           </div>
         </div>
         <div>
@@ -683,7 +697,7 @@ function FormFase({ position, info}) {
             <Input name={'auditoria_acabados'} defaults={info.length > 0 && info[0].auditoria_acabados ? info[0].auditoria_acabados : null} title="Auditoria" type="text" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'estado_acabados'} defaults={info.length > 0 && info[0].estado_acabados ? info[0].estado_acabados : null} title="Estado" type="text" />
+            <InputSelect title={'Estado'} name={"estado_acabados"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_acabados : null} />
           </div>
         </div>
         <div>

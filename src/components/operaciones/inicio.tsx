@@ -154,7 +154,7 @@ export default function Inicio() {
                         <th className="lg:table-cell">Precio</th>
                         <th className="lg:table-cell">Modelo</th>
                         {/* <th className="lg:table-cell">Total</th> */}
-                        <th className="lg:table-cell">Dias Producción</th>
+                        <th className="lg:table-cell">FaseActual</th>
                         <th className="lg:table-cell">Accciones</th>
                       </tr>
                     </thead>
@@ -173,7 +173,7 @@ export default function Inicio() {
                               <td>{row.base}</td>
                               <td>{row.precio}</td>
                               <td>{row.modelos}</td>
-                              <td>{22}</td>
+                              <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td>
                               {/* <td>{row.modelos}</td> */}
                               <td>
                                 <ul className="flex flex-row justify-end">
