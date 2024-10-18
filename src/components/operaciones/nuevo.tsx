@@ -880,7 +880,8 @@ export function NuevaOrdenProduccion() {
               <FormFase position={position} info={orden} />
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
-                <Button type={'submit'} tipo={'accept'}>Guardar</Button>
+                <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'accept'}>Eliminar</Button>
+                <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>
             </form>
             
