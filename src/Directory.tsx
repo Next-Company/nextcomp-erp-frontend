@@ -566,7 +566,9 @@ export function Directory() {
               </div>
             </div>
           </div> */}
-          <button className="bg-orange-400" onClick={()=>viewOptions()}>Click me!!</button>
+
+
+          {/* <button className="bg-orange-400" onClick={()=>viewOptions()}>Click me!!</button> */}
 
         </div>
 

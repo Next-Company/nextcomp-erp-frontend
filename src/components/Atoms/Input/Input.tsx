@@ -20,25 +20,13 @@ export function Input({ name, defaults = null, title = "", type }) {
     setInitial(e.target.value)
   }
   useEffect(() => {
-    console.log("Cargando otra vez y otra vez y otra vez")
-    if (defaults && defaults !== '') {
+    if (defaults !== null && defaults !== '') {
       ref.current.parentElement.querySelector('label').classList.remove('mover')
       setInitial( defaults )
       // ref.current.parentElement.classList.add('selected')
     }else{
       if(type == 'date'){
         ref.current.parentElement.querySelector('label').classList.remove('mover')
-        // ref.current.parentElement.querySelector('label').classList.remove('mover')
-        // setInitial((new Date())
-        // .toLocaleDateString()
-        // .split("/")
-        // .reverse()
-        // .reduce(
-        //   (acumulador,current)=>{
-        //     acumulador.push(current.length < 2 ? '0'+current : current);
-        //     return acumulador
-        //   },[]
-        // ).join("-"))
       }
     }
   }, [defaults])

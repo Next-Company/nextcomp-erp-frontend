@@ -96,8 +96,11 @@ export function Soporte() {
                 <InputSelect title={'Prioridad'} name={"prioridad"} data={[{ indice: 'ALTA', option: 'Alta', selected: true }, { indice: 'MEDIA', option: 'Media' }, { indice: 'BAJA', option: 'Baja' },]} df={select.prioridad} />
                 <InputSelect title={'Categoria'} name={"categoria"} data={[{ indice: 'IMPL', option: 'Implementaciones', selected: true }, { indice: 'SOPT', option: 'Soportes' }, { indice: 'PRCT', option: 'Proyecto' },]} df={select.categoria} />
                 {
-                  userdata.niv == 0 &&
-                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PROC', option: 'En proceso' },{ indice: 'FNLZ', option: 'Finalizado' },{ indice: 'ANUL', option: 'Anulado' },{ indice: 'EMIT', option: 'Emitido' }]} df={select.estado} />
+                  userdata.niv == 1 &&
+                  <>
+                    <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PROC', option: 'En proceso' },{ indice: 'FNLZ', option: 'Finalizado' },{ indice: 'ANUL', option: 'Anulado' },{ indice: 'EMIT', option: 'Emitido' }]} df={select.estado} />
+                    <Input name={'avance'} defaults={select.avance} title="Avance" type="number" />
+                  </>
                 }
               </div>
               <div>

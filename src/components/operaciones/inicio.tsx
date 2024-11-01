@@ -212,10 +212,16 @@ export default function Inicio() {
                     </tbody>
                   </table>
                 </div>
-                <div className="flex justify-end mt-3 gap-2">
-                  <Button action={() => setRefresh(true)} tipo={'default'}>Actualizar</Button>
-                  <Button action={() => navigate('/main/operaciones/nuevo')} tipo={'accept'}>Nuevo</Button>
-                  {/* <Button action={() => { }} tipo={'success'}>Incidencia</Button> */}
+                <div className="flex justify-between items-center mt-3 gap-2">
+                  <div>
+                    <span>1 - 2 - 3 - 4 - 5 - 6 ....... 8 - 9</span>
+                    Se recuperaron <strong>120</strong> registros
+                  </div>
+                  <div>
+                    <Button action={() => setRefresh(true)} tipo={'default'}>Actualizar</Button>
+                    <Button action={() => navigate('/main/operaciones/nuevo')} tipo={'accept'}>Nuevo</Button>
+                    {/* <Button action={() => { }} tipo={'success'}>Incidencia</Button> */}
+                  </div>
                 </div >
               </>
             }
