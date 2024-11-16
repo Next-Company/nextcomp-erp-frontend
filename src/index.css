@@ -350,4 +350,182 @@ div.other>div {
   animation-direction: alternate;
   animation-duration: 1s;
 }
-
+#cover > div{
+  display: flex;
+  transform: scale(.3);
+  gap:10px;
+}
+#cover > div div{
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  transition: transform .3s ease;
+}
+#cover > div div:nth-child(1){
+  transition: transform .3s ease;
+  animation: circle_left 1s running backwards infinite, changecolor1 5s running backwards infinite;
+}
+#cover > div div:nth-child(2){
+  background-color: rgb(165, 42, 42);
+  animation: move 1s running backwards infinite, changecolor2 5s running backwards infinite;
+}
+#cover > div div:nth-child(3){
+  background-color: rgb(165, 122, 42);
+  animation: move 1s running backwards infinite, changecolor3 5s running backwards infinite;
+}
+#cover > div div:nth-child(4){
+  background-color: rgb(46, 165, 42);
+  animation: move 1s running backwards infinite, changecolor4 5s running backwards infinite;
+}
+#cover > div div:nth-child(5){
+  background-color: rgb(42, 140, 165);
+  animation: move 1s running backwards infinite, changecolor5 5s running backwards infinite;
+}
+#cover > div div:nth-child(6){
+  background-color: rgb(110, 42, 165);
+  animation: circle_right 1s running backwards infinite, changecolor6 5s running backwards infinite;
+}
+@keyframes circle_left{
+  0%{
+    transform: translate(0px,-50px);
+    opacity:0;
+  }
+  50%{
+    transform: translate(60px,-50px);
+    opacity:0;
+  }
+  100%{
+    transform: translate(60px,0px);
+    opacity:1;
+  }
+}
+@keyframes changecolor1{
+  0%,19.99%{
+    background-color: rgb(110, 42, 165)
+  }
+  20%,39.99%{
+    background-color: rgb(42, 140, 165)
+  }
+  40%,59.99%{
+    background-color: rgb(46, 165, 42)
+  }
+  60%,79.99%{
+    background-color: rgb(165, 122, 42)
+  }
+  80%,99.99%{
+    background-color: rgb(165, 42, 42)
+  }
+}
+@keyframes changecolor2{
+  0%,19.99%{
+    background-color: rgb(165, 42, 42)
+  }
+  20%,39.99%{
+    background-color: rgb(110, 42, 165);
+  }
+  40%,59.99%{
+    background-color: rgb(42, 140, 165);
+  }
+  60%,79.99%{
+    background-color: rgb(46, 165, 42);
+  }
+  80%,99.99%{
+    background-color: rgb(165, 122, 42);
+  }
+}
+@keyframes changecolor3{
+  0%,19.99%{
+    background-color: rgb(165, 122, 42);
+  }
+  20%,39.99%{
+    background-color: rgb(165, 42, 42);
+  }
+  40%,59.99%{
+    background-color: rgb(110, 42, 165);
+  }
+  60%,79.99%{
+    background-color: rgb(42, 140, 165);
+  }
+  80%,99.99%{
+    background-color: rgb(46, 165, 42);
+  }
+}
+@keyframes changecolor4{
+  0%,19.99%{
+    background-color: rgb(46, 165, 42);
+  }
+  20%,39.99%{
+    background-color: rgb(165, 122, 42);    
+  }
+  40%,59.99%{
+    background-color: rgb(165, 42, 42);
+  }
+  60%,79.99%{
+    background-color: rgb(110, 42, 165);
+  }
+  80%,99.99%{
+    background-color: rgb(42, 140, 165);
+  }
+}
+@keyframes changecolor5{
+  0%,19.99%{
+    background-color: rgb(42, 140, 165);
+  }
+  20%,39.99%{
+    background-color: rgb(46, 165, 42);
+  }
+  40%,59.99%{
+    background-color: rgb(165, 122, 42);    
+  }
+  60%,79.99%{
+    background-color: rgb(165, 42, 42);
+  }
+  80%,99.99%{
+    background-color: rgb(110, 42, 165);
+  }
+}
+@keyframes circle_right{
+  0%{
+    transform: scale(1);
+    opacity:1;
+  }
+  50%{
+    transform: scale(1.5);
+    opacity:0;
+  }
+  100%{
+    transform: scale(1.5);
+    opacity:0;
+  }
+}
+@keyframes changecolor6{
+  0%,19.99%{
+    background-color: rgb(110, 42, 165);  
+  }
+  20%,39.99%{
+    background-color: rgb(42, 140, 165);
+  }
+  40%,59.99%{
+    background-color: rgb(46, 165, 42);
+  }
+  60%,79.99%{
+    background-color: rgb(165, 122, 42);    
+  }
+  80%,99.99%{
+    background-color: rgb(165, 42, 42);
+  }
+}
+@keyframes move{
+  0%{
+    /* transform:translateX(0px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) */
+    transform:translateX(0px)
+  }
+  100%{
+    /* transform:translateX(60px) rotateY(360deg) rotateX(360deg) rotateZ(360deg) */
+    transform:translateX(60px)
+  }
+}
+#contedor{
+  display:flex;
+  justify-content: space-between;
+}
