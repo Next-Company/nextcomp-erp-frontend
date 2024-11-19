@@ -10,6 +10,10 @@ import { NavLink } from "react-router-dom"
 import { Button } from "../components/Atoms/Button/Button"
 import { Consulta } from "../utils/utils"
 import { InputMultiSelectV2 } from "../components/Atoms/Input/InputMultiSelectV2"
+import { InputSelect } from "../components/Atoms/Input/InputSelect"
+import { InputSelect2 } from "../components/Atoms/Input/InputSelect2"
+import { InputSelectTest } from "../components/Atoms/Input/InputSelectTest"
+import { Input } from "../components/Atoms/Input/Input"
 
 const API_KEY = 'a0765f5398ae4694bf2d5b0093660c73'
 export function Home() {
@@ -38,12 +42,21 @@ export function Home() {
       // console.log("La respuesta es : " + JSON.parse(resp))
     })
   }
+  const myform = useRef()
+  const mostrar = ()=>{
+    const data = new FormData(myform.current)
+    console.log(Array.from(data))
+  }
   return (
     <>
       <div className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
         <div className="w-[300px]">
           {/* <InputMultiSelect title={'Ruta'} name={"ruta"} data={[{ indice: 'IMPL', option: 'CONFECCION', selected: true }, { indice: 'SOPT', option: 'OJAL Y BOTON' }, { indice: 'PRCT', option: 'ESTAMPADO' }, { indice: 'PRCT', option: 'LAVANDERIA' }, { indice: 'PRCT', option: 'BORDADO' }, { indice: 'PRCT', option: 'ACABADOS' }]} df={'PRCT'} /> */}
           <InputMultiSelectV2 title={'Ruta'} name={"ruta"} data={[{ indice: 'IMPL', option: 'CONFECCION', selected: true }, { indice: 'SOPT', option: 'OJAL Y BOTON' }, { indice: 'PRCT', option: 'ESTAMPADO' }, { indice: 'PRCT', option: 'LAVANDERIA' }, { indice: 'PRCT', option: 'BORDADO' }, { indice: 'PRCT', option: 'ACABADOS' }]} df={JSON.parse('["CONFECCION","ACABADOS"]')} />
+
+
+
+
           {/* <form ref={form} action="">
             <select name="frutas" onChange={onchange} ref={multi} multiple>
               <option value='manz'>manzana</option>
@@ -57,6 +70,18 @@ export function Home() {
           <Button action={enviar} type="button" tipo="accept">Enviar</Button>
           <Button action={traer} type="button" tipo="accept">Consultar</Button> */}
         </div>
+
+        <div className="flex-1 min-w-[200px] max-w-[300px] mt-4">
+          <InputSelectTest title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={''} />
+        </div>
+        <div className="flex-1 min-w-[200px] max-w-[300px] mt-4">
+          <form ref={myform}>
+            <Input name={'oc'} title="OC" defaults={null} type="text" />
+            <button type="button" onClick={mostrar}>ClickMe!</button>
+          </form>
+        </div>
+        
+        
     
         {/* <NavLink
           to="/messages"

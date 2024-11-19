@@ -271,15 +271,15 @@ export default function Inicio() {
             </div>
             <div className="flex flex-col items-center p-2 gap-2">
               <div className="flex justify-between p-3 w-full">
-                <div>
-                  Previous
+                <div className="bg-blue-500 text-white p-1 pl-4 pr-4 rounded-full cursor-pointer hover:bg-blue-400">
+                  Atrás
                 </div>
                 <div>
-                  <span>1 - 2 - 3 - 4 - 5 - 6 ....... 8 - 9</span>
+                  {/* <span>1 - 2 - 3 - 4 - 5 - 6 ....... 8 - 9</span> */}
                   Se recuperaron <strong>120</strong> registros
                 </div>
-                <div>
-                  Next
+                <div className="bg-blue-500 text-white p-1 pl-4 pr-4 rounded-full cursor-pointer hover:bg-blue-400">
+                  Siguiente
                 </div>
                 
               </div>

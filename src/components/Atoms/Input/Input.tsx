@@ -20,6 +20,7 @@ export function Input({ name, defaults = null, title = "", type }) {
     setInitial(e.target.value)
   }
   useEffect(() => {
+    console.log('el valor por defecto es:',defaults)
     if (defaults !== null && defaults !== '') {
       ref.current.parentElement.querySelector('label').classList.remove('mover')
       setInitial( defaults )
@@ -29,6 +30,7 @@ export function Input({ name, defaults = null, title = "", type }) {
         ref.current.parentElement.querySelector('label').classList.remove('mover')
       }
     }
+    
   }, [defaults])
   return (
     <>

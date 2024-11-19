@@ -87,7 +87,7 @@ function FormFase({ position, info}) {
           </div>
           <div className="flex-1 min-w-[200px]">
             {/* <Input name={'estado_orden'} defaults={info.length > 0 ? info[0].combo14_orden : null} title="Combo14" type="number" /> */}
-            <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null} />
+            <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null} />
           </div>
           {/* <div className="flex-1 min-w-[200px]">
             <Input name={'total'} defaults={info.length > 0 ? Object.keys(info[0]).filter(key=>key.substring(0,5)=='combo').map(row=>(info[0][row] ? info[0][row] : 0)).reduce((carry,current)=>(carry+current),0) : null} title="Total" type="number" />
@@ -693,17 +693,27 @@ export function NuevaOrdenProduccion() {
       pp()
     }
   },[])
+
+  const mostrar = ()=>{
+    const data = new FormData(form.current)
+    console.log(Array.from(data))
+  }
+
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
 
           <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Operaciones / Nueva Orden</h2>
-              <div className="w-[400px]">
-                {/* <Search config={{ width: '200px' }} /> */}
-              </div>
+            <div className="flex justify-start items-center">
+              <h2 className="font-medium text-[16px]">Operaciones /</h2>
+              <span className="text-blue-500 font-bold">
+                {
+                  urlparams.id && orden.length > 0
+                  ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
+                  : "Nueva Orden"
+                }
+              </span>
             </div>
             <hr />
           </div>
@@ -716,55 +726,55 @@ export function NuevaOrdenProduccion() {
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group flex-row items-center gap-1 ${position == 1 && 'active'}`} onClick={() => setPosition(1)} data-estado="EMIT">
+              <button className={`group flex-row items-center gap-1 ${position == 1 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(1)} data-estado="EMIT">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Telas
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group flex-row items-center gap-1 ${position == 2 && 'active'}`} onClick={() => setPosition(2)} data-estado="FNLZ">
+              <button className={`group flex-row items-center gap-1 ${position == 2 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(2)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Molde
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group ${position == 3 && 'active'}`} onClick={() => setPosition(3)} data-estado="FNLZ">
+              <button className={`group ${position == 3 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(3)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Hoja de corte
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group ${position == 4 && 'active'}`} onClick={() => setPosition(4)} data-estado="FNLZ">
+              <button className={`group ${position == 4 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(4)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Confeccion
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group ${position == 5 && 'active'}`} onClick={() => setPosition(5)} data-estado="FNLZ">
+              <button className={`group ${position == 5 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(5)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Ojal y botón
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group ${position == 6 && 'active'}`} onClick={() => setPosition(6)} data-estado="FNLZ">
+              <button className={`group ${position == 6 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(6)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Estampado
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group ${position == 7 && 'active'}`} onClick={() => setPosition(7)} data-estado="FNLZ">
+              <button className={`group ${position == 7 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(7)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Lavanderia
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group ${position == 8 && 'active'}`} onClick={() => setPosition(8)} data-estado="FNLZ">
+              <button className={`group ${position == 8 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(8)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Bordado
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group ${position == 9 && 'active'}`} onClick={() => setPosition(9)} data-estado="FNLZ">
+              <button className={`group ${position == 9 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(9)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Acabados
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -776,8 +786,9 @@ export function NuevaOrdenProduccion() {
               <FormFase position={position} info={orden} />
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
-                <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'accept'}>Eliminar</Button>
+                {/* <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'accept'}>Eliminar</Button> */}
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                <Button type={'button'} action={mostrar} tipo={'warning'}>Mostrar</Button>
               </div>
             </form>
             

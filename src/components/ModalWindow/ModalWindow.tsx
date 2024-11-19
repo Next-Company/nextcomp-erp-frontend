@@ -6,7 +6,7 @@ export function ModalWindow() {
   const modalref = useRef(null)
   const { config } = useContext(ModalWindowContext)
   const [content, setContent] = useState(config.content)
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
 
   const onclick = (e) => {
     e.stopPropagation()

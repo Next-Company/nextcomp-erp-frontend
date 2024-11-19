@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-export function InputSelect({ title, name, data, df }) {
+export function InputSelectTest({ title, name, data, df }) {
   const ref_menu = useRef(null)
   const [select, setSelect] = useState(0)
   const [info, setInfo] = useState(data)
@@ -41,6 +41,7 @@ export function InputSelect({ title, name, data, df }) {
 
         {/* <input type='hidden' name={name} value={select >= 0 ? info[select].indice : null} /> */}
         <input type='hidden' name={name} value={info[select].indice} />
+        
         {/* <input onClick={e => e.stopPropagation()} readOnly value={select > 0 ? info[select].option : null} type="text" onFocus={onfocus} onBlur={onblur} className="inp cursor-default bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" /> */}
         <input onClick={e => e.stopPropagation()} readOnly value={info[select].option} type="text" onFocus={onfocus} onBlur={onblur} className="inp cursor-default bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" />
 
