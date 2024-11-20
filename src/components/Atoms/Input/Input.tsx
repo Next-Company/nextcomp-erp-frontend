@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react"
 
-export function Input({ name, defaults = null, title = "", type }) {
+export function Input({ name, defaults = null, title = "", type, dataset = [], style = {} }) {
   const ref = useRef(null)
   const [initial,setInitial] = useState(defaults)
   const onclick = (e) => {
     e.target.querySelector('input').focus()
   }
+  // const style2 = 
   const onfocus = (e) => {
     e.target.parentElement.querySelector('label').classList.remove('mover')
     e.target.parentElement.classList.add('selected')
@@ -20,7 +21,7 @@ export function Input({ name, defaults = null, title = "", type }) {
     setInitial(e.target.value)
   }
   useEffect(() => {
-    console.log('el valor por defecto es:',defaults)
+    // console.log('el valor por defecto es:',defaults)
     if (defaults !== null && defaults !== '') {
       ref.current.parentElement.querySelector('label').classList.remove('mover')
       setInitial( defaults )
@@ -30,11 +31,16 @@ export function Input({ name, defaults = null, title = "", type }) {
         ref.current.parentElement.querySelector('label').classList.remove('mover')
       }
     }
+    if(dataset.length > 0){
+      dataset.forEach(ds=>{
+        ref.current.dataset[Object.keys(ds)[0]] = Object.values(ds)[0]
+      })
+    }
     
   }, [defaults])
   return (
     <>
-      <div onClick={onclick} className={`rounded-md bg-gray-100 flex flex-col justify-start items-start pl-[16px] pr-[16px] pt-[5px] pb-[8px] hover:bg-gray-200 relative box-content group overflow-hidden flex-1 ${type == 'hidden' && 'hidden'}`}>
+      <div onClick={onclick} className={`rounded-md bg-gray-100 flex flex-col justify-start items-start pl-[16px] pr-[16px] pt-[5px] pb-[8px] hover:bg-gray-200 relative box-content group overflow-hidden flex-1 ${type == 'hidden' && 'hidden'}`} style={style}>
         <label className={`text-[12px] text-blue-600 transition-all mover pointer-events-none`}>{title}</label>
         {/* <input onClick={(e) => e.stopPropagation()} ref={ref} type={type} onChange={onchange} name={name} value={initial} onFocus={onfocus} onBlur={onblur} autoComplete="off" className="inp bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" /> */}
         {/* <input onClick={()=>console.log('clickeando')} /> */}

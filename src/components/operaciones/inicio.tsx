@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "../Atoms/Button/Button";
 import { Search } from "../Atoms/Search/Search";
 import { useNavigate } from "react-router-dom";
@@ -149,6 +149,38 @@ export default function Inicio() {
         })
     }
   }, [refresh])
+  const menu = useRef()
+  const calculo = (e)=>{
+    const estado = e.target.dataset.estado
+    const data = new FormData()
+    data.append("params",JSON.stringify([{estado_orden:estado}]))
+    if(!e.target.classList.contains('active')){
+      for(const element of menu.current.querySelectorAll('button')){
+        element.classList.remove('active')
+      }
+      e.target.classList.add("active")
+    }
+    setOpenloader(true)
+      Consulta({
+        url: 'produccion/busqueda', params: {
+          method: 'POST',
+          body: data
+        }
+      })
+        .then(resp => {
+          setOrdenes(resp)
+          setOpenloader(false)
+          setRefresh(false)
+        })
+        .catch(() => {
+          console.log("error")
+          logout()
+          setOpenloader(false)
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
+  }
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -157,7 +189,7 @@ export default function Inicio() {
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Operaciones</h2>
+              <h2 className="font-medium text-[16px]">Producción</h2>
               <div className="w-[400px]">
                 <Search config={{ width: '200px' }} action={busqueda_search} />
               </div>
@@ -165,22 +197,21 @@ export default function Inicio() {
             <hr />
           </div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll">
-
             <div>
-              <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="ALL">
+              <ul ref={menu} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+                <button className="group active" data-estado="EN PROCESO" onClick={calculo}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Órdenes en proceso
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="EMIT">
+                <button className="group" data-estado="FINALIZADO" onClick={calculo}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Órdenes finalizadas
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="FNLZ">
+                <button className="group" data-estado="ANULADO" onClick={calculo}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Órdenes anuladas
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -260,30 +291,23 @@ export default function Inicio() {
                   }
                 </tbody>
               </table>
-              {/* <div className="overflow-hidden">
-                <div className="bg-red-400 w-[100px] h-[100px]"></div>
-                <div className="bg-red-400 w-[100px] h-[100px]"></div>
-                <div className="bg-red-400 w-[100px] h-[100px]"></div>
-                <div className="bg-red-400 w-[100px] h-[100px]"></div>
-                <div className="bg-red-400 w-[100px] h-[100px]"></div>
-                <div className="bg-red-400 w-[100px] h-[100px]"></div>
-              </div> */}
             </div>
-            <div className="flex flex-col items-center p-2 gap-2">
-              <div className="flex justify-between p-3 w-full">
-                <div className="bg-blue-500 text-white p-1 pl-4 pr-4 rounded-full cursor-pointer hover:bg-blue-400">
-                  Atrás
-                </div>
+            {/* <div className="flex flex-col items-center p-2 gap-2"> */}
+            <div className="flex flex-row justify-between p-2">
+              <div className="flex justify-between items-center p-3 gap-2">
                 <div>
-                  {/* <span>1 - 2 - 3 - 4 - 5 - 6 ....... 8 - 9</span> */}
                   Se recuperaron <strong>120</strong> registros
                 </div>
-                <div className="bg-blue-500 text-white p-1 pl-4 pr-4 rounded-full cursor-pointer hover:bg-blue-400">
-                  Siguiente
+                <div className="flex flex-row">
+                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400">
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
+                  </div>
+                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400">
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg>
+                  </div>
                 </div>
-                
               </div>
-              <div className="flex justify-end w-full">
+              <div className="flex p-2">
                 <Button action={() => setRefresh(true)} tipo={'default'}>Actualizar</Button>
                 <Button action={() => navigate('/main/operaciones/nuevo')} tipo={'accept'}>Nuevo</Button>
               </div>

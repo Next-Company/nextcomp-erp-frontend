@@ -9,6 +9,7 @@ import { Search } from "../Atoms/Search/Search";
 import { useNavigate, useParams } from "react-router-dom";
 import { InputMultiSelect } from "../Atoms/Input/InputMultiSelect";
 import { TextArea } from "../Atoms/Input/TextArea";
+import { Articulo } from "../Common/Articulo";
 
 const listTables = [
   'tbl2_fases_prod_ordenes',
@@ -23,7 +24,11 @@ const listTables = [
   'tbl2_fases_prod_acabados'
 ]
 function FormFase({ position, info}) {
-  console.log(info)
+  console.log("Informacion detalle orden :",info)
+  useEffect(()=>{
+    console.log("Cargando informacion de detalle orden")
+    
+  },[])
   return(
     <div className="flex-1 overflow-y-scroll scrollbar-special">
       <div className={` flex-col gap-3 pt-4 ${position == 0 ? 'flex' : 'hidden'}`}>
@@ -44,50 +49,53 @@ function FormFase({ position, info}) {
         </div>
         <div className="flex gap-3 flex-wrap">
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo1_orden'} defaults={info.length > 0 ? info[0].combo1_orden : null} title="Combo1" type="number" />
+            <Input name={'combo1_orden'} defaults={info.length > 0 ? info[0].combo1_orden : null} dataset={[{group:'combo'}]} title="Combo1" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo2_orden'} defaults={info.length > 0 ? info[0].combo2_orden : null} title="Combo2" type="number" />
+            <Input name={'combo2_orden'} defaults={info.length > 0 ? info[0].combo2_orden : null} dataset={[{group:'combo'}]} title="Combo2" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo3_orden'} defaults={info.length > 0 ? info[0].combo3_orden : null} title="Combo3" type="number" />
+            <Input name={'combo3_orden'} defaults={info.length > 0 ? info[0].combo3_orden : null} dataset={[{group:'combo'}]} title="Combo3" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo4_orden'} defaults={info.length > 0 ? info[0].combo4_orden : null} title="Combo4" type="number" />
+            <Input name={'combo4_orden'} defaults={info.length > 0 ? info[0].combo4_orden : null} dataset={[{group:'combo'}]} title="Combo4" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo5_orden'} defaults={info.length > 0 ? info[0].combo5_orden : null} title="Combo5" type="number" />
+            <Input name={'combo5_orden'} defaults={info.length > 0 ? info[0].combo5_orden : null} dataset={[{group:'combo'}]} title="Combo5" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo6_orden'} defaults={info.length > 0 ? info[0].combo6_orden : null} title="Combo6" type="number" />
+            <Input name={'combo6_orden'} defaults={info.length > 0 ? info[0].combo6_orden : null} dataset={[{group:'combo'}]} title="Combo6" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo7_orden'} defaults={info.length > 0 ? info[0].combo7_orden : null} title="Combo7" type="number" />
+            <Input name={'combo7_orden'} defaults={info.length > 0 ? info[0].combo7_orden : null} dataset={[{group:'combo'}]} title="Combo7" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo8_orden'} defaults={info.length > 0 ? info[0].combo8_orden : null} title="Combo8" type="number" />
+            <Input name={'combo8_orden'} defaults={info.length > 0 ? info[0].combo8_orden : null} dataset={[{group:'combo'}]} title="Combo8" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo9_orden'} defaults={info.length > 0 ? info[0].combo9_orden : null} title="Combo9" type="number" />
+            <Input name={'combo9_orden'} defaults={info.length > 0 ? info[0].combo9_orden : null} dataset={[{group:'combo'}]} title="Combo9" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo10_orden'} defaults={info.length > 0 ? info[0].combo10_orden : null} title="Combo10" type="number" />
+            <Input name={'combo10_orden'} defaults={info.length > 0 ? info[0].combo10_orden : null} dataset={[{group:'combo'}]} title="Combo10" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo11_orden'} defaults={info.length > 0 ? info[0].combo11_orden : null} title="Combo11" type="number" />
+            <Input name={'combo11_orden'} defaults={info.length > 0 ? info[0].combo11_orden : null} dataset={[{group:'combo'}]} title="Combo11" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo12_orden'} defaults={info.length > 0 ? info[0].combo12_orden : null} title="Combo12" type="number" />
+            <Input name={'combo12_orden'} defaults={info.length > 0 ? info[0].combo12_orden : null} dataset={[{group:'combo'}]} title="Combo12" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo13_orden'} defaults={info.length > 0 ? info[0].combo13_orden : null} title="Combo13" type="number" />
+            <Input name={'combo13_orden'} defaults={info.length > 0 ? info[0].combo13_orden : null} dataset={[{group:'combo'}]} title="Combo13" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <Input name={'combo14_orden'} defaults={info.length > 0 ? info[0].combo14_orden : null} title="Combo14" type="number" />
+            <Input name={'combo14_orden'} defaults={info.length > 0 ? info[0].combo14_orden : null} dataset={[{group:'combo'}]} title="Combo14" type="number" />
+          </div>
+          <div className="flex-1 min-w-[200px]">
+            <Input name={'acumulado'} defaults={0} title="Total" type="number" style={{pointerEvents:'none'}} />
           </div>
           <div className="flex-1 min-w-[200px]">
             {/* <Input name={'estado_orden'} defaults={info.length > 0 ? info[0].combo14_orden : null} title="Combo14" type="number" /> */}
-            <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null} />
+            <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
           </div>
           {/* <div className="flex-1 min-w-[200px]">
             <Input name={'total'} defaults={info.length > 0 ? Object.keys(info[0]).filter(key=>key.substring(0,5)=='combo').map(row=>(info[0][row] ? info[0][row] : 0)).reduce((carry,current)=>(carry+current),0) : null} title="Total" type="number" />
@@ -693,10 +701,12 @@ export function NuevaOrdenProduccion() {
       pp()
     }
   },[])
-
-  const mostrar = ()=>{
-    const data = new FormData(form.current)
-    console.log(Array.from(data))
+  const testkey = (e)=>{
+    let acumulador = 0
+    for(let element of form.current.querySelectorAll("input[data-group='combo'")){
+      acumulador += element.value == '' ? 0 : parseInt(element.value)
+    }
+    form.current.querySelector("input[name='acumulado']").value = acumulador
   }
 
   return (
@@ -782,18 +792,14 @@ export function NuevaOrdenProduccion() {
               </button>
             </ul>
             <hr />
-            <form ref={form} onSubmit={onsubmit} className="flex flex-col flex-1 overflow-hidden">
+            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden">
               <FormFase position={position} info={orden} />
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
-                {/* <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'accept'}>Eliminar</Button> */}
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
-                <Button type={'button'} action={mostrar} tipo={'warning'}>Mostrar</Button>
               </div>
             </form>
-            
           </div>
-
         </div>
       </div>
     </>

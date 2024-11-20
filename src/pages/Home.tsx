@@ -72,7 +72,7 @@ export function Home() {
         </div>
 
         <div className="flex-1 min-w-[200px] max-w-[300px] mt-4">
-          <InputSelectTest title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={''} />
+          <InputSelectTest title={'Estado'} name={"estado_orden"} data={[{ indice: '', option: '' },{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={''} />
         </div>
         <div className="flex-1 min-w-[200px] max-w-[300px] mt-4">
           <form ref={myform}>
