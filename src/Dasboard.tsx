@@ -15,6 +15,7 @@ export function Dasboard() {
   // console.log("entrando a children")
   // console.log(JSON.parse(credentials))
   useEffect(() => {
+    console.log("El valo de isAuthenticated es:",isAuthenticated)
     if (!isAuthenticated) {
       console.log("redirigiendo")
       navigate("/")

@@ -11,6 +11,12 @@ export function ModalWindowProvider({ children }) {
     setParams(pr)
   }
   useEffect(() => {
+    console.log("Hola desde mi modal!")
+    // console.log(config)
+
+    // return () => console.log(config)
+  })
+  useEffect(() => {
     // console.log(config)
     // return () => console.log(config)
   }, [config])

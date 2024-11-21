@@ -3,15 +3,22 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('user_data') ? true : false
+    if(localStorage.getItem('user_data')){
+      const f1 = Date.parse(JSON.parse(localStorage.user_data).current)
+      const f2 = Date.now()
+      const minutes = ((f2-f1)/1000)/60
+      return minutes < 60 ? true : false
+    }else{
+      return false
+    }
+    // return (localStorage.getItem('user_data') && minutes < 60) ? true : false
   })
   const [credentials, setCredentials] = useState(() => {
     return localStorage.getItem('user_data') ? localStorage.getItem('user_data') : []
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  // const navigate = useNavigate()
-  console.log(localStorage)
+  console.log("Esta es la info del localstorage:",localStorage)
   const login = (data) => {
     const inicia = async () => {
       // return await fetch('http://localhost:4000/login', {
@@ -39,6 +46,14 @@ export function useAuth() {
     setIsAuthenticated(false)
   }
   useEffect(() => {
+    // console.log("La info del localstorage es:",JSON.parse(localStorage.user_data))
+    // (async ()=>{
+    //   fetch("192.168.18.20:4000/testlogin",{
+    //     method:'GET',
+    //     credentials: 'include',
+    //   })
+    // })()
+
     // console.log("comprobando")
     // if (localStorage.getItem('user_data')) {
     //   setIsAuthenticated(true)

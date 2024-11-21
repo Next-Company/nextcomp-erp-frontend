@@ -1,3 +1,4 @@
+const apiUrl = import.meta.env.VITE_API_URL
 import { useContext, useMemo, useRef } from "react"
 import { AuthPermitions } from "../contexts/contexts"
 import { useFetch } from "../hooks/useFetch"
@@ -47,6 +48,20 @@ export function Home() {
     const data = new FormData(myform.current)
     console.log(Array.from(data))
   }
+  const printpdf = ()=>{
+    // alert("Imprimiendo informacion adicional del pdf")
+    window.location.href = apiUrl + 'produccion/print/'
+    // (async ()=>{
+    //   fetch("http://192.168.18.20:4000/produccion/print",{
+    //     method:'GET',
+    //     credentials:'include'
+    //   })
+    //   .then(resp=>{
+    //     console.log("Envio del servidor:",resp)
+    //   })
+    // })()
+
+  }
   return (
     <>
       <div className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
@@ -79,6 +94,9 @@ export function Home() {
             <Input name={'oc'} title="OC" defaults={null} type="text" />
             <button type="button" onClick={mostrar}>ClickMe!</button>
           </form>
+        </div>
+        <div className="flex-1 min-w-[200px] max-w-[300px] mt-4">
+          <button type="button" className="border-[1px] border-red-500 rounded p-2" onClick={printpdf}>Imprimir PDF!</button>
         </div>
         
         
