@@ -29,6 +29,11 @@ function FormFase({ position, info}) {
     console.log("Cargando informacion de detalle orden")
     
   },[])
+
+  const printpedido = ()=>{
+    console.log("Imprimiendo pedido")
+  }
+
   return(
     <div className="flex-1 overflow-y-scroll scrollbar-special">
       <div className={` flex-col gap-3 pt-4 ${position == 0 ? 'flex' : 'hidden'}`}>
@@ -117,7 +122,39 @@ function FormFase({ position, info}) {
           <InputSelect title={'Estado'} name={"estado_telas"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_telas : null} />
         </div>
         <div>
-          <TextArea title="Observaciones" name="observaciones_fase_telas" />
+          <TextArea title="Observaciones" name="observaciones_fase_telas" rows={8} />
+        </div>
+        <div>
+          <table border={1}>
+            <thead>
+              <tr>
+                <th>NroPedido</th>
+                <th>Cliente</th>
+                <th>FecEmision</th>
+                <th>Moneda</th>
+                <th>Subtotal</th>
+                <th>Igv</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>asd</td>
+                <td>asd</td>
+                <td>asd</td>
+                <td>ad</td>
+                <td>sad</td>
+                <td>asdasd</td>
+                <td>sdfsdf</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        <div className="flex flex-row justify-end">
+          {/* <button type="button">Exportar</button> */}
+          <Button action={() => printpedido()} type={'button'} tipo={'default'}>Exportar pedido</Button>
+          {/* <Button action={() => console.log('otro pedido')} type={'button'} tipo={'default'} >Multinivel</Button> */}
         </div>
       </div>
       {/* FASE DE MOLDE */}
@@ -709,6 +746,45 @@ export function NuevaOrdenProduccion() {
     form.current.querySelector("input[name='acumulado']").value = acumulador
   }
 
+  const printpedido = (e)=>{
+    const desc = async ()=>{
+      setOpenloader(true)
+      await fetch("http://192.168.18.20:4000/produccion/export",{
+        method:'POST',
+        credentials: 'include'
+      })
+      .then(resp=>{
+        return resp.json()
+      })
+      .then(resp=>{
+        setOpenloader(false)
+        // console.log("El verdadero",resp)
+
+        let binaryString = window.atob(resp.data);
+        // console.log(binaryString)
+        let binaryLen = binaryString.length;
+        let bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+            let ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+
+        let link = document.createElement('a')
+        link.href = file
+        link.target = 'blank'
+        link.click()
+      })
+      .catch((err)=>{
+        setOpenloader(false)
+        toast.error('Se produjo un error!!', { theme: "colored" })
+      })
+
+    }
+    desc()
+  }
+
+
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -796,6 +872,7 @@ export function NuevaOrdenProduccion() {
               <FormFase position={position} info={orden} />
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                <Button action={() => printpedido()} type={'button'} tipo={'default'}>Print</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>
             </form>

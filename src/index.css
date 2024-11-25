@@ -529,3 +529,9 @@ div.other>div {
   display:flex;
   justify-content: space-between;
 }
+/* table{
+  border:1px solid blue;
+}
+table td{
+  border:1px solid blue;
+} */
