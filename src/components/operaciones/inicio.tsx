@@ -117,8 +117,8 @@ export default function Inicio() {
       })
       .catch((error) => {
         console.log(error)
-        toast.error('Error en la consulta de base', { theme: "colored" })
         // logout()
+        toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(()=>{
         console.log("Horror en la consulta de base de datos")
@@ -243,7 +243,7 @@ export default function Inicio() {
                   {
                     ordenes.length > 0
                       ? ordenes.map((row, key) => (
-                        <tr>
+                        <tr key={key}>
                           {/* <td>{row.idx}</td> */}
                           <td>{row.oc}</td>
                           <td>{row.cliente}</td>

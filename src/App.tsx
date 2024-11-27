@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import { Home } from './pages/Home'
+import { Home2 } from './Home'
 import { Login } from './Login'
 import { Dasboard } from './Dasboard'
 import { Config } from './Config'
@@ -17,7 +18,7 @@ import { NuevaOrdenProduccion } from './components/operaciones/nuevo.tsx'
 const routes = [
   {
     path: "/otro",
-    element: <Home />
+    element: <Home2 />
   },
   {
     path: "/",

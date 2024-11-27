@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { InputMultiSelect } from "../Atoms/Input/InputMultiSelect";
 import { TextArea } from "../Atoms/Input/TextArea";
 import { Articulo } from "../Common/Articulo";
+import { OrdenPedido } from "../../templates/OrdenPedido";
 
 const listTables = [
   'tbl2_fases_prod_ordenes',
@@ -24,6 +25,8 @@ const listTables = [
   'tbl2_fases_prod_acabados'
 ]
 function FormFase({ position, info}) {
+  const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  const [ infopedido, setInfopedido ] = useState("")
   console.log("Informacion detalle orden :",info)
   useEffect(()=>{
     console.log("Cargando informacion de detalle orden")
@@ -31,7 +34,46 @@ function FormFase({ position, info}) {
   },[])
 
   const printpedido = ()=>{
-    console.log("Imprimiendo pedido")
+    
+    const callback = (mensaje)=>{
+      console.log(mensaje)
+    }
+    // e.preventDefault()
+    // const data = new FormData(e.target)
+    // data.append('table',listTables[position])
+    openModal({
+      open: true,
+      header: false,
+      controls: true,
+      // content: <div className="w-[800px] bg-red-300">Desea continuar con el registro del soporte ingresado?</div>,
+      content: <OrdenPedido setpedido={setInfopedido}/>,
+      action: async () => {
+        console.log("Inprimiendo formato de pedido")
+        console.log("Mostrando la informacion ingreada en la modal:",)
+        console.log(infopedido)
+
+        
+        // setOpenloader(true)
+        // await Consulta({
+        //   url: 'produccion/',
+        //   params: {
+        //     method: 'POST', body: data
+        //   }
+        // })
+        //   .then(resp => {
+        //     setOpenloader(false)
+        //     navigate("/main/operaciones/inicio")
+        //     toast.success('Soporte guardado con éxito!!', { theme: "colored" })
+        //   })
+        //   .catch((err)=>{
+        //     setOpenloader(false)
+        //     toast.error('Se produjo un error!!', { theme: "colored" })
+        //   })
+        //   .finally(()=>{
+        //     setOpenloader(false)
+        //   })
+      }
+    })
   }
 
   return(
@@ -123,33 +165,6 @@ function FormFase({ position, info}) {
         </div>
         <div>
           <TextArea title="Observaciones" name="observaciones_fase_telas" rows={8} />
-        </div>
-        <div>
-          <table border={1}>
-            <thead>
-              <tr>
-                <th>NroPedido</th>
-                <th>Cliente</th>
-                <th>FecEmision</th>
-                <th>Moneda</th>
-                <th>Subtotal</th>
-                <th>Igv</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>asd</td>
-                <td>asd</td>
-                <td>asd</td>
-                <td>ad</td>
-                <td>sad</td>
-                <td>asdasd</td>
-                <td>sdfsdf</td>
-              </tr>
-            </tbody>
-          </table>
-
         </div>
         <div className="flex flex-row justify-end">
           {/* <button type="button">Exportar</button> */}

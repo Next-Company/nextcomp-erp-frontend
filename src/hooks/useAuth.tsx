@@ -65,6 +65,7 @@ export function useAuth() {
   }, [])
   useEffect(() => {
     console.log("Esta logeado:" + isAuthenticated)
+    console.log("Cerrando la modal")
     if (!isAuthenticated) console.log("saliendo del sistema")
   }, [isAuthenticated])
   return { isAuthenticated, login, logout, loading, error, credentials }

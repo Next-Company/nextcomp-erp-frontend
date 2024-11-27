@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react"
 import { AuthPermitions } from "./contexts/contexts"
 import { useNavigate } from "react-router-dom"
 
-export function Home(){
+export function Home2(){
     const {isAuthenticated,logout} = useContext(AuthPermitions)
     const navigate = useNavigate()
     useEffect(()=>{
