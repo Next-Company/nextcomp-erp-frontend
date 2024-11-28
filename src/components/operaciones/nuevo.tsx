@@ -26,31 +26,22 @@ const listTables = [
 ]
 function FormFase({ position, info}) {
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
-  const [ infopedido, setInfopedido ] = useState("")
-  console.log("Informacion detalle orden :",info)
   useEffect(()=>{
     console.log("Cargando informacion de detalle orden")
     
   },[])
 
   const printpedido = ()=>{
-    
-    const callback = (mensaje)=>{
-      console.log(mensaje)
-    }
     // e.preventDefault()
     // const data = new FormData(e.target)
     // data.append('table',listTables[position])
     openModal({
       open: true,
       header: false,
-      controls: true,
+      controls: false,
       // content: <div className="w-[800px] bg-red-300">Desea continuar con el registro del soporte ingresado?</div>,
-      content: <OrdenPedido setpedido={setInfopedido}/>,
+      content: <OrdenPedido />,
       action: async () => {
-        console.log("Inprimiendo formato de pedido")
-        console.log("Mostrando la informacion ingreada en la modal:",)
-        console.log(infopedido)
 
         
         // setOpenloader(true)

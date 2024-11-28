@@ -3,14 +3,16 @@ import { Consulta } from "../utils/utils"
 import { toast } from "react-toastify";
 import { ModalWindowContext } from "../components/ModalWindow/ModalWindowContext";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../components/Atoms/Button/Button";
+import { ButtonLoader } from "../components/Atoms/Button/ButtonLoader";
 
-export function OrdenPedido({setpedido}){
+export function OrdenPedido(){
   const myform = useRef()
   const contenedor = useRef()
   const navigate = useNavigate()
-  const { setOpenloader } = useContext(ModalWindowContext)
+  const { setOpenloader, setOpen } = useContext(ModalWindowContext)
   const [ registros, setRegistros ] = useState([{cantidad:1}])
-  const [ conciliacion, setConciliacion] = useState({condicion:'verdadero'})
+  const [laoding, setLoading] = useState(false)
   const ingresodatos = (e)=>{
     if(e.target.matches("td")){
       console.log("Modificando el valor de la celda")
@@ -21,7 +23,9 @@ export function OrdenPedido({setpedido}){
   }
   const mostrarinfo = async ()=>{
 
-    setpedido('hoola muno')
+
+    // setpedido('hoola muno')s
+    setOpen(false)
 
     // const data = new FormData(myform.current)
     // const datainfo = new FormData()
@@ -63,11 +67,85 @@ export function OrdenPedido({setpedido}){
   const quitarfila = (e)=>{
     e.target.closest('tr').remove()
   }
+
+  const closemodal = ()=>{
+    setOpen(false)
+  }
+  const generarpdf = async ()=>{
+
+    const data = new FormData(myform.current)
+    const lista = contenedor.current.querySelectorAll("table#articulos tbody tr.detalle")
+    let detalle = []
+    for(let fila of lista){
+      const inputs = (Array.from(fila.querySelectorAll("input"))).map(row=>row.value)
+      detalle.push(inputs)
+    }
+    data.append('detalle',JSON.stringify(detalle))
+
+    // setOpenloader(true)
+    // await Consulta({
+    //   url: 'produccion/',
+    //   params: {
+    //     method: 'POST', body: data
+    //   }
+    // })
+    //   .then(resp => {
+    //     setOpenloader(false)
+    //     navigate("/main/operaciones/inicio")
+    //     toast.success('Soporte guardado con éxito!!', { theme: "colored" })
+    //   })
+    //   .catch((err)=>{
+    //     toast.error('Se produjo un error!!', { theme: "colored" })
+    //   })
+    //   .finally(()=>{
+    //     setOpenloader(false)
+    //   })
+
+    // setOpenloader(true)
+    setLoading(true)
+    await fetch("http://192.168.18.20:4000/produccion/export",{
+      method:'POST',
+      credentials: 'include',
+      body: data
+    })
+    .then(resp=>{
+      return resp.json()
+    })
+    .then(resp=>{
+      setLoading(false)
+
+      let binaryString = window.atob(resp.data);
+      let binaryLen = binaryString.length;
+      let bytes = new Uint8Array(binaryLen);
+      for (let i = 0; i < binaryLen; i++) {
+          let ascii = binaryString.charCodeAt(i);
+          bytes[i] = ascii;
+      }
+      let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+
+      let link = document.createElement('a')
+      link.href = file
+      link.target = 'blank'
+      link.click()
+    })
+    .catch((err)=>{
+      setLoading(false)
+      toast.error('Se produjo un error!!', { theme: "colored" })
+    })
+    // const desc = async ()=>{
+
+    // }
+    // desc()
+
+
+  }
+
   return(
     <>
   {/* <div className="flex flex-col text-[10px]"> */}
   
-  <div ref={contenedor} className="flex flex-col text-[12px] w-[800px] pl-2 pr-2 [&_input]:outline-none [&_input]:text-center">
+  <div className="flex flex-col">
+    <div ref={contenedor} className="flex flex-col text-[12px] w-[800px] pl-2 pr-2 [&_input]:outline-none [&_input]:text-center">
   <form ref={myform}>
     <table id="principal" style={{ width: '100%' }}>
       <tbody>
@@ -239,7 +317,7 @@ export function OrdenPedido({setpedido}){
                     <strong>FECHA DE ENTREGA</strong>
                   </td>
                   <td style={{ width: '6px' }}>: </td>
-                  <td style={{ width: '165px' }}><input type="text" defaultValue={"entrega"} name="" className="w-full" /></td>
+                  <td style={{ width: '165px' }}><input type="text" defaultValue={"entrega"} name="entrega" className="w-full" /></td>
                 </tr>
               </tbody>
             </table>
@@ -299,10 +377,16 @@ export function OrdenPedido({setpedido}){
       </tbody>
     </table>
     <div onClick={agregarfila} className="h-[30px] flex flex-row justify-end items-center"><a className="cursor-pointer">+Agregar nuevo regristro</a></div>
-    <div onClick={mostrarinfo} className="h-[30px] flex flex-row justify-end items-center"><a className="cursor-pointer">+Mostrar info del form</a></div>
+    {/* <div onClick={mostrarinfo} className="h-[30px] flex flex-row justify-end items-center"><a className="cursor-pointer">+Mostrar info del form</a></div> */}
     <br/>
   </div>
+  <div className={`flex gap-1 justify-end text-[1em]`}>
+    <Button action={closemodal} tipo={'default'}>Cancelar</Button>
+    <ButtonLoader task={generarpdf} tipo={'accept'} loading={laoding}>Exportar</ButtonLoader>
+  </div>
   
+  </div>
+
     </>
   )
 }

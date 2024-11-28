@@ -4,9 +4,9 @@ import { Button } from "../Atoms/Button/Button"
 
 export function ModalWindow() {
   const modalref = useRef(null)
-  const { config } = useContext(ModalWindowContext)
+  const { config, open, setOpen } = useContext(ModalWindowContext)
   const [content, setContent] = useState(config.content)
-  const [open, setOpen] = useState(false)
+  
 
   const onclick = (e) => {
     e.stopPropagation()

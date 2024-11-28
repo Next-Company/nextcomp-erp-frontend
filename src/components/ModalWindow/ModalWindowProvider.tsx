@@ -7,6 +7,7 @@ import { LoadingWindow } from "../LoadingWindow/LoadingWindow";
 export function ModalWindowProvider({ children }) {
   const [config, setParams] = useState({})
   const [openloader, setOpenloader] = useState(false)
+  const [open, setOpen] = useState(false)
   const openModal = (pr) => {
     setParams(pr)
   }
@@ -22,7 +23,7 @@ export function ModalWindowProvider({ children }) {
   }, [config])
   return (
     <>
-      <ModalWindowContext.Provider value={{ openModal, config, setOpenloader, openloader }}>
+      <ModalWindowContext.Provider value={{ openModal, config, setOpenloader, openloader, open, setOpen }}>
         {children}
         <ModalWindow />
         <ToastContainer
