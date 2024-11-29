@@ -10,7 +10,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { InputMultiSelect } from "../Atoms/Input/InputMultiSelect";
 import { TextArea } from "../Atoms/Input/TextArea";
 import { Articulo } from "../Common/Articulo";
-import { OrdenPedido } from "../../templates/OrdenPedido";
+import { OrdenPedidoAvios } from "../../templates/OrdenPedidoAvios";
+import { OrdenPedidoTelas } from "../../templates/OrdenPedidoTelas";
 
 const listTables = [
   'tbl2_fases_prod_ordenes',
@@ -31,38 +32,23 @@ function FormFase({ position, info}) {
     
   },[])
 
-  const printpedido = ()=>{
-    // e.preventDefault()
-    // const data = new FormData(e.target)
-    // data.append('table',listTables[position])
+  const printpedidoavios = ()=>{
     openModal({
       open: true,
       header: false,
       controls: false,
-      // content: <div className="w-[800px] bg-red-300">Desea continuar con el registro del soporte ingresado?</div>,
-      content: <OrdenPedido />,
+      content: <OrdenPedidoAvios />,
       action: async () => {
-
-        
-        // setOpenloader(true)
-        // await Consulta({
-        //   url: 'produccion/',
-        //   params: {
-        //     method: 'POST', body: data
-        //   }
-        // })
-        //   .then(resp => {
-        //     setOpenloader(false)
-        //     navigate("/main/operaciones/inicio")
-        //     toast.success('Soporte guardado con éxito!!', { theme: "colored" })
-        //   })
-        //   .catch((err)=>{
-        //     setOpenloader(false)
-        //     toast.error('Se produjo un error!!', { theme: "colored" })
-        //   })
-        //   .finally(()=>{
-        //     setOpenloader(false)
-        //   })
+      }
+    })
+  }
+  const printpedidotelas = ()=>{
+    openModal({
+      open: true,
+      header: false,
+      controls: false,
+      content: <OrdenPedidoTelas />,
+      action: async () => {
       }
     })
   }
@@ -159,7 +145,8 @@ function FormFase({ position, info}) {
         </div>
         <div className="flex flex-row justify-end">
           {/* <button type="button">Exportar</button> */}
-          <Button action={() => printpedido()} type={'button'} tipo={'default'}>Exportar pedido</Button>
+          <Button action={() => printpedidoavios()} type={'button'} tipo={'default'}>Exportar pedido avios</Button>
+          <Button action={() => printpedidotelas()} type={'button'} tipo={'default'}>Exportar pedido telas</Button>
           {/* <Button action={() => console.log('otro pedido')} type={'button'} tipo={'default'} >Multinivel</Button> */}
         </div>
       </div>

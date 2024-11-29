@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Atoms/Button/Button";
 import { ButtonLoader } from "../components/Atoms/Button/ButtonLoader";
 
-export function OrdenPedido(){
+export function OrdenPedidoTelas(){
   const myform = useRef()
   const contenedor = useRef()
   const navigate = useNavigate()
@@ -21,49 +21,6 @@ export function OrdenPedido(){
   const agregarfila = ()=>{
     setRegistros([...registros,{cantidad:1}])
   }
-  const mostrarinfo = async ()=>{
-
-
-    // setpedido('hoola muno')s
-    setOpen(false)
-
-    // const data = new FormData(myform.current)
-    // const datainfo = new FormData()
-    
-    // const lista = contenedor.current.querySelectorAll("table#articulos tbody tr.detalle")
-    // let detalle = []
-    // for(let fila of lista){
-    //   const inputs = (Array.from(fila.querySelectorAll("input"))).map(row=>row.value)
-    //   detalle.push(inputs)
-    // }
-    // data.append('detalle',JSON.stringify(detalle))
-
-    // setpedido(JSON.stringify(detalle))
-    // setConciliacion(data=>({...data, porcentaje:20}))
-
-    // setOpenloader(true)
-    // await Consulta({
-    //   url: 'produccion/',
-    //   params: {
-    //     method: 'POST', body: data
-    //   }
-    // })
-    //   .then(resp => {
-    //     setOpenloader(false)
-    //     navigate("/main/operaciones/inicio")
-    //     toast.success('Soporte guardado con éxito!!', { theme: "colored" })
-    //   })
-    //   .catch((err)=>{
-    //     // setOpenloader(false)
-    //     toast.error('Se produjo un error!!', { theme: "colored" })
-    //   })
-    //   .finally(()=>{
-    //     setOpenloader(false)
-    //   })
-
-      // datainfo.
-      // console.log("Mostrando informacion",datainfo)
-  }
   const quitarfila = (e)=>{
     e.target.closest('tr').remove()
   }
@@ -74,36 +31,17 @@ export function OrdenPedido(){
   const generarpdf = async ()=>{
 
     const data = new FormData(myform.current)
+    const observaciones = contenedor.current.querySelector("input[name='observaciones']").value
     const lista = contenedor.current.querySelectorAll("table#articulos tbody tr.detalle")
     let detalle = []
     for(let fila of lista){
       const inputs = (Array.from(fila.querySelectorAll("input"))).map(row=>row.value)
       detalle.push(inputs)
     }
+    data.append('observaciones',observaciones)
     data.append('detalle',JSON.stringify(detalle))
-
-    // setOpenloader(true)
-    // await Consulta({
-    //   url: 'produccion/',
-    //   params: {
-    //     method: 'POST', body: data
-    //   }
-    // })
-    //   .then(resp => {
-    //     setOpenloader(false)
-    //     navigate("/main/operaciones/inicio")
-    //     toast.success('Soporte guardado con éxito!!', { theme: "colored" })
-    //   })
-    //   .catch((err)=>{
-    //     toast.error('Se produjo un error!!', { theme: "colored" })
-    //   })
-    //   .finally(()=>{
-    //     setOpenloader(false)
-    //   })
-
-    // setOpenloader(true)
     setLoading(true)
-    await fetch("http://192.168.18.20:4000/produccion/export",{
+    await fetch("http://192.168.18.20:4000/produccion/exporttelas",{
       method:'POST',
       credentials: 'include',
       body: data
@@ -132,21 +70,13 @@ export function OrdenPedido(){
       setLoading(false)
       toast.error('Se produjo un error!!', { theme: "colored" })
     })
-    // const desc = async ()=>{
-
-    // }
-    // desc()
-
-
   }
 
   return(
     <>
-  {/* <div className="flex flex-col text-[10px]"> */}
-  
   <div className="flex flex-col">
-    <div ref={contenedor} className="flex flex-col text-[12px] w-[800px] pl-2 pr-2 [&_input]:outline-none [&_input]:text-center">
-  <form ref={myform}>
+    <div ref={contenedor} className="flex flex-col text-[12px] w-[1000px] pl-2 pr-2 focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black [&_input]:text-center [&_input]:p-[2px]">
+  <form ref={myform} autoComplete="false">
     <table id="principal" style={{ width: '100%' }}>
       <tbody>
         <tr>
@@ -331,11 +261,11 @@ export function OrdenPedido(){
       <thead>
           <tr>
               <th style={{width:'35px'}}>ITEMS</th>
-              <th style={{width:'60px'}}>COLOR</th>
               <th style={{width:'240px'}}>DESCRIPCI&Oacute;N</th>
+              <th style={{width:'60px'}}>ROLLO</th>
               <th style={{width:'62px'}}>CANTIDAD PEDIDA</th>
               <th style={{width:'35px'}}>UNIDAD</th>
-              <th style={{width:'60px'}}>PRECIO X MILLAR</th>
+              <th style={{width:'60px'}}>PRECIO UNITARIO</th>
               <th style={{width:'70px'}}>IMPORTE</th>
           </tr>
       </thead>
@@ -348,8 +278,8 @@ export function OrdenPedido(){
                   <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="pointer-events-none icon icon-tabler icons-tabler-filled icon-tabler-trash-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16zm-9.489 5.14a1 1 0 0 0 -1.218 1.567l1.292 1.293l-1.292 1.293l-.083 .094a1 1 0 0 0 1.497 1.32l1.293 -1.292l1.293 1.292l.094 .083a1 1 0 0 0 1.32 -1.497l-1.292 -1.293l1.292 -1.293l.083 -.094a1 1 0 0 0 -1.497 -1.32l-1.293 1.292l-1.293 -1.292l-.094 -.083z" /><path d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z" /></svg>
                 </div>
               </td> 
-              <td style={{width: '60px',textAlign: 'center'}}><input type="text" defaultValue={""} name="color" className="w-full text-center" /></td> 
               <td style={{width: '240px', textAlign:'justify'}}><input type="text" defaultValue={""} name="desc" className="w-full" /></td>
+              <td style={{width: '60px',textAlign: 'center'}}><input type="text" defaultValue={""} name="rollo" className="w-full text-center" /></td> 
               <td style={{width: '62px',textAlign: 'center'}}><input type="text" defaultValue={""} name="cantidad" className="w-full text-center" /></td>
               <td style={{width: '35px', textAlign: 'right', verticalAlign: 'middle'}}><input type="text" defaultValue={""} name="unidad" className="w-full text-center" /></td>
               <td style={{width: '60px', textAlign: 'right', verticalAlign: 'middle'}}><input type="text" defaultValue={""} name="precio" className="w-full text-center" /></td>
@@ -359,8 +289,8 @@ export function OrdenPedido(){
         }
         <tr className="h-[20px]">
           <td style={{width: '35px',textAlign: 'center'}}></td> 
-          <td style={{width: '60px',textAlign: 'center'}}></td> 
           <td style={{width: '240px', textAlign:'justify'}}></td>
+          <td style={{width: '60px',textAlign: 'center'}}></td> 
           <td style={{width: '62px',textAlign: 'center'}}></td>
           <td style={{width: '35px', textAlign: 'right', verticalAlign: 'middle'}}></td>
           <td style={{width: '60px', textAlign: 'right', verticalAlign: 'middle'}}></td>
@@ -372,12 +302,11 @@ export function OrdenPedido(){
       <tbody>
         <tr>
           <td style={{textAlign: 'center', height: '40px', width:'95px', borderRight:'0.5px solid #004080'}} valign="middle"><strong>OBSERVACIONES:</strong></td>
-          <td style={{textAlign: 'right', height: '60px', lineHeight: '15px', width:'467px'}}><input type="text" defaultValue={""} name="importe" className="w-full text-center" /></td>
+          <td style={{textAlign: 'right', height: '60px', lineHeight: '15px', width:'467px'}}><input type="text" defaultValue={""} name="observaciones" className="w-full text-center" /></td>
         </tr>
       </tbody>
     </table>
     <div onClick={agregarfila} className="h-[30px] flex flex-row justify-end items-center"><a className="cursor-pointer">+Agregar nuevo regristro</a></div>
-    {/* <div onClick={mostrarinfo} className="h-[30px] flex flex-row justify-end items-center"><a className="cursor-pointer">+Mostrar info del form</a></div> */}
     <br/>
   </div>
   <div className={`flex gap-1 justify-end text-[1em]`}>
