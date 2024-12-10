@@ -865,7 +865,7 @@ export function NuevaOrdenProduccion() {
               <FormFase position={position} info={orden} />
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
-                <Button action={() => printpedido()} type={'button'} tipo={'default'}>Print</Button>
+                {/* <Button action={() => printpedido()} type={'button'} tipo={'default'}>Print</Button> */}
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>
             </form>

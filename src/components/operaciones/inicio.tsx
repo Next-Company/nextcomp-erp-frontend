@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 
 export default function Inicio() {
   const [ordenes, setOrdenes] = useState([])
+  const [position, setPosition] = useState(0)
+  const [rango, setRango] = useState(30)
   const { logout, credentials } = useContext(AuthPermitions)
   const { openModal, config, setOpenloader, openloader } = useContext(ModalWindowContext)
   const [ refresh, setRefresh ] = useState(false)
@@ -181,6 +183,22 @@ export default function Inicio() {
           setOpenloader(false)
         })
   }
+  const moveback = ()=>{
+    if(position > 0){
+      setPosition(position=>position - 1)
+    }
+    console.log("Hacia atras : ",position)
+  }
+  const moveforward = ()=>{
+    if(position < Math.ceil(ordenes.length / rango) - 1){
+      setPosition(position=>position + 1)
+    }
+    console.log("Hacia adelante : ",position)
+  }
+  const recargarinfo = ()=>{
+    setPosition(0)
+    setRefresh(true)
+  }
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -221,7 +239,7 @@ export default function Inicio() {
             </div>
             <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll">
-              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible">
+              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     {/* <th className="lg:table-cell">#</th> */}
@@ -236,14 +254,14 @@ export default function Inicio() {
                     <th className="lg:table-cell">Modelo</th>
                     {/* <th className="lg:table-cell">Total</th> */}
                     <th className="lg:table-cell">FaseActual</th>
-                    <th className="lg:table-cell">Accciones</th>
+                    <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {
                     ordenes.length > 0
-                      ? ordenes.map((row, key) => (
-                        <tr key={key}>
+                      ? ordenes.filter((row,key)=>key > rango*position && key <= rango*(position+1)).map((row, key) => (
+                        <tr key={key} className="">
                           {/* <td>{row.idx}</td> */}
                           <td>{row.oc}</td>
                           <td>{row.cliente}</td>
@@ -255,7 +273,7 @@ export default function Inicio() {
                           <td>{row.precio}</td>
                           <td>{row.modelos}</td>
                           <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td>
-                          <td>
+                          <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
@@ -296,19 +314,21 @@ export default function Inicio() {
             <div className="flex flex-row justify-between p-2">
               <div className="flex justify-between items-center p-3 gap-2">
                 <div>
-                  Se recuperaron <strong>120</strong> registros
+                  {/* Se recuperaron <strong>120</strong> registros */}
+                  Resultados del {position*rango} al {rango*(position+1)} de 120
                 </div>
                 <div className="flex flex-row">
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400">
+                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveback}>
                     <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
                   </div>
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400">
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg>
+                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveforward}>
+                    {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg> */}
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-compact-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 4l3 8l-3 8" /></svg>
                   </div>
                 </div>
               </div>
               <div className="flex p-2">
-                <Button action={() => setRefresh(true)} tipo={'default'}>Actualizar</Button>
+                <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={() => navigate('/main/operaciones/nuevo')} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
