@@ -73,7 +73,8 @@ export default function Inicio() {
   // }
 
   const busqueda_search = (e)=>{
-    if(e.code == 'Enter'){
+    console.log('El comando presionado es :',e.code,'-',e.keyCode)
+    if(e.code == 'Enter' || e.keyCode == 13){
       let data = new FormData()
       if(e.target.value == ''){
         data.append("params",'')
@@ -88,6 +89,7 @@ export default function Inicio() {
         }
       })
         .then(resp => {
+          console.log('Resultado de busqueda de orden:',resp)
           setOrdenes(resp)
           setOpenloader(false)
         })
@@ -260,7 +262,8 @@ export default function Inicio() {
                 <tbody>
                   {
                     ordenes.length > 0
-                      ? ordenes.filter((row,key)=>key > rango*position && key <= rango*(position+1)).map((row, key) => (
+                      // ? ordenes.filter((row,key)=>key > rango*position && key <= rango*(position+1)).map((row, key) => (
+                      ? ordenes.map((row, key) => (
                         <tr key={key} className="">
                           {/* <td>{row.idx}</td> */}
                           <td>{row.oc}</td>
