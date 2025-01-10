@@ -119,6 +119,20 @@ export function Sidenav() {
                 Calendario
               </div>
             </li>
+            <li data-fd='estampado' className="group/sub">
+              <NavLink
+                to="estampado/inicio" 
+                className={ ({ isActive, isPending }) =>
+                  isPending ? "pending" : isActive ? "active" : "default"
+                }
+              >
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-paint"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 3m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /><path d="M19 6h1a2 2 0 0 1 2 2a5 5 0 0 1 -5 5l-5 0v2" /><path d="M10 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>
+              </NavLink>
+              <div className="absolute h-8 rounded-md bg-gray-800 text-white hidden items-center left-[55px] z-20 p-2 group-hover/sub:flex">
+                <div className="absolute border-r-[6px] border-r-gray-800 border-b-[6px] border-b-transparent border-t-[6px] border-t-transparent left-[-5px]"></div>
+                Estampado
+              </div>
+            </li>
             <li className="has-[a.active]:bg-[rgb(232,232,232)] group/sub has-[a.active]:text-black/50 has-[a.active]:rounded-lg">
               <NavLink
                 to="operaciones/inicio" 
