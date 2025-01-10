@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
+import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
+import { toast } from "react-toastify";
 
 export default function ListaEstampado(){
   const [info,setInfo] = useState([])
   const navigate = useNavigate()
+  const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  // const [refresh,setRefresh] = useState(false)
 
   const onclick = (e) => {
     const action = e.target.dataset.action
@@ -14,34 +18,34 @@ export default function ListaEstampado(){
     let params_modal = null
     switch (action) {
       case 'delete':
-        // params_modal = {
-        //   open:true,
-        //   content: <div>Desea eliminar el registro seleccionado?. Tenga en cuenta de que el <br/> proceso no es reversible.</div>,
-        //   controls: true,
-        //   header: true,
-        //   action:()=>{
-        //     setOpenloader(true)
-        //     Consulta({
-        //       url: 'produccion/' + id, params: {
-        //         method: 'DELETE'
-        //       }
-        //     })
-        //       .then(resp => {
-        //         // setOrdenes(resp)
-        //         toast.success('Orden eliminada con éxito!', { theme: "colored" })
-        //         setRefresh(true)
-        //         setOpenloader(false)
-        //       })
-        //       .catch(() => {
-        //         setOpenloader(false)
-        //         logout()
-        //       })
-        //       .finally(()=>{
-        //         setOpenloader(false)
-        //       })
-        //   }
-        // }
-        // openModal(params_modal)
+        params_modal = {
+          open:true,
+          content: <div>Desea eliminar el registro seleccionado?. Tenga en cuenta de que el <br/> proceso no es reversible.</div>,
+          controls: true,
+          header: false,
+          action:()=>{
+            setOpenloader(true)
+            Consulta({
+              url: 'produccion/borrarestampado/' + id, params: {
+                method: 'DELETE'
+              }
+            })
+              .then(resp => {
+                // setOrdenes(resp)
+                toast.success('Estampado eliminado con éxito!', { theme: "colored" })
+                // setRefresh(true)
+                setOpenloader(false)
+              })
+              .catch(() => {
+                setOpenloader(false)
+                // logout()
+              })
+              .finally(()=>{
+                setOpenloader(false)
+              })
+          }
+        }
+        openModal(params_modal)
         break;
       case 'edit':
         navigate("/main/estampado/nuevo/"+ id)
@@ -54,15 +58,7 @@ export default function ListaEstampado(){
 
   useEffect(()=>{
     const data = new FormData()
-    // fetch("http://192.168.18.20:5000/produccion/getListaEstampados",{
-    //   method:'POST',
-    //   body: data,
-    //   credentials:'include'
-    // })
-    // .then(resp=>resp.json())
-    // .then(resp=>{
-    //   console.log(resp)
-    // })
+    setOpenloader(true)
     Consulta({
       url: 'produccion/getListaEstampados', params: {
         method: 'GET'
@@ -70,6 +66,7 @@ export default function ListaEstampado(){
     })
     .then(resp => {
       console.log(resp)
+      setOpenloader(false)
       setInfo(resp)  
     })
     .catch((error) => {
@@ -82,9 +79,53 @@ export default function ListaEstampado(){
       // setOpenloader(false)
     })
   },[])
+  // useEffect(()=>{
+  //   if(refresh){
+  //     const data = new FormData()
+  //     setOpenloader(true)
+  //     Consulta({
+  //       url: 'produccion/getListaEstampados', params: {
+  //         method: 'GET'
+  //       }
+  //     })
+  //     .then(resp => {
+  //       console.log(resp)
+        
+  //       setInfo(resp)  
+  //     })
+  //     .catch((error) => {
+  //       console.log(error)
+  //     })
+  //     .finally(()=>{
+  //       console.log("Horror en la consulta de base de datos")
+  //       setOpenloader(false)
+  //       setRefresh(false)
+  //     })
+  //   }
+  // },[refresh])
 
   const recargarinfo = ()=>{
-
+    const data = new FormData()
+    setOpenloader(true)
+    Consulta({
+      url: 'produccion/getListaEstampados', params: {
+        method: 'GET'
+      }
+    })
+    .then(resp => {
+      console.log(resp)
+      setOpenloader(false)
+      setInfo(resp)  
+    })
+    .catch((error) => {
+      console.log(error)
+      // logout()
+      // toast.error('Error en la consulta de base', { theme: "colored" })
+    })
+    .finally(()=>{
+      console.log("Horror en la consulta de base de datos")
+      // setOpenloader(false)
+    })
   }
 
   return(
@@ -152,7 +193,7 @@ export default function ListaEstampado(){
                           <td>{row.fec_inicio}</td>
                           <td>{row.fec_termino}</td>
                           <td>{row.modelo}</td>
-                          <td>{row.estado_estampado}</td>
+                          <td>{row.estado}</td>
                           <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
