@@ -154,21 +154,20 @@ export function Sidenav() {
                 Operaciones
               </div>
             </li> */}
-            <NavLink
-              to="Soporte" 
-              className={ ({ isActive, isPending }) => isPending ? "pending hover:text-red-500" : isActive ? "active bg-[rgb(232,232,232)] text-black/50 rounded-lg" : "default" }
-            >
+            
               <li className="">
+                <NavLink
+                  to="soporte/" 
+                  className={ ({ isActive, isPending }) => isPending ? "pending hover:text-red-500" : isActive ? "active bg-[rgb(232,232,232)] text-black/50 rounded-lg" : "default" }
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-hours-24"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 13c.325 2.532 1.881 4.781 4 6" /><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2" /><path d="M4 5v4h4" /><path d="M12 15h2a1 1 0 0 1 1 1v1a1 1 0 0 1 -1 1h-1a1 1 0 0 0 -1 1v1a1 1 0 0 0 1 1h2" /><path d="M18 15v2a1 1 0 0 0 1 1h1" /><path d="M21 15v6" /></svg>
+                </NavLink>
                 <div className="absolute h-8 rounded-md bg-gray-800 text-white hidden items-center left-[55px] z-20 p-2 group-hover/sub:flex">
                   <div className="absolute border-r-[6px] border-r-gray-800 border-b-[6px] border-b-transparent border-t-[6px] border-t-transparent left-[-5px]"></div>
                   Soporte
                 </div>
               </li>
-              {/* <li>
-                Otra opcion dentro de una opcion dentro de la lista ul
-              </li> */}
-            </NavLink>
+            
             {/* <li data-fd='Soporte' className="group/sub">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-hours-24"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 13c.325 2.532 1.881 4.781 4 6" /><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2" /><path d="M4 5v4h4" /><path d="M12 15h2a1 1 0 0 1 1 1v1a1 1 0 0 1 -1 1h-1a1 1 0 0 0 -1 1v1a1 1 0 0 0 1 1h2" /><path d="M18 15v2a1 1 0 0 0 1 1h1" /><path d="M21 15v6" /></svg>
               <div className="absolute h-8 rounded-md bg-gray-800 text-white hidden items-center left-[55px] z-20 p-2 group-hover/sub:flex">

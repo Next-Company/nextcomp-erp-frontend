@@ -5,8 +5,7 @@ import { Button } from "../Atoms/Button/Button"
 export function ModalWindow() {
   const modalref = useRef(null)
   const { config, open, setOpen } = useContext(ModalWindowContext)
-  // const [content, setContent] = useState(config.content)
-  const [content, setContent] = useState('')
+  const [content, setContent] = useState(config.content)
   
 
   const onclick = (e) => {
@@ -34,18 +33,14 @@ export function ModalWindow() {
     console.log("Cerrado modal")
   }
   useEffect(() => {
-    console.log("MI primir useeffect")
-  },[])
-  useEffect(() => {
     setOpen(config.open)
     setContent(content => content = config.content)
     return () => {
       console.log("Limpiando componente")
       // setContent(<><div></div></>)
-      setContent('')
+      setContent(config.content)
     }
   }, [config])
-  // }, [])
   useEffect(() => {
     modalref.current.focus()
   }, [open])
@@ -76,7 +71,6 @@ export function ModalWindow() {
             </div> */}
           </div>
         :
-        // OE PENDEJO LA CLASE "other" ES EL QUE LE DA EL EFECTO DE MOVIMIENTO A LA MODAL EN EL EJE Y, LO ENCUENTRAR EN EL ARCHIVO index.css
         <div ref={modalref} className={`absolute ${open ? 'z-[100] bg-black/50' : 'z-[-1] other'} flex justify-center items-center opacity-[1] top-0 left-0 w-[100vw] h-[100vh] transition-all text-[14px]`} onClick={actionBackground} tabIndex={-1}>
           <div id="conc" onAnimationEnd={onanimationend} className="sm:min-w-[100vw] sm:min-h-[40vh] xl:min-w-[500px] xl:min-h-[250px] p-[5px] bg-white rounded-md flex flex-col justify-between transition-all" onClick={onclick}>
             {
@@ -110,7 +104,6 @@ export function ModalWindow() {
                 <title>Pregunta</title> */}
                 {/* {open && config.content} */}
                 {/* {config.content} */}
-                {/* {open && content} */}
                 {open && content}
               </div>
               {/* <div className={`flex gap-1 [&_button]:flex-1 ${(config.controls && 'true') ? 'block' : 'hidden' }`}> */}

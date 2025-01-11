@@ -173,11 +173,8 @@ export default function ListaEstampado(){
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     {/* <th className="lg:table-cell">#</th> */}
-                    <th className="lg:table-cell">OP</th>
-                    <th className="lg:table-cell">NroCorte</th>
-                    <th className="lg:table-cell">Fecha Inicio</th>
-                    <th className="lg:table-cell">Fecha Termino</th>
-                    <th className="lg:table-cell">Modelo</th>
+                    <th className="lg:table-cell">Id</th>
+                    <th className="lg:table-cell">FechaCreación</th>
                     <th className="lg:table-cell">Estado</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
@@ -188,13 +185,10 @@ export default function ListaEstampado(){
                       ? info.map((row, key) => (
                         <tr key={key} className="">
                           {/* <td>{row.idx}</td> */}
-                          <td>{row.op}</td>
-                          <td>{row.nro_corte}</td>
-                          <td>{row.fec_inicio}</td>
-                          <td>{row.fec_termino}</td>
-                          <td>{row.modelo}</td>
+                          <td>{row.idx}</td>
+                          <td>{row.created_at}</td>
                           <td>{row.estado}</td>
-                          <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td>
+                          {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>

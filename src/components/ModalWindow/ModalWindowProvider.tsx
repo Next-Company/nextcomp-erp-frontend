@@ -16,7 +16,7 @@ export function ModalWindowProvider({ children }) {
     // console.log(config)
 
     // return () => console.log(config)
-  })
+  },[])
   useEffect(() => {
     // console.log(config)
     // return () => console.log(config)

@@ -8,17 +8,23 @@ import { Consulta } from "../../utils/utils"
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext"
 import { toast } from "react-toastify";
 
-function Estampado(data){
+function Estampado({data}){
+  // console.log("Mensaje del cielo:",data)
   const { openModal } = useContext(ModalWindowContext)
   const [nombre,setNombre] = useState('Juan')
   const form = useRef()
   const [info,setInfo] = useState(data)
+  useEffect(()=>{
+    console.log("Datos del estampado :",info)
+  },[])
   const mostrardetalle = ()=>{
     // let info = []
     const params_modal = {
       open:true,
       content: 
         <div className="flex-1 w-[60vw] pb-2">
+          <span>{info.op}</span>
+          <span>{info.nro_corte}</span>
           <form ref={form}>
             <div className={` flex-col gap-3 flex`}>
               <div className="flex gap-3">
@@ -61,7 +67,8 @@ function Estampado(data){
   }
   return(
     <>
-      <div className="border border-gray-300 bg-gray-100 rounded-tl-md rounded-md cursor-pointer flex items-center justify-between p-2 relative mr-[20px] mb-2" onClick={mostrardetalle}>
+      <div className="border border-gray-300 bg-gray-100 rounded-tl-md rounded-md cursor-pointer flex items-center justify-between p-2 relative mr-[20px] mb-2" onClick={mostrardetalle} data-info={JSON.stringify(info)}>
+        <input type="hidden" name='info' value={JSON.stringify(info)} />
         <div>
           {/* Mi nombre es : {nombre} */}
           OP:{info.op ?? ''}/
@@ -202,6 +209,7 @@ export default function NuevoEstampado(){
   const navigate = useNavigate()
   const onsubmit = (e)=>{
     e.preventDefault()
+    // console.log(JSON.stringify(Array.from(new FormData(form.current)).map(row=>JSON.parse(row[1]))))
     openModal({
       open: true,
       header: false,
@@ -209,23 +217,25 @@ export default function NuevoEstampado(){
       content: <div>Desea continuar con el registro del soporte ingresado?</div>,
       action: async () => {
         setOpenloader(true)
-        const data = new FormData(form.current)
+        // const data = new FormData(form.current)
+        const data = new FormData()
+        urlparams.id && data.append('id',urlparams.id)
+        data.append('info',JSON.stringify(Array.from(new FormData(form.current)).map(row=>JSON.parse(row[1]))))
         await Consulta({url: 'produccion/guardarestampado/',params:{
           method:'PUT',
           body:data
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/estampado/inicio')
+          // navigate('/main/estampado/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
-          // console.log("Datos del estampado guardado :",resp)
         })
         .catch((err)=>{
-          // setOpenloader(false)
+          setOpenloader(false)
           toast.error('Se produjo un error!!', { theme: "colored" })
         })
         .finally(()=>{
-          // setOpenloader(false)
+          setOpenloader(false)
         })
       }
     })
@@ -240,6 +250,7 @@ export default function NuevoEstampado(){
         await Consulta({url: 'produccion/estampado/' + urlparams.id,})
           .then(resp => {
             setEstampado(resp)
+            // console.log()
             console.log("Opportynity never die!!!!",resp)
           })
           .catch((err)=>{
@@ -255,7 +266,8 @@ export default function NuevoEstampado(){
   },[])
 
   const nuevoregistro = ()=>{
-    setRegistros([...registros,{}])
+    // setRegistros([...registros,{}])
+    setEstampado([...estampado,{}])
   }
 
   return(
@@ -279,14 +291,15 @@ export default function NuevoEstampado(){
           <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden">
               {
-                registros.length > 0 
-                ? registros.map(row=><Estampado/>)
+                estampado.length > 0
+                ? estampado.map(row=> <Estampado data={row}/>)
                 : <div>De click al boton agregar para ingresar un nuevo registro</div>
               }
-              {/* <Estampado/>
-              <Estampado/>
-              <Estampado/>
-              <Estampado/> */}
+              {/* {
+                registros.length > 0 
+                ? registros.map(row=> <Estampado/>)
+                : <div>De click al boton agregar para ingresar un nuevo registro</div>
+              } */}
               {/* <FormFase info={estampado}/> */}
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/estampado/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
