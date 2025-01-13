@@ -34,6 +34,7 @@ export default function ListaEstampado(){
                 // setOrdenes(resp)
                 toast.success('Estampado eliminado con éxito!', { theme: "colored" })
                 // setRefresh(true)
+                recargarinfo()
                 setOpenloader(false)
               })
               .catch(() => {
@@ -49,6 +50,9 @@ export default function ListaEstampado(){
         break;
       case 'edit':
         navigate("/main/estampado/nuevo/"+ id)
+        break;
+      case 'review':
+        navigate("/main/estampado/review/"+ id)
         break;
     
       default:
@@ -79,30 +83,6 @@ export default function ListaEstampado(){
       // setOpenloader(false)
     })
   },[])
-  // useEffect(()=>{
-  //   if(refresh){
-  //     const data = new FormData()
-  //     setOpenloader(true)
-  //     Consulta({
-  //       url: 'produccion/getListaEstampados', params: {
-  //         method: 'GET'
-  //       }
-  //     })
-  //     .then(resp => {
-  //       console.log(resp)
-        
-  //       setInfo(resp)  
-  //     })
-  //     .catch((error) => {
-  //       console.log(error)
-  //     })
-  //     .finally(()=>{
-  //       console.log("Horror en la consulta de base de datos")
-  //       setOpenloader(false)
-  //       setRefresh(false)
-  //     })
-  //   }
-  // },[refresh])
 
   const recargarinfo = ()=>{
     const data = new FormData()
@@ -126,6 +106,13 @@ export default function ListaEstampado(){
       console.log("Horror en la consulta de base de datos")
       // setOpenloader(false)
     })
+  }
+  const nuevoestampado = ()=>{
+    if(info.filter(row=>new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()).length > 0){
+      alert("Ya existe un registro para la fecha actual")
+    }else{
+      navigate('/main/estampado/nuevo')
+    }
   }
 
   return(
@@ -186,15 +173,24 @@ export default function ListaEstampado(){
                         <tr key={key} className="">
                           {/* <td>{row.idx}</td> */}
                           <td>{row.idx}</td>
-                          <td>{row.created_at}</td>
+                          {/* <td>{row.created_at}</td> */}
+                          <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td>
                           <td>{row.estado}</td>
                           {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                </div>
+                                {
+                                  new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()
+                                  ?
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                  </div>
+                                  :
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-id={row.idx}>
+                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-gray-400 icon icon-tabler icons-tabler-outline icon-tabler-trash-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 3l18 18" /><path d="M4 7h3m4 0h9" /><path d="M10 11l0 6" /><path d="M14 14l0 3" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l.077 -.923" /><path d="M18.384 14.373l.616 -7.373" /><path d="M9 5v-1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                  </div>
+                                }
                               </li>
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center">
@@ -202,19 +198,27 @@ export default function ListaEstampado(){
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={() => { }}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={() => { }}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                                </div>
+                                {
+                                  new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()
+                                  ?
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                  </div>
+                                  :
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" data-id={row.idx}>
+                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-gray-400 icon icon-tabler icons-tabler-outline icon-tabler-edit-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M10.507 10.498l-1.507 1.502v3h3l1.493 -1.498m2 -2.01l4.89 -4.907a2.1 2.1 0 0 0 -2.97 -2.97l-4.913 4.896" /><path d="M16 5l3 3" /><path d="M3 3l18 18" /></svg>
+                                  </div>
+                                }
                               </li>
                             </ul>
                           </td>
@@ -242,7 +246,7 @@ export default function ListaEstampado(){
               </div> */}
               <div className="flex gap-2">
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={() => navigate('/main/estampado/nuevo')} tipo={'accept'}>Nuevo</Button>
+                <Button action={nuevoestampado} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
 

@@ -17,6 +17,7 @@ import { NuevaOrdenProduccion } from './components/operaciones/nuevo.tsx'
 import Estampado from './pages/estampado/Estampado.tsx'
 import ListaEstampado from './pages/estampado/ListaEstampado.tsx'
 import NuevoEstampado from './pages/estampado/NuevoEstampado.tsx'
+import ReviewEstampado from './pages/estampado/ReviewEstampado.tsx'
 
 const routes = [
   {
@@ -43,6 +44,7 @@ const routes = [
           { path: "inicio", element: <ListaEstampado/> },
           { path: "nuevo", element: <NuevoEstampado/> },
           { path: "nuevo/:id", element: <NuevoEstampado/> },
+          { path: "review/:id", element: <ReviewEstampado/> },
         ]
       },
       { path: "soporte", element: <Soporte /> },

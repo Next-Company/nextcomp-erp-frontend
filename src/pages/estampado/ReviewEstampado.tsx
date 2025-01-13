@@ -111,27 +111,18 @@ function Estampado({data,setdata,position}){
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
             </div>
           </li>
-          {/* <li>
-            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={() => { }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-            </div>
-          </li> */}
           <li>
             <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} data-id={info.idx}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
             </div>
           </li>
         </ul>
-        {/* <div className="absolute right-[-14px] bg-orange-300 rounded-full border border-gray-300 w-[28px] h-[28px] z-10"></div> */}
-        {/* <div className="absolute left-[-14px] bg-gray-200 rounded-full border border-gray-300 w-[28px] h-[28px] z-10 flex items-center justify-center">
-          <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-shirt"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14.883 3.007l.095 -.007l.112 .004l.113 .017l.113 .03l6 2a1 1 0 0 1 .677 .833l.007 .116v5a1 1 0 0 1 -.883 .993l-.117 .007h-2v7a2 2 0 0 1 -1.85 1.995l-.15 .005h-10a2 2 0 0 1 -1.995 -1.85l-.005 -.15v-7h-2a1 1 0 0 1 -.993 -.883l-.007 -.117v-5a1 1 0 0 1 .576 -.906l.108 -.043l6 -2a1 1 0 0 1 1.316 .949a2 2 0 0 0 3.995 .15l.009 -.24l.017 -.113l.037 -.134l.044 -.103l.05 -.092l.068 -.093l.069 -.08c.056 -.054 .113 -.1 .175 -.14l.096 -.053l.103 -.044l.108 -.032l.112 -.02z" /></svg>
-        </div> */}
       </div>
     </>
   )
 }
 
-export default function NuevoEstampado(){
+export default function ReviewEstampado(){
   const [estampado,setEstampado] = useState([])
   const urlparams = useParams()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
@@ -227,16 +218,8 @@ export default function NuevoEstampado(){
                 ? estampado.map((row,key)=> <Estampado data={row} setdata={setEstampado} position={key}/>)
                 : <div>De click al boton agregar para ingresar un nuevo registro</div>
               }
-              {/* {
-                registros.length > 0 
-                ? registros.map(row=> <Estampado/>)
-                : <div>De click al boton agregar para ingresar un nuevo registro</div>
-              } */}
-              {/* <FormFase info={estampado}/> */}
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/estampado/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
-                <Button action={nuevoregistro} type={'button'} tipo={'accept'}>Agregar</Button>
-                <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>
             </form>
           </div>
