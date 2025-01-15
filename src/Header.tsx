@@ -1,15 +1,11 @@
 import { useContext, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SideNavMobile } from './components/SideNavMobile/SideNavMobileContext'
-// import { SideNavMobile } from "./components/SideNavMobile/SideNavMobileContext.jsx"
-// import { SideNavMobileContext } from './'
-// import { AuthPermitions } from './contexts/contexts'
-// import { useContext, useEffect, useState } from "react"
-// import { AuthPermitions } from './contexts/contexts'
 export function Header({ logout, credentials }) {
   // const { isAuthenticated, logout } = useContext(AuthPermitions)
   // const [isvisible, setIsvisible] = useState(false)
-  const user = JSON.parse(credentials)
+  console.log("Mis credenciales son :",credentials)
+  const user = credentials !== '' ? JSON.parse(credentials) : {}
   const navigate = useNavigate()
   // const sidenav = useRef()
   const onclick = (e) => {

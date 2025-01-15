@@ -48,6 +48,48 @@ export default function ListaEstampado(){
         }
         openModal(params_modal)
         break;
+      case 'download':
+        params_modal = {
+          open:true,
+          content: <div>Desea continuar con la descarga del informe de estampado?.<br/>  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+          controls: true,
+          header: false,
+          action:()=>{
+            const desc = async ()=>{
+              setOpenloader(true)
+              await fetch("http://192.168.18.20:4000/produccion/exportestampado/"+id,{
+                method:'POST',
+                credentials: 'include'
+              })
+              .then(resp=>{
+                return resp.json()
+              })
+              .then(resp=>{
+                setOpenloader(false)
+                let binaryString = window.atob(resp.data);
+                let binaryLen = binaryString.length;
+                let bytes = new Uint8Array(binaryLen);
+                for (let i = 0; i < binaryLen; i++) {
+                    let ascii = binaryString.charCodeAt(i);
+                    bytes[i] = ascii;
+                }
+                let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+        
+                let link = document.createElement('a')
+                link.href = file
+                link.target = 'blank'
+                link.click()
+              })
+              .catch((err)=>{
+                setOpenloader(false)
+                toast.error('Se produjo un error!!', { theme: "colored" })
+              })
+            }
+            desc()
+          }
+        }
+        openModal(params_modal)
+        break;
       case 'edit':
         navigate("/main/estampado/nuevo/"+ id)
         break;
@@ -181,7 +223,8 @@ export default function ListaEstampado(){
                             <ul className="flex flex-row justify-end">
                               <li>
                                 {
-                                  new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()
+                                  // new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()
+                                  row.enabled
                                   ?
                                   <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
@@ -193,7 +236,7 @@ export default function ListaEstampado(){
                                 }
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center">
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                 </div>
                               </li>
@@ -209,7 +252,8 @@ export default function ListaEstampado(){
                               </li>
                               <li>
                                 {
-                                  new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()
+                                  // new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()
+                                  row.enabled
                                   ?
                                   <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>

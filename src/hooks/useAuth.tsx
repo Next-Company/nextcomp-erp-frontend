@@ -14,12 +14,14 @@ export function useAuth() {
     // return (localStorage.getItem('user_data') && minutes < 60) ? true : false
   })
   const [credentials, setCredentials] = useState(() => {
-    return localStorage.getItem('user_data') ? localStorage.getItem('user_data') : []
+    return localStorage.getItem('user_data') ? localStorage.getItem('user_data') : ''
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   console.log("Esta es la info del localstorage:",localStorage)
+  console.log("Ruta consulta credenciales :", apiUrl + 'login')
   const login = (data) => {
+    console.log("Inciando login")
     const inicia = async () => {
       // return await fetch('http://localhost:4000/login', {
       return await fetch(apiUrl + 'login', {
@@ -32,6 +34,7 @@ export function useAuth() {
     setError(null)
     inicia().then(resp => {
       if (resp.ok) {
+        console.log("Credenciales de base de datos:",resp)
         localStorage.setItem('user_data', JSON.stringify(resp.datos))
         setIsAuthenticated(true)
         setCredentials(JSON.stringify(resp.datos))
@@ -66,7 +69,9 @@ export function useAuth() {
   useEffect(() => {
     console.log("Esta logeado:" + isAuthenticated)
     console.log("Cerrando la modal")
-    if (!isAuthenticated) console.log("saliendo del sistema")
+    if (!isAuthenticated){
+      console.log("saliendo del sistema")
+    } 
   }, [isAuthenticated])
   return { isAuthenticated, login, logout, loading, error, credentials }
 }

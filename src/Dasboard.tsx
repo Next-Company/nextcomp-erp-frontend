@@ -10,7 +10,6 @@ import { ModalWindowProvider } from "./components/ModalWindow/ModalWindowProvide
 export function Dasboard() {
   const { isAuthenticated, logout, credentials } = useContext(AuthPermitions)
   const navigate = useNavigate()
-
   // const SideNavMobile = createContext(null)
   // console.log("entrando a children")
   // console.log(JSON.parse(credentials))
@@ -21,6 +20,7 @@ export function Dasboard() {
       navigate("/")
     }
   }, [isAuthenticated, navigate])
+  // })
   return (
     <>
       <ModalWindowProvider>
