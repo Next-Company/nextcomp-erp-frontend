@@ -6,6 +6,15 @@ import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
 
+const CuerpoInforme = ({cuerpo})=>{
+  return(
+    <>
+      <iframe src="http://192.168.18.20:4000/produccion/informe/12" className="w-[60vw] h-[60vh]"></iframe>
+      {/* <div dangerouslySetInnerHTML={{ __html: cuerpo }} /> */}
+    </>
+  )
+}
+
 export default function ListaEstampado(){
   const [info,setInfo] = useState([])
   const navigate = useNavigate()
@@ -156,6 +165,36 @@ export default function ListaEstampado(){
       navigate('/main/estampado/nuevo')
     }
   }
+  const showinforme = async ()=>{
+
+    const params_modal = {
+      open:true,
+      content: <CuerpoInforme cuerpo={""} />,
+      controls: true,
+      header: false,
+      action:async ()=>{
+      }
+    }
+    openModal(params_modal)
+    // await fetch('http://192.168.18.20:4000/produccion/informe/12',{
+    //   method:'GET',
+    //   credentials:'include'
+    // })
+    // .then(resp=>resp.text())
+    // .then(resp=>{
+    //   console.log(resp)
+    //   const params_modal = {
+    //     open:true,
+    //     content: <CuerpoInforme cuerpo={resp} />,
+    //     controls: true,
+    //     header: false,
+    //     action:async ()=>{
+    //     }
+    //   }
+    //   openModal(params_modal)
+    // })
+    
+  }
 
   return(
     <>
@@ -289,6 +328,7 @@ export default function ListaEstampado(){
                 </div>
               </div> */}
               <div className="flex gap-2">
+                <Button action={showinforme} tipo={'success'}>Informe</Button>
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevoestampado} tipo={'accept'}>Nuevo</Button>
               </div>
