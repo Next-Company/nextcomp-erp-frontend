@@ -71,7 +71,14 @@ export default function ListaEstampado(){
                 credentials: 'include'
               })
               .then(resp=>{
-                return resp.json()
+                console.log("MOstrar status informe estampado:",resp.status)
+                if(resp.ok){
+                  return resp.json()
+                }else{
+                  if(resp.status == 401){
+                    navigate('/')
+                  }
+                }
               })
               .then(resp=>{
                 setOpenloader(false)
