@@ -228,7 +228,8 @@ export default function ListaGuias(){
                           {/* <td>{row.idx}</td> */}
                           <td>{row.idx}</td>
                           {/* <td>{row.created_at}</td> */}
-                          <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td>
+                          {/* <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td> */}
+                          <td></td>
                           <td>{row.estado}</td>
                           {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}
                           <td className="w-[250px]">

@@ -39,12 +39,23 @@ export async function Consulta({ url, params = {} }) {
         if(resp.ok){
           return resp.json()
         }else{
-          throw new Error('Se prodyctro un roble')
+          if(resp.status !== 200){
+            switch(resp.status){
+              case 401 :
+                let msg = JSON.stringify({statuscode:401,message:'Usuario no autorizado o credenciales vencidas.'})
+                throw new Error(msg)
+              default:
+                throw new Error('Otro codigo de error')
+            }
+          }else{
+            throw new Error('Se prodyctro un roble')
+          }         
         }
       })
       .catch(resp=>{
+        let rr = JSON.parse(resp)
         // Promise.reject()
-        console.log("errortttttt_ss")
+        console.log("errortttttt_ss",rr)
         return Promise.reject('Errorrraaa')
         // throw new Error('Se prodyctro un rble')
       })

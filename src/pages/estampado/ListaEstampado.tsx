@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
+import { AuthPermitions } from "../../contexts/contexts";
 
 const CuerpoInforme = ({cuerpo})=>{
   return(
@@ -19,6 +20,9 @@ export default function ListaEstampado(){
   const [info,setInfo] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+
+  const { logout } = useContext(AuthPermitions)
+
   // const [refresh,setRefresh] = useState(false)
 
   const onclick = (e) => {
