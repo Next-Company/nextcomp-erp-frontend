@@ -60,18 +60,18 @@ export default function ListaGuias(){
       case 'download':
         params_modal = {
           open:true,
-          content: <div>Desea continuar con la descarga del informe de estampado?.<br/>  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+          content: <div>Desea continuar con la descarga de la guia de traslado interno?.<br/>  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
           controls: true,
           header: false,
           action:()=>{
             const desc = async ()=>{
               setOpenloader(true)
-              await fetch("http://192.168.18.20:4000/produccion/exportestampado/"+id,{
+              await fetch("http://192.168.18.20:4000/produccion/exportguia/"+id,{
                 method:'POST',
                 credentials: 'include'
               })
               .then(resp=>{
-                console.log("MOstrar status informe estampado:",resp.status)
+                // console.log("MOstrar status informe estampado:",resp.status)
                 if(resp.ok){
                   return resp.json()
                 }else{
@@ -107,7 +107,7 @@ export default function ListaGuias(){
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/estampado/nuevo/"+ id)
+        navigate("/main/guias/nuevo/"+ id)
         break;
       case 'review':
         navigate("/main/estampado/review/"+ id)
@@ -193,7 +193,7 @@ export default function ListaGuias(){
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Estampados</h2>
+              <h2 className="font-medium text-[16px]">Guias</h2>
               <div className="w-[400px]">
                 <Search config={{ width: '200px' }} action={()=>{}} />
               </div>
@@ -207,10 +207,10 @@ export default function ListaGuias(){
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">OC</th>
-                    <th className="lg:table-cell">Origen</th>
-                    <th className="lg:table-cell">Destino</th>
-                    <th className="lg:table-cell">Responsable</th>
+                    <th className="lg:table-cell">OC/OP</th>
+                    <th className="lg:table-cell">Tipo</th>
+                    <th className="lg:table-cell">Servicio</th>
+                    <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">FechaEMmision</th>
                     <th className="lg:table-cell">FechaRetorno</th>
                     <th className="lg:table-cell">FechaRecepcion</th>
@@ -225,28 +225,26 @@ export default function ListaGuias(){
                     info.length > 0
                       ? info.map((row, key) => (
                         <tr key={key} className="">
-                          {/* <td>{row.idx}</td> */}
                           <td>{row.idx}</td>
-                          {/* <td>{row.created_at}</td> */}
+                          <td>{row.orden_ref}</td>
+                          <td>{row.tipo}</td>
+                          <td>{row.servicio}</td>
+                          <td>{row.proveedor}</td>
+                          <td>{row.fec_emision}</td>
+                          <td>{row.fec_retorno}</td>
+                          <td>{row.fec_recepcion}</td>
+                          <td>{row.costo}</td>
+                          <td>{row.tiempo_produccion}</td>
+                          <td>{row.dias_pendientes}</td>
                           {/* <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td> */}
-                          <td></td>
-                          <td>{row.estado}</td>
+                          {/* <td>{row.estado}</td> */}
                           {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                {
-                                  // new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()
-                                  row.enabled
-                                  ?
-                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                  </div>
-                                  :
-                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-id={row.idx}>
-                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-gray-400 icon icon-tabler icons-tabler-outline icon-tabler-trash-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 3l18 18" /><path d="M4 7h3m4 0h9" /><path d="M10 11l0 6" /><path d="M14 14l0 3" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l.077 -.923" /><path d="M18.384 14.373l.616 -7.373" /><path d="M9 5v-1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                  </div>
-                                }
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                </div>
                               </li>
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx}>
@@ -261,21 +259,13 @@ export default function ListaGuias(){
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                  {/* <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg> */}
                                 </div>
                               </li>
                               <li>
-                                {
-                                  // new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()
-                                  row.enabled
-                                  ?
-                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                                  </div>
-                                  :
-                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" data-id={row.idx}>
-                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-gray-400 icon icon-tabler icons-tabler-outline icon-tabler-edit-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M10.507 10.498l-1.507 1.502v3h3l1.493 -1.498m2 -2.01l4.89 -4.907a2.1 2.1 0 0 0 -2.97 -2.97l-4.913 4.896" /><path d="M16 5l3 3" /><path d="M3 3l18 18" /></svg>
-                                  </div>
-                                }
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                </div>
                               </li>
                             </ul>
                           </td>

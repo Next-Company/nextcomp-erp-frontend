@@ -16,9 +16,11 @@ export default function NewGuia(){
   const form = useRef()
   const [registros,setRegistros] = useState([])
   const navigate = useNavigate()
+
   const onsubmit = (e)=>{
     e.preventDefault()
-    // console.log(JSON.stringify(Array.from(new FormData(form.current)).map(row=>JSON.parse(row[1]))))
+    // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
+
     openModal({
       open: true,
       header: false,
@@ -26,17 +28,18 @@ export default function NewGuia(){
       content: <div>Desea continuar con el registro del soporte ingresado?</div>,
       action: async () => {
         setOpenloader(true)
-        // const data = new FormData(form.current)
         const data = new FormData()
         urlparams.id && data.append('id',urlparams.id)
-        data.append('info',JSON.stringify(Array.from(new FormData(form.current)).map(row=>JSON.parse(row[1]))))
-        await Consulta({url: 'produccion/guardarestampado/',params:{
+        data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
+        data.append('detalle',JSON.stringify(registros))
+
+        await Consulta({url: 'produccion/guardarguia/',params:{
           method:'PUT',
           body:data
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/estampado/inicio')
+          navigate('/main/guias/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -56,10 +59,11 @@ export default function NewGuia(){
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/estampado/' + urlparams.id,})
+        await Consulta({url: 'produccion/guia/' + urlparams.id,})
           .then(resp => {
-            setEstampado(resp)
-            // console.log()
+            console.log("info guia :",resp)
+            setInfo(resp[0])
+            setRegistros(resp[1])
             setOpenloader(false)
             console.log("Opportynity never die!!!!",resp)
           })
@@ -75,12 +79,35 @@ export default function NewGuia(){
     }
   },[])
 
-  const seach_tiendas = ()=>{
-    let data = new FormData()
-    Consulta({url:"http://192.168.18.20:4000/guias/consulta_tiendas",params:{
-      method:'GET',
-      body: data
-    }})
+  const nuevoregistro = ()=>{
+    console.log("Registros actuales :",registros)
+    setRegistros([...registros,{item:0,articulo:'',cantidad:0}])
+  }
+
+  const onclick = (e)=>{
+    const action = e.target.dataset.action
+    const position = e.target.dataset.position
+    switch(action){
+
+      case 'delete':
+        setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+        console.log("Eliminado registros de la fila ",position)
+        break;
+      default :
+    }
+
+    console.log("La accion seleccionada es la siguiente:",action)
+
+  }
+  const editvalue = (e)=>{
+    // let id = e.target.dataset.id
+    let column = e.target.dataset.name
+    let position = e.target.dataset.position
+    let articulo = registros[parseInt(e.target.dataset.position)]
+    
+    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]:e.target.value}:item)])
+    // setRegistros([...registros.filter(item=>item.id !== id),{descripcion:e.target.textContent,cantidad:item.cantidad}])
+    console.log("Modificicando contenido",e.target.value)
   }
 
   const search_proveedor = ()=>{
@@ -93,7 +120,7 @@ export default function NewGuia(){
             <div className={` flex-col gap-3 flex`}>
               <div className="flex gap-3">
                 <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                <Input name={'op'} title="OP" defaults={Object.keys(info).length > 0 ? info.op : null} type="text" />
+                <Input name={'orden_ref'} title="OP" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" />
                 <Input name={'nro_corte'} title="NroCorte" defaults={Object.keys(info).length > 0 ? info.nro_corte : null} type="text" />
                 <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" />
                 <Input name={'cliente'} title="Cliente" defaults={Object.keys(info).length > 0 ? info.cliente : null} type="text" />              
@@ -141,25 +168,6 @@ export default function NewGuia(){
     }
     openModal(params_modal)
   }
-  const nuevoregistro = ()=>{
-    setRegistros([...registros,{item:0,descripcion:'',cantidad:0}])
-  }
-
-  const onclick = (e)=>{
-    const action = e.target.dataset.action
-    console.log("La accion seleccionada es la siguiente:",action)
-
-  }
-  const editvalue = (e)=>{
-    // let id = e.target.dataset.id
-    let column = e.target.dataset.name
-    let position = e.target.dataset.position
-    let articulo = registros[parseInt(e.target.dataset.position)]
-    
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]:e.target.value}:item)])
-    // setRegistros([...registros.filter(item=>item.id !== id),{descripcion:e.target.textContent,cantidad:item.cantidad}])
-    console.log("Modificicando contenido",e.target.value)
-  }
 
   return(
     <>
@@ -181,7 +189,7 @@ export default function NewGuia(){
           </div>
           <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
 
-            <form ref={form}>
+            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} >
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
@@ -243,23 +251,23 @@ export default function NewGuia(){
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               {/* <td contentEditable="true" onKeyDown={editcontext} data-position={key}>{row.descripcion}</td>
                               <td className="w-[200px]" contentEditable="true">asdfasdf</td> */}
-                              <td><input type="text" onChange={editvalue} data-name="descripcion" data-position={key} value={row.descripcion} /></td>
-                              <td><input type="number" onChange={editvalue} data-name="cantidad" data-position={key} value={row.cantidad} /></td>
+                              <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
+                              <td><input type="number" onChange={editvalue} data-name="cantidad" data-position={key} defaultValue={row.cantidad} /></td>
                               <td className="w-[200px]"></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" onClick={onclick} data-id={row.idx}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                     </div>
                                   </li>
@@ -269,18 +277,9 @@ export default function NewGuia(){
                                     </div>
                                   </li>
                                   <li>
-                                    {
-                                      // new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()
-                                      row.enabled
-                                      ?
-                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                                      </div>
-                                      :
-                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" data-id={row.idx}>
-                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-gray-400 icon icon-tabler icons-tabler-outline icon-tabler-edit-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M10.507 10.498l-1.507 1.502v3h3l1.493 -1.498m2 -2.01l4.89 -4.907a2.1 2.1 0 0 0 -2.97 -2.97l-4.913 4.896" /><path d="M16 5l3 3" /><path d="M3 3l18 18" /></svg>
-                                      </div>
-                                    }
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                    </div>
                                   </li>
                                 </ul>
                               </td>
@@ -298,26 +297,24 @@ export default function NewGuia(){
                   <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={8} />
                 </div>
               </div>
-            </form>
-
-            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden">
-              {
-                estampado.length > 0
-                ? <div>Cuerpo guia</div>
-                : <div>De click al boton agregar para ingresar un nuevo registro</div>
-              }
-              {/* {
-                registros.length > 0 
-                ? registros.map(row=> <Estampado/>)
-                : <div>De click al boton agregar para ingresar un nuevo registro</div>
-              } */}
-              {/* <FormFase info={estampado}/> */}
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/guias/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button action={nuevoregistro} type={'button'} tipo={'accept'}>Agregar</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>
             </form>
+            {/* <form ref={form} className="flex flex-col flex-1 overflow-hidden">
+              {
+                estampado.length > 0
+                ? <div>Cuerpo guia</div>
+                : <div>De click al boton agregar para ingresar un nuevo registro</div>
+              }
+              <div className="flex justify-end gap-2 mt-2">
+                <Button action={() => navigate('/main/guias/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                <Button action={nuevoregistro} type={'button'} tipo={'accept'}>Agregar</Button>
+                <Button type={'submit'} tipo={'success'}>Guardar</Button>
+              </div>
+            </form> */}
           </div>
         </div>
       </div>

@@ -55,7 +55,7 @@ const routes = [
         element: <LayoutGuia/>,
         children: [
           { path: "inicio", element: <ListaGuias/> },
-          { path: "nuevo", element: <NewGuia/> },
+          { path: "nuevo/:id", element: <NewGuia/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ]
