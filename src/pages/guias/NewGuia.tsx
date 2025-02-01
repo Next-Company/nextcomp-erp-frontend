@@ -110,7 +110,12 @@ export default function NewGuia(){
     console.log("Modificicando contenido",e.target.value)
   }
 
-  const search_proveedor = ()=>{
+  const search_proveedor = (e)=>{
+    console.log("Empieza proceso de busqueda de proveedores")
+  }
+
+  const nuevoproveedor = ()=>{
+    console.log("Buscando nuevo proveedor")
     let params_modal = null
     params_modal = {
       open:true,
@@ -301,6 +306,7 @@ export default function NewGuia(){
                 <Button action={() => navigate('/main/guias/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button action={nuevoregistro} type={'button'} tipo={'accept'}>Agregar</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button>
               </div>
             </form>
             {/* <form ref={form} className="flex flex-col flex-1 overflow-hidden">
