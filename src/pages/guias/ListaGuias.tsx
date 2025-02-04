@@ -35,13 +35,13 @@ export default function ListaGuias(){
           action:()=>{
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarestampado/' + id, params: {
+              url: 'produccion/borrarguia/' + id, params: {
                 method: 'DELETE'
               }
             })
               .then(resp => {
                 // setOrdenes(resp)
-                toast.success('Estampado eliminado con éxito!', { theme: "colored" })
+                toast.success('Guia eliminado con éxito!', { theme: "colored" })
                 // setRefresh(true)
                 recargarinfo()
                 setOpenloader(false)

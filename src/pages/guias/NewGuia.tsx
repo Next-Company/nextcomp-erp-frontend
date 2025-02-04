@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
+import { findRenderedComponentWithType } from "react-dom/test-utils"
 
 export default function NewGuia(){
   const [estampado,setEstampado] = useState([])
@@ -107,7 +108,7 @@ export default function NewGuia(){
     
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]:e.target.value}:item)])
     // setRegistros([...registros.filter(item=>item.id !== id),{descripcion:e.target.textContent,cantidad:item.cantidad}])
-    console.log("Modificicando contenido",e.target.value)
+    // console.log("Modificicando contenido",e.target.value)
   }
 
   const search_proveedor = (e)=>{
@@ -174,6 +175,42 @@ export default function NewGuia(){
     openModal(params_modal)
   }
 
+  const formatotallas = ()=>{
+    let tallas_base = ['xs','s','m','l','xl','xxl']
+    let lista_tallas = new FormData(form.current)
+
+    console.log("Elementos de mi formulario : ",form.current.elements)
+
+    let lista_xs = form.current.querySelectorAll("input[name='xs']")
+    let lista_m = form.current.querySelectorAll("input[name='m']")
+    let lista_l = form.current.querySelectorAll("input[name='l']")
+    let lista_xl = form.current.querySelectorAll("input[name='xl']")
+
+    for(let lista1 of lista_xs){
+      console.log("EL valor del xs es:",lista1.value)
+    }
+    for(let lista2 of lista_m){
+      console.log("EL valor del m es:",lista2.value)
+    }
+    for(let lista3 of lista_l){
+      console.log("EL valor del m es:",lista3.value)
+    }
+
+    for(let valor of lista_tallas.entries()){
+      console.log("En valor del entrie es el siguiente:",valor)
+    }
+
+    let base = Object.fromEntries(lista_tallas)
+    // let concepto  = form.current.querySelector("input[data-nom=''")
+    // let busqueda = 
+    // console.log("a ||||||||||||||||||")
+    // l
+    console.log("Mostrando informacion de los articulos",base)
+    let busqueda = <form action="" className="curretn"></form>
+    // data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
+
+    // let pp = i
+  }
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -239,12 +276,18 @@ export default function NewGuia(){
                 <div>
                   <span>Artículos:</span>
                   <div className="h-[350px] scrollbar-special rounded-md overflow-y-scroll border-[.2px] mt-2"> 
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           {/* <th className="lg:table-cell">Item</th> */}
-                          <th className="lg:table-cell">Descripcion</th>
-                          <th className="lg:table-cell">QtnSalida</th>
+                          <th className="lg:table-cell w-[500px]">Descripcion</th>  
+                          <th className="lg:table-cell">XS / 26</th>
+                          <th className="lg:table-cell">S / 28</th>
+                          <th className="lg:table-cell">M / 30</th>
+                          <th className="lg:table-cell">L / 32</th>
+                          <th className="lg:table-cell">XL / 34</th>
+                          <th className="lg:table-cell">XXL / 36</th>
+                          <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Acciones</th>
                           {/* <th className="lg:table-cell">QtnIngreso</th>
                           <th className="lg:table-cell">Responsable</th> */}
@@ -257,8 +300,22 @@ export default function NewGuia(){
                               {/* <td contentEditable="true" onKeyDown={editcontext} data-position={key}>{row.descripcion}</td>
                               <td className="w-[200px]" contentEditable="true">asdfasdf</td> */}
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
-                              <td><input type="number" onChange={editvalue} data-name="cantidad" data-position={key} defaultValue={row.cantidad} /></td>
-                              <td className="w-[200px]"></td>
+                              <td><input name="xs" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name="s" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name="m" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name="l" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name="xl" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name="xxl" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
+                              {/* <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
+                              <td><input name={`xs-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name={`s-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name={`m-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name={`l-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name={`xl-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input name={`xxl-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td> */}
+                              {/* <td className="w-[200px]"></td> */}
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -303,6 +360,7 @@ export default function NewGuia(){
                 </div>
               </div>
               <div className="flex justify-end gap-2 mt-2">
+                <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button>
                 <Button action={() => navigate('/main/guias/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button action={nuevoregistro} type={'button'} tipo={'accept'}>Agregar</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
