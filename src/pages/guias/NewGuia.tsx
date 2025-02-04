@@ -7,13 +7,13 @@ import { toast } from "react-toastify";
 import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
-import { findRenderedComponentWithType } from "react-dom/test-utils"
+import Proveedores from "../../components/Common/Proveedores"
 
 export default function NewGuia(){
   const [estampado,setEstampado] = useState([])
   const urlparams = useParams()
   const [info,setInfo] = useState({})
-  const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros,setRegistros] = useState([])
   const navigate = useNavigate()
@@ -21,7 +21,7 @@ export default function NewGuia(){
   const onsubmit = (e)=>{
     e.preventDefault()
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
-
+    console.log("El de talle de fracciones :",registros)
     openModal({
       open: true,
       header: false,
@@ -82,7 +82,7 @@ export default function NewGuia(){
 
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
-    setRegistros([...registros,{item:0,articulo:'',cantidad:0}])
+    setRegistros([...registros,{item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
   }
 
   const onclick = (e)=>{
@@ -101,115 +101,27 @@ export default function NewGuia(){
 
   }
   const editvalue = (e)=>{
-    // let id = e.target.dataset.id
     let column = e.target.dataset.name
     let position = e.target.dataset.position
     let articulo = registros[parseInt(e.target.dataset.position)]
-    
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]:e.target.value}:item)])
-    // setRegistros([...registros.filter(item=>item.id !== id),{descripcion:e.target.textContent,cantidad:item.cantidad}])
-    // console.log("Modificicando contenido",e.target.value)
-  }
-
-  const search_proveedor = (e)=>{
-    console.log("Empieza proceso de busqueda de proveedores")
   }
 
   const nuevoproveedor = ()=>{
-    console.log("Buscando nuevo proveedor")
     let params_modal = null
     params_modal = {
       open:true,
-      content: 
-        <div className="flex-1 w-[60vw] pb-2">
-          <form ref={form}>
-            <div className={` flex-col gap-3 flex`}>
-              <div className="flex gap-3">
-                <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                <Input name={'orden_ref'} title="OP" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" />
-                <Input name={'nro_corte'} title="NroCorte" defaults={Object.keys(info).length > 0 ? info.nro_corte : null} type="text" />
-                <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" />
-                <Input name={'cliente'} title="Cliente" defaults={Object.keys(info).length > 0 ? info.cliente : null} type="text" />              
-              </div>
-              <div className="flex gap-3">
-                <InputSelect title={'Marca'} name={"marca"} data={
-                  [
-                    { indice: 'PRIORITY', option: 'PRIORITY', selected: true }, 
-                    { indice: 'MECHANIC', option: 'MECHANIC' }, 
-                    { indice: 'XTRMZ', option: 'XTRMZ' }, 
-                    { indice: 'HIDRAULIO', option: 'HIDRAULIO' }, 
-                    { indice: 'ESSENCE', option: 'ESSENCE' }, 
-                    { indice: 'ONE', option: 'ONE' }, 
-                    { indice: 'ELENEX', option: 'ELENEX' },
-                    { indice: 'NEXT', option: 'NEXT' },
-                    { indice: 'TOPITOP', option: 'TOPITOP' },
-                    { indice: 'DC-VL-QK-OAK-DKV', option: 'DC-VL-QK-OAK-DKV' },
-                    { indice: 'DC-VL-QK-OAK', option: 'DC-VL-QK-OAK' },
-                    { indice: 'DKV-VL-OAK-QK', option: 'DKV-VL-OAK-QK' }
-                  ]} 
-                  df={Object.keys(info).length > 0 ? info.marca : null} 
-                />
-              </div>
-              <div className="flex flex-row gap-3">
-                <Input name={'nro_paquetes'} title="Paquetes" defaults={Object.keys(info).length > 0 ? info.nro_paquetes : null} type="number" />
-                <Input name={'nro_polos'} title="Polos" defaults={Object.keys(info).length > 0 ? info.nro_polos : null} type="number" />
-                <Input name={'nro_personal'} title="Personal" defaults={Object.keys(info).length > 0 ? info.nro_personal : null} type="number" />
-                <Input name={'tipo_estampado'} defaults={Object.keys(info).length > 0 ? info.tipo_estampado : null} title="TipoEstampado" type="text" />
-                <Input name={'nro_fallados'} title="NroFallados" defaults={Object.keys(info).length > 0 ? info.nro_fallados : null} type="number" />
-              </div>
-              <div className="flex flex-col gap-3">
-                <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PEND', option: 'PENDIENTE' }, { indice: 'FNLZ', option: 'FINALIZADO' }, { indice: 'ANUL', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null}/>
-                <Input name={'avance'} title="Avance(%)" defaults={Object.keys(info).length > 0 ? info.avance : null} type="number" />
-              </div>
-              <div>
-                <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={8} />
-              </div>
-            </div>
-          </form>
-        </div>,
+      content: <Proveedores actions={(item)=>{  
+        console.log("El item seleccionado es: ",item)
+        setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom}))
+        setOpen(false)
+      }}/>,
       controls: true,
       header: false,
       action:()=>{
       }
     }
     openModal(params_modal)
-  }
-
-  const formatotallas = ()=>{
-    let tallas_base = ['xs','s','m','l','xl','xxl']
-    let lista_tallas = new FormData(form.current)
-
-    console.log("Elementos de mi formulario : ",form.current.elements)
-
-    let lista_xs = form.current.querySelectorAll("input[name='xs']")
-    let lista_m = form.current.querySelectorAll("input[name='m']")
-    let lista_l = form.current.querySelectorAll("input[name='l']")
-    let lista_xl = form.current.querySelectorAll("input[name='xl']")
-
-    for(let lista1 of lista_xs){
-      console.log("EL valor del xs es:",lista1.value)
-    }
-    for(let lista2 of lista_m){
-      console.log("EL valor del m es:",lista2.value)
-    }
-    for(let lista3 of lista_l){
-      console.log("EL valor del m es:",lista3.value)
-    }
-
-    for(let valor of lista_tallas.entries()){
-      console.log("En valor del entrie es el siguiente:",valor)
-    }
-
-    let base = Object.fromEntries(lista_tallas)
-    // let concepto  = form.current.querySelector("input[data-nom=''")
-    // let busqueda = 
-    // console.log("a ||||||||||||||||||")
-    // l
-    console.log("Mostrando informacion de los articulos",base)
-    let busqueda = <form action="" className="curretn"></form>
-    // data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-
-    // let pp = i
   }
   return(
     <>
@@ -272,14 +184,17 @@ export default function NewGuia(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.estado : null} 
                   />
+                  {/* <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" /> */}
+                </div>
+                <div className="flex flex-row gap-3">
+                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" />
                 </div>
                 <div>
                   <span>Artículos:</span>
-                  <div className="h-[350px] scrollbar-special rounded-md overflow-y-scroll border-[.2px] mt-2"> 
+                  <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          {/* <th className="lg:table-cell">Item</th> */}
                           <th className="lg:table-cell w-[500px]">Descripcion</th>  
                           <th className="lg:table-cell">XS / 26</th>
                           <th className="lg:table-cell">S / 28</th>
@@ -289,33 +204,20 @@ export default function NewGuia(){
                           <th className="lg:table-cell">XXL / 36</th>
                           <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Acciones</th>
-                          {/* <th className="lg:table-cell">QtnIngreso</th>
-                          <th className="lg:table-cell">Responsable</th> */}
                         </tr>
                       </thead>
                       <tbody>
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              {/* <td contentEditable="true" onKeyDown={editcontext} data-position={key}>{row.descripcion}</td>
-                              <td className="w-[200px]" contentEditable="true">asdfasdf</td> */}
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
-                              <td><input name="xs" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name="s" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name="m" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name="l" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name="xl" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name="xxl" type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
+                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} defaultValue={row.xs}/></td>
+                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} defaultValue={row.s}/></td>
+                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} defaultValue={row.m}/></td>
+                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} defaultValue={row.l}/></td>
+                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xl}/></td>
+                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xxl}/></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
-                              {/* <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
-                              <td><input name={`xs-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name={`s-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name={`m-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name={`l-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name={`xl-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input name={`xxl-${key}`} type="number" onChange={editvalue} data-position={key} defaultValue={0}/></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td> */}
-                              {/* <td className="w-[200px]"></td> */}
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -347,38 +249,33 @@ export default function NewGuia(){
                               </td>
                             </tr>
                           ))
-                          // ? 
-                          // : <tr></tr>
-
                         }
                       </tbody>
+                      <tfoot className="sticky bottom-0">
+                        <tr>
+                          <td colSpan={9} >
+                            <div className="flex flex-row justify-center">
+                              <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                                +
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tfoot>
                     </table>
                   </div>
                 </div>
                 <div>
-                  <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={8} />
+                  <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={4} />
                 </div>
               </div>
               <div className="flex justify-end gap-2 mt-2">
-                <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button>
+                {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
                 <Button action={() => navigate('/main/guias/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
-                <Button action={nuevoregistro} type={'button'} tipo={'accept'}>Agregar</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button>
               </div>
             </form>
-            {/* <form ref={form} className="flex flex-col flex-1 overflow-hidden">
-              {
-                estampado.length > 0
-                ? <div>Cuerpo guia</div>
-                : <div>De click al boton agregar para ingresar un nuevo registro</div>
-              }
-              <div className="flex justify-end gap-2 mt-2">
-                <Button action={() => navigate('/main/guias/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
-                <Button action={nuevoregistro} type={'button'} tipo={'accept'}>Agregar</Button>
-                <Button type={'submit'} tipo={'success'}>Guardar</Button>
-              </div>
-            </form> */}
           </div>
         </div>
       </div>
