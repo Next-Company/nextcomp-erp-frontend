@@ -8,6 +8,7 @@ import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
+import { InputTest } from "../../components/Atoms/Input/InputTest"
 
 export default function NewGuia(){
   const [estampado,setEstampado] = useState([])
@@ -170,7 +171,8 @@ export default function NewGuia(){
                     df={Object.keys(info).length > 0 ? info.servicio : null} 
                   />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" />
+                  {/* <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" /> */}
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                 </div>
                 <div className="flex flex-row gap-3">
                   <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
@@ -273,7 +275,7 @@ export default function NewGuia(){
                 {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
                 <Button action={() => navigate('/main/guias/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
-                <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button>
+                {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
               </div>
             </form>
           </div>

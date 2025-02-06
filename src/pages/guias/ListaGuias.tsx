@@ -292,7 +292,7 @@ export default function ListaGuias(){
                 </div>
               </div> */}
               <div className="flex gap-2">
-                <Button action={showinforme} tipo={'success'}>Informe</Button>
+                {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevoestampado} tipo={'accept'}>Nuevo</Button>
               </div>
