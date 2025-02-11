@@ -103,9 +103,11 @@ export default function NewGuia(){
   }
   const editvalue = (e)=>{
     let column = e.target.dataset.name
+    console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
     let position = e.target.dataset.position
-    let articulo = registros[parseInt(e.target.dataset.position)]
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]:e.target.value}:item)])
+    // let articulo = registros[parseInt(e.target.dataset.position)]
+    // console.log("Los registros son:",registros)
+    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
   }
 
   const nuevoproveedor = ()=>{
@@ -130,7 +132,7 @@ export default function NewGuia(){
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Guia /</h2>
+              <h2 className="font-medium text-[16px]">Guias /</h2>
               <span className="text-blue-500 font-bold">
                 Nueva guia
                 {/* {
@@ -171,10 +173,12 @@ export default function NewGuia(){
                     df={Object.keys(info).length > 0 ? info.servicio : null} 
                   />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  {/* <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" /> */}
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" />
+                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" />
+                  
                 </div>
                 <div className="flex flex-row gap-3">
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
                   <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" />
                   <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" />
@@ -189,6 +193,7 @@ export default function NewGuia(){
                   {/* <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" /> */}
                 </div>
                 <div className="flex flex-row gap-3">
+                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" />
                   <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" />
                 </div>
                 <div>
@@ -205,6 +210,7 @@ export default function NewGuia(){
                           <th className="lg:table-cell">XL / 34</th>
                           <th className="lg:table-cell">XXL / 36</th>
                           <th className="lg:table-cell">Cantidad</th>
+                          <th className="lg:table-cell">EsPrototipo</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -220,6 +226,7 @@ export default function NewGuia(){
                               <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xl}/></td>
                               <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xxl}/></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
+                              <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
