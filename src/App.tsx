@@ -21,6 +21,9 @@ import ReviewEstampado from './pages/estampado/ReviewEstampado.tsx'
 import LayoutGuia from './pages/guias/LayoutGuia.tsx'
 import ListaGuias from './pages/guias/ListaGuias.tsx'
 import NewGuia from './pages/guias/NewGuia.tsx'
+import LayoutPedido from './pages/pedidos/LayoutPedido.tsx'
+import ListaPedidos from './pages/pedidos/ListaPedidos.tsx'
+import NewPedido from './pages/pedidos/NewPedido.tsx'
 
 const routes = [
   {
@@ -57,6 +60,17 @@ const routes = [
           { path: "inicio", element: <ListaGuias/> },
           { path: "nuevo", element: <NewGuia/> },
           { path: "nuevo/:id", element: <NewGuia/> },
+          // { path: "nuevo/:id", element: <NuevoEstampado/> },
+          // { path: "review/:id", element: <ReviewEstampado/> },
+        ]
+      },
+      { 
+        path: "pedidos", 
+        element: <LayoutPedido/>,
+        children: [
+          { path: "inicio", element: <ListaPedidos/> },
+          { path: "nuevo", element: <NewPedido/> },
+          { path: "nuevo/:id", element: <NewPedido/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ]

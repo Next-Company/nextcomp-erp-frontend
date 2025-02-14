@@ -10,7 +10,16 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import { InputTest } from "../../components/Atoms/Input/InputTest"
 
-export default function NewGuia(){
+
+const CuerpoInforme = ({cuerpo})=>{
+  return(
+    <>
+      <iframe src="http://192.168.18.20:4000/produccion/vistapreviapedido/telas" className="w-[60vw] h-[60vh]"></iframe>
+    </>
+  )
+}
+
+export default function NewPedido(){
   const [estampado,setEstampado] = useState([])
   const urlparams = useParams()
   const [info,setInfo] = useState({})
@@ -83,7 +92,7 @@ export default function NewGuia(){
 
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
-    setRegistros([...registros,{item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
+    setRegistros([...registros,{item:0,articulo:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
   }
 
   const onclick = (e)=>{
@@ -126,6 +135,18 @@ export default function NewGuia(){
     }
     openModal(params_modal)
   }
+
+  const vistaprevia = async ()=>{
+    const params_modal = {
+      open:true,
+      content: <CuerpoInforme cuerpo={""} />,
+      controls: true,
+      header: false,
+      action:async ()=>{
+      }
+    }
+    openModal(params_modal)    
+  }
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -144,57 +165,31 @@ export default function NewGuia(){
             </div>
             <hr />
           </div>
-          <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
+          <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
 
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} >
               <div className={` flex-col gap-3 flex`}>
+
                 <div className="flex gap-3">
-                  <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" />
-                  <InputSelect title={'Tipo'} name={"tipo"} data={
-                    [
-                      { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 
-                      { indice: 'MUESTRA/PROTOTIPO', option: 'MUESTRA/PROTOTIPO' }, 
-                      { indice: 'ACABADOS', option: 'ACABADOS' },
-                      { indice: 'REPARACION', option: 'REPARACION' },
-                      { indice: 'PRESTAMO', option: 'PRESTAMO' },
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo : null} 
-                  />
-                  <InputSelect title={'Servicio'} name={"servicio"} data={
-                    [
-                      { indice: 'CONFECCION', option: 'CONFECCION', selected: true }, 
-                      { indice: 'OJAL', option: 'OJAL' }, 
-                      { indice: 'ESTAMPADO', option: 'ESTAMPADO' },
-                      { indice: 'LAVANDERIA', option: 'LAVANDERIA' },
-                      { indice: 'BORDADO', option: 'BORDADO' },
-                      { indice: 'ACABADOS', option: 'ACABADOS' },
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.servicio : null} 
-                  />
+                  <Input name={'orden_pedido'} defaults={Object.keys(info).length > 0 && info.orden_pedido ? info.orden_pedido : null} title="Orden Pedido" type="text" />
+                  <Input name={'fec_pedido'} defaults={Object.keys(info).length > 0 && info.fec_pedido ? info.fec_pedido : null} title="FechaPedido" type="date" />
+                  {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" />
-                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" />
-                  
-                </div>
-                <div className="flex flex-row gap-3">
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
-                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
-                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" />
-                  <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" />
-                  <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" />
-                  <InputSelect title={'Estado'} name={"estado"} data={
-                    [
-                      { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
-                      { indice: 'FINALIZADO', option: 'FINALIZADO' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.estado : null} 
-                  />
-                  {/* <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" /> */}
+                  <Input name={'fec_entrega'} defaults={Object.keys(info).length > 0 && info.fec_entrega ? info.fec_entrega : null} title="FechaEntrega" type="date" />
+                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
                 </div>
-                <div className="flex flex-row gap-3">
-                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" />
-                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" />
+                <div className="flex gap-3">
+                  <InputSelect title={'TipoProducto'} name={"tipo_pedido"} data={
+                    [
+                      { indice: 'TELAS', option: 'TELAS', selected: true }, 
+                      { indice: 'AVIOS', option: 'AVIOS' }, 
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.tipo_pedido : null} 
+                  />
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" />
+                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" />
+                  <InputSelect title={'Estado'} name={"estado_telas"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado_telas : null} />
                 </div>
                 <div>
                   <span>Artículos:</span>
@@ -203,14 +198,12 @@ export default function NewGuia(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell w-[500px]">Descripcion</th>  
-                          <th className="lg:table-cell">XS / 26</th>
-                          <th className="lg:table-cell">S / 28</th>
-                          <th className="lg:table-cell">M / 30</th>
-                          <th className="lg:table-cell">L / 32</th>
-                          <th className="lg:table-cell">XL / 34</th>
-                          <th className="lg:table-cell">XXL / 36</th>
+                          <th className="lg:table-cell">Color</th>
+                          <th className="lg:table-cell">Rollos</th>
                           <th className="lg:table-cell">Cantidad</th>
-                          <th className="lg:table-cell">EsPrototipo</th>
+                          <th className="lg:table-cell">Unidad</th>
+                          <th className="lg:table-cell">Precio</th>
+                          {/* <th className="lg:table-cell">EsPrototipo</th> */}
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -219,14 +212,12 @@ export default function NewGuia(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
-                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} defaultValue={row.xs}/></td>
-                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} defaultValue={row.s}/></td>
-                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} defaultValue={row.m}/></td>
-                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} defaultValue={row.l}/></td>
-                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xl}/></td>
-                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xxl}/></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="color" defaultValue={row.color} /></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
-                              <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
+                              {/* <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td> */}
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -278,10 +269,17 @@ export default function NewGuia(){
                   <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={4} />
                 </div>
               </div>
-              <div className="flex justify-end gap-2 mt-2">
-                {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
-                <Button action={() => navigate('/main/guias/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
-                <Button type={'submit'} tipo={'success'}>Guardar</Button>
+              <div className="flex justify-between gap-2 mt-2 bg-gray-100 p-1">
+                <div>
+                  {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
+                  <Button action={vistaprevia} type={'button'} tipo={'accept'}>
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
+                  </Button>  
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button action={() => navigate('/main/pedidos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                </div>
                 {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
               </div>
             </form>

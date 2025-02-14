@@ -15,7 +15,7 @@ const CuerpoInforme = ({cuerpo})=>{
   )
 }
 
-export default function ListaGuias(){
+export default function ListaPedidos(){
   const [info,setInfo] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
@@ -165,12 +165,12 @@ export default function ListaGuias(){
       // setOpenloader(false)
     })
   }
-  const nuevoestampado = ()=>{
+  const nuevopedido = ()=>{
     // if(info.filter(row=>new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()).length > 0){
     //   alert("Ya existe un registro para la fecha actual")
     // }else{
     // }
-    navigate('/main/guias/nuevo')
+    navigate('/main/pedidos/nuevo')
   }
   const showinforme = async ()=>{
 
@@ -193,7 +193,7 @@ export default function ListaGuias(){
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Guias</h2>
+              <h2 className="font-medium text-[16px]">Pedidos</h2>
               <div className="w-[400px]">
                 <Search config={{ width: '200px' }} action={()=>{}} />
               </div>
@@ -294,7 +294,7 @@ export default function ListaGuias(){
               <div className="flex gap-2">
                 {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevoestampado} tipo={'accept'}>Nuevo</Button>
+                <Button action={nuevopedido} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
 
