@@ -14,7 +14,7 @@ import { InputTest } from "../../components/Atoms/Input/InputTest"
 const CuerpoInforme = ({cuerpo})=>{
   return(
     <>
-      <iframe src="http://192.168.18.20:4000/produccion/vistapreviapedido/telas" className="w-[60vw] h-[60vh]"></iframe>
+      <iframe src="http://192.168.18.20:4000/produccion/vistapreviapedido/telas" className="w-[21.5cm] h-[60vh]"></iframe>
     </>
   )
 }
