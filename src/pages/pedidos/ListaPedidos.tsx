@@ -122,7 +122,7 @@ export default function ListaPedidos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaGuias', params: {
+      url: 'produccion/getListaPedidos', params: {
         method: 'GET'
       }
     })
@@ -146,7 +146,7 @@ export default function ListaPedidos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaGuias', params: {
+      url: 'produccion/getListaPedidos', params: {
         method: 'GET'
       }
     })
@@ -209,12 +209,10 @@ export default function ListaPedidos(){
                     <th className="lg:table-cell">Id</th>
                     <th className="lg:table-cell">OC/OP</th>
                     <th className="lg:table-cell">Tipo</th>
-                    <th className="lg:table-cell">Servicio</th>
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">FechaEMmision</th>
                     <th className="lg:table-cell">FechaRetorno</th>
                     <th className="lg:table-cell">FechaRecepcion</th>
-                    <th className="lg:table-cell">Costo</th>
                     <th className="lg:table-cell">TiempoProd</th>
                     <th className="lg:table-cell">DiasPendientes</th>
                     <th className="lg:table-cell text-center">Accciones</th>
@@ -228,12 +226,10 @@ export default function ListaPedidos(){
                           <td>{row.idx}</td>
                           <td>{row.orden_ref}</td>
                           <td>{row.tipo}</td>
-                          <td>{row.servicio}</td>
                           <td>{row.proveedor}</td>
                           <td>{row.fec_emision}</td>
                           <td>{row.fec_retorno}</td>
                           <td>{row.fec_recepcion}</td>
-                          <td>{row.costo}</td>
                           <td>{row.tiempo_produccion}</td>
                           <td>{row.dias_pendientes}</td>
                           {/* <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td> */}

@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "../../components/Atoms/Button/Button"
-import { useContext, useEffect, useRef, useState } from "react"
+import { createRef, useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext"
 import { toast } from "react-toastify";
@@ -12,15 +12,43 @@ import { InputTest } from "../../components/Atoms/Input/InputTest"
 
 
 const CuerpoInforme = ({cuerpo})=>{
+  let [ruta,setRuta] = useState("")
+  useEffect(()=>{
+    let crear = async ()=>{
+      console.log("Hola marte")
+      await Consulta({url: 'produccion/vistapreviapedidoavios/avios'})
+      .then(resp => {
+        console.log("La info del reporte es:",resp)
+        let binaryString = window.atob(resp.data);
+        let binaryLen = binaryString.length;
+        let bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+            let ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+        console.log("La ruta es:",file)
+        setRuta(file)
+
+      })
+      .catch((err)=>{
+        // setOpenloader(false)
+        // toast.error('Se produjo un error!!', { theme: "colored" })
+      })
+    }
+    crear()
+  },[])
   return(
     <>
-      <iframe src="http://192.168.18.20:4000/produccion/vistapreviapedido/telas" className="w-[21.5cm] h-[60vh]"></iframe>
+      {/* <iframe src="http://192.168.18.20:4000/produccion/vistapreviapedido/telas" className="w-[21.5cm] h-[60vh]"></iframe> */}
+      <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
     </>
   )
 }
 
 export default function NewPedido(){
-  const [estampado,setEstampado] = useState([])
+  // const [estampado,setEstampado] = useState([])
+  const [tipo,setTipo] = useState(1)
   const urlparams = useParams()
   const [info,setInfo] = useState({})
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
@@ -36,7 +64,7 @@ export default function NewPedido(){
       open: true,
       header: false,
       controls: true,
-      content: <div>Desea continuar con el registro del soporte ingresado?</div>,
+      content: <div>Desea continuar con el registro del pedido ingresado?</div>,
       action: async () => {
         setOpenloader(true)
         const data = new FormData()
@@ -44,13 +72,13 @@ export default function NewPedido(){
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',JSON.stringify(registros))
 
-        await Consulta({url: 'produccion/guardarguia/',params:{
+        await Consulta({url: 'produccion/guardarpedido/',params:{
           method:'PUT',
           body:data
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/guias/inicio')
+          navigate('/main/pedidos/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -70,17 +98,14 @@ export default function NewPedido(){
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/guia/' + urlparams.id,})
+        await Consulta({url: 'produccion/pedido/' + urlparams.id,})
           .then(resp => {
-            console.log("info guia :",resp)
             setInfo(resp[0])
             setRegistros(resp[1])
             setOpenloader(false)
-            console.log("Opportynity never die!!!!",resp)
           })
           .catch((err)=>{
             setOpenloader(false)
-            // toast.error('Se produjo un error!!', { theme: "colored" })
           })
           .finally(()=>{
             setOpenloader(false)
@@ -147,6 +172,10 @@ export default function NewPedido(){
     }
     openModal(params_modal)    
   }
+  const onchange = (e)=>{
+    console.log("Cambiando tipo de pedido")
+    console.log("VA o neleet")
+  }
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -155,7 +184,7 @@ export default function NewPedido(){
             <div className="flex justify-start items-center">
               <h2 className="font-medium text-[16px]">Guias /</h2>
               <span className="text-blue-500 font-bold">
-                Nueva guia
+                Nuevo pedido
                 {/* {
                   urlparams.id && orden.length > 0
                   ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
@@ -167,12 +196,12 @@ export default function NewPedido(){
           </div>
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
 
-            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} >
+            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={()=>{}} onInputCapture={onchange}>
               <div className={` flex-col gap-3 flex`}>
 
                 <div className="flex gap-3">
                   <Input name={'orden_pedido'} defaults={Object.keys(info).length > 0 && info.orden_pedido ? info.orden_pedido : null} title="Orden Pedido" type="text" />
-                  <Input name={'fec_pedido'} defaults={Object.keys(info).length > 0 && info.fec_pedido ? info.fec_pedido : null} title="FechaPedido" type="date" />
+                  <Input name={'fec_pedido'} defaults={Object.keys(info).length > 0 && info.fec_pedido ? info.fec_pedido : null} title="FechaEmisión" type="date" />
                   {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
@@ -180,7 +209,7 @@ export default function NewPedido(){
                   <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
                 </div>
                 <div className="flex gap-3">
-                  <InputSelect title={'TipoProducto'} name={"tipo_pedido"} data={
+                  <InputSelect title={'TipoPedido'} name={"tipo_pedido"} data={
                     [
                       { indice: 'TELAS', option: 'TELAS', selected: true }, 
                       { indice: 'AVIOS', option: 'AVIOS' }, 
@@ -203,7 +232,6 @@ export default function NewPedido(){
                           <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Unidad</th>
                           <th className="lg:table-cell">Precio</th>
-                          {/* <th className="lg:table-cell">EsPrototipo</th> */}
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -269,11 +297,11 @@ export default function NewPedido(){
                   <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={4} />
                 </div>
               </div>
-              <div className="flex justify-between gap-2 mt-2 bg-gray-100 p-1">
+              <div className="flex justify-between gap-2 mt-2 p-1">
                 <div>
                   {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                   <Button action={vistaprevia} type={'button'} tipo={'accept'}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
                   </Button>  
                 </div>
                 <div className="flex justify-end gap-2">

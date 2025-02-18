@@ -235,10 +235,7 @@ export default function ListaGuias(){
                           <td>{row.fec_recepcion}</td>
                           <td>{row.costo}</td>
                           <td>{row.tiempo_produccion}</td>
-                          <td>{row.dias_pendientes}</td>
-                          {/* <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td> */}
-                          {/* <td>{row.estado}</td> */}
-                          {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
