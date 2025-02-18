@@ -34,15 +34,19 @@ export function InputSelect({ title, name, data, df }) {
     setSelect(result == -1 ? 0 : result)
     // setSelect(result)
   }, [df, info])
+
+  const onchange = ()=>{
+    console.log("Detectando el cambio del inputselect")
+  }
   return (
     <>
       <div onClick={onclick} className="rounded-md bg-gray-100 flex flex-col justify-start items-start pl-[16px] pr-[16px] pt-[5px] pb-[8px] hover:bg-gray-200 relative box-content group flex-1">
         <label className="text-[12px] text-blue-600 transition-all pointer-events-none">{title}</label>
 
         {/* <input type='hidden' name={name} value={select >= 0 ? info[select].indice : null} /> */}
-        <input type='hidden' name={name} value={info[select].indice} />
+        <input type='hidden' onChange={onchange} name={name} value={info[select].indice} />
         {/* <input onClick={e => e.stopPropagation()} readOnly value={select > 0 ? info[select].option : null} type="text" onFocus={onfocus} onBlur={onblur} className="inp cursor-default bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" /> */}
-        <input onClick={e => e.stopPropagation()} readOnly value={info[select].option} type="text" onFocus={onfocus} onBlur={onblur} className="inp cursor-default bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" />
+        <input onClick={e => e.stopPropagation()} readOnly value={info[select].option} onChange={onchange} type="text" onFocus={onfocus} onBlur={onblur} className="inp cursor-default bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" />
 
         <span className="after:absolute after:bottom-0 after:left-0 after:transition-all after:opacity-1 after:w-full after:border-b-[2px] 
         after:border-b-transparent group-[.selected]:after:border-b-blue-600"></span>

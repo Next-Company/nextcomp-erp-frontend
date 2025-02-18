@@ -11,12 +11,15 @@ import Proveedores from "../../components/Common/Proveedores"
 import { InputTest } from "../../components/Atoms/Input/InputTest"
 
 
-const CuerpoInforme = ({cuerpo})=>{
+const CuerpoInforme = ({info})=>{
   let [ruta,setRuta] = useState("")
   useEffect(()=>{
     let crear = async ()=>{
       console.log("Hola marte")
-      await Consulta({url: 'produccion/vistapreviapedidoavios/avios'})
+      await Consulta({url: 'produccion/vistapreviapedidoavios/avios',params:{
+        method:'POST',
+        body:info
+      }})
       .then(resp => {
         console.log("La info del reporte es:",resp)
         let binaryString = window.atob(resp.data);
@@ -41,7 +44,7 @@ const CuerpoInforme = ({cuerpo})=>{
   return(
     <>
       {/* <iframe src="http://192.168.18.20:4000/produccion/vistapreviapedido/telas" className="w-[21.5cm] h-[60vh]"></iframe> */}
-      <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
+      <iframe src={ruta} className="w-[60vw] h-[80vh]"></iframe>
     </>
   )
 }
@@ -117,7 +120,7 @@ export default function NewPedido(){
 
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
-    setRegistros([...registros,{item:0,articulo:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+    setRegistros([...registros,{item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
   }
 
   const onclick = (e)=>{
@@ -150,7 +153,7 @@ export default function NewPedido(){
       open:true,
       content: <Proveedores actions={(item)=>{  
         console.log("El item seleccionado es: ",item)
-        setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom}))
+        setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom,ruc:item.ruc}))
         setOpen(false)
       }}/>,
       controls: true,
@@ -162,10 +165,16 @@ export default function NewPedido(){
   }
 
   const vistaprevia = async ()=>{
+
+    const data = new FormData()
+    urlparams.id && data.append('id',urlparams.id)
+    data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
+    data.append('detalle',JSON.stringify(registros))
+
     const params_modal = {
       open:true,
-      content: <CuerpoInforme cuerpo={""} />,
-      controls: true,
+      content: <CuerpoInforme info={data} />,
+      controls: false,
       header: false,
       action:async ()=>{
       }
@@ -174,7 +183,8 @@ export default function NewPedido(){
   }
   const onchange = (e)=>{
     console.log("Cambiando tipo de pedido")
-    console.log("VA o neleet")
+    // console.log("VA o neleet")
+    // console.log("Otros cambios adicionales")
   }
   return(
     <>
@@ -200,25 +210,27 @@ export default function NewPedido(){
               <div className={` flex-col gap-3 flex`}>
 
                 <div className="flex gap-3">
-                  <Input name={'orden_pedido'} defaults={Object.keys(info).length > 0 && info.orden_pedido ? info.orden_pedido : null} title="Orden Pedido" type="text" />
-                  <Input name={'fec_pedido'} defaults={Object.keys(info).length > 0 && info.fec_pedido ? info.fec_pedido : null} title="FechaEmisión" type="date" />
+                  <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
+                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="Orden Pedido" type="text" />
+                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" />
                   {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
+                  <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
-                  <Input name={'fec_entrega'} defaults={Object.keys(info).length > 0 && info.fec_entrega ? info.fec_entrega : null} title="FechaEntrega" type="date" />
+                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" />
                   <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
                 </div>
                 <div className="flex gap-3">
-                  <InputSelect title={'TipoPedido'} name={"tipo_pedido"} data={
+                  <InputSelect title={'TipoPedido'} name={"tipo"} data={
                     [
                       { indice: 'TELAS', option: 'TELAS', selected: true }, 
                       { indice: 'AVIOS', option: 'AVIOS' }, 
                     ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo_pedido : null} 
+                    df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" />
                   <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" />
-                  <InputSelect title={'Estado'} name={"estado_telas"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado_telas : null} />
+                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
                 </div>
                 <div>
                   <span>Artículos:</span>
@@ -239,7 +251,7 @@ export default function NewPedido(){
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
+                              <td><input type="text" onChange={editvalue} data-name="producto" data-position={key} defaultValue={row.producto} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="color" defaultValue={row.color} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
@@ -317,3 +329,42 @@ export default function NewPedido(){
     </>
   )
 }
+
+
+// Componente InputSelect
+// export function InputSelect({ title, name, data, df }) {
+//   // ... (resto del código)
+
+//   const onSelectChange = (key) => {
+//     setSelect(key);
+//     const event = new CustomEvent("inputSelectChange", {
+//       detail: { value: info[key].indice },
+//     });
+//     ref_menu.current.dispatchEvent(event); // Disparamos el evento en un elemento del DOM
+//   };
+
+//   // ... (resto del código)
+// }
+
+// // Componente padre
+// function MiFormulario() {
+//   const handleInputChange = (event) => {
+//     console.log("Valor seleccionado en el formulario:", event.detail.value);
+//   };
+
+//   useEffect(() => {
+//     const menu = ref_menu.current; // Obtén una referencia al elemento donde se dispara el evento
+//     menu.addEventListener("inputSelectChange", handleInputChange); // Escuchamos el evento personalizado
+
+//     return () => {
+//       menu.removeEventListener("inputSelectChange", handleInputChange); // Limpiamos el listener al desmontar el componente
+//     };
+//   }, []);
+
+//   return (
+//     <form ref={ref_form}>
+//       <InputSelect title="Mi InputSelect" name="miInput" data={data} df={df} ref={ref_menu} />
+//       {/* ... otros elementos del formulario */}
+//     </form>
+//   );
+// }

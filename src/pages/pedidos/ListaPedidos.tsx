@@ -107,7 +107,7 @@ export default function ListaPedidos(){
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/guias/nuevo/"+ id)
+        navigate("/main/pedidos/nuevo/"+ id)
         break;
       case 'review':
         navigate("/main/estampado/review/"+ id)
