@@ -184,9 +184,9 @@ export function Sidenav() {
                 </div>
               </li>
             }
-            <li data-fd='guias/inicio' className="group/sub">
+            <li data-fd='despachos/inicio' className="group/sub">
               <NavLink
-                to="guias/inicio" 
+                to="despachos/inicio" 
                 className={ ({ isActive, isPending }) =>
                   isPending ? "pending" : isActive ? "active" : "default"
                 }

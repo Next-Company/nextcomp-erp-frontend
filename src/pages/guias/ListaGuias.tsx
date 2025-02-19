@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,9 @@ const CuerpoInforme = ({cuerpo})=>{
 }
 
 export default function ListaGuias(){
+  const lista = useRef(null)
   const [info,setInfo] = useState([])
+  const [infoestado,setInfoestado] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   // const [refresh,setRefresh] = useState(false)
@@ -129,7 +131,8 @@ export default function ListaGuias(){
     .then(resp => {
       console.log(resp)
       setOpenloader(false)
-      setInfo(resp)  
+      setInfo(resp)
+      setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
     })
     .catch((error) => {
       console.log(error)
@@ -151,7 +154,7 @@ export default function ListaGuias(){
       }
     })
     .then(resp => {
-      console.log(resp)
+      console.log("Resultado lista de guias:",resp)
       setOpenloader(false)
       setInfo(resp)  
     })
@@ -184,13 +187,34 @@ export default function ListaGuias(){
     }
     openModal(params_modal)
   }
+  const filtrarestado = (e)=>{
+    const estado = e.target.dataset.estado
+    setOpenloader(true)
+    Consulta({
+      url: 'produccion/getListaGuias', params: {
+        method: 'GET'
+      }
+    })
+    .then(resp => {
+      setOpenloader(false)
+      lista.current.querySelector('button.active').classList.remove('active')
+      e.target.classList.add('active')
+      setInfo(resp)  
+      setInfoestado(resp.filter(row=>row.estado == estado))
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(()=>{
+      setOpenloader(false)
+    })
+
+  }
 
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
-      
         <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
-
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Guias</h2>
@@ -198,44 +222,66 @@ export default function ListaGuias(){
                 <Search config={{ width: '200px' }} action={()=>{}} />
               </div>
             </div>
-            {/* <hr /> */}
           </div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             <hr />
-            <div className="flex-1 scrollbar-special overflow-y-scroll">
+            <div>
+              <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+                <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Pendientes
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                <button className="group" data-estado="FINALIZADO" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Terminados
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Anulados
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+              </ul>
+            </div>
+            <hr />
+            <div className="flex-1 scrollbar-special overflow-y-scroll relative mb-2">
               <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
                     <th className="lg:table-cell">OC/OP</th>
-                    <th className="lg:table-cell">Tipo</th>
                     <th className="lg:table-cell">Servicio</th>
+                    <th className="lg:table-cell">Modelo</th>
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">FechaEMmision</th>
                     <th className="lg:table-cell">FechaRetorno</th>
-                    <th className="lg:table-cell">FechaRecepcion</th>
                     <th className="lg:table-cell">Costo</th>
                     <th className="lg:table-cell">TiempoProd</th>
                     <th className="lg:table-cell">DiasPendientes</th>
+                    {/* <th className="lg:table-cell">Estado</th> */}
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {
-                    info.length > 0
-                      ? info.map((row, key) => (
+                    infoestado.length > 0
+                      ? infoestado.map((row, key) => (
                         <tr key={key} className="">
-                          <td>{row.idx}</td>
-                          <td>{row.orden_ref}</td>
-                          <td>{row.tipo}</td>
-                          <td>{row.servicio}</td>
-                          <td>{row.proveedor}</td>
-                          <td>{row.fec_emision}</td>
-                          <td>{row.fec_retorno}</td>
-                          <td>{row.fec_recepcion}</td>
-                          <td>{row.costo}</td>
-                          <td>{row.tiempo_produccion}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.servicio}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_retorno}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.costo}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.tiempo_produccion}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
+                          {/* <td>{row.estado == 'PENDIENTE' ? <div className={`w-[5px] h-[5px] bg-red-600 rounded-full`}></div> : 'hola'}</td> */}
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -272,24 +318,30 @@ export default function ListaGuias(){
                       <tr className="h-[40px]"><td colSpan={13} className="text-center"><span>Datos no encontrados</span></td></tr>
                   }
                 </tbody>
+                {/* <tfoot className="absolute bottom-0 w-full bg-yellow-300"> */}
+                <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
+                  <tr>
+                    <td className="h-[45px] border-t border-t-gray-600" colSpan={12}>
+                      <div className="flex flex-row justify-between items-center">
+                        <div>
+                          Numero de resultados 
+                        </div>
+                        <div className="flex flex-row justify-end items-center gap-2">
+                          <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-caret-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.883 5.007l.058 -.005h.118l.058 .005l.06 .009l.052 .01l.108 .032l.067 .027l.132 .07l.09 .065l.081 .073l.083 .094l.054 .077l.054 .096l.017 .036l.027 .067l.032 .108l.01 .053l.01 .06l.004 .057l.002 .059v12c0 .852 -.986 1.297 -1.623 .783l-.084 -.076l-6 -6a1 1 0 0 1 -.083 -1.32l.083 -.094l6 -6l.094 -.083l.077 -.054l.096 -.054l.036 -.017l.067 -.027l.108 -.032l.053 -.01l.06 -.01z" /></svg>
+                          </div>
+                          <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-caret-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6c0 -.852 .986 -1.297 1.623 -.783l.084 .076l6 6a1 1 0 0 1 .083 1.32l-.083 .094l-6 6l-.094 .083l-.077 .054l-.096 .054l-.036 .017l-.067 .027l-.108 .032l-.053 .01l-.06 .01l-.057 .004l-.059 .002l-.059 -.002l-.058 -.005l-.06 -.009l-.052 -.01l-.108 -.032l-.067 -.027l-.132 -.07l-.09 -.065l-.081 -.073l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057l-.002 -12.059z" /></svg>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
             <div className="flex flex-row justify-end">
-              {/* <div className="flex justify-between items-center p-3 gap-2">
-                <div>
-                  Resultados del {position*rango} al {rango*(position+1)} de 120
-                </div>
-                <div className="flex flex-row">
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveback}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
-                  </div>
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveforward}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-compact-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 4l3 8l-3 8" /></svg>
-                  </div>
-                </div>
-              </div> */}
               <div className="flex gap-2">
-                {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevoestampado} tipo={'accept'}>Nuevo</Button>
               </div>

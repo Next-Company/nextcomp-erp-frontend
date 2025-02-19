@@ -15,7 +15,7 @@ const CuerpoInforme = ({cuerpo})=>{
   )
 }
 
-export default function ListaPedidos(){
+export default function ListaDespachos(){
   const [info,setInfo] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
@@ -193,7 +193,7 @@ export default function ListaPedidos(){
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Pedidos</h2>
+              <h2 className="font-medium text-[16px]">Despachos</h2>
               <div className="w-[400px]">
                 <Search config={{ width: '200px' }} action={()=>{}} />
               </div>

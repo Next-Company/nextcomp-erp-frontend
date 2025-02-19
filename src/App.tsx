@@ -24,6 +24,9 @@ import NewGuia from './pages/guias/NewGuia.tsx'
 import LayoutPedido from './pages/pedidos/LayoutPedido.tsx'
 import ListaPedidos from './pages/pedidos/ListaPedidos.tsx'
 import NewPedido from './pages/pedidos/NewPedido.tsx'
+import LayoutDespacho from './pages/despachos/LayoutDespacho.tsx'
+import ListaDespachos from './pages/despachos/ListaDespachos.tsx'
+import NewDespacho from './pages/despachos/NewDespacho.tsx'
 
 const routes = [
   {
@@ -71,6 +74,17 @@ const routes = [
           { path: "inicio", element: <ListaPedidos/> },
           { path: "nuevo", element: <NewPedido/> },
           { path: "nuevo/:id", element: <NewPedido/> },
+          // { path: "nuevo/:id", element: <NuevoEstampado/> },
+          // { path: "review/:id", element: <ReviewEstampado/> },
+        ]
+      },
+      { 
+        path: "despachos", 
+        element: <LayoutDespacho/>,
+        children: [
+          { path: "inicio", element: <ListaDespachos/> },
+          { path: "nuevo", element: <NewDespacho/> },
+          { path: "nuevo/:id", element: <NewDespacho/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ]

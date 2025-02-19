@@ -7,6 +7,17 @@ import { Consulta } from "../../utils/utils";
 import { ModalWindowContext } from "../ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
 
+const colorfase = {
+  'CONFECCION':'bg-purple-500',
+  'ESTAMPADO':'bg-gray-500',
+  'ACABADOS':'bg-red-500',
+  'LAVANDERIA':'bg-green-500',
+  'MOLDES':'bg-orange-500',
+  'OJAL BOTON':'bg-blue-500',
+  'CORTE':'bg-rose-400',
+  'BORDADO':'bg-yellow-500',
+}
+
 export default function Inicio() {
   const [ordenes, setOrdenes] = useState([])
   const [position, setPosition] = useState(0)
@@ -275,7 +286,7 @@ export default function Inicio() {
                           <td>{row.base}</td>
                           <td>{row.precio}</td>
                           <td>{row.modelos}</td>
-                          <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td>
+                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status]}`}>{row.status}</div></td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -311,29 +322,33 @@ export default function Inicio() {
                       <tr className="h-[40px]"><td colSpan={13} className="text-center"><span>Datos no encontrados</span></td></tr>
                   }
                 </tbody>
+                <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
+                  <tr>
+                    <td className="h-[45px] border-t border-t-gray-600 z-50" colSpan={11}>
+                      <div className="flex flex-row justify-between items-center">
+                        <div>
+                          Numero de resultados 
+                        </div>
+                        <div className="flex flex-row justify-end items-center gap-2">
+                          <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-caret-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.883 5.007l.058 -.005h.118l.058 .005l.06 .009l.052 .01l.108 .032l.067 .027l.132 .07l.09 .065l.081 .073l.083 .094l.054 .077l.054 .096l.017 .036l.027 .067l.032 .108l.01 .053l.01 .06l.004 .057l.002 .059v12c0 .852 -.986 1.297 -1.623 .783l-.084 -.076l-6 -6a1 1 0 0 1 -.083 -1.32l.083 -.094l6 -6l.094 -.083l.077 -.054l.096 -.054l.036 -.017l.067 -.027l.108 -.032l.053 -.01l.06 -.01z" /></svg>
+                          </div>
+                          <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-caret-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6c0 -.852 .986 -1.297 1.623 -.783l.084 .076l6 6a1 1 0 0 1 .083 1.32l-.083 .094l-6 6l-.094 .083l-.077 .054l-.096 .054l-.036 .017l-.067 .027l-.108 .032l-.053 .01l-.06 .01l-.057 .004l-.059 .002l-.059 -.002l-.058 -.005l-.06 -.009l-.052 -.01l-.108 -.032l-.067 -.027l-.132 -.07l-.09 -.065l-.081 -.073l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057l-.002 -12.059z" /></svg>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
             {/* <div className="flex flex-col items-center p-2 gap-2"> */}
-            <div className="flex flex-row justify-between p-2">
-              <div className="flex justify-between items-center p-3 gap-2">
-                <div>
-                  {/* Se recuperaron <strong>120</strong> registros */}
-                  Resultados del {position*rango} al {rango*(position+1)} de 120
-                </div>
-                <div className="flex flex-row">
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveback}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
-                  </div>
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveforward}>
-                    {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg> */}
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-compact-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 4l3 8l-3 8" /></svg>
-                  </div>
-                </div>
-              </div>
-              <div className="flex p-2">
-                <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={() => navigate('/main/operaciones/nuevo')} tipo={'accept'}>Nuevo</Button>
-              </div>
+            <div className="flex flex-row justify-end p-2">
+              {/* <div className="flex p-2">
+              </div> */}
+              <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
+              <Button action={() => navigate('/main/operaciones/nuevo')} tipo={'accept'}>Nuevo</Button>
             </div >
 
           </div>
