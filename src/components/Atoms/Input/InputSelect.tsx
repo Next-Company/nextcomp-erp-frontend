@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react"
-export function InputSelect({ title, name, data, df }) {
+export function InputSelect({ title, name, data, df, formref=null }) {
   const ref_menu = useRef(null)
   const [select, setSelect] = useState(0)
   const [info, setInfo] = useState(data)
 
   const editando = (key) => {
+    console.log("Editando")
     setSelect(key)
+    
   }
   const onclick = (e) => {
     if (e.target.matches('div')) {
@@ -19,6 +21,13 @@ export function InputSelect({ title, name, data, df }) {
   const onblur = (e) => {
     if (e.relatedTarget && e.relatedTarget.tagName == 'LI') {
       setSelect(parseInt(e.relatedTarget.dataset.index))
+      console.log("Cambiando valor")
+      if(formref){
+        const event = new CustomEvent('salamandra', {
+          detail:{valor:info[parseInt(e.relatedTarget.dataset.index)].option}
+        })
+        formref.current.dispatchEvent(event)
+      }
     }
     e.target.parentElement.classList.remove('selected')
   }

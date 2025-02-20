@@ -9,6 +9,7 @@ import { toast } from "react-toastify"
 import { Input } from "./components/Atoms/Input/Input"
 import { Search } from "./components/Atoms/Search/Search"
 import { ModalWindowContext } from "./components/ModalWindow/ModalWindowContext"
+import { Button } from "./components/Atoms/Button/Button"
 
 const files_icon = {
   'folder': <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>,
@@ -524,6 +525,43 @@ export function Directory() {
   const testdrag = (e)=>{
     console.log(e)
   }
+  const upload = ()=>{
+    const filebox = document.createElement('input')
+    filebox.type = 'file'
+    filebox.multiple = true
+    // filebox.webkitdirectory = true
+    filebox.click()
+    filebox.addEventListener('change', (ec) => {
+      async function subirfile() {
+        try {
+          const data = new FormData()
+          const path = Object.keys(params).length > 0 ? params.directoryId : ''
+          console.log(filebox.files)
+          for (const element of filebox.files) {
+            data.append('filenext', element)
+          }
+          data.append('path', path)
+          await Consulta({
+            url: 'directorio/upload/',
+            params: {
+              method: 'POST',
+              body: data
+            }
+          }).then(resp => {
+            Consulta({ url: 'directorio/' + path, params: { method: path == '' ? 'GET' : 'POST' } }).then(resp => {
+              setLista(resp)
+            }).catch(resp => {
+              logout()
+            })
+            toast.success('Carperta creada con éxito!!', { theme: "colored" })
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      subirfile()
+    })
+  }
   return (
     <>
       <div onContextMenu={onrightclick} onMouseOver={onmouseover} onDragOver={ondragover} onDragLeave={ondragleave} className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md bg-white w-full relative">
@@ -571,6 +609,10 @@ export function Directory() {
           {/* <button className="bg-orange-400" onClick={()=>viewOptions()}>Click me!!</button> */}
 
         </div>
+        <div>
+          {/* <button onClick={upload}>Subir</button> */}
+          <Button action={upload} tipo={'default'}>Subir</Button>
+        </div>
 
         <div ref={menuOptions} className="absolute bg-red-300 rounded-t-xl z-20 w-full left-0 h-full bottom-[-100%] transition-transform " onTouchMove={testdrag}>
           {/* <MenuOptions  name={row} onclick={onclick} /> */}
@@ -602,6 +644,7 @@ export function Directory() {
             </li>
           </ul>*/}
           <button onClick={closeMenuOptions}>Close</button> 
+          {/* <Button name="delete" title="Eliminar" /> */}
         </div>
       </div>
       

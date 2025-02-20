@@ -9,49 +9,12 @@ import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import { InputTest } from "../../components/Atoms/Input/InputTest"
+import Guias from "../../components/Common/Guias"
 
-
-const CuerpoInforme = ({info})=>{
-  let [ruta,setRuta] = useState("")
-  useEffect(()=>{
-    let crear = async ()=>{
-      console.log("Hola marte")
-      await Consulta({url: 'produccion/vistapreviapedidoavios/avios',params:{
-        method:'POST',
-        body:info
-      }})
-      .then(resp => {
-        console.log("La info del reporte es:",resp)
-        let binaryString = window.atob(resp.data);
-        let binaryLen = binaryString.length;
-        let bytes = new Uint8Array(binaryLen);
-        for (let i = 0; i < binaryLen; i++) {
-            let ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
-        }
-        let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
-        console.log("La ruta es:",file)
-        setRuta(file)
-
-      })
-      .catch((err)=>{
-        // setOpenloader(false)
-        // toast.error('Se produjo un error!!', { theme: "colored" })
-      })
-    }
-    crear()
-  },[])
-  return(
-    <>
-      {/* <iframe src="http://192.168.18.20:4000/produccion/vistapreviapedido/telas" className="w-[21.5cm] h-[60vh]"></iframe> */}
-      <iframe src={ruta} className="w-[60vw] h-[80vh]"></iframe>
-    </>
-  )
-}
 
 export default function NewDespacho(){
   // const [estampado,setEstampado] = useState([])
-  const [tipo,setTipo] = useState(1)
+  const [tipo,setTipo] = useState(0)
   const urlparams = useParams()
   const [info,setInfo] = useState({})
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
@@ -115,12 +78,25 @@ export default function NewDespacho(){
           })
       }
       pp()
+    }else{
+
     }
+
+    const handleInputChange = (event) => {
+      setTipo(event.detail.valor == 'SERVICIOS' ? 0 : 1)
+      setRegistros([])
+      // console.log("Valor seleccionado en el formulario:", event.detail.message);
+    };
+    form.current.addEventListener("salamandra", handleInputChange);
+    
+
+    return () => {
+      if(form.current) form.current.removeEventListener("salamandra", handleInputChange);
+    };
   },[])
 
   const nuevoregistro = ()=>{
-    console.log("Registros actuales :",registros)
-    setRegistros([...registros,{item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+    setRegistros([...registros,tipo ? {item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0} : {item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
   }
 
   const onclick = (e)=>{
@@ -163,24 +139,23 @@ export default function NewDespacho(){
     }
     openModal(params_modal)
   }
-
-  const vistaprevia = async ()=>{
-
-    const data = new FormData()
-    urlparams.id && data.append('id',urlparams.id)
-    data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-    data.append('detalle',JSON.stringify(registros))
-
-    const params_modal = {
+  const searchguia = ()=>{
+    let params_modal = null
+    params_modal = {
       open:true,
-      content: <CuerpoInforme info={data} />,
-      controls: false,
+      content: <Guias actions={(item)=>{  
+        // console.log("El item seleccionado es: ",item)
+        // setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom,ruc:item.ruc}))
+        // setOpen(false)
+      }}/>,
+      controls: true,
       header: false,
-      action:async ()=>{
+      action:()=>{
       }
     }
-    openModal(params_modal)    
+    openModal(params_modal)
   }
+
   const onchange = (e)=>{
     console.log("Cambiando tipo de pedido")
     // console.log("VA o neleet")
@@ -192,9 +167,9 @@ export default function NewDespacho(){
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Guias /</h2>
+              <h2 className="font-medium text-[16px]">Despachos /</h2>
               <span className="text-blue-500 font-bold">
-                Nuevo pedido
+                Nuevo Despacho
                 {/* {
                   urlparams.id && orden.length > 0
                   ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
@@ -211,25 +186,25 @@ export default function NewDespacho(){
 
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="Orden Pedido" type="text" />
-                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" />
-                  {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
-                  <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
-                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" />
-                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
-                </div>
-                <div className="flex gap-3">
-                  <InputSelect title={'TipoPedido'} name={"tipo"} data={
+                  {/* <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="Orden Pedido" type="text" /> */}
+                  <InputSelect title={'OrigenDespacho'} formref={form} name={"tipo"} data={
                     [
-                      { indice: 'TELAS', option: 'TELAS', selected: true }, 
-                      { indice: 'AVIOS', option: 'AVIOS' }, 
+                      { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 
+                      { indice: 'PEDIDOS', option: 'PEDIDOS' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" />
-                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" />
+                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaRecepción" type="date" />
+                  {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
+                  <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
+                  <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuia" type="text" />
+                </div>
+                <div className="flex gap-3">
+                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" />
+                  <Input name={'id_guia_origen'} defaults={Object.keys(info).length > 0 ? info.id_guia_origen : null} type="hidden" />
+                  <Input name={'nro_guia_origen'} title="GuiaReferencia" defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchguia} mode={'static'} />
                   <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
                 </div>
                 <div>
@@ -238,26 +213,63 @@ export default function NewDespacho(){
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          <th className="lg:table-cell w-[500px]">Descripcion</th>  
-                          <th className="lg:table-cell">Color</th>
-                          <th className="lg:table-cell">Rollos</th>
-                          <th className="lg:table-cell">Cantidad</th>
-                          <th className="lg:table-cell">Unidad</th>
-                          <th className="lg:table-cell">Precio</th>
-                          <th className="lg:table-cell">Acciones</th>
+                          {
+                            tipo == 0
+                            ?
+                              <>
+                                <th className="lg:table-cell w-[500px]">Descripción</th>  
+                                <th className="lg:table-cell">XS / 26</th>
+                                <th className="lg:table-cell">S / 28</th>
+                                <th className="lg:table-cell">M / 30</th>
+                                <th className="lg:table-cell">L / 32</th>
+                                <th className="lg:table-cell">XL / 34</th>
+                                <th className="lg:table-cell">XXL / 36</th>
+                                <th className="lg:table-cell">Cantidad</th>
+                                <th className="lg:table-cell">EsPrototipo</th>
+                                <th className="lg:table-cell">Acciones</th>
+                              </>
+                            :
+                              <>
+                                <th className="lg:table-cell w-[500px]">Descripción</th>  
+                                <th className="lg:table-cell">Color</th>
+                                <th className="lg:table-cell">Rollos</th>
+                                <th className="lg:table-cell">Cantidad</th>
+                                <th className="lg:table-cell">Unidad</th>
+                                <th className="lg:table-cell">Precio</th>
+                                <th className="lg:table-cell">Acciones</th>
+                              </>
+                          }
+                          
                         </tr>
                       </thead>
                       <tbody>
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              <td><input type="text" onChange={editvalue} data-name="producto" data-position={key} defaultValue={row.producto} /></td>
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="color" defaultValue={row.color} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
-                              {/* <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td> */}
+                              {
+                                tipo == 0
+                                ?
+                                  <>
+                                    <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
+                                    <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} defaultValue={row.xs}/></td>
+                                    <td><input data-name="s" type="number" onChange={editvalue} data-position={key} defaultValue={row.s}/></td>
+                                    <td><input data-name="m" type="number" onChange={editvalue} data-position={key} defaultValue={row.m}/></td>
+                                    <td><input data-name="l" type="number" onChange={editvalue} data-position={key} defaultValue={row.l}/></td>
+                                    <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xl}/></td>
+                                    <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xxl}/></td>
+                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
+                                    <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
+                                  </>
+                                :
+                                  <>
+                                    <td><input type="text" onChange={editvalue} data-name="producto" data-position={key} defaultValue={row.producto} /></td>
+                                    <td><input type="text" onChange={editvalue} data-position={key} data-name="color" defaultValue={row.color} /></td>
+                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
+                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
+                                    <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
+                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
+                                  </>
+                              }
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -311,13 +323,9 @@ export default function NewDespacho(){
               </div>
               <div className="flex justify-between gap-2 mt-2 p-1">
                 <div>
-                  {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
-                  <Button action={vistaprevia} type={'button'} tipo={'accept'}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
-                  </Button>  
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={() => navigate('/main/pedidos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={() => navigate('/main/despachos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>
                 {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}

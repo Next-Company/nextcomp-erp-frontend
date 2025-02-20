@@ -122,7 +122,7 @@ export default function ListaDespachos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos', params: {
+      url: 'produccion/getListaDespachos', params: {
         method: 'GET'
       }
     })
@@ -146,7 +146,7 @@ export default function ListaDespachos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos', params: {
+      url: 'produccion/getListaDespachos', params: {
         method: 'GET'
       }
     })
@@ -165,12 +165,8 @@ export default function ListaDespachos(){
       // setOpenloader(false)
     })
   }
-  const nuevopedido = ()=>{
-    // if(info.filter(row=>new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()).length > 0){
-    //   alert("Ya existe un registro para la fecha actual")
-    // }else{
-    // }
-    navigate('/main/pedidos/nuevo')
+  const nuevodespacho = ()=>{
+    navigate('/main/despachos/nuevo')
   }
   const showinforme = async ()=>{
 
@@ -207,14 +203,10 @@ export default function ListaDespachos(){
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">OC/OP</th>
+                    <th className="lg:table-cell">NroGuia</th>
                     <th className="lg:table-cell">Tipo</th>
                     <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">FechaEMmision</th>
-                    <th className="lg:table-cell">FechaRetorno</th>
                     <th className="lg:table-cell">FechaRecepcion</th>
-                    <th className="lg:table-cell">TiempoProd</th>
-                    <th className="lg:table-cell">DiasPendientes</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -224,17 +216,10 @@ export default function ListaDespachos(){
                       ? info.map((row, key) => (
                         <tr key={key} className="">
                           <td>{row.idx}</td>
-                          <td>{row.orden_ref}</td>
+                          <td>{row.nro_guia}</td>
                           <td>{row.tipo}</td>
                           <td>{row.proveedor}</td>
                           <td>{row.fec_emision}</td>
-                          <td>{row.fec_retorno}</td>
-                          <td>{row.fec_recepcion}</td>
-                          <td>{row.tiempo_produccion}</td>
-                          <td>{row.dias_pendientes}</td>
-                          {/* <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td> */}
-                          {/* <td>{row.estado}</td> */}
-                          {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -309,7 +294,7 @@ export default function ListaDespachos(){
               <div className="flex gap-2">
                 {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevopedido} tipo={'accept'}>Nuevo</Button>
+                <Button action={nuevodespacho} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
 
