@@ -107,10 +107,10 @@ export default function ListaDespachos(){
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/pedidos/nuevo/"+ id)
+        navigate("/main/despachos/nuevo/"+ id)
         break;
       case 'review':
-        navigate("/main/estampado/review/"+ id)
+        // navigate("/main/estampado/review/"+ id)
         break;
     
       default:
@@ -206,7 +206,7 @@ export default function ListaDespachos(){
                     <th className="lg:table-cell">NroGuia</th>
                     <th className="lg:table-cell">Tipo</th>
                     <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">FechaRecepcion</th>
+                    <th className="lg:table-cell">FechaDespacho</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -219,7 +219,7 @@ export default function ListaDespachos(){
                           <td>{row.nro_guia}</td>
                           <td>{row.tipo}</td>
                           <td>{row.proveedor}</td>
-                          <td>{row.fec_emision}</td>
+                          <td>{row.fec_despacho}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>

@@ -9,6 +9,7 @@ import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import { InputTest } from "../../components/Atoms/Input/InputTest"
+import Productos from "../../components/Common/Productos"
 
 
 const CuerpoInforme = ({info})=>{
@@ -103,6 +104,7 @@ export default function NewPedido(){
       const pp = async () => {
         await Consulta({url: 'produccion/pedido/' + urlparams.id,})
           .then(resp => {
+            console.log("Busqueda info pedido:",resp)
             setInfo(resp[0])
             setRegistros(resp[1])
             setOpenloader(false)
@@ -119,8 +121,22 @@ export default function NewPedido(){
   },[])
 
   const nuevoregistro = ()=>{
-    console.log("Registros actuales :",registros)
-    setRegistros([...registros,{item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+    // console.log("Registros actuales :",registros)
+    openModal({
+      open:true,
+      content: <Productos actions={(item)=>{  
+        console.log("El item seleccionado es: ",item)
+        setOpen(false)
+        setRegistros([...registros,{item:0,producto:item.nom,color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+      }}
+        closemodal={()=>setOpen(false)}
+      />,
+      controls: false,
+      header: false,
+      action:async ()=>{
+      }
+    })
+    // setRegistros([...registros,{item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
   }
 
   const onclick = (e)=>{
@@ -134,16 +150,22 @@ export default function NewPedido(){
         break;
       default :
     }
-
-    console.log("La accion seleccionada es la siguiente:",action)
-
   }
   const editvalue = (e)=>{
     let column = e.target.dataset.name
-    console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
     let position = e.target.dataset.position
-    // let articulo = registros[parseInt(e.target.dataset.position)]
-    // console.log("Los registros son:",registros)
+    
+    // let info = []
+    // if(column == 'precio'){
+    //   info = [...registros.map((item,key)=> position == key ? {...item,[column]: parseFloat(e.target.value),['importe']:parseFloat(e.target.value)*parseFloat(item.cantidad)}:item)]
+    // }else if(column == 'cantidad'){
+    //   info = [...registros.map((item,key)=> position == key ? {...item,[column]: parseFloat(e.target.value),['importe']:parseFloat(e.target.value)*parseFloat(item.precio)}:item)]
+    // }else{
+    //   info = [...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)]
+
+    // }
+    // console.log("Capturando edicion de campo :",registros,info)
+    // setRegistros(info)
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
   }
 
@@ -180,11 +202,6 @@ export default function NewPedido(){
       }
     }
     openModal(params_modal)    
-  }
-  const onchange = (e)=>{
-    console.log("Cambiando tipo de pedido")
-    // console.log("VA o neleet")
-    // console.log("Otros cambios adicionales")
   }
   return(
     <>
@@ -244,6 +261,7 @@ export default function NewPedido(){
                           <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Unidad</th>
                           <th className="lg:table-cell">Precio</th>
+                          <th className="lg:table-cell">Importe</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -251,12 +269,13 @@ export default function NewPedido(){
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              <td><input type="text" onChange={editvalue} data-name="producto" data-position={key} defaultValue={row.producto} /></td>
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="color" defaultValue={row.color} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="color" value={row.color} /></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} /></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" value={row.precio} /></td>
+                              <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={row.cantidad*row.precio} /></td>
                               {/* <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td> */}
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
@@ -329,8 +348,6 @@ export default function NewPedido(){
     </>
   )
 }
-
-
 // Componente InputSelect
 // export function InputSelect({ title, name, data, df }) {
 //   // ... (resto del código)

@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from "react"
 import { Search } from "../Atoms/Search/Search"
 import { Consulta } from "../../utils/utils"
+import { Button } from "../Atoms/Button/Button"
 
-export default function Guias(children){
-  let {actions = ()=>{}} = children
+export default function Productos(children){
+  let {actions = ()=>{}, closemodal} = children
   let [lista,setLista] = useState([])
+  // let [selected,setSelected] = useState([])
   useEffect(()=>{
-    const buscarguia = async ()=>{
-      await Consulta({url: 'produccion/getListaGuias'})
+    const buscarproveedor = async ()=>{
+      await Consulta({url: 'productos/productoslist/50'})
       .then(resp => {
+        console.log("La respuesta es:",resp)
         setLista(resp)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
@@ -22,12 +25,14 @@ export default function Guias(children){
         // setOpenloader(false)
       })
     }
-    buscarguia()
+    buscarproveedor()
   },[])
   
   const searchproveedor = (input)=>{
-    const buscarguia = async ()=>{
-      await Consulta({url: 'produccion/searchguia/'+ (input.value == '' ? '_' : input.value )})
+    // console.log("EL valor consultado es:",input.value)
+    // console.log("La ruta de consulta es :",'produccion/searchproveedor/'+input.value)  
+    const buscarproveedor = async ()=>{
+      await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)
@@ -42,19 +47,24 @@ export default function Guias(children){
         // setOpenloader(false)
       })
     }
-    buscarguia()
+    buscarproveedor()
   }
+  // const onclick = (e)=>{
+  //   let action = e.target.dataset.action
+  //   console.log("La accion es la siguiente:",action)
+  //   switch(action){
+  //     case 'add':
+  //       actions(lista[e.target.dataset.position])
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // }
   const onclick = (e)=>{
-    let action = e.target.dataset.action
-    console.log("La accion es la siguiente:",action)
-    switch(action){
-      case 'add':
-        console.log("Agregando al proveedor",lista[e.target.dataset.position])
-        actions(lista[e.target.dataset.position])
-        break;
-      default:
-        break;
-    }
+    actions(lista[e.target.dataset.position])
+  }
+  const cerrarmodal = ()=>{
+    closemodal()
   }
   return(
     <>
@@ -66,32 +76,22 @@ export default function Guias(children){
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
-                <th className="lg:table-cell">OC/OP</th>  
-                <th className="lg:table-cell">NroGuia</th>  
-                <th className="lg:table-cell">Servicio</th>
-                <th className="lg:table-cell">Proveedor</th>
+                <th className="lg:table-cell">Id</th>  
+                <th className="lg:table-cell">Codigo</th>  
                 <th className="lg:table-cell">Producto</th>
-                <th className="lg:table-cell">Estado</th>
+                <th className="lg:table-cell">Color</th>
+                <th className="lg:table-cell">Talla</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
                 <tr>
-                  <td>{row.orden_ref}</td>
-                  <td>{`${row.idx}`.padStart(8,'0')}</td>
-                  <td>{row.servicio}</td>
-                  <td>{row.proveedor}</td>
-                  <td>{row.producto}</td>
-                  <td>
-                    {
-                      row.estado == 'PENDIENTE'
-                      ?
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-red-500 icon icon-tabler icons-tabler-outline icon-tabler-progress-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 20.777a8.942 8.942 0 0 1 -2.48 -.969" /><path d="M14 3.223a9.003 9.003 0 0 1 0 17.554" /><path d="M4.579 17.093a8.961 8.961 0 0 1 -1.227 -2.592" /><path d="M3.124 10.5c.16 -.95 .468 -1.85 .9 -2.675l.169 -.305" /><path d="M6.907 4.579a8.954 8.954 0 0 1 3.093 -1.356" /><path d="M9 12l2 2l4 -4" /></svg>
-                      :
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-green-700 icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
-                    }
-                  </td>
+                  <td>{row.idx}</td>
+                  <td>{row.codigo}</td>
+                  <td>{row.nom}</td>
+                  <td>-</td>
+                  <td>-</td>
                   <td className="w-[250px]">
                     <ul className="flex flex-row justify-end">
                       <li>
@@ -124,18 +124,11 @@ export default function Guias(children){
                 </tr>
               ))}
             </tbody>
-            {/* <tfoot className="sticky bottom-0">
-              <tr>
-                <td colSpan={9} >
-                  <div className="flex flex-row justify-center">
-                    <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
-                      +
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tfoot> */}
           </table>
+        </div>
+        <div className="flex flex-row justify-end mt-2 gap-2">
+          <Button type="button" tipo="default" action={cerrarmodal}>Cancelar</Button>
+          <Button type="button" tipo="default" action={onclick}>Agregar</Button>
         </div>
       </div>
     </>

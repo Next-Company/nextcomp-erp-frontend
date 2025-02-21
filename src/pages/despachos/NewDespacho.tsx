@@ -24,32 +24,34 @@ export default function NewDespacho(){
 
   const onsubmit = (e)=>{
     e.preventDefault()
-    // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
-    console.log("El de talle de fracciones :",registros)
+    if(registros.map(row=>row.despacho ?? 0).reduce((a,b)=>a+b) == 0){
+      toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
+      return
+    }
     openModal({
       open: true,
       header: false,
       controls: true,
-      content: <div>Desea continuar con el registro del pedido ingresado?</div>,
+      content: <div>Desea continuar con el registro del despacho ingresado?</div>,
       action: async () => {
         setOpenloader(true)
         const data = new FormData()
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',JSON.stringify(registros))
+        data.append('detalle',JSON.stringify(registros.filter(row=>(row.despacho ?? 0) > 0)))
 
-        await Consulta({url: 'produccion/guardarpedido/',params:{
+        await Consulta({url: 'produccion/guardardespacho/',params:{
           method:'PUT',
           body:data
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/pedidos/inicio')
-          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          // navigate('/main/pedidos/inicio')
+          // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
-          setOpenloader(false)
-          toast.error('Se produjo un error!!', { theme: "colored" })
+          // setOpenloader(false)
+          // toast.error('Se produjo un error!!', { theme: "colored" })
         })
         .finally(()=>{
           setOpenloader(false)
@@ -64,8 +66,9 @@ export default function NewDespacho(){
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/pedido/' + urlparams.id,})
+        await Consulta({url: 'produccion/despacho/' + urlparams.id,})
           .then(resp => {
+            console.log("Los datos del despacho son:",resp)
             setInfo(resp[0])
             setRegistros(resp[1])
             setOpenloader(false)
@@ -78,25 +81,20 @@ export default function NewDespacho(){
           })
       }
       pp()
-    }else{
-
     }
-
     const handleInputChange = (event) => {
       setTipo(event.detail.valor == 'SERVICIOS' ? 0 : 1)
       setRegistros([])
-      // console.log("Valor seleccionado en el formulario:", event.detail.message);
     };
     form.current.addEventListener("salamandra", handleInputChange);
     
-
     return () => {
       if(form.current) form.current.removeEventListener("salamandra", handleInputChange);
     };
   },[])
 
   const nuevoregistro = ()=>{
-    setRegistros([...registros,tipo ? {item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0} : {item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+    setRegistros([...registros,tipo ? {item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0,despacho:0} : {item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
   }
 
   const onclick = (e)=>{
@@ -145,8 +143,19 @@ export default function NewDespacho(){
       open:true,
       content: <Guias actions={(item)=>{  
         // console.log("El item seleccionado es: ",item)
-        // setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom,ruc:item.ruc}))
-        // setOpen(false)
+        setOpenloader(true)
+        setOpen(false)
+        Consulta({url: 'produccion/guia/' + item.idx})
+        .then(resp => {
+          setInfo(info=>({...info,id_guia_origen:item.idx,nro_guia_origen:item.idx}))
+          setRegistros(resp[1])
+        })
+        .catch((err)=>{
+          setOpenloader(false)
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
       }}/>,
       controls: true,
       header: false,
@@ -180,13 +189,10 @@ export default function NewDespacho(){
             <hr />
           </div>
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
-
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={()=>{}} onInputCapture={onchange}>
               <div className={` flex-col gap-3 flex`}>
-
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  {/* <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="Orden Pedido" type="text" /> */}
                   <InputSelect title={'OrigenDespacho'} formref={form} name={"tipo"} data={
                     [
                       { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 
@@ -194,18 +200,18 @@ export default function NewDespacho(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
-                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaRecepción" type="date" />
-                  {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
+                  <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionDespacho" type="date" />
+                  <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" />
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuia" type="text" />
+                  <Input name={'id_guia_origen'} defaults={Object.keys(info).length > 0 ? info.id_guia_origen : null} type="hidden" />
+                  <Input name={'nro_guia_origen'} title="IdServicio" defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchguia} mode={'static'}/>
+                  
                 </div>
                 <div className="flex gap-3">
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" />
-                  <Input name={'id_guia_origen'} defaults={Object.keys(info).length > 0 ? info.id_guia_origen : null} type="hidden" />
-                  <Input name={'nro_guia_origen'} title="GuiaReferencia" defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchguia} mode={'static'} />
-                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
+                  <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuiaReferencia" type="text"/>
                 </div>
                 <div>
                   <span>Artículos:</span>
@@ -225,7 +231,7 @@ export default function NewDespacho(){
                                 <th className="lg:table-cell">XL / 34</th>
                                 <th className="lg:table-cell">XXL / 36</th>
                                 <th className="lg:table-cell">Cantidad</th>
-                                <th className="lg:table-cell">EsPrototipo</th>
+                                <th className="lg:table-cell">Despacho</th>
                                 <th className="lg:table-cell">Acciones</th>
                               </>
                             :
@@ -245,20 +251,20 @@ export default function NewDespacho(){
                       <tbody>
                         {
                           registros.length > 0 && registros.map((row,key)=>(
-                            <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                            <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center">
                               {
                                 tipo == 0
                                 ?
                                   <>
-                                    <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
-                                    <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} defaultValue={row.xs}/></td>
-                                    <td><input data-name="s" type="number" onChange={editvalue} data-position={key} defaultValue={row.s}/></td>
-                                    <td><input data-name="m" type="number" onChange={editvalue} data-position={key} defaultValue={row.m}/></td>
-                                    <td><input data-name="l" type="number" onChange={editvalue} data-position={key} defaultValue={row.l}/></td>
-                                    <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xl}/></td>
-                                    <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xxl}/></td>
-                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
-                                    <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
+                                    <td>{row.articulo}</td>
+                                    <td>{row.xs}</td>
+                                    <td>{row.s}</td>
+                                    <td>{row.m}</td>
+                                    <td>{row.l}</td>
+                                    <td>{row.xl}</td>
+                                    <td>{row.xxl}</td>
+                                    <td>{row.cantidad}</td>
+                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                   </>
                                 :
                                   <>
@@ -303,7 +309,7 @@ export default function NewDespacho(){
                           ))
                         }
                       </tbody>
-                      <tfoot className="sticky bottom-0">
+                      {/* <tfoot className="sticky bottom-0">
                         <tr>
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center">
@@ -313,7 +319,7 @@ export default function NewDespacho(){
                             </div>
                           </td>
                         </tr>
-                      </tfoot>
+                      </tfoot> */}
                     </table>
                   </div>
                 </div>
@@ -328,7 +334,6 @@ export default function NewDespacho(){
                   <Button action={() => navigate('/main/despachos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>
-                {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
               </div>
             </form>
           </div>

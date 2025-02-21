@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 const CuerpoInforme = ({cuerpo})=>{
   return(
     <>
-      <iframe src="http://192.168.18.20:4000/produccion/informe/12" className="w-[60vw] h-[60vh]"></iframe>
+      <iframe src="http://192.168.18.20:4000/produccion/estadoguia/12" className="w-[60vw] h-[60vh]"></iframe>
       {/* <div dangerouslySetInnerHTML={{ __html: cuerpo }} /> */}
     </>
   )
@@ -112,7 +112,14 @@ export default function ListaGuias(){
         navigate("/main/guias/nuevo/"+ id)
         break;
       case 'review':
-        navigate("/main/estampado/review/"+ id)
+        params_modal = {
+          open:true,
+          content: <CuerpoInforme cuerpo={""} />,
+          controls: true,
+          header: false,
+          action:()=>{}
+        }
+        openModal(params_modal)
         break;
     
       default:
@@ -295,7 +302,7 @@ export default function ListaGuias(){
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx} onClick={onclick}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>
