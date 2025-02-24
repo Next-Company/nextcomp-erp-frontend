@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { Search } from "../Atoms/Search/Search"
 import { Consulta } from "../../utils/utils"
+import { useNavigate } from "react-router-dom"
+import { AuthPermitions } from "../../contexts/contexts"
 
 export default function Proveedores(children){
+  const { logout} = useContext(AuthPermitions)
   let {actions = ()=>{}} = children
   let [lista,setLista] = useState([])
   useEffect(()=>{
@@ -15,6 +18,10 @@ export default function Proveedores(children){
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
       })
       .catch((err)=>{
+        // console.log("Mensaje de error es :",JSON.parse(err).statuscode == 401)
+        if(JSON.parse(err).statuscode == 401){
+          logout()
+        }
         // setOpenloader(false)
         // toast.error('Se produjo un error!!', { theme: "colored" })
       })

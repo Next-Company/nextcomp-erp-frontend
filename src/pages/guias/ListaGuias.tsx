@@ -142,7 +142,7 @@ export default function ListaGuias(){
       setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
     })
     .catch((error) => {
-      console.log(error)
+      console.log("El mnesaje de error es:",error)
       // logout()
       // toast.error('Error en la consulta de base', { theme: "colored" })
     })

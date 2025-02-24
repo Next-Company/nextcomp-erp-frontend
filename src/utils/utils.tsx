@@ -28,40 +28,39 @@ export async function DataFetch(params) {
   }
 }
 export async function Consulta({ url, params = {} }) {
-  try {
-    return await fetch(apiUrl + url,
-      {
-        credentials: 'include', ...params
-      })
-      // .then(resp => resp.ok ? resp.json() : Promise.reject())
-      .then(resp =>{
-        console.log(resp)
-        if(resp.ok){
-          return resp.json()
+  return await fetch(apiUrl + url,
+    {
+      credentials: 'include', ...params
+    })
+    .then(resp =>{
+      console.log("Detros del then")
+      if(resp.ok){
+        return resp.json()
+      }else{
+        if(resp.status !== 200){
+          switch(resp.status){
+            case 401 :
+              let msg = JSON.stringify({statuscode:401,message:'Usuario no autorizado o credenciales vencidas.'})
+              // throw new Error(msg)
+              return Promise.reject(msg)
+            default:
+              throw new Error('Otro codigo de error')
+          }
         }else{
-          if(resp.status !== 200){
-            switch(resp.status){
-              case 401 :
-                let msg = JSON.stringify({statuscode:401,message:'Usuario no autorizado o credenciales vencidas.'})
-                throw new Error(msg)
-              default:
-                throw new Error('Otro codigo de error')
-            }
-          }else{
-            throw new Error('Se prodyctro un roble')
-          }         
-        }
-      })
-      .catch(resp=>{
-        let rr = JSON.parse(resp)
-        // Promise.reject()
-        console.log("errortttttt_ss",rr)
-        return Promise.reject('Errorrraaa')
-        // throw new Error('Se prodyctro un rble')
-      })
-  } catch (error) {
-    return Promise.reject('itri error')
-  }
+          // throw new Error('Se prodyctro un roble')
+          return Promise.reject(JSON.stringify({statuscode:0,message:'Desconocido.'}))
+        }         
+      }
+    })
+    // .catch(err=>{
+    //   console.log("Haber geminis :",JSON.parse(err))
+    //   return Promise.reject('Errorrraaa')
+    // })
+  // try {
+  // } catch (err) {
+  //   console.log("El error es:",err)
+  //   return Promise.reject('Errorrraaa')
+  // }
 }
 // export async function CargarInfo() {
 //   return await fetch(apiUrl + 'soporte', {

@@ -1,23 +1,31 @@
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { Search } from "../Atoms/Search/Search"
 import { Consulta } from "../../utils/utils"
 import { Button } from "../Atoms/Button/Button"
+import { AuthPermitions } from "../../contexts/contexts"
 
 export default function Productos(children){
+  const { logout} = useContext(AuthPermitions)
   let {actions = ()=>{}, closemodal} = children
   let [lista,setLista] = useState([])
+  let [selected,setSelected] = useState([])
   // let [selected,setSelected] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
       await Consulta({url: 'productos/productoslist/50'})
       .then(resp => {
         console.log("La respuesta es:",resp)
+        // setLista(resp.map((row)=>({...row,selected:false})))
         setLista(resp)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
       })
       .catch((err)=>{
+        // console.log("Mensaje de error es :",err)
+        if(JSON.parse(err).statuscode == 401){
+          logout()
+        }
         // setOpenloader(false)
         // toast.error('Se produjo un error!!', { theme: "colored" })
       })
@@ -61,7 +69,9 @@ export default function Productos(children){
   //   }
   // }
   const onclick = (e)=>{
-    actions(lista[e.target.dataset.position])
+    // actions(lista[e.target.dataset.position])
+    // setSelected(selected.push(lista[parseInt(e.target.dataset.position)]))
+    setSelected([...selected,lista[parseInt(e.target.dataset.position)]])
   }
   const cerrarmodal = ()=>{
     closemodal()
@@ -73,7 +83,7 @@ export default function Productos(children){
           <Search config={{ width: '100%' }} action={searchproveedor} />
         </div>
         <div className="h-[500px] w-[1000px] scrollbar-special rounded-md overflow-y-scroll ">
-          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+          <table className={`w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300`}>
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell">Id</th>  
@@ -86,7 +96,7 @@ export default function Productos(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr>
+                <tr className={`${selected.find((item)=>item.idx == row.idx) ? 'selected' : ''}`} key={key}>
                   <td>{row.idx}</td>
                   <td>{row.codigo}</td>
                   <td>{row.nom}</td>
