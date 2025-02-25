@@ -8,8 +8,8 @@ import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
-import { InputTest } from "../../components/Atoms/Input/InputTest"
 import Guias from "../../components/Common/Guias"
+import Pedidos from "../../components/Common/Pedidos"
 
 
 export default function NewDespacho(){
@@ -71,6 +71,7 @@ export default function NewDespacho(){
             console.log("Los datos del despacho son:",resp)
             setInfo(resp[0])
             setRegistros(resp[1])
+            setTipo(resp[0].tipo == 'SERVICIOS' ? 0 : 1)
             setOpenloader(false)
           })
           .catch((err)=>{
@@ -164,6 +165,33 @@ export default function NewDespacho(){
     }
     openModal(params_modal)
   }
+  const searchpedido = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Pedidos actions={(item)=>{  
+        // console.log("El item seleccionado es: ",item)
+        setOpenloader(true)
+        setOpen(false)
+        Consulta({url: 'produccion/pedido/' + item.idx})
+        .then(resp => {
+          setInfo(info=>({...info,id_pedido_origen:item.idx,nro_pedido_origen:item.idx}))
+          setRegistros(resp[1])
+        })
+        .catch((err)=>{
+          setOpenloader(false)
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openModal(params_modal)
+  }
 
   const onchange = (e)=>{
     console.log("Cambiando tipo de pedido")
@@ -203,9 +231,20 @@ export default function NewDespacho(){
                   <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionDespacho" type="date" />
                   <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" />
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  <Input name={'id_guia_origen'} defaults={Object.keys(info).length > 0 ? info.id_guia_origen : null} type="hidden" />
-                  <Input name={'nro_guia_origen'} title="IdServicio" defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchguia} mode={'static'}/>
-                  
+                  {
+                    tipo
+                    ?
+                    <>
+                      <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" />
+                      <Input name={'nro_pedido_origen'} title={`${tipo ? 'IdPedido' : 'IdServicio'}`} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'}/>
+                    </>
+                    :
+                    <>
+                      <Input name={'id_guia_origen'} defaults={Object.keys(info).length > 0 ? info.id_guia_origen : null} type="hidden" />
+                      <Input name={'nro_guia_origen'} title={`${tipo ? 'IdPedido' : 'IdServicio'}`} defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchguia} mode={'static'}/>
+                      
+                    </>
+                  }
                 </div>
                 <div className="flex gap-3">
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
@@ -214,7 +253,7 @@ export default function NewDespacho(){
                   <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuiaReferencia" type="text"/>
                 </div>
                 <div>
-                  <span>Artículos:</span>
+                  {/* <span>Artículos:</span> */}
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
@@ -242,6 +281,7 @@ export default function NewDespacho(){
                                 <th className="lg:table-cell">Cantidad</th>
                                 <th className="lg:table-cell">Unidad</th>
                                 <th className="lg:table-cell">Precio</th>
+                                <th className="lg:table-cell">Despacho</th>
                                 <th className="lg:table-cell">Acciones</th>
                               </>
                           }
@@ -274,6 +314,7 @@ export default function NewDespacho(){
                                     <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
                                     <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
                                     <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
+                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                   </>
                               }
                               <td className="w-[250px]">

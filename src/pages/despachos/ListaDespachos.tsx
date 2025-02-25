@@ -35,13 +35,13 @@ export default function ListaDespachos(){
           action:()=>{
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarguia/' + id, params: {
+              url: 'produccion/borrardespacho/' + id, params: {
                 method: 'DELETE'
               }
             })
               .then(resp => {
                 // setOrdenes(resp)
-                toast.success('Guia eliminado con éxito!', { theme: "colored" })
+                toast.success('Despacho eliminado con éxito!', { theme: "colored" })
                 // setRefresh(true)
                 recargarinfo()
                 setOpenloader(false)

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
+import { AuthPermitions } from "../../contexts/contexts";
 
 const CuerpoInforme = ({cuerpo})=>{
   return(
@@ -18,6 +19,7 @@ const CuerpoInforme = ({cuerpo})=>{
 export default function ListaPedidos(){
   const [info,setInfo] = useState([])
   const navigate = useNavigate()
+  const { logout } = useContext(AuthPermitions)
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   // const [refresh,setRefresh] = useState(false)
 
@@ -35,7 +37,7 @@ export default function ListaPedidos(){
           action:()=>{
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarguia/' + id, params: {
+              url: 'produccion/borrarpedido/' + id, params: {
                 method: 'DELETE'
               }
             })
@@ -122,7 +124,7 @@ export default function ListaPedidos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos', params: {
+      url: 'produccion/getListaPedidos/50', params: {
         method: 'GET'
       }
     })
@@ -132,8 +134,8 @@ export default function ListaPedidos(){
       setInfo(resp)  
     })
     .catch((error) => {
-      console.log(error)
-      // logout()
+      // console.log(error)
+      logout()
       // toast.error('Error en la consulta de base', { theme: "colored" })
     })
     .finally(()=>{

@@ -70,12 +70,13 @@ export default function NewPedido(){
       controls: true,
       content: <div>Desea continuar con el registro del pedido ingresado?</div>,
       action: async () => {
-        setOpenloader(true)
         const data = new FormData()
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',JSON.stringify(registros))
 
+        console.log("Detalle de la lista de articuos :",registros)
+        setOpenloader(true)
         await Consulta({url: 'produccion/guardarpedido/',params:{
           method:'PUT',
           body:data
@@ -120,14 +121,14 @@ export default function NewPedido(){
     }
   },[])
 
-  const nuevoregistro = ()=>{
+  const nuevoproducto = ()=>{
     // console.log("Registros actuales :",registros)
     openModal({
       open:true,
-      content: <Productos actions={(item)=>{  
-        console.log("El item seleccionado es: ",item)
+      content: <Productos actions={(items)=>{  
+        // console.log("El item seleccionado es: ",item)
         setOpen(false)
-        setRegistros([...registros,{item:0,producto:item.nom,color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])
       }}
         closemodal={()=>setOpen(false)}
       />,
@@ -274,7 +275,7 @@ export default function NewPedido(){
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" value={row.precio} /></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} step=".01" data-name="precio" value={row.precio} /></td>
                               <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={row.cantidad*row.precio} /></td>
                               {/* <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td> */}
                               <td className="w-[250px]">
@@ -314,7 +315,7 @@ export default function NewPedido(){
                         <tr>
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                              <div onClick={nuevoproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
                               </div>
                             </div>

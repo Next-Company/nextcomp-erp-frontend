@@ -7,7 +7,7 @@ export default function Pedidos(children){
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'produccion/pedidoslist/50'})
+      await Consulta({url: 'produccion/getListaPedidos/50'})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)
@@ -48,10 +48,10 @@ export default function Pedidos(children){
   }
   const onclick = (e)=>{
     let action = e.target.dataset.action
-    console.log("La accion es la siguiente:",action)
+    // console.log("La accion es la siguiente:",action)
     switch(action){
       case 'add':
-        console.log("Agregando al proveedor",lista[e.target.dataset.position])
+        // console.log("Agregando al proveedor",lista[e.target.dataset.position])
         actions(lista[e.target.dataset.position])
         break;
       default:
@@ -68,18 +68,22 @@ export default function Pedidos(children){
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
-                <th className="lg:table-cell">Ruc</th>  
+                <th className="lg:table-cell">NroPedido</th>
+                <th className="lg:table-cell">Tipo</th>
                 <th className="lg:table-cell">Proveedor</th>
-                <th className="lg:table-cell">Direccion</th>
+                <th className="lg:table-cell">FechaPedido</th>
+                <th className="lg:table-cell">FechaEntrega</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
                 <tr>
-                  <td>{row.ruc}</td>
-                  <td>{row.nom}</td>
-                  <td>{row.direccion}</td>
+                  <td>{row.idx}</td>
+                  <td>{row.tipo}</td>
+                  <td>{row.proveedor}</td>
+                  <td>{row.fec_emision}</td>
+                  <td>{row.fec_retorno}</td>
                   <td className="w-[250px]">
                     <ul className="flex flex-row justify-end">
                       <li>

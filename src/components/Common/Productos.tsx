@@ -70,8 +70,15 @@ export default function Productos(children){
   // }
   const onclick = (e)=>{
     // actions(lista[e.target.dataset.position])
-    // setSelected(selected.push(lista[parseInt(e.target.dataset.position)]))
-    setSelected([...selected,lista[parseInt(e.target.dataset.position)]])
+    const item = lista[parseInt(e.target.dataset.position)]
+    if(selected.find((row)=>row.idxsub == item.idxsub)){
+      setSelected([...selected.filter(row=>row.idxsub !== item.idxsub)])
+    }else{
+      setSelected([...selected,lista[parseInt(e.target.dataset.position)]])
+    }
+  }
+  const addproductos = ()=>{
+    actions(selected)
   }
   const cerrarmodal = ()=>{
     closemodal()
@@ -96,12 +103,12 @@ export default function Productos(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr className={`${selected.find((item)=>item.idx == row.idx) ? 'selected' : ''}`} key={key}>
-                  <td>{row.idx}</td>
-                  <td>{row.codigo}</td>
-                  <td>{row.nom}</td>
-                  <td>-</td>
-                  <td>-</td>
+                <tr className={`${selected.find((item)=>item.idxsub == row.idxsub) ? 'selected' : ''}`} key={key}>
+                  <td>{row.idxsub}</td>
+                  <td>{row.cod_producto}</td>
+                  <td>{row.producto}</td>
+                  <td>{row.color}</td>
+                  <td>{row.talla}</td>
                   <td className="w-[250px]">
                     <ul className="flex flex-row justify-end">
                       <li>
@@ -138,7 +145,7 @@ export default function Productos(children){
         </div>
         <div className="flex flex-row justify-end mt-2 gap-2">
           <Button type="button" tipo="default" action={cerrarmodal}>Cancelar</Button>
-          <Button type="button" tipo="default" action={onclick}>Agregar</Button>
+          <Button type="button" tipo="default" action={addproductos}>Agregar</Button>
         </div>
       </div>
     </>
