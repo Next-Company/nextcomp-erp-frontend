@@ -12,12 +12,11 @@ import { InputTest } from "../../components/Atoms/Input/InputTest"
 import Productos from "../../components/Common/Productos"
 
 
-const CuerpoInforme = ({info})=>{
+const CuerpoInforme = ({info,tipo})=>{
   let [ruta,setRuta] = useState("")
   useEffect(()=>{
     let crear = async ()=>{
-      console.log("Hola marte")
-      await Consulta({url: 'produccion/vistapreviapedidoavios/avios',params:{
+      await Consulta({url: `${tipo ? 'produccion/vistapreviapedido/avios' : 'produccion/vistapreviapedido/telas'}`,params:{
         method:'POST',
         body:info
       }})
@@ -31,9 +30,8 @@ const CuerpoInforme = ({info})=>{
             bytes[i] = ascii;
         }
         let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
-        console.log("La ruta es:",file)
+        // console.log("La ruta es:",file)
         setRuta(file)
-
       })
       .catch((err)=>{
         // setOpenloader(false)
@@ -51,8 +49,7 @@ const CuerpoInforme = ({info})=>{
 }
 
 export default function NewPedido(){
-  // const [estampado,setEstampado] = useState([])
-  const [tipo,setTipo] = useState(1)
+  const [tipo,setTipo] = useState(0)
   const urlparams = useParams()
   const [info,setInfo] = useState({})
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
@@ -108,6 +105,7 @@ export default function NewPedido(){
             console.log("Busqueda info pedido:",resp)
             setInfo(resp[0])
             setRegistros(resp[1])
+            setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
             setOpenloader(false)
           })
           .catch((err)=>{
@@ -188,15 +186,15 @@ export default function NewPedido(){
   }
 
   const vistaprevia = async ()=>{
-
     const data = new FormData()
     urlparams.id && data.append('id',urlparams.id)
     data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
     data.append('detalle',JSON.stringify(registros))
+    // data.append('tipo',`${tipo}`)
 
     const params_modal = {
       open:true,
-      content: <CuerpoInforme info={data} />,
+      content: <CuerpoInforme info={data} tipo={tipo} />,
       controls: false,
       header: false,
       action:async ()=>{
@@ -276,7 +274,7 @@ export default function NewPedido(){
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} step=".01" data-name="precio" value={row.precio} /></td>
-                              <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={row.cantidad*row.precio} /></td>
+                              <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(2)} /></td>
                               {/* <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td> */}
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">

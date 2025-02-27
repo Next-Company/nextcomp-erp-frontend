@@ -62,18 +62,27 @@ export default function ListaPedidos(){
       case 'download':
         params_modal = {
           open:true,
-          content: <div>Desea continuar con la descarga de la guia de traslado interno?.<br/>  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+          content: <div>Desea continuar con la descarga del pedido de insumos?.<br/>  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
           controls: true,
           header: false,
           action:()=>{
             const desc = async ()=>{
-              setOpenloader(true)
-              await fetch("http://192.168.18.20:4000/produccion/exportguia/"+id,{
+              let tipo = info.filter(row=>row.idx == id)[0].tipo
+              // console.log("El registro seleccionado: ",data)
+
+              // const data = new FormData()
+              // urlparams.id && data.append('id',urlparams.id)
+              // data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
+              // data.append('detalle',JSON.stringify(registros))
+              
+
+              // setOpenloader(true)
+              await fetch(tipo == 'TELAS' ? 'http://192.168.18.20:4000/produccion/vistapreviapedido/telas' : 'http://192.168.18.20:4000/produccion/vistapreviapedido/avios',{
                 method:'POST',
+                body: JSON.stringify(info.filter(row=>row.idx == id)[0]),
                 credentials: 'include'
               })
               .then(resp=>{
-                // console.log("MOstrar status informe estampado:",resp.status)
                 if(resp.ok){
                   return resp.json()
                 }else{
@@ -82,26 +91,28 @@ export default function ListaPedidos(){
                   }
                 }
               })
-              .then(resp=>{
-                setOpenloader(false)
-                let binaryString = window.atob(resp.data);
-                let binaryLen = binaryString.length;
-                let bytes = new Uint8Array(binaryLen);
-                for (let i = 0; i < binaryLen; i++) {
-                    let ascii = binaryString.charCodeAt(i);
-                    bytes[i] = ascii;
-                }
-                let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+              // .then(resp=>{
+              //   setOpenloader(false)
+              //   let binaryString = window.atob(resp.data);
+              //   let binaryLen = binaryString.length;
+              //   let bytes = new Uint8Array(binaryLen);
+              //   for (let i = 0; i < binaryLen; i++) {
+              //       let ascii = binaryString.charCodeAt(i);
+              //       bytes[i] = ascii;
+              //   }
+              //   let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
         
-                let link = document.createElement('a')
-                link.href = file
-                link.target = 'blank'
-                link.click()
-              })
-              .catch((err)=>{
-                setOpenloader(false)
-                toast.error('Se produjo un error!!', { theme: "colored" })
-              })
+              //   let link = document.createElement('a')
+              //   link.href = file
+              //   link.target = 'blank'
+              //   link.click()
+              // })
+              // .catch((err)=>{
+              //   setOpenloader(false)
+              //   toast.error('Se produjo un error!!', { theme: "colored" })
+              // })
+
+
             }
             desc()
           }
