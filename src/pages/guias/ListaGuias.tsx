@@ -6,6 +6,16 @@ import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
 
+const colorfase = {
+  'CONFECCION':'bg-purple-500',
+  'ESTAMPADO':'bg-gray-500',
+  'ACABADOS':'bg-red-500',
+  'LAVANDERIA':'bg-green-500',
+  'MOLDES':'bg-orange-500',
+  'OJAL BOTON':'bg-blue-500',
+  'CORTE':'bg-rose-400',
+  'BORDADO':'bg-yellow-500',
+}
 const CuerpoInforme = ({cuerpo})=>{
   return(
     <>
@@ -280,7 +290,8 @@ export default function ListaGuias(){
                         <tr key={key} className="">
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.servicio}</td>
+                          {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.servicio}</td> */}
+                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision}</td>

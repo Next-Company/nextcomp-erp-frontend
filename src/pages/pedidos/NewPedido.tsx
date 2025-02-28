@@ -187,7 +187,9 @@ export default function NewPedido(){
 
   const vistaprevia = async ()=>{
     const data = new FormData()
-    urlparams.id && data.append('id',urlparams.id)
+
+    console.log("INfo form",Object.fromEntries(new FormData(form.current)))
+    // urlparams.id && data.append('id',urlparams.id)
     data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
     data.append('detalle',JSON.stringify(registros))
     // data.append('tipo',`${tipo}`)
@@ -200,7 +202,7 @@ export default function NewPedido(){
       action:async ()=>{
       }
     }
-    openModal(params_modal)    
+    // openModal(params_modal)   
   }
   return(
     <>

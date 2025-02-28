@@ -7,6 +7,23 @@ import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowCont
 import { toast } from "react-toastify";
 import { AuthPermitions } from "../../contexts/contexts";
 
+const colorfase = {
+  'TELAS':'bg-orange-500',
+  'AVIOS':'bg-violet-500'
+}
+const CuerpoCuadrePedido = ({pedidoid})=>{
+  return(
+    <>
+      <div>
+        <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe>
+        <div className="flex flex-row justify-center gap-2">
+          <Button action={()=>{}} type="button" tipo="default">Cerrar</Button>
+          <Button action={()=>{}} type="button" tipo="default">Imprimir</Button>
+        </div>
+      </div>
+    </>
+  )
+}
 const CuerpoInforme = ({cuerpo})=>{
   return(
     <>
@@ -67,6 +84,8 @@ export default function ListaPedidos(){
           header: false,
           action:()=>{
             const desc = async ()=>{
+              const data = new FormData()
+              data.append('id',id)
               let tipo = info.filter(row=>row.idx == id)[0].tipo
               // console.log("El registro seleccionado: ",data)
 
@@ -76,10 +95,11 @@ export default function ListaPedidos(){
               // data.append('detalle',JSON.stringify(registros))
               
 
-              // setOpenloader(true)
-              await fetch(tipo == 'TELAS' ? 'http://192.168.18.20:4000/produccion/vistapreviapedido/telas' : 'http://192.168.18.20:4000/produccion/vistapreviapedido/avios',{
+              setOpenloader(true)
+              // await fetch(tipo == 'TELAS' ? 'http://192.168.18.20:4000/produccion/vistapreviapedido/telas' : 'http://192.168.18.20:4000/produccion/vistapreviapedido/avios',
+              await fetch(`http://192.168.18.20:4000/produccion/vistapreviapedido/${ tipo == 'TELAS' ? 'telas' : 'avios'}`,{
                 method:'POST',
-                body: JSON.stringify(info.filter(row=>row.idx == id)[0]),
+                body: data,
                 credentials: 'include'
               })
               .then(resp=>{
@@ -91,26 +111,26 @@ export default function ListaPedidos(){
                   }
                 }
               })
-              // .then(resp=>{
-              //   setOpenloader(false)
-              //   let binaryString = window.atob(resp.data);
-              //   let binaryLen = binaryString.length;
-              //   let bytes = new Uint8Array(binaryLen);
-              //   for (let i = 0; i < binaryLen; i++) {
-              //       let ascii = binaryString.charCodeAt(i);
-              //       bytes[i] = ascii;
-              //   }
-              //   let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+              .then(resp=>{
+                setOpenloader(false)
+                let binaryString = window.atob(resp.data);
+                let binaryLen = binaryString.length;
+                let bytes = new Uint8Array(binaryLen);
+                for (let i = 0; i < binaryLen; i++) {
+                    let ascii = binaryString.charCodeAt(i);
+                    bytes[i] = ascii;
+                }
+                let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
         
-              //   let link = document.createElement('a')
-              //   link.href = file
-              //   link.target = 'blank'
-              //   link.click()
-              // })
-              // .catch((err)=>{
-              //   setOpenloader(false)
-              //   toast.error('Se produjo un error!!', { theme: "colored" })
-              // })
+                let link = document.createElement('a')
+                link.href = file
+                link.target = 'blank'
+                link.click()
+              })
+              .catch((err)=>{
+                setOpenloader(false)
+                toast.error('Se produjo un error!!', { theme: "colored" })
+              })
 
 
             }
@@ -123,7 +143,16 @@ export default function ListaPedidos(){
         navigate("/main/pedidos/nuevo/"+ id)
         break;
       case 'review':
-        navigate("/main/estampado/review/"+ id)
+        // navigate("/main/estampado/review/"+ id)
+        let params = {
+          open:true,
+          content: <CuerpoCuadrePedido pedidoid={id}/>,
+          controls: false,
+          header: false,
+          action:async ()=>{
+          }
+        }
+        openModal(params)
         break;
     
       default:
@@ -159,7 +188,7 @@ export default function ListaPedidos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos', params: {
+      url: 'produccion/getListaPedidos/50', params: {
         method: 'GET'
       }
     })
@@ -248,7 +277,7 @@ export default function ListaPedidos(){
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">FechaEMmision</th>
                     <th className="lg:table-cell">FechaRetorno</th>
-                    <th className="lg:table-cell">FechaRecepcion</th>
+                    <th className="lg:table-cell">FechaTermino</th>
                     <th className="lg:table-cell">TiempoProd</th>
                     <th className="lg:table-cell">DiasPendientes</th>
                     <th className="lg:table-cell text-center">Accciones</th>
@@ -261,7 +290,8 @@ export default function ListaPedidos(){
                         <tr key={key} className="">
                           <td>{row.idx}</td>
                           <td>{row.orden_ref}</td>
-                          <td>{row.tipo}</td>
+                          {/* <td>{row.tipo}</td> */}
+                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
                           <td>{row.proveedor}</td>
                           <td>{row.fec_emision}</td>
                           <td>{row.fec_retorno}</td>
@@ -284,7 +314,7 @@ export default function ListaPedidos(){
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>

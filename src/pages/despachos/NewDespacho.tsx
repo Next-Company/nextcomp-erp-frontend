@@ -46,11 +46,11 @@ export default function NewDespacho(){
         }})
         .then(resp => {
           setOpenloader(false)
-          // navigate('/main/pedidos/inicio')
-          // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          navigate('/main/despachos/inicio')
+          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
-          // setOpenloader(false)
+          setOpenloader(false)
           // toast.error('Se produjo un error!!', { theme: "colored" })
         })
         .finally(()=>{
@@ -314,7 +314,7 @@ export default function NewDespacho(){
                                     <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
                                     <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
                                     <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
-                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
+                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                   </>
                               }
                               <td className="w-[250px]">

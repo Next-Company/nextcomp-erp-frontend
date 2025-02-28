@@ -6,6 +6,11 @@ import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
 
+
+const colorfase = {
+  'SERVICIOS':'bg-orange-500',
+  'PEDIDOS':'bg-violet-500'
+}
 const CuerpoInforme = ({cuerpo})=>{
   return(
     <>
@@ -14,7 +19,6 @@ const CuerpoInforme = ({cuerpo})=>{
     </>
   )
 }
-
 export default function ListaDespachos(){
   const [info,setInfo] = useState([])
   const navigate = useNavigate()
@@ -168,8 +172,7 @@ export default function ListaDespachos(){
   const nuevodespacho = ()=>{
     navigate('/main/despachos/nuevo')
   }
-  const showinforme = async ()=>{
-
+  const showinforme = (e)=>{
     const params_modal = {
       open:true,
       content: <CuerpoInforme cuerpo={""} />,
@@ -217,7 +220,8 @@ export default function ListaDespachos(){
                         <tr key={key} className="">
                           <td>{row.idx}</td>
                           <td>{row.nro_guia}</td>
-                          <td>{row.tipo}</td>
+                          {/* <td>{row.tipo}</td> */}
+                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
                           <td>{row.proveedor}</td>
                           <td>{row.fec_despacho}</td>
                           <td className="w-[250px]">
