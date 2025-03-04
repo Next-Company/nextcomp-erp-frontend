@@ -12,10 +12,33 @@ const colorfase = {
   'AVIOS':'bg-violet-500'
 }
 const CuerpoCuadrePedido = ({pedidoid})=>{
+  let [ruta,setRuta] = useState("")
+  useEffect(()=>{
+    let crear = async ()=>{
+      await Consulta({url:`produccion/showinformepedido/${pedidoid}`,params:{
+        method:'GET'
+      }})
+      .then(resp => {
+        let binaryString = window.atob(resp.data);
+        let binaryLen = binaryString.length;
+        let bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+            let ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+        setRuta(file)
+      })
+      .catch((err)=>{
+      })
+    }
+    crear()
+  },[])
   return(
     <>
       <div>
-        <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe>
+        {/* <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe> */}
+        <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
         <div className="flex flex-row justify-center gap-2">
           <Button action={()=>{}} type="button" tipo="default">Cerrar</Button>
           <Button action={()=>{}} type="button" tipo="default">Imprimir</Button>
