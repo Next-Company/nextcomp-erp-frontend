@@ -193,7 +193,7 @@ export default function ListaDespachos(){
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Despachos</h2>
-              <div className="w-[400px]">
+              <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={()=>{}} />
               </div>
             </div>
@@ -209,6 +209,8 @@ export default function ListaDespachos(){
                     <th className="lg:table-cell">NroGuia</th>
                     <th className="lg:table-cell">Tipo</th>
                     <th className="lg:table-cell">Proveedor</th>
+                    <th className="lg:table-cell">Responsable</th>
+                    <th className="lg:table-cell">FechaEmisionGuia</th>
                     <th className="lg:table-cell">FechaDespacho</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
@@ -223,6 +225,8 @@ export default function ListaDespachos(){
                           {/* <td>{row.tipo}</td> */}
                           <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
                           <td>{row.proveedor}</td>
+                          <td>{row.responsable}</td>
+                          <td>{row.fec_emision_guia}</td>
                           <td>{row.fec_despacho}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
@@ -265,7 +269,7 @@ export default function ListaDespachos(){
                     <td className="h-[45px] border-t border-t-gray-600" colSpan={12}>
                       <div className="flex flex-row justify-between items-center">
                         <div>
-                          Numero de resultados 
+                          Showing 1 to 4 of 4 entries (filtered from 57 total entries)
                         </div>
                         <div className="flex flex-row justify-end items-center gap-2">
                           <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">

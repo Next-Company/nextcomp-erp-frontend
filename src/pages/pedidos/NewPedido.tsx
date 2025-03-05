@@ -10,6 +10,7 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import { InputTest } from "../../components/Atoms/Input/InputTest"
 import Productos from "../../components/Common/Productos"
+import ReviewEstampado from "../estampado/ReviewEstampado"
 
 
 const CuerpoInforme = ({info,tipo})=>{
@@ -124,9 +125,9 @@ export default function NewPedido(){
     openModal({
       open:true,
       content: <Productos actions={(items)=>{  
-        // console.log("El item seleccionado es: ",item)
         setOpen(false)
-        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])
+        // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])}
+        setRegistros([...registros,...items.filter(row=>!registros.map(row2=>row2.id_producto_CAB).includes(row.idxsub)).map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])
       }}
         closemodal={()=>setOpen(false)}
       />,
@@ -202,7 +203,7 @@ export default function NewPedido(){
       action:async ()=>{
       }
     }
-    // openModal(params_modal)   
+    openModal(params_modal)   
   }
   return(
     <>
@@ -248,6 +249,21 @@ export default function NewPedido(){
                   />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" />
                   <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" />
+
+                  <InputSelect title={'Moneda'} formref={form} name={"moneda"} data={
+                    [
+                      { indice: 'S', option: 'SOLES', selected: true }, 
+                      { indice: 'USD', option: 'DOLARES' }, 
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.moneda : null} 
+                  />
+                  <InputSelect title={'IGV'} formref={form} name={"igv"} data={
+                    [
+                      { indice: '0', option: 'INAFECTO', selected: true }, 
+                      { indice: '1', option: 'AFECTO' }, 
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.igv : null} 
+                  />
                   <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
                 </div>
                 <div>

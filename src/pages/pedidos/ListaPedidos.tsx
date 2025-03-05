@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +39,7 @@ const CuerpoCuadrePedido = ({pedidoid})=>{
       <div>
         {/* <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe> */}
         <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
-        <div className="flex flex-row justify-center gap-2">
+        <div className="flex flex-row justify-center gap-2 mt-2">
           <Button action={()=>{}} type="button" tipo="default">Cerrar</Button>
           <Button action={()=>{}} type="button" tipo="default">Imprimir</Button>
         </div>
@@ -57,7 +57,9 @@ const CuerpoInforme = ({cuerpo})=>{
 }
 
 export default function ListaPedidos(){
+  const lista = useRef()
   const [info,setInfo] = useState([])
+  const [infoestado,setInfoestado] = useState([])
   const navigate = useNavigate()
   const { logout } = useContext(AuthPermitions)
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
@@ -194,7 +196,8 @@ export default function ListaPedidos(){
     .then(resp => {
       console.log(resp)
       setOpenloader(false)
-      setInfo(resp)  
+      setInfo(resp)
+      setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
     })
     .catch((error) => {
       // console.log(error)
@@ -216,9 +219,11 @@ export default function ListaPedidos(){
       }
     })
     .then(resp => {
-      console.log(resp)
+      console.log("Recargado informacion :",resp)
       setOpenloader(false)
-      setInfo(resp)  
+      setInfo(resp)
+      setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
+      console.log("Filtro info por estado :",infoestado)
     })
     .catch((error) => {
       console.log(error)
@@ -238,7 +243,6 @@ export default function ListaPedidos(){
     navigate('/main/pedidos/nuevo')
   }
   const showinforme = async ()=>{
-
     const params_modal = {
       open:true,
       content: <CuerpoInforme cuerpo={""} />,
@@ -248,6 +252,42 @@ export default function ListaPedidos(){
       }
     }
     openModal(params_modal)
+  }
+  // const busquepedidoestado = async (e)=>{
+  //   let estado = e.target.data.estado
+  //   let data = new FormData()
+  //   data.append('estado',estado)
+  //   Consulta({url:"produccion/",params:{
+  //     method:'POST',
+  //     body:data
+  //   }})
+  //   .then(()=>{
+
+  //   })
+
+  // }
+  const filtrarestado = (e)=>{
+    const estado = e.target.dataset.estado
+    setOpenloader(true)
+    Consulta({
+      url: 'produccion/getListaPedidos/50', params: {
+        method: 'GET'
+      }
+    })
+    .then(resp => {
+      setOpenloader(false)
+      lista.current.querySelector('button.active').classList.remove('active')
+      e.target.classList.add('active')
+      setInfo(resp)  
+      setInfoestado(resp.filter(row=>row.estado == estado))
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(()=>{
+      setOpenloader(false)
+    })
+
   }
 
   return(
@@ -259,7 +299,7 @@ export default function ListaPedidos(){
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Pedidos</h2>
-              <div className="w-[400px]">
+              <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={()=>{}} />
               </div>
             </div>
@@ -268,20 +308,20 @@ export default function ListaPedidos(){
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             <hr />
             <div>
-              <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="PENDIENTE" onClick={()=>{}}>
+              <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+                <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="FINALIZADO" onClick={()=>{}}>
+                <button className="group" data-estado="FINALIZADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Terminados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="ANULADO" onClick={()=>{}}>
+                <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -298,9 +338,9 @@ export default function ListaPedidos(){
                     <th className="lg:table-cell">OC/OP</th>
                     <th className="lg:table-cell">Tipo</th>
                     <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">FechaEMmision</th>
+                    <th className="lg:table-cell">FechaEmision</th>
                     <th className="lg:table-cell">FechaRetorno</th>
-                    <th className="lg:table-cell">FechaTermino</th>
+                    <th className="lg:table-cell">FormaPago</th>
                     <th className="lg:table-cell">TiempoProd</th>
                     <th className="lg:table-cell">DiasPendientes</th>
                     <th className="lg:table-cell text-center">Accciones</th>
@@ -308,8 +348,8 @@ export default function ListaPedidos(){
                 </thead>
                 <tbody>
                   {
-                    info.length > 0
-                      ? info.map((row, key) => (
+                    infoestado.length > 0
+                      ? infoestado.map((row, key) => (
                         <tr key={key} className="">
                           <td>{row.idx}</td>
                           <td>{row.orden_ref}</td>
@@ -318,9 +358,10 @@ export default function ListaPedidos(){
                           <td>{row.proveedor}</td>
                           <td>{row.fec_emision}</td>
                           <td>{row.fec_retorno}</td>
-                          <td>{row.fec_recepcion}</td>
+                          <td>{row.forma_pago}</td>
                           <td>{row.tiempo_produccion}</td>
-                          <td>{row.dias_pendientes}</td>
+                          {/* <td>{row.dias_pendientes}</td> */}
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
                           {/* <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td> */}
                           {/* <td>{row.estado}</td> */}
                           {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}
@@ -365,7 +406,7 @@ export default function ListaPedidos(){
                     <td className="h-[45px] border-t border-t-gray-600" colSpan={12}>
                       <div className="flex flex-row justify-between items-center">
                         <div>
-                          Numero de resultados 
+                          Showing 1 to 4 of 4 entries (filtered from 57 total entries)
                         </div>
                         <div className="flex flex-row justify-end items-center gap-2">
                           <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">
