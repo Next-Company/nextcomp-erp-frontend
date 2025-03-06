@@ -175,7 +175,7 @@ export default function NewDespacho(){
         setOpen(false)
         Consulta({url: 'produccion/pedido/' + item.idx})
         .then(resp => {
-          setInfo(info=>({...info,id_pedido_origen:item.idx,nro_pedido_origen:item.idx}))
+          setInfo(info=>({...info,id_pedido_origen:item.idx,nro_pedido_origen:item.idx,id_proveedor_CAB:item.id_proveedor_CAB,proveedor:item.proveedor}))
           setRegistros(resp[1])
         })
         .catch((err)=>{

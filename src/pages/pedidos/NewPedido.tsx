@@ -166,7 +166,7 @@ export default function NewPedido(){
     // }
     // console.log("Capturando edicion de campo :",registros,info)
     // setRegistros(info)
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
+    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
   }
 
   const nuevoproveedor = ()=>{
@@ -279,6 +279,7 @@ export default function NewPedido(){
                           <th className="lg:table-cell">Unidad</th>
                           <th className="lg:table-cell">Precio</th>
                           <th className="lg:table-cell">Importe</th>
+                          <th className="lg:table-cell">Anulado</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -293,7 +294,7 @@ export default function NewPedido(){
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} step=".01" data-name="precio" value={row.precio} /></td>
                               <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(2)} /></td>
-                              {/* <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td> */}
+                              <td><input type="checkbox" id="anulado" onChange={editvalue} data-position={key} data-name="anulado" checked={row.anulado}  /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>

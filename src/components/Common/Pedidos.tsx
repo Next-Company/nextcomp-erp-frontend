@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from "react"
 import { Search } from "../Atoms/Search/Search"
 import { Consulta } from "../../utils/utils"
 
+const colorfase = {
+  'TELAS':'bg-orange-500',
+  'AVIOS':'bg-violet-500'
+}
 export default function Pedidos(children){
   let {actions = ()=>{}} = children
   let [lista,setLista] = useState([])
@@ -80,7 +84,8 @@ export default function Pedidos(children){
               {lista.length > 0 && lista.map((row,key)=>(
                 <tr>
                   <td>{row.idx}</td>
-                  <td>{row.tipo}</td>
+                  {/* <td>{row.tipo}</td> */}
+                  <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
                   <td>{row.proveedor}</td>
                   <td>{row.fec_emision}</td>
                   <td>{row.fec_retorno}</td>
