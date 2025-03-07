@@ -227,15 +227,25 @@ export default function ListaGuias(){
     })
   }
   let busquedaglobal = async (input)=>{
-    let data = new FormData()
-    data.append('busqueda',input.value)
-    // Consulta({url:'produccion/getListaGuias',params:{
-    //   method:'GET',
-    //   body:data
-    // }})
-    // .then(()=>{
-
-    // })
+    // let data = new FormData()
+    // data.append('busqueda',input.value)
+    Consulta({
+      url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value), params: {
+        method: 'GET'
+      }
+    })
+    .then(resp => {
+      console.log(resp)
+      setOpenloader(false)
+      setInfo(resp)
+      setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
+    })
+    .catch((error) => {
+      console.log("El mnesaje de error es:",error)
+    })
+    .finally(()=>{
+      console.log("Horror en la consulta de base de datos")
+    })
   }
 
   return(
@@ -282,11 +292,12 @@ export default function ListaGuias(){
                     <th className="lg:table-cell">Id</th>
                     <th className="lg:table-cell">OC/OP</th>
                     <th className="lg:table-cell">Servicio</th>
+                    <th className="lg:table-cell">Producto</th>
                     <th className="lg:table-cell">Modelo</th>
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">FechaEmisión</th>
                     <th className="lg:table-cell">FechaRetorno</th>
-                    <th className="lg:table-cell">Costo</th>
+                    {/* <th className="lg:table-cell">Costo</th> */}
                     <th className="lg:table-cell">TiempoProd</th>
                     <th className="lg:table-cell">DiasPendientes</th>
                     {/* <th className="lg:table-cell">Estado</th> */}
@@ -302,11 +313,12 @@ export default function ListaGuias(){
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
                           {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.servicio}</td> */}
                           <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision_guia}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_retorno_guia}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.costo}</td>
+                          {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.costo}</td> */}
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.tiempo_produccion}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
                           {/* <td>{row.estado == 'PENDIENTE' ? <div className={`w-[5px] h-[5px] bg-red-600 rounded-full`}></div> : 'hola'}</td> */}

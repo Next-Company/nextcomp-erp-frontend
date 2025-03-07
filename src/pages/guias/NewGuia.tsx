@@ -187,6 +187,7 @@ export default function NewGuia(){
                     [
                       { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
                       { indice: 'FINALIZADO', option: 'FINALIZADO' }, 
+                      { indice: 'ANULADO', option: 'ANULADO' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.estado : null} 
                   />

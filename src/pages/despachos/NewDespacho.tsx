@@ -251,6 +251,9 @@ export default function NewDespacho(){
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" />
                   <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuiaReferencia" type="text"/>
+
+                  <Input name={'nro_factura'} defaults={Object.keys(info).length > 0 && info.nro_factura ? info.nro_factura : null} title="NroFactura" type="text"/>
+                  <Input name={'imp_factura'} defaults={Object.keys(info).length > 0 && info.imp_factura ? info.imp_factura : null} title="ImporteFactura" type="number"/>
                 </div>
                 <div>
                   {/* <span>Artículos:</span> */}
