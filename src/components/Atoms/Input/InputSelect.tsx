@@ -21,7 +21,6 @@ export function InputSelect({ title, name, data, df, formref=null }) {
   const onblur = (e) => {
     if (e.relatedTarget && e.relatedTarget.tagName == 'LI') {
       setSelect(parseInt(e.relatedTarget.dataset.index))
-      console.log("Cambiando valor")
       if(formref){
         const event = new CustomEvent('salamandra', {
           detail:{valor:info[parseInt(e.relatedTarget.dataset.index)].option}
@@ -38,11 +37,21 @@ export function InputSelect({ title, name, data, df, formref=null }) {
   }
 
   useEffect(() => {
+    console.log("El valor de df es:",df)
     const result = info.findIndex(row => row.indice == df)
     console.log(result)
     setSelect(result == -1 ? 0 : result)
     // setSelect(result)
-  }, [df, info])
+  }, [df])
+
+  useEffect(() => {
+    // console.log("El valor de df es:",df)
+    console.log("Hola urano cmo vamo:",select)
+    // const result = info.findIndex(row => row.indice == df)
+    // console.log(result)
+    // setSelect(result == -1 ? 0 : result)
+    // setInfo8
+  }, [select])
 
   const onchange = ()=>{
     console.log("Detectando el cambio del inputselect")

@@ -2,6 +2,16 @@ import { useEffect, useRef, useState } from "react"
 import { Search } from "../Atoms/Search/Search"
 import { Consulta } from "../../utils/utils"
 
+const colorfase = {
+  'CONFECCION':'bg-purple-500',
+  'ESTAMPADO':'bg-gray-500',
+  'ACABADOS':'bg-red-500',
+  'LAVANDERIA':'bg-green-500',
+  'MOLDES':'bg-orange-500',
+  'OJAL BOTON':'bg-blue-500',
+  'CORTE':'bg-rose-400',
+  'BORDADO':'bg-yellow-500',
+}
 export default function Guias(children){
   let {actions = ()=>{}} = children
   let [lista,setLista] = useState([])
@@ -29,6 +39,7 @@ export default function Guias(children){
     const buscarguia = async ()=>{
       await Consulta({url: 'produccion/searchguia/'+ (input.value == '' ? '_' : input.value )})
       .then(resp => {
+        console.log(resp)
         setLista(resp)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
@@ -62,7 +73,7 @@ export default function Guias(children){
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={searchproveedor} />
         </div>
-        <div className="h-[500px] w-[1000px] scrollbar-special rounded-md overflow-y-scroll ">
+        <div className="h-[550px] w-[1150px] scrollbar-special rounded-md overflow-y-scroll ">
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
@@ -71,7 +82,7 @@ export default function Guias(children){
                 <th className="lg:table-cell">Servicio</th>
                 <th className="lg:table-cell">Proveedor</th>
                 <th className="lg:table-cell">Producto</th>
-                <th className="lg:table-cell">Estado</th>
+                {/* <th className="lg:table-cell">Estado</th> */}
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
@@ -80,10 +91,11 @@ export default function Guias(children){
                 <tr>
                   <td>{row.orden_ref}</td>
                   <td>{`${row.idx}`.padStart(8,'0')}</td>
-                  <td>{row.servicio}</td>
+                  {/* <td>{row.servicio}</td> */}
+                  <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                   <td>{row.proveedor}</td>
                   <td>{row.producto}</td>
-                  <td>
+                  {/* <td>
                     {
                       row.estado == 'PENDIENTE'
                       ?
@@ -91,7 +103,7 @@ export default function Guias(children){
                       :
                         <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-green-700 icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
                     }
-                  </td>
+                  </td> */}
                   <td className="w-[250px]">
                     <ul className="flex flex-row justify-end">
                       <li>

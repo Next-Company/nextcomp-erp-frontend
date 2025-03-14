@@ -16,15 +16,50 @@ const colorfase = {
   'CORTE':'bg-rose-400',
   'BORDADO':'bg-yellow-500',
 }
-const CuerpoInforme = ({cuerpo})=>{
+const CuerpoInforme_ = ({cuerpo})=>{
   return(
     <>
-      <iframe src="http://192.168.18.20:4000/produccion/estadoguia/12" className="w-[60vw] h-[60vh]"></iframe>
+      <iframe src="http://192.168.18.20:4000/produccion/showinformeservicio/16" className="w-[60vw] h-[60vh]"></iframe>
       {/* <div dangerouslySetInnerHTML={{ __html: cuerpo }} /> */}
     </>
   )
 }
-
+const CuerpoInforme = ({servicioid})=>{
+  let [ruta,setRuta] = useState("")
+  useEffect(()=>{
+    let crear = async ()=>{
+      await Consulta({url:`produccion/showinformeservicio/${servicioid}`,params:{
+        method:'GET'
+      }})
+      .then(resp => {
+        let binaryString = window.atob(resp.data);
+        let binaryLen = binaryString.length;
+        let bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+            let ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+        setRuta(file)
+      })
+      .catch((err)=>{
+      })
+    }
+    crear()
+  },[])
+  return(
+    <>
+      <div>
+        {/* <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe> */}
+        <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
+        <div className="flex flex-row justify-center gap-2 mt-2">
+          <Button action={()=>{}} type="button" tipo="default">Cerrar</Button>
+          <Button action={()=>{}} type="button" tipo="default">Imprimir</Button>
+        </div>
+      </div>
+    </>
+  )
+}
 export default function ListaGuias(){
   const lista = useRef(null)
   const [info,setInfo] = useState([])
@@ -124,8 +159,8 @@ export default function ListaGuias(){
       case 'review':
         params_modal = {
           open:true,
-          content: <CuerpoInforme cuerpo={""} />,
-          controls: true,
+          content: <CuerpoInforme servicioid={id} />,
+          controls: false,
           header: false,
           action:()=>{}
         }

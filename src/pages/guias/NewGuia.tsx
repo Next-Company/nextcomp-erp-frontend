@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { createMemoryRouter, useNavigate, useParams } from "react-router-dom"
 import { Button } from "../../components/Atoms/Button/Button"
 import { useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
@@ -13,7 +13,7 @@ import { InputTest } from "../../components/Atoms/Input/InputTest"
 export default function NewGuia(){
   const [estampado,setEstampado] = useState([])
   const urlparams = useParams()
-  const [info,setInfo] = useState({})
+  const [info,setInfo] = useState({id_proveedor_CAB:null,proveedor:''})
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros,setRegistros] = useState([])
@@ -105,9 +105,9 @@ export default function NewGuia(){
     let column = e.target.dataset.name
     console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
     let position = e.target.dataset.position
-    // let articulo = registros[parseInt(e.target.dataset.position)]
-    // console.log("Los registros son:",registros)
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
+    let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+    let total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{carry+=parseInt(row[1]);return carry;},0) + parseInt(e.target.value)
+    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
   }
 
   const nuevoproveedor = ()=>{
@@ -126,6 +126,9 @@ export default function NewGuia(){
     }
     openModal(params_modal)
   }
+  useEffect(()=>{
+    console.log("Los valores del nuevo registro son:",registros)
+  },[registros])
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -219,14 +222,14 @@ export default function NewGuia(){
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} defaultValue={row.articulo} /></td>
-                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} defaultValue={row.xs}/></td>
-                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} defaultValue={row.s}/></td>
-                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} defaultValue={row.m}/></td>
-                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} defaultValue={row.l}/></td>
-                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xl}/></td>
-                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} defaultValue={row.xxl}/></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
+                              <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
+                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
+                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
+                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
+                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} value={row.l}/></td>
+                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} value={row.xl}/></td>
+                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl}/></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
                               <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">

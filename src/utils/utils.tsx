@@ -33,7 +33,7 @@ export async function Consulta({ url, params = {} }) {
       credentials: 'include', ...params
     })
     .then(resp =>{
-      console.log("Detros del then")
+      // console.log("Detros del then")
       if(resp.ok){
         return resp.json()
       }else{

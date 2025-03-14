@@ -55,10 +55,10 @@ export default function Proveedores(children){
   }
   const onclick = (e)=>{
     let action = e.target.dataset.action
-    console.log("La accion es la siguiente:",action)
+    // console.log("La accion es la siguiente:",action)
     switch(action){
       case 'add':
-        console.log("Agregando al proveedor",lista[e.target.dataset.position])
+        // console.log("Agregando al proveedor",lista[e.target.dataset.position])
         actions(lista[e.target.dataset.position])
         break;
       default:
@@ -83,7 +83,7 @@ export default function Proveedores(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr>
+                <tr key={key}>
                   <td>{row.ruc}</td>
                   <td>{row.nom}</td>
                   <td>{row.direccion}</td>
