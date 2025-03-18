@@ -27,6 +27,8 @@ import NewPedido from './pages/pedidos/NewPedido.tsx'
 import LayoutDespacho from './pages/despachos/LayoutDespacho.tsx'
 import ListaDespachos from './pages/despachos/ListaDespachos.tsx'
 import NewDespacho from './pages/despachos/NewDespacho.tsx'
+import LayoutInforme from './pages/informes/LayoutInforme.tsx'
+import Informe from './pages/informes/Informe.tsx'
 
 const routes = [
   {
@@ -85,8 +87,13 @@ const routes = [
           { path: "inicio", element: <ListaDespachos/> },
           { path: "nuevo", element: <NewDespacho/> },
           { path: "nuevo/:id", element: <NewDespacho/> },
-          // { path: "nuevo/:id", element: <NuevoEstampado/> },
-          // { path: "review/:id", element: <ReviewEstampado/> },
+        ]
+      },
+      { 
+        path: "informes", 
+        element: <LayoutInforme/>,
+        children: [
+          { path: "inicio", element: <Informe/> },
         ]
       },
       { path: "soporte", element: <Soporte /> },
