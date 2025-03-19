@@ -182,7 +182,7 @@ export function Sidenav() {
             </li>
             <li className="group/sub">
               <NavLink
-                to="informes/inicio" 
+                to="pagos/inicio" 
                 className={ ({ isActive, isPending }) =>
                   isPending ? "pending" : isActive ? "active" : "default"
                 }

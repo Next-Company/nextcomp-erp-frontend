@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
@@ -9,35 +9,49 @@ import { Input } from "../../components/Atoms/Input/Input";
 import { InputSelect } from "../../components/Atoms/Input/InputSelect";
 import Proveedores from "../../components/Common/Proveedores";
 
-
+const ruta_base = 'http://192.168.18.20:4000/produccion/showinformeservicio2'
 const colorfase = {
   'SERVICIOS':'bg-orange-500',
   'PEDIDOS':'bg-violet-500'
 }
-// const CuerpoInforme = ({cuerpo})=>{
-//   return(
-//     <>
-//       <iframe src="http://192.168.18.20:4000/produccion/informe/12" className="w-[60vw] h-[60vh]"></iframe>
-//     </>
-//   )
-// }
+const CuerpoInforme = ({cuerpo})=>{
+  useEffect(()=>{
+
+  })
+  return(
+    <>
+      {/* <iframe src="http://192.168.18.20:4000/produccion/informe/12" className="w-[60vw] h-[60vh]"></iframe> */}
+    </>
+  )
+}
 export default function Informe(){
   const [info,setInfo] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
+  const form = useRef()
+  const [ruta,setRuta] = useState(ruta_base)
 
   useEffect(()=>{
     const data = new FormData()
     // setOpenloader(true)
+    const dd = async ()=>{
+      await fetch("http://192.168.18.20:4000/produccion/showinformeservicio2/16",{
+        credentials:'include',
+        method:'GET'
+      })
+      .then(res=>res.ok ? res.json() : null)
+      .then(res=>{
+        console.log(res)
+      })
+    }
+    // dd()
     // Consulta({
-    //   url: 'produccion/getListaDespachos', params: {
+    //   url: 'produccion/showinformeservicio2/16', params: {
     //     method: 'GET'
     //   }
     // })
     // .then(resp => {
     //   console.log(resp)
-    //   setOpenloader(false)
-    //   setInfo(resp)  
     // })
     // .catch((error) => {
     //   console.log(error)
@@ -45,6 +59,19 @@ export default function Informe(){
     // .finally(()=>{
     //   console.log("Horror en la consulta de base de datos")
     // })
+    const handleInputChange = (event) => {
+      let pp = new FormData(form.current)
+      let params = new URLSearchParams()
+      for(let valor of pp.entries()){
+        params.append(valor[0],valor[0] == 'servicio' ? event.detail.valor : valor[1])
+      }
+      setRuta(ruta_base+'?'+params.toString())
+    };
+    form.current.addEventListener("salamandra", handleInputChange);
+    
+    return () => {
+      if(form.current) form.current.removeEventListener("salamandra", handleInputChange);
+    };
   },[])
 
 
@@ -63,21 +90,38 @@ export default function Informe(){
     // openModal(params_modal)
   }
   const nuevoproveedor = ()=>{
-      let params_modal = null
-      params_modal = {
-        open:true,
-        content: <Proveedores actions={(item)=>{  
-          console.log("El item seleccionado es: ",item)
-          setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom}))
-          setOpen(false)
-        }}/>,
-        controls: true,
-        header: false,
-        action:()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Proveedores actions={(item)=>{
+        setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom}))
+        setOpen(false)
+        let pp = new FormData(form.current)
+        let params = new URLSearchParams()
+        for(let valor of pp.entries()){
+          params.append(valor[0],valor[0] == 'id_proveedor_CAB' ? item.idx : (valor[0] == 'proveedor' ? item.nom : valor[1]))
         }
+        setRuta(ruta_base+'?'+params.toString())
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
       }
-      openModal(params_modal)
     }
+    openModal(params_modal)
+  }
+  const formchange = (e)=>{
+    // console.log("El causane:",e.target)
+    // let pp = new FormData(form.current)
+    // console.log(pp.entries())
+    let pp = new FormData(form.current)
+    let params = new URLSearchParams(pp)
+    setRuta(ruta_base+'?'+params.toString())
+  }
+  // const forminput = (e)=>{
+  //   console.log("El causane:",e.target)
+  // }
+
 
   return(
     <>
@@ -96,14 +140,14 @@ export default function Informe(){
           </div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             <hr />
-            <div className="flex-1 scrollbar-special overflow-y-scroll">
-
-              <form >
+            <div className="flex-1 scrollbar-special overflow-y-scroll flex flex-col">
+              <form ref={form} onChange={formchange}>
                 <div className={` flex-col gap-3 flex p-2`}>
                   <div className="flex gap-3 items-center">
-                    <InputSelect title={'Servicio'} name={"servicio"} data={
+                    <InputSelect title={'Servicio'} name={"servicio"} formref={form} data={
                       [
-                        { indice: 'CONFECCION', option: 'CONFECCION', selected: true }, 
+                        { indice: 'TODOS', option: 'TODOS', selected: true }, 
+                        { indice: 'CONFECCION', option: 'CONFECCION'}, 
                         { indice: 'OJAL', option: 'OJAL' }, 
                         { indice: 'ESTAMPADO', option: 'ESTAMPADO' },
                         { indice: 'LAVANDERIA', option: 'LAVANDERIA' },
@@ -114,15 +158,17 @@ export default function Informe(){
                     />
                     <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                     <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
-                    <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
-                    <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" />
+                    <Input name={'fec_desde'} title="Desde" defaults={Object.keys(info).length > 0 ? info.fec_desde : null} type="date" />
+                    <Input name={'fec_hasta'} title="Hasta" defaults={Object.keys(info).length > 0 ? info.fec_hasta : null} type="date" />
                     <Button action={()=>{}} tipo={'accept'}>
                       <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-database-export"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6c0 1.657 3.582 3 8 3s8 -1.343 8 -3s-3.582 -3 -8 -3s-8 1.343 -8 3" /><path d="M4 6v6c0 1.657 3.582 3 8 3c1.118 0 2.183 -.086 3.15 -.241" /><path d="M20 12v-6" /><path d="M4 12v6c0 1.657 3.582 3 8 3c.157 0 .312 -.002 .466 -.005" /><path d="M16 19h6" /><path d="M19 16l3 3l-3 3" /></svg>
                     </Button>
                   </div>
                 </div>
               </form>
-              <iframe src="http://192.168.18.20:4000/produccion/showinformeservicio2/16" className="w-full h-[100vh]"></iframe>
+              {/* <iframe src="http://192.168.18.20:4000/produccion/showinformeservicio2/16" className="w-full h-[100vh]"></iframe> */}
+              {/* <iframe src="http://192.168.18.20:4000/produccion/showinformeservicio2/16" className="flex-1"></iframe> */}
+              <iframe src={ruta} className="flex-1"></iframe>
             </div>
             {/* <div>
             </div> */}

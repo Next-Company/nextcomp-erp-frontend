@@ -29,6 +29,9 @@ import ListaDespachos from './pages/despachos/ListaDespachos.tsx'
 import NewDespacho from './pages/despachos/NewDespacho.tsx'
 import LayoutInforme from './pages/informes/LayoutInforme.tsx'
 import Informe from './pages/informes/Informe.tsx'
+import ListaPagos from './pages/pagos/ListaPagos.tsx'
+import NewPago from './pages/pagos/NewPago.tsx'
+import LayoutPagos from './pages/pagos/LayoutPagos.tsx'
 
 const routes = [
   {
@@ -87,6 +90,15 @@ const routes = [
           { path: "inicio", element: <ListaDespachos/> },
           { path: "nuevo", element: <NewDespacho/> },
           { path: "nuevo/:id", element: <NewDespacho/> },
+        ]
+      },
+      { 
+        path: "pagos", 
+        element: <LayoutPagos/>,
+        children: [
+          { path: "inicio", element: <ListaPagos/> },
+          { path: "nuevo", element: <NewPago/> },
+          { path: "nuevo/:id", element: <NewPago/> },
         ]
       },
       { 
