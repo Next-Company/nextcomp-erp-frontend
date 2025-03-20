@@ -192,7 +192,7 @@ export default function ListaDespachos(){
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Despachos</h2>
+              <h2 className="font-medium text-[16px]">Ingresos</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={()=>{}} />
               </div>

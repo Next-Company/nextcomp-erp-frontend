@@ -1,4 +1,14 @@
 const apiUrl = import.meta.env.VITE_API_URL
+export const colorfase = {
+  'CONFECCION':'bg-purple-500',
+  'ESTAMPADO':'bg-gray-500',
+  'ACABADOS':'bg-red-500',
+  'LAVANDERIA':'bg-green-500',
+  'MOLDES':'bg-orange-500',
+  'OJAL BOTON':'bg-blue-500',
+  'CORTE':'bg-rose-400',
+  'BORDADO':'bg-yellow-500',
+}
 export function convertToHex(str) {
   let hex = '';
   for (let i = 0; i < str.length; i++) {

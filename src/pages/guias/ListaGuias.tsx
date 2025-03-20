@@ -102,7 +102,7 @@ export default function ListaGuias(){
               })
           }
         }
-        openModal(params_modal)
+        // openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -325,11 +325,12 @@ export default function ListaGuias(){
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">OC/OP</th>
+                    <th className="lg:table-cell">Hoja de Corte</th>
                     <th className="lg:table-cell">Servicio</th>
-                    <th className="lg:table-cell">Producto</th>
-                    <th className="lg:table-cell">Modelo</th>
                     <th className="lg:table-cell">Proveedor</th>
+                    <th className="lg:table-cell">Producto</th>
+                    <th className="lg:table-cell">Marca</th>
+                    <th className="lg:table-cell">Modelo</th>
                     <th className="lg:table-cell">FechaEmisión</th>
                     <th className="lg:table-cell">FechaRetorno</th>
                     {/* <th className="lg:table-cell">Costo</th> */}
@@ -346,11 +347,11 @@ export default function ListaGuias(){
                         <tr key={key} className="">
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
-                          {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.servicio}</td> */}
                           <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision_guia}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_retorno_guia}</td>
                           {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.costo}</td> */}

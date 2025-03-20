@@ -10,7 +10,7 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import Guias from "../../components/Common/Guias"
 import Pedidos from "../../components/Common/Pedidos"
-
+import { colorfase } from "../../utils/utils"
 
 export default function NewPago(){
   // const [estampado,setEstampado] = useState([])
@@ -21,11 +21,12 @@ export default function NewPago(){
   const form = useRef()
   const [registros,setRegistros] = useState([])
   const navigate = useNavigate()
+  let [selected,setSelected] = useState([])
 
   const onsubmit = (e)=>{
     e.preventDefault()
-    if(registros.map(row=>row.despacho ?? 0).reduce((a,b)=>a+b) == 0){
-      toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
+    if(selected.length == 0){
+      toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
       return
     }
     openModal({
@@ -38,15 +39,15 @@ export default function NewPago(){
         const data = new FormData()
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',JSON.stringify(registros.filter(row=>(row.despacho ?? 0) > 0)))
+        data.append('detalle',JSON.stringify(selected))
 
-        await Consulta({url: 'produccion/guardardespacho/',params:{
+        await Consulta({url: 'abonos/saveabono/',params:{
           method:'PUT',
           body:data
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/despachos/inicio')
+          // navigate('/main/despachos/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -101,16 +102,23 @@ export default function NewPago(){
   const onclick = (e)=>{
     const action = e.target.dataset.action
     const position = e.target.dataset.position
-    switch(action){
+    // console.log("La info de los regitros:",registros)
 
-      case 'delete':
-        setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
-        console.log("Eliminado registros de la fila ",position)
-        break;
-      default :
+    const item = registros[parseInt(e.target.dataset.position)]
+    if(selected.find((row)=>row.idx == item.idx)){
+      setSelected([...selected.filter(row=>row.idx !== item.idx)])
+    }else{
+      setSelected([...selected,registros[parseInt(e.target.dataset.position)]])
     }
 
-    console.log("La accion seleccionada es la siguiente:",action)
+    // switch(action){
+
+    //   case 'delete':
+    //     // setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+    //     // console.log("Eliminado registros de la fila ",position)
+    //     break;
+    //   default :
+    // }
 
   }
   const editvalue = (e)=>{
@@ -128,8 +136,22 @@ export default function NewPago(){
       open:true,
       content: <Proveedores actions={(item)=>{  
         console.log("El item seleccionado es: ",item)
-        setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom,ruc:item.ruc}))
         setOpen(false)
+        setOpenloader(true)
+        Consulta({url: 'abonos/getsaldos/' + item.idx})
+        .then(resp => {
+          setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom,ruc:item.ruc}))
+          setRegistros(resp)
+          // console.log(resp)
+        })
+        .catch((err)=>{
+          setOpenloader(false)
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
+
+        
       }}/>,
       controls: true,
       header: false,
@@ -204,14 +226,9 @@ export default function NewPago(){
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Despachos /</h2>
+              <h2 className="font-medium text-[16px]">Abonos /</h2>
               <span className="text-blue-500 font-bold">
-                Nuevo Despacho
-                {/* {
-                  urlparams.id && orden.length > 0
-                  ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
-                  : "Nueva Orden"
-                } */}
+                Nuevo Abono
               </span>
             </div>
             <hr />
@@ -221,93 +238,95 @@ export default function NewPago(){
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <InputSelect title={'OrigenDespacho'} formref={form} name={"tipo"} data={
+                  <Input name={'documento_ref'} defaults={Object.keys(info).length > 0 && info.documento_ref ? info.documento_ref : null} title="DocumentoRef" type="text" />
+                  <InputSelect title={'Entidad Bancaria'} formref={form} name={"entidad_bancaria"} data={
                     [
-                      { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 
-                      { indice: 'PEDIDOS', option: 'PEDIDOS' }, 
+                      { indice: 'MIBANCO', option: 'MIBANCO', selected: true },
+                      { indice: 'BCP', option: 'BANCO DE CREDITO'},
+                      { indice: 'SCB', option: 'SCOTIABANK PERU'},
+                      { indice: 'BBVA', option: 'BBVA'},
+                      { indice: 'BANCOM', option: 'BANCOM'},
+                      { indice: 'CTB', option: 'CITIBANK DEL PERU'},
+                      { indice: 'BANBIF', option: 'BANBIF'},
+                      { indice: 'BPP', option: 'BANCO PIPICHINCHA'},
+                      { indice: 'BRP', option: 'BANCO RIPLEY'},
+                      { indice: 'BCCP', option: 'BANCO CENTRAL DEL PERU'},
+                      { indice: 'BF', option: 'BANCO FALABELLA'},
+                      { indice: 'AGB', option: 'AGROBANCO'},
+                      { indice: 'BGNB', option: 'BANCO GNB'},
+                      { indice: 'BSTP', option: 'SANTANDER PERU'},
+                      { indice: 'BALFIN', option: 'ALFIN BANCO'},
+                      { indice: 'ICBC', option: 'ICBC PERU BANK S.A.'},
+                      { indice: 'BCHN', option: 'BANK OF CHINA'},
+                      { indice: 'BBCI', option: 'BANCO BCI'},
+                      { indice: 'INBK', option: 'INTERBANK'} 
                     ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo : null} 
+                    df={Object.keys(info).length > 0 ? info.entidad_bancaria : null} 
                   />
-                  <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionDespacho" type="date" />
-                  <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" />
+                  {/* <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionDespacho" type="date" /> */}
+                  <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text"/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  {
-                    tipo
-                    ?
-                    <>
-                      <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" />
-                      <Input name={'nro_pedido_origen'} title={`${tipo ? 'IdPedido' : 'IdServicio'}`} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'}/>
-                    </>
-                    :
-                    <>
-                      <Input name={'id_guia_origen'} defaults={Object.keys(info).length > 0 ? info.id_guia_origen : null} type="hidden" />
-                      <Input name={'nro_guia_origen'} title={`${tipo ? 'IdPedido' : 'IdServicio'}`} defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchguia} mode={'static'}/>
-                      
-                    </>
-                  }
+                  <InputSelect title={'Tipo Operación'} formref={form} name={"tipo"} data={
+                    [
+                      { indice: 'MIBANCO', option: 'TRANSFERENCIA', selected: true },
+                      { indice: 'BCP', option: 'DEPOSITO'},
+                      { indice: 'SCB', option: 'CHEQUE'},
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.entidad_bancaria : null} 
+                  />
                 </div>
                 <div className="flex gap-3">
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" />
-                  <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuiaReferencia" type="text"/>
-
-                  <Input name={'nro_factura'} defaults={Object.keys(info).length > 0 && info.nro_factura ? info.nro_factura : null} title="NroFactura" type="text"/>
-                  <Input name={'imp_factura'} defaults={Object.keys(info).length > 0 && info.imp_factura ? info.imp_factura : null} title="ImporteFactura" type="number"/>
+                  <Input name={'num_operacion'} defaults={Object.keys(info).length > 0 && info.num_operacion ? info.num_operacion : null} title="Número Operación" type="text" />
+                  <InputSelect title={'Moneda'} formref={form} name={"moneda"} data={
+                    [
+                      { indice: 'PEN', option: 'SOLES', selected: true },
+                      { indice: 'USD', option: 'DOLARES'},
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.moneda : null} 
+                  />
+                  <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" />
+                  <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="ImportePago" type="number"/>
                 </div>
                 <div>
                   {/* <span>Artículos:</span> */}
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          {
-                            tipo == 0
-                            ?
-                              <>
-                                <th className="lg:table-cell w-[500px]">Descripción</th>  
-                                <th className="lg:table-cell">XS / 26</th>
-                                <th className="lg:table-cell">S / 28</th>
-                                <th className="lg:table-cell">M / 30</th>
-                                <th className="lg:table-cell">L / 32</th>
-                                <th className="lg:table-cell">XL / 34</th>
-                                <th className="lg:table-cell">XXL / 36</th>
-                                <th className="lg:table-cell">Cantidad</th>
-                                <th className="lg:table-cell">Despacho</th>
-                                <th className="lg:table-cell">Acciones</th>
-                              </>
-                            :
-                              <>
-                                <th className="lg:table-cell w-[500px]">Descripción</th>  
-                                <th className="lg:table-cell">Color</th>
-                                <th className="lg:table-cell">Rollos</th>
-                                <th className="lg:table-cell">Cantidad</th>
-                                <th className="lg:table-cell">Unidad</th>
-                                <th className="lg:table-cell">Precio</th>
-                                <th className="lg:table-cell">Despacho</th>
-                                <th className="lg:table-cell">Acciones</th>
-                              </>
-                          }
-                          
+                          <th className="lg:table-cell">Id</th>
+                          <th className="lg:table-cell">HDC</th>
+                          <th className="lg:table-cell">Servicio</th>
+                          <th className="lg:table-cell">Producto</th>
+                          <th className="lg:table-cell">Marca</th>
+                          <th className="lg:table-cell">Modelo</th>
+                          <th className="lg:table-cell">Costo</th>
+                          <th className="lg:table-cell">Importe</th>
+                          <th className="lg:table-cell">Saldo</th>
+                          <th className="lg:table-cell">Acciones</th>                          
                         </tr>
                       </thead>
                       <tbody>
                         {
                           registros.length > 0 && registros.map((row,key)=>(
-                            <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center">
-                              {
+
+                            // <tr className={`${selected.find((item)=>item.idxsub == row.idxsub) ? 'selected' : ''}`} key={key}></tr>
+
+                            <tr key={key} className={`${selected.find((item)=>item.idx == row.idx) ? 'selected' : ''} focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center`}>
+                              <td>{row.idx}</td>
+                              <td>#{row.orden_ref}</td>
+                              <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                              <td>{row.producto}</td>
+                              <td>{row.marca}</td>
+                              <td>{row.modelo}</td>
+                              <td>S/.{row.costo}</td>
+                              <td>S/.{row.importe}</td>
+                              <td>{row.saldo}</td>
+                              {/* {
                                 tipo == 0
                                 ?
                                   <>
-                                    <td>{row.articulo}</td>
-                                    <td>{row.xs}</td>
-                                    <td>{row.s}</td>
-                                    <td>{row.m}</td>
-                                    <td>{row.l}</td>
-                                    <td>{row.xl}</td>
-                                    <td>{row.xxl}</td>
-                                    <td>{row.cantidad}</td>
-                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                   </>
                                 :
                                   <>
@@ -319,7 +338,7 @@ export default function NewPago(){
                                     <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
                                     <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                   </>
-                              }
+                              } */}
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -343,8 +362,8 @@ export default function NewPago(){
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-position={key} data-action="add" onClick={onclick}>
+                                      <svg  xmlns="http://www.w3.org/2000/svg"  width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
                                     </div>
                                   </li>
                                 </ul>
@@ -353,17 +372,6 @@ export default function NewPago(){
                           ))
                         }
                       </tbody>
-                      {/* <tfoot className="sticky bottom-0">
-                        <tr>
-                          <td colSpan={10} >
-                            <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
-                                +
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      </tfoot> */}
                     </table>
                   </div>
                 </div>
@@ -375,7 +383,7 @@ export default function NewPago(){
                 <div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={() => navigate('/main/despachos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={() => navigate('/main/pagos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>
               </div>
@@ -386,42 +394,3 @@ export default function NewPago(){
     </>
   )
 }
-
-
-// Componente InputSelect
-// export function InputSelect({ title, name, data, df }) {
-//   // ... (resto del código)
-
-//   const onSelectChange = (key) => {
-//     setSelect(key);
-//     const event = new CustomEvent("inputSelectChange", {
-//       detail: { value: info[key].indice },
-//     });
-//     ref_menu.current.dispatchEvent(event); // Disparamos el evento en un elemento del DOM
-//   };
-
-//   // ... (resto del código)
-// }
-
-// // Componente padre
-// function MiFormulario() {
-//   const handleInputChange = (event) => {
-//     console.log("Valor seleccionado en el formulario:", event.detail.value);
-//   };
-
-//   useEffect(() => {
-//     const menu = ref_menu.current; // Obtén una referencia al elemento donde se dispara el evento
-//     menu.addEventListener("inputSelectChange", handleInputChange); // Escuchamos el evento personalizado
-
-//     return () => {
-//       menu.removeEventListener("inputSelectChange", handleInputChange); // Limpiamos el listener al desmontar el componente
-//     };
-//   }, []);
-
-//   return (
-//     <form ref={ref_form}>
-//       <InputSelect title="Mi InputSelect" name="miInput" data={data} df={df} ref={ref_menu} />
-//       {/* ... otros elementos del formulario */}
-//     </form>
-//   );
-// }

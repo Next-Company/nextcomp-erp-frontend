@@ -46,7 +46,7 @@ export default function NewDespacho(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/despachos/inicio')
+          // navigate('/main/despachos/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -95,7 +95,7 @@ export default function NewDespacho(){
   },[])
 
   const nuevoregistro = ()=>{
-    setRegistros([...registros,tipo ? {item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0,despacho:0} : {item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+    setRegistros([...registros,tipo ? {item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0,despacho:0,caidos:0} : {item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
   }
 
   const onclick = (e)=>{
@@ -118,7 +118,7 @@ export default function NewDespacho(){
     console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
     let position = e.target.dataset.position
     // let articulo = registros[parseInt(e.target.dataset.position)]
-    // console.log("Los registros son:",registros)
+    console.log("Los nuevos registros son:",[...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
   }
 
@@ -149,7 +149,9 @@ export default function NewDespacho(){
         Consulta({url: 'produccion/guia/' + item.idx})
         .then(resp => {
           setInfo(info=>({...info,id_guia_origen:item.idx,nro_guia_origen:item.idx,id_proveedor_CAB:item.id_proveedor_CAB,proveedor:item.proveedor}))
-          setRegistros(resp[1])
+          console.log("Los registros de la guia son:",resp[1])
+          setRegistros(resp[1].map(row=>({...row,despacho:0,caidos:0})))
+          // setRegistros(resp[1])
         })
         .catch((err)=>{
           setOpenloader(false)
@@ -198,15 +200,18 @@ export default function NewDespacho(){
     // console.log("VA o neleet")
     // console.log("Otros cambios adicionales")
   }
+  useEffect(()=>{
+    console.log("Los items ingresados son:",registros)
+  },[registros])
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Despachos /</h2>
+              <h2 className="font-medium text-[16px]">Ingresos /</h2>
               <span className="text-blue-500 font-bold">
-                Nuevo Despacho
+                Nuevo Ingreso
                 {/* {
                   urlparams.id && orden.length > 0
                   ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
@@ -274,6 +279,7 @@ export default function NewDespacho(){
                                 <th className="lg:table-cell">XXL / 36</th>
                                 <th className="lg:table-cell">Cantidad</th>
                                 <th className="lg:table-cell">Despacho</th>
+                                <th className="lg:table-cell">Caidos</th>
                                 <th className="lg:table-cell">Acciones</th>
                               </>
                             :
@@ -308,6 +314,7 @@ export default function NewDespacho(){
                                     <td>{row.xxl}</td>
                                     <td>{row.cantidad}</td>
                                     <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
+                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" defaultValue={row.caidos ?? 0} /></td>
                                   </>
                                 :
                                   <>

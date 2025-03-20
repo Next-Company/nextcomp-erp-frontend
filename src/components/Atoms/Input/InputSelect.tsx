@@ -68,9 +68,13 @@ export function InputSelect({ title, name, data, df, formref=null }) {
 
         <span className="after:absolute after:bottom-0 after:left-0 after:transition-all after:opacity-1 after:w-full after:border-b-[2px] 
         after:border-b-transparent group-[.selected]:after:border-b-blue-600"></span>
-        <ul onClick={onclick} id="ppp" ref={ref_menu} onTransitionEnd={ontransition} className="special absolute left-0 top-[100%] z-10 border-[1px] border-gray-100 bg-white shadow-xl rounded-sm pt-3 pb-3 [&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer [&_li]:pl-[10px] [&_li]:pt-[8px] [&_li]:pb-[8px] transition-all origin-center opacity-0 scale-95 group-[.selected]:opacity-100 group-[.selected]:scale-100 group-[.selected]:flex flex-col w-full overflow-hidden group-[.selected]:overflow-visible pointer-events-none group-[.selected]:pointer-events-auto">
+        {/* <ul onClick={onclick} id="ppp" ref={ref_menu} onTransitionEnd={ontransition} className="special absolute left-0 top-[100%] z-10 border-[1px] border-gray-100 bg-white shadow-xl rounded-sm pt-3 pb-3 [&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer [&_li]:pl-[10px] [&_li]:pt-[8px] [&_li]:pb-[8px] transition-all origin-center opacity-0 scale-95 group-[.selected]:opacity-100 group-[.selected]:scale-100 group-[.selected]:flex flex-col w-full overflow-hidden group-[.selected]:overflow-visible pointer-events-none group-[.selected]:pointer-events-auto">
           {
-            // valores.map((op, key) => <li key={key} data-index={key} tabIndex={-1} className="hola" onClick={() => editando(key)}>{op}</li>)
+            info.map((op, key) => <li key={key} data-index={key} tabIndex={-1} onClick={() => editando(key)}>{op.option}</li>)
+          }
+        </ul> */}
+        <ul onClick={onclick} id="ppp" ref={ref_menu} onTransitionEnd={ontransition} className="max-h-[500px] overflow-y-auto special absolute left-0 top-[100%] z-10 border-[1px] border-gray-100 bg-white shadow-xl rounded-sm pt-3 pb-3 [&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer [&_li]:pl-[10px] [&_li]:pt-[8px] [&_li]:pb-[8px] transition-all origin-center opacity-0 scale-95 group-[.selected]:opacity-100 group-[.selected]:scale-100 group-[.selected]:flex flex-col w-full  pointer-events-none group-[.selected]:pointer-events-auto">
+          {
             info.map((op, key) => <li key={key} data-index={key} tabIndex={-1} onClick={() => editando(key)}>{op.option}</li>)
           }
         </ul>

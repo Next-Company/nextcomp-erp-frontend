@@ -126,7 +126,7 @@ export default function ListaPagos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaDespachos', params: {
+      url: 'abonos/100', params: {
         method: 'GET'
       }
     })
@@ -150,7 +150,7 @@ export default function ListaPagos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaDespachos', params: {
+      url: 'abonos/100', params: {
         method: 'GET'
       }
     })
@@ -169,8 +169,8 @@ export default function ListaPagos(){
       // setOpenloader(false)
     })
   }
-  const nuevodespacho = ()=>{
-    navigate('/main/despachos/nuevo')
+  const nuevoabono = ()=>{
+    navigate('/main/pagos/nuevo')
   }
   const showinforme = (e)=>{
     const params_modal = {
@@ -206,12 +206,12 @@ export default function ListaPagos(){
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">NroGuia</th>
-                    <th className="lg:table-cell">Tipo</th>
+                    <th className="lg:table-cell">DocumentoRef</th>
+                    <th className="lg:table-cell">Banco</th>
                     <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">Responsable</th>
-                    <th className="lg:table-cell">FechaEmisionGuia</th>
-                    <th className="lg:table-cell">FechaDespacho</th>
+                    <th className="lg:table-cell">TipoOperacion</th>
+                    <th className="lg:table-cell">Importe</th>
+                    <th className="lg:table-cell">FechaPago</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -221,13 +221,11 @@ export default function ListaPagos(){
                       ? info.map((row, key) => (
                         <tr key={key} className="">
                           <td>{row.idx}</td>
-                          <td>{row.nro_guia}</td>
-                          {/* <td>{row.tipo}</td> */}
-                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
-                          <td>{row.proveedor}</td>
-                          <td>{row.responsable}</td>
-                          <td>{row.fec_emision_guia}</td>
-                          <td>{row.fec_despacho}</td>
+                          <td>{row.documento_ref}</td>
+                          <td>{row.entidad_bancaria}</td>
+                          <td>{row.id_proveedor}</td>
+                          <td>{row.importe}</td>
+                          <td>{row.fec_pago}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -248,7 +246,6 @@ export default function ListaPagos(){
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                  {/* <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg> */}
                                 </div>
                               </li>
                               <li>
@@ -286,26 +283,11 @@ export default function ListaPagos(){
               </table>
             </div>
             <div className="flex flex-row justify-end">
-              {/* <div className="flex justify-between items-center p-3 gap-2">
-                <div>
-                  Resultados del {position*rango} al {rango*(position+1)} de 120
-                </div>
-                <div className="flex flex-row">
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveback}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
-                  </div>
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveforward}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-compact-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 4l3 8l-3 8" /></svg>
-                  </div>
-                </div>
-              </div> */}
               <div className="flex gap-2">
-                {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevodespacho} tipo={'accept'}>Nuevo</Button>
+                <Button action={nuevoabono} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
-
           </div>
         </div>
       </div>
