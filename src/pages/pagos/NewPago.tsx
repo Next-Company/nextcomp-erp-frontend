@@ -25,7 +25,7 @@ export default function NewPago(){
 
   const onsubmit = (e)=>{
     e.preventDefault()
-    if(selected.length == 0){
+    if(!urlparams.id && selected.length == 0){
       toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
       return
     }
@@ -39,7 +39,7 @@ export default function NewPago(){
         const data = new FormData()
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',JSON.stringify(selected))
+        data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
 
         await Consulta({url: 'abonos/saveabono/',params:{
           method:'PUT',
@@ -47,7 +47,7 @@ export default function NewPago(){
         }})
         .then(resp => {
           setOpenloader(false)
-          // navigate('/main/despachos/inicio')
+          navigate('/main/pagos/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -66,23 +66,23 @@ export default function NewPago(){
   useEffect(()=>{
     if(urlparams.id){
       setOpenloader(true)
-      const pp = async () => {
-        await Consulta({url: 'produccion/despacho/' + urlparams.id,})
-          .then(resp => {
-            console.log("Los datos del despacho son:",resp)
-            setInfo(resp[0])
-            setRegistros(resp[1])
-            setTipo(resp[0].tipo == 'SERVICIOS' ? 0 : 1)
-            setOpenloader(false)
-          })
-          .catch((err)=>{
-            setOpenloader(false)
-          })
-          .finally(()=>{
-            setOpenloader(false)
-          })
-      }
-      pp()
+      Consulta({url: 'abonos/getabono/' + urlparams.id,})
+      .then(resp => {
+        console.log("Los datos del abono son los siguientes:",resp)
+        setInfo(resp[0])
+        setRegistros(resp[1])
+        setOpenloader(false)
+      })
+      .catch((err)=>{
+        setOpenloader(false)
+      })
+      .finally(()=>{
+        setOpenloader(false)
+      })
+      // const pp = async () => {
+      //   await 
+      // }
+      // pp()
     }
     const handleInputChange = (event) => {
       setTipo(event.detail.valor == 'SERVICIOS' ? 0 : 1)
@@ -101,24 +101,25 @@ export default function NewPago(){
 
   const onclick = (e)=>{
     const action = e.target.dataset.action
-    const position = e.target.dataset.position
-    // console.log("La info de los regitros:",registros)
-
-    const item = registros[parseInt(e.target.dataset.position)]
-    if(selected.find((row)=>row.idx == item.idx)){
-      setSelected([...selected.filter(row=>row.idx !== item.idx)])
-    }else{
-      setSelected([...selected,registros[parseInt(e.target.dataset.position)]])
+    const position = parseInt(e.target.dataset.position)
+    switch(action){
+      case 'add':
+        const item = registros[position]
+        if(selected.find((row)=>row.idx == item.idx)){
+          setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.importe,0)) - parseFloat(item.importe)})
+          setSelected([...selected.filter(row=>row.idx !== item.idx)])
+        }else{
+          setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.importe,0)) + parseFloat(item.importe)})
+          setSelected([...selected,registros[position]])
+        }
+        break;
+      case 'delete':
+        // Consulta({url: 'abonos/deleteabono' + registros[position].idx})
+        // setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+        // console.log("Eliminado registros de la fila ",position)
+        break;
+      default :
     }
-
-    // switch(action){
-
-    //   case 'delete':
-    //     // setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
-    //     // console.log("Eliminado registros de la fila ",position)
-    //     break;
-    //   default :
-    // }
 
   }
   const editvalue = (e)=>{
@@ -238,8 +239,15 @@ export default function NewPago(){
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'documento_ref'} defaults={Object.keys(info).length > 0 && info.documento_ref ? info.documento_ref : null} title="DocumentoRef" type="text" />
-                  <InputSelect title={'Entidad Bancaria'} formref={form} name={"entidad_bancaria"} data={
+                  <InputSelect title={'Origen'} formref={form} name={"tipo"} data={
+                    [
+                      { indice: 'SERV', option: 'SERVICIOS', selected: true },
+                      { indice: 'PEDD', option: 'PEDIDOS'},
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.tipo : null} 
+                  />
+                  {/* <Input name={'documento_ref'} defaults={Object.keys(info).length > 0 && info.documento_ref ? info.documento_ref : null} title="DocumentoRef" type="text" /> */}
+                  <InputSelect title={'Entidad Bancaria'} name={"entidad_bancaria"} data={
                     [
                       { indice: 'MIBANCO', option: 'MIBANCO', selected: true },
                       { indice: 'BCP', option: 'BANCO DE CREDITO'},
@@ -266,23 +274,24 @@ export default function NewPago(){
                   {/* <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionDespacho" type="date" /> */}
                   <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text"/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  <InputSelect title={'Tipo Operación'} formref={form} name={"tipo"} data={
+                  <InputSelect title={'Tipo Operación'} name={"tipo_operacion"} data={
                     [
                       { indice: 'MIBANCO', option: 'TRANSFERENCIA', selected: true },
                       { indice: 'BCP', option: 'DEPOSITO'},
                       { indice: 'SCB', option: 'CHEQUE'},
                     ]} 
-                    df={Object.keys(info).length > 0 ? info.entidad_bancaria : null} 
+                    df={Object.keys(info).length > 0 ? info.tipo_operacion : null} 
                   />
                 </div>
                 <div className="flex gap-3">
+                  
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <Input name={'num_operacion'} defaults={Object.keys(info).length > 0 && info.num_operacion ? info.num_operacion : null} title="Número Operación" type="text" />
-                  <InputSelect title={'Moneda'} formref={form} name={"moneda"} data={
+                  <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
-                      { indice: 'PEN', option: 'SOLES', selected: true },
-                      { indice: 'USD', option: 'DOLARES'},
+                      { indice: 'S', option: 'SOLES', selected: true },
+                      { indice: 'D', option: 'DOLARES'},
                     ]} 
                     df={Object.keys(info).length > 0 ? info.moneda : null} 
                   />
@@ -303,7 +312,6 @@ export default function NewPago(){
                           <th className="lg:table-cell">Modelo</th>
                           <th className="lg:table-cell">Costo</th>
                           <th className="lg:table-cell">Importe</th>
-                          <th className="lg:table-cell">Saldo</th>
                           <th className="lg:table-cell">Acciones</th>                          
                         </tr>
                       </thead>
@@ -322,7 +330,6 @@ export default function NewPago(){
                               <td>{row.modelo}</td>
                               <td>S/.{row.costo}</td>
                               <td>S/.{row.importe}</td>
-                              <td>{row.saldo}</td>
                               {/* {
                                 tipo == 0
                                 ?

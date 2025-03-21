@@ -5,12 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
+import { colortipoabono } from "../../utils/utils";
 
-
-const colorfase = {
-  'SERVICIOS':'bg-orange-500',
-  'PEDIDOS':'bg-violet-500'
-}
 const CuerpoInforme = ({cuerpo})=>{
   return(
     <>
@@ -39,7 +35,7 @@ export default function ListaPagos(){
           action:()=>{
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrardespacho/' + id, params: {
+              url: 'abonos/deleteabono/' + id, params: {
                 method: 'DELETE'
               }
             })
@@ -75,7 +71,6 @@ export default function ListaPagos(){
                 credentials: 'include'
               })
               .then(resp=>{
-                // console.log("MOstrar status informe estampado:",resp.status)
                 if(resp.ok){
                   return resp.json()
                 }else{
@@ -108,15 +103,14 @@ export default function ListaPagos(){
             desc()
           }
         }
-        openModal(params_modal)
+        // openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/despachos/nuevo/"+ id)
+        navigate("/main/pagos/nuevo/"+ id)
         break;
       case 'review':
         // navigate("/main/estampado/review/"+ id)
         break;
-    
       default:
         break;
     } 
@@ -206,10 +200,10 @@ export default function ListaPagos(){
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">DocumentoRef</th>
+                    <th className="lg:table-cell">OrigenAbono</th>
                     <th className="lg:table-cell">Banco</th>
                     <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">TipoOperacion</th>
+                    <th className="lg:table-cell">Moneda</th>
                     <th className="lg:table-cell">Importe</th>
                     <th className="lg:table-cell">FechaPago</th>
                     <th className="lg:table-cell text-center">Accciones</th>
@@ -221,10 +215,11 @@ export default function ListaPagos(){
                       ? info.map((row, key) => (
                         <tr key={key} className="">
                           <td>{row.idx}</td>
-                          <td>{row.documento_ref}</td>
+                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
                           <td>{row.entidad_bancaria}</td>
                           <td>{row.id_proveedor}</td>
-                          <td>{row.importe}</td>
+                          <td>{row.moneda == 'S' ? 'SOLES' : 'DOLARES'}</td>
+                          <td><strong>S/.{row.importe}</strong></td>
                           <td>{row.fec_pago}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">

@@ -9,6 +9,10 @@ export const colorfase = {
   'CORTE':'bg-rose-400',
   'BORDADO':'bg-yellow-500',
 }
+export const colortipoabono = {
+  'SERV':'bg-orange-500',
+  'PEDD':'bg-violet-500'
+}
 export function convertToHex(str) {
   let hex = '';
   for (let i = 0; i < str.length; i++) {

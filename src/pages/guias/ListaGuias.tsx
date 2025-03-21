@@ -347,8 +347,8 @@ export default function ListaGuias(){
                         <tr key={key} className="">
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
-                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor}</td>
+                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor.length > 40 ? row.proveedor.substr(0,40) + '...' : row.proveedor}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>

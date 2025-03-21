@@ -213,7 +213,7 @@ export default function NewGuia(){
                           <th className="lg:table-cell">XL / 34</th>
                           <th className="lg:table-cell">XXL / 36</th>
                           <th className="lg:table-cell">Cantidad</th>
-                          <th className="lg:table-cell">EsPrototipo</th>
+                          <th className="lg:table-cell">Adicional</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
