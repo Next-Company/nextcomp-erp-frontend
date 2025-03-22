@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
+import { colorfase } from "../../utils/utils";
 
-
-const colorfase = {
+const colordespacho = {
   'SERVICIOS':'bg-orange-500',
   'PEDIDOS':'bg-violet-500'
 }
@@ -21,7 +21,9 @@ const CuerpoInforme = ({cuerpo})=>{
 }
 export default function ListaDespachos(){
   const [info,setInfo] = useState([])
+  const [estado,setEstado] = useState('SERVICIOS')
   const navigate = useNavigate()
+  const lista = useRef()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   // const [refresh,setRefresh] = useState(false)
 
@@ -126,7 +128,7 @@ export default function ListaDespachos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaDespachos', params: {
+      url: 'produccion/getListaDespachos/'+estado, params: {
         method: 'GET'
       }
     })
@@ -146,11 +148,75 @@ export default function ListaDespachos(){
     })
   },[])
 
+  const filtrarestado = (e)=>{
+    const estado = e.target.dataset.estado
+    setOpenloader(true)
+
+    Consulta({
+      url: 'produccion/getListaDespachos/'+estado, params: {
+        method: 'GET'
+      }
+    })
+    .then(resp => {
+      setOpenloader(false)
+      lista.current.querySelector('button.active').classList.remove('active')
+      e.target.classList.add('active')
+      setInfo(resp)
+      // setEstado(resp.filter(row=>row.estado == estado))
+      setEstado(estado)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(()=>{
+      setOpenloader(false)
+    })
+
+    // switch (estado) {
+    //   case 'SERVICIOS':
+        
+    //     break;
+    //   case 'PEDIDOS':
+        
+    //     break;
+    //   case 'ADICIONALES':
+        
+    //     break;
+    //   default:
+    //     break;
+    // }
+
+    // Consulta({
+    //   url: 'produccion/getListaGuias', params: {
+    //     method: 'GET'
+    //   }
+    // })
+    // .then(resp => {
+    //   setOpenloader(false)
+    //   lista.current.querySelector('button.active').classList.remove('active')
+    //   e.target.classList.add('active')
+    //   setInfo(resp)
+    //   setInfoestado(resp.filter(row=>row.estado == estado))
+    // })
+    // .catch((error) => {
+    //   console.log(error)
+    // })
+    // .finally(()=>{
+    //   setOpenloader(false)
+    // })
+  }
+
+
+  // const filtrarestado2 = (e)=>{
+  //   if(e.target.classList.contains('active')) return 0
+  // }
+
   const recargarinfo = ()=>{
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaDespachos', params: {
+      url: 'produccion/getListaDespachos/'+estado, params: {
+      // url: 'produccion/inventario/22', params: {
         method: 'GET'
       }
     })
@@ -187,9 +253,7 @@ export default function ListaDespachos(){
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
-      
         <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
-
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Ingresos</h2>
@@ -197,22 +261,64 @@ export default function ListaDespachos(){
                 <Search config={{ width: '200px' }} action={()=>{}} />
               </div>
             </div>
-            {/* <hr /> */}
           </div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             <hr />
+            <div>
+              <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+                <button className="group active" data-estado="SERVICIOS" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Servicios
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                <button className="group" data-estado="PEDIDOS" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Pedidos
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                <button className="group" data-estado="ADICIONALES" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Otros
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+              </ul>
+            </div>
+            <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll">
+              
               <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
-                    <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">NroGuia</th>
-                    <th className="lg:table-cell">Tipo</th>
-                    <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">Responsable</th>
-                    <th className="lg:table-cell">FechaEmisionGuia</th>
-                    <th className="lg:table-cell">FechaDespacho</th>
-                    <th className="lg:table-cell text-center">Accciones</th>
+                    {
+                      estado == 'SERVICIOS'
+                      ?
+                      <>
+                        <th className="lg:table-cell">Id</th>
+                        <th className="lg:table-cell">NroGuia</th>
+                        {/* <th className="lg:table-cell">Tipo</th> */}
+                        <th className="lg:table-cell">Proveedor</th>
+                        <th className="lg:table-cell">Servicio</th>
+                        <th className="lg:table-cell">Producto</th>
+                        <th className="lg:table-cell">Marca</th>
+                        <th className="lg:table-cell">Modelo</th>
+                        <th className="lg:table-cell">FechaEmisionGuia</th>
+                        <th className="lg:table-cell">FechaDespacho</th>
+                        <th className="lg:table-cell text-center">Accciones</th>
+                      </>
+                        :
+                      <>
+                        <th className="lg:table-cell">Id</th>
+                        <th className="lg:table-cell">NroGuia</th>
+                        <th className="lg:table-cell">Tipo</th>
+                        <th className="lg:table-cell">Proveedor</th>
+                        <th className="lg:table-cell">FechaEmisionGuia</th>
+                        <th className="lg:table-cell">FechaiNGRESI</th>
+                        <th className="lg:table-cell text-center">Accciones</th>
+                      </>
+                    }
                   </tr>
                 </thead>
                 <tbody>
@@ -220,14 +326,31 @@ export default function ListaDespachos(){
                     info.length > 0
                       ? info.map((row, key) => (
                         <tr key={key} className="">
-                          <td>{row.idx}</td>
-                          <td>{row.nro_guia}</td>
-                          {/* <td>{row.tipo}</td> */}
-                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
-                          <td>{row.proveedor}</td>
-                          <td>{row.responsable}</td>
-                          <td>{row.fec_emision_guia}</td>
-                          <td>{row.fec_despacho}</td>
+                          {
+                            estado == 'SERVICIOS'
+                            ?
+                            <>
+                              <td>{row.idx}</td>
+                              <td>{row.nro_guia}</td>
+                              {/* <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho[row.tipo]}`}>{row.tipo}</div></td> */}
+                              <td>{row.proveedor.length >= 45 ? row.proveedor.substr(0,45) + '...' : row.proveedor}</td>
+                              <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                              <td>{row.producto}</td>
+                              <td>{row.marca}</td>
+                              <td>{row.modelo}</td>
+                              <td>{row.fec_emision_guia}</td>
+                              <td>{row.fec_despacho}</td>
+                            </>
+                            :
+                            <>
+                              <td>{row.idx}</td>
+                              <td>{row.nro_guia}</td>
+                              <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho[row.tipo]}`}>{row.tipo}</div></td>
+                              <td>{row.proveedor}</td>
+                              <td>{row.fec_emision_guia}</td>
+                              <td>{row.fec_despacho}</td>
+                            </>
+                          }
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -248,7 +371,6 @@ export default function ListaDespachos(){
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                  {/* <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg> */}
                                 </div>
                               </li>
                               <li>

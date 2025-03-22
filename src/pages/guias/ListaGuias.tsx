@@ -5,17 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
+import { colorfase } from "../../utils/utils";
 
-const colorfase = {
-  'CONFECCION':'bg-purple-500',
-  'ESTAMPADO':'bg-gray-500',
-  'ACABADOS':'bg-red-500',
-  'LAVANDERIA':'bg-green-500',
-  'MOLDES':'bg-orange-500',
-  'OJAL BOTON':'bg-blue-500',
-  'CORTE':'bg-rose-400',
-  'BORDADO':'bg-yellow-500',
-}
+// const colorfase = {
+//   'CONFECCION':'bg-purple-500',
+//   'ESTAMPADO':'bg-gray-500',
+//   'ACABADOS':'bg-red-500',
+//   'LAVANDERIA':'bg-green-500',
+//   'MOLDES':'bg-orange-500',
+//   'OJAL BOTON':'bg-blue-500',
+//   'CORTE':'bg-rose-400',
+//   'BORDADO':'bg-yellow-500',
+// }
 const CuerpoInforme_ = ({cuerpo})=>{
   return(
     <>
@@ -67,7 +68,7 @@ export default function ListaGuias(){
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   // const [refresh,setRefresh] = useState(false)
-
+  console.log("Rerenderizado!!!")
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id  
@@ -184,7 +185,7 @@ export default function ListaGuias(){
       console.log(resp)
       setOpenloader(false)
       setInfo(resp)
-      setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
+      setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && row.estado !== 'ANULADO'))
     })
     .catch((error) => {
       console.log("El mnesaje de error es:",error)
@@ -196,6 +197,48 @@ export default function ListaGuias(){
       // setOpenloader(false)
     })
   },[])
+
+  const filtrarestado = (e)=>{
+    const estado = e.target.dataset.estado
+    console.log("El estado es:",estado)
+    setOpenloader(true)
+    let pp = async ()=>{
+      await Consulta({
+        url: 'produccion/getListaGuias', params: {
+          method: 'GET'
+        }
+      })
+      .then(resp => {
+        console.log(resp)
+        setOpenloader(false)
+        lista.current.querySelector('button.active').classList.remove('active')
+        e.target.classList.add('active')
+        // console.log("EL filt4ro 1 es:",resp.filter(row=>row.cantidad_servicio <= row.ingresos))
+        if(estado == 1){
+          // setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos || row.estado == 'PENDIENTE'))  
+          // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE' && row.cantidad_servicio > row.ingresos))
+          setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && row.estado !== 'ANULADO'))
+          // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))  
+        }
+        if(estado == 2){
+          setInfoestado(resp.filter(row=>row.cantidad_servicio <= row.ingresos))
+          // setInfoestado(resp.filter(row=>row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))  
+          // setInfoestado(resp.filter(row=>row.estado == 'FINALIZADO'))  
+        }
+        if(estado == 3){
+          setInfoestado(resp.filter(row=>row.estado == 'ANULADO'))
+        }
+        // setInfoestado(estado)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(()=>{
+        setOpenloader(false)
+      })
+    }
+    pp()
+  }
 
   const recargarinfo = ()=>{
     const data = new FormData()
@@ -220,47 +263,21 @@ export default function ListaGuias(){
       // setOpenloader(false)
     })
   }
-  const nuevoestampado = ()=>{
-    // if(info.filter(row=>new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()).length > 0){
-    //   alert("Ya existe un registro para la fecha actual")
-    // }else{
-    // }
+  const nuevoservicio = ()=>{
     navigate('/main/guias/nuevo')
   }
-  const showinforme = async ()=>{
+  // const showinforme = async ()=>{
 
-    const params_modal = {
-      open:true,
-      content: <CuerpoInforme cuerpo={""} />,
-      controls: true,
-      header: false,
-      action:async ()=>{
-      }
-    }
-    openModal(params_modal)
-  }
-  const filtrarestado = (e)=>{
-    const estado = e.target.dataset.estado
-    setOpenloader(true)
-    Consulta({
-      url: 'produccion/getListaGuias', params: {
-        method: 'GET'
-      }
-    })
-    .then(resp => {
-      setOpenloader(false)
-      lista.current.querySelector('button.active').classList.remove('active')
-      e.target.classList.add('active')
-      setInfo(resp)  
-      setInfoestado(resp.filter(row=>row.estado == estado))
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-    .finally(()=>{
-      setOpenloader(false)
-    })
-  }
+  //   const params_modal = {
+  //     open:true,
+  //     content: <CuerpoInforme cuerpo={""} />,
+  //     controls: true,
+  //     header: false,
+  //     action:async ()=>{
+  //     }
+  //   }
+  //   openModal(params_modal)
+  // }
   let busquedaglobal = async (input)=>{
     // let data = new FormData()
     // data.append('busqueda',input.value)
@@ -299,19 +316,31 @@ export default function ListaGuias(){
             <hr />
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
+                <button className="group active" data-estado="1" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="FINALIZADO" onClick={filtrarestado}>
+                <button className="group" data-estado="2" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Terminados
+                    Completados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
+                {/* <button className="group" data-estado="3" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Abonados
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button> */}
+                {/* <button className="group" data-estado="4" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Finalizados
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button> */}
+                <button className="group" data-estado="3" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -419,7 +448,7 @@ export default function ListaGuias(){
             <div className="flex flex-row justify-end">
               <div className="flex gap-2">
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevoestampado} tipo={'accept'}>Nuevo</Button>
+                <Button action={nuevoservicio} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
 

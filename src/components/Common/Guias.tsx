@@ -37,7 +37,9 @@ export default function Guias(children){
   
   const searchproveedor = (input)=>{
     const buscarguia = async ()=>{
-      await Consulta({url: 'produccion/searchguia/'+ (input.value == '' ? '_' : input.value )})
+      let url = input.value == '' ? 'produccion/getListaGuias' : 'produccion/searchguia/'+input.value
+      // await Consulta({url: 'produccion/searchguia/'+ (input.value == '' ? '_' : input.value )})
+      await Consulta({url})
       .then(resp => {
         console.log(resp)
         setLista(resp)
@@ -82,6 +84,8 @@ export default function Guias(children){
                 <th className="lg:table-cell">Servicio</th>
                 <th className="lg:table-cell">Proveedor</th>
                 <th className="lg:table-cell">Producto</th>
+                <th className="lg:table-cell">Marca</th>
+                <th className="lg:table-cell">Modelo</th>
                 {/* <th className="lg:table-cell">Estado</th> */}
                 <th className="lg:table-cell">Acciones</th>
               </tr>
@@ -93,8 +97,10 @@ export default function Guias(children){
                   <td>{`${row.idx}`.padStart(8,'0')}</td>
                   {/* <td>{row.servicio}</td> */}
                   <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                  <td>{row.proveedor}</td>
+                  <td>{row.proveedor.length >= 45 ? row.proveedor.substr(0,45) + '...' : row.proveedor}</td>
                   <td>{row.producto}</td>
+                  <td>{row.marca}</td>
+                  <td>{row.modelo}</td>
                   {/* <td>
                     {
                       row.estado == 'PENDIENTE'

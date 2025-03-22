@@ -11,7 +11,16 @@ import Proveedores from "../../components/Common/Proveedores"
 import Guias from "../../components/Common/Guias"
 import Pedidos from "../../components/Common/Pedidos"
 
-
+const colorfase = {
+  'CONFECCION':'bg-purple-500',
+  'ESTAMPADO':'bg-gray-500',
+  'ACABADOS':'bg-red-500',
+  'LAVANDERIA':'bg-green-500',
+  'MOLDES':'bg-orange-500',
+  'OJAL BOTON':'bg-blue-500',
+  'CORTE':'bg-rose-400',
+  'BORDADO':'bg-yellow-500',
+}
 export default function NewDespacho(){
   // const [estampado,setEstampado] = useState([])
   const [tipo,setTipo] = useState(0)
@@ -46,7 +55,7 @@ export default function NewDespacho(){
         }})
         .then(resp => {
           setOpenloader(false)
-          // navigate('/main/despachos/inicio')
+          navigate('/main/despachos/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -261,16 +270,20 @@ export default function NewDespacho(){
                   <Input name={'imp_factura'} defaults={Object.keys(info).length > 0 && info.imp_factura ? info.imp_factura : null} title="ImporteFactura" type="number"/>
                 </div>
                 <div>
-                  {/* <span>Artículos:</span> */}
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                      {/* <caption>
+                        He-Man and Skeletor facts
+                      </caption> */}
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           {
                             tipo == 0
                             ?
                               <>
-                                <th className="lg:table-cell w-[500px]">Descripción</th>  
+                                <th className="lg:table-cell">Servicio</th>
+                                <th className="lg:table-cell">Descripción</th>
+                                <th className="lg:table-cell">Modelo</th>
                                 <th className="lg:table-cell">XS / 26</th>
                                 <th className="lg:table-cell">S / 28</th>
                                 <th className="lg:table-cell">M / 30</th>
@@ -305,7 +318,9 @@ export default function NewDespacho(){
                                 tipo == 0
                                 ?
                                   <>
+                                    <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                                     <td>{row.articulo}</td>
+                                    <td>{row.modelo}</td>
                                     <td>{row.xs}</td>
                                     <td>{row.s}</td>
                                     <td>{row.m}</td>
