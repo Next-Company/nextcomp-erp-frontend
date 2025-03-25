@@ -12,7 +12,7 @@ import Guias from "../../components/Common/Guias"
 import Pedidos from "../../components/Common/Pedidos"
 import { colorfase } from "../../utils/utils"
 
-export default function NewPago(){
+export default function NewPago_back(){
   // const [estampado,setEstampado] = useState([])
   const [tipo,setTipo] = useState(0)
   const urlparams = useParams()
@@ -67,10 +67,9 @@ export default function NewPago(){
     if(urlparams.id){
       if(urlparams.altura){
         setOpenloader(true)
-        Consulta({url: 'abonos/statusdetalle/' + urlparams.id,})
+        Consulta({url: 'abonos/getabono/' + urlparams.id,})
         .then(resp => {
-          console.log(resp)
-          setRegistros(resp)
+          setRegistros(resp[1])
           setOpenloader(false)
         })
         .catch((err)=>{
@@ -325,10 +324,7 @@ export default function NewPago(){
                           <th className="lg:table-cell">Marca</th>
                           <th className="lg:table-cell">Modelo</th>
                           <th className="lg:table-cell">Costo</th>
-                          <th className="lg:table-cell">Guias</th>
-                          <th className="lg:table-cell">Cantidad</th>
-                          <th className="lg:table-cell">Despacho</th>
-                          {/* <th className="lg:table-cell">Importe</th> */}
+                          <th className="lg:table-cell">Importe</th>
                           <th className="lg:table-cell">Acciones</th>                          
                         </tr>
                       </thead>
@@ -342,14 +338,11 @@ export default function NewPago(){
                               <td>{row.idx}</td>
                               <td>#{row.orden_ref}</td>
                               <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                              <td>{row.articulo}</td>
+                              <td>{row.producto}</td>
                               <td>{row.marca}</td>
                               <td>{row.modelo}</td>
                               <td>S/.{row.costo}</td>
-                              <td>{row.guia}</td>
-                              <td>{row.cantidad}</td>
-                              <td>{row.total_despacho}</td>
-                              {/* <td>S/.{row.importe}</td> */}
+                              <td>S/.{row.importe}</td>
                               {/* {
                                 tipo == 0
                                 ?

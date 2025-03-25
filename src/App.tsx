@@ -99,6 +99,7 @@ const routes = [
           { path: "inicio", element: <ListaPagos/> },
           { path: "nuevo", element: <NewPago/> },
           { path: "nuevo/:id", element: <NewPago/> },
+          { path: "nuevo/:id/:altura", element: <NewPago/> },
         ]
       },
       { 

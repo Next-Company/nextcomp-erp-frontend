@@ -6,6 +6,7 @@ import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
 import { colortipoabono } from "../../utils/utils";
+import { colorfase } from "../../utils/utils";
 
 const CuerpoInforme = ({cuerpo})=>{
   return(
@@ -106,7 +107,8 @@ export default function ListaPagos(){
         // openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/pagos/nuevo/"+ id)
+        const altura = 18
+        navigate("/main/pagos/nuevo/"+ id + "/" + altura)
         break;
       case 'review':
         // navigate("/main/estampado/review/"+ id)
@@ -120,7 +122,8 @@ export default function ListaPagos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'abonos/100', params: {
+      // url: 'abonos/100', params: {
+      url: 'abonos/servicios/100', params: {
         method: 'GET'
       }
     })
@@ -222,14 +225,33 @@ export default function ListaPagos(){
               <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
-                    <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">OrigenAbono</th>
-                    <th className="lg:table-cell">Banco</th>
-                    <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">Moneda</th>
-                    <th className="lg:table-cell">Importe</th>
-                    <th className="lg:table-cell">FechaPago</th>
-                    <th className="lg:table-cell text-center">Accciones</th>
+                    {
+                      1==2
+                      ?
+                      <>
+                        <th className="lg:table-cell">Id</th>
+                        <th className="lg:table-cell">OrigenAbono</th>
+                        <th className="lg:table-cell">Banco</th>
+                        <th className="lg:table-cell">Proveedor</th>
+                        <th className="lg:table-cell">Moneda</th>
+                        <th className="lg:table-cell">Importe</th>
+                        <th className="lg:table-cell">FechaPago</th>
+                        <th className="lg:table-cell text-center">Accciones</th>
+                      </>
+                      :
+                      <>
+                        <th className="lg:table-cell">Id</th>
+                        <th className="lg:table-cell">Servicio</th>
+                        <th className="lg:table-cell">Proveedor</th>
+                        <th className="lg:table-cell">Producto</th>
+                        <th className="lg:table-cell">Marca</th>
+                        <th className="lg:table-cell">Modelo</th>
+                        <th className="lg:table-cell">Costo</th>
+                        <th className="lg:table-cell">Cantidad</th>
+                        <th className="lg:table-cell">Despacho</th>
+                        <th className="lg:table-cell text-center">Accciones</th>
+                      </>
+                    }
                   </tr>
                 </thead>
                 <tbody>
@@ -237,13 +259,31 @@ export default function ListaPagos(){
                     info.length > 0
                       ? info.map((row, key) => (
                         <tr key={key} className="">
-                          <td>{row.idx}</td>
-                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
-                          <td>{row.entidad_bancaria}</td>
-                          <td>{row.id_proveedor}</td>
-                          <td>{row.moneda == 'S' ? 'SOLES' : 'DOLARES'}</td>
-                          <td><strong>S/.{row.importe}</strong></td>
-                          <td>{row.fec_pago}</td>
+                          {
+                            1==2
+                            ?
+                            <>
+                              <td>{row.idx}</td>
+                              <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
+                              <td>{row.entidad_bancaria}</td>
+                              <td>{row.id_proveedor}</td>
+                              <td>{row.moneda == 'S' ? 'SOLES' : 'DOLARES'}</td>
+                              <td><strong>S/.{row.importe}</strong></td>
+                              <td>{row.fec_pago}</td>
+                            </>
+                            :
+                            <>
+                              <td>{row.idx}</td>
+                              <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                              <td>{row.proveedor}</td>
+                              <td>{row.producto}</td>
+                              <td>{row.marca}</td>
+                              <td>{row.modelo}</td>
+                              <td>S/.{row.costo}</td>
+                              <td>{row.cantidad}</td>
+                              <td>{row.despacho}</td>
+                            </>
+                          }
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
