@@ -250,6 +250,25 @@ export default function ListaDespachos(){
     openModal(params_modal)
   }
 
+  let busquedaglobal = async (input)=>{
+    setOpenloader(true)
+    Consulta({
+      url: 'produccion/getListaDespachos/'+ (input.value == '' ? estado : (input.value + ' ' + estado)), params: {
+        method: 'GET'
+      }
+    })
+    .then(resp => {
+      setOpenloader(false)
+      setInfo(resp)
+    })
+    .catch((error) => {
+      console.log("El mnesaje de error es:",error)
+    })
+    .finally(()=>{
+      console.log("Horror en la consulta de base de datos")
+    })
+  }
+
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -258,7 +277,7 @@ export default function ListaDespachos(){
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Ingresos</h2>
               <div className="w-[500px]">
-                <Search config={{ width: '200px' }} action={()=>{}} />
+                <Search config={{ width: '200px' }} action={busquedaglobal} />
               </div>
             </div>
           </div>

@@ -242,7 +242,7 @@ export default function NewDespacho(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
-                  <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionDespacho" type="date" />
+                  <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionIngreso" type="date" />
                   <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" />
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   {
@@ -281,6 +281,7 @@ export default function NewDespacho(){
                             tipo == 0
                             ?
                               <>
+                                <th className="lg:table-cell">Id</th>
                                 <th className="lg:table-cell">Servicio</th>
                                 <th className="lg:table-cell">Descripción</th>
                                 <th className="lg:table-cell">Modelo</th>
@@ -318,6 +319,7 @@ export default function NewDespacho(){
                                 tipo == 0
                                 ?
                                   <>
+                                    <td>{row.idx}</td>
                                     <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                                     <td>{row.articulo}</td>
                                     <td>{row.modelo}</td>

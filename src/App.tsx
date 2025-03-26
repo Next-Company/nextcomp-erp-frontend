@@ -32,6 +32,9 @@ import Informe from './pages/informes/Informe.tsx'
 import ListaPagos from './pages/pagos/ListaPagos.tsx'
 import NewPago from './pages/pagos/NewPago.tsx'
 import LayoutPagos from './pages/pagos/LayoutPagos.tsx'
+import LayoutMuestras from './pages/muestras/LayoutMuestras.tsx'
+import ListaMuestras from './pages/muestras/ListaMuestras.tsx'
+import NewMuestra from './pages/muestras/NewMuestra.tsx'
 
 const routes = [
   {
@@ -68,6 +71,17 @@ const routes = [
           { path: "inicio", element: <ListaGuias/> },
           { path: "nuevo", element: <NewGuia/> },
           { path: "nuevo/:id", element: <NewGuia/> },
+          // { path: "nuevo/:id", element: <NuevoEstampado/> },
+          // { path: "review/:id", element: <ReviewEstampado/> },
+        ]
+      },
+      { 
+        path: "muestras", 
+        element: <LayoutMuestras/>,
+        children: [
+          { path: "inicio", element: <ListaMuestras/> },
+          { path: "nuevo", element: <NewMuestra/> },
+          { path: "nuevo/:id", element: <NewMuestra/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ]

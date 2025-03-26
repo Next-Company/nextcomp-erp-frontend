@@ -41,7 +41,7 @@ export default function Guias(children){
       // await Consulta({url: 'produccion/searchguia/'+ (input.value == '' ? '_' : input.value )})
       await Consulta({url})
       .then(resp => {
-        console.log(resp)
+        console.log("Resultado seatch guia:",resp)
         setLista(resp)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
@@ -97,7 +97,7 @@ export default function Guias(children){
                   <td>{`${row.idx}`.padStart(8,'0')}</td>
                   {/* <td>{row.servicio}</td> */}
                   <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                  <td>{row.proveedor.length >= 45 ? row.proveedor.substr(0,45) + '...' : row.proveedor}</td>
+                  <td>{row.proveedor ? (row.proveedor.length >= 45 ? row.proveedor.substr(0,45) + '...' : row.proveedor) : ''}</td>
                   <td>{row.producto}</td>
                   <td>{row.marca}</td>
                   <td>{row.modelo}</td>

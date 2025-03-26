@@ -20,8 +20,8 @@ export default function NewPago(){
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros,setRegistros] = useState([])
+  const [selected,setSelected] = useState([])
   const navigate = useNavigate()
-  let [selected,setSelected] = useState([])
 
   const onsubmit = (e)=>{
     e.preventDefault()
@@ -33,11 +33,11 @@ export default function NewPago(){
       open: true,
       header: false,
       controls: true,
-      content: <div>Desea continuar con el registro del despacho ingresado?</div>,
+      content: <div>Desea continuar con el registro pago ingresado?</div>,
       action: async () => {
         setOpenloader(true)
         const data = new FormData()
-        urlparams.id && data.append('id',urlparams.id)
+        urlparams.id && ( !urlparams.altura && data.append('id',urlparams.id) )
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
 
@@ -47,7 +47,7 @@ export default function NewPago(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/pagos/inicio')
+          // navigate('/main/pagos/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -69,8 +69,9 @@ export default function NewPago(){
         setOpenloader(true)
         Consulta({url: 'abonos/statusdetalle/' + urlparams.id,})
         .then(resp => {
-          console.log(resp)
+          let total_pagar = resp.filter(row=>!row.isprototipo).reduce((carry,item)=>{carry += item.costo*(item.despacho - item.caidos);return carry;},0)
           setRegistros(resp)
+          setInfo({...info,id_proveedor_CAB:resp[0].id_proveedor_CAB,proveedor:resp[0].proveedor,importe:total_pagar,saldo:total_pagar - resp[0].cancelado,pago:0})
           setOpenloader(false)
         })
         .catch((err)=>{
@@ -109,39 +110,29 @@ export default function NewPago(){
     };
   },[])
 
-  const nuevoregistro = ()=>{
-    setRegistros([...registros,tipo ? {item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0,despacho:0} : {item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
-  }
-
-  const onclick = (e)=>{
-    const action = e.target.dataset.action
-    const position = parseInt(e.target.dataset.position)
-    switch(action){
-      case 'add':
-        const item = registros[position]
-        if(selected.find((row)=>row.idx == item.idx)){
-          setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.importe,0)) - parseFloat(item.importe)})
-          setSelected([...selected.filter(row=>row.idx !== item.idx)])
-        }else{
-          setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.importe,0)) + parseFloat(item.importe)})
-          setSelected([...selected,registros[position]])
-        }
-        break;
-      case 'delete':
-        // Consulta({url: 'abonos/deleteabono' + registros[position].idx})
-        // setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
-        // console.log("Eliminado registros de la fila ",position)
-        break;
-      default :
-    }
-
-  }
+  // const onclick = (e)=>{
+  //   const action = e.target.dataset.action
+  //   const position = parseInt(e.target.dataset.position)
+  //   switch(action){
+  //     case 'add':
+  //       const item = registros[position]
+  //       if(selected.find((row)=>row.idx == item.idx)){
+  //         setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.importe,0)) - parseFloat(item.importe)})
+  //         setSelected([...selected.filter(row=>row.idx !== item.idx)])
+  //       }else{
+  //         setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.importe,0)) + parseFloat(item.importe)})
+  //         setSelected([...selected,registros[position]])
+  //       }
+  //       break;
+  //     case 'delete':
+  //       break;
+  //     default :
+  //   }
+  // }
   const editvalue = (e)=>{
     let column = e.target.dataset.name
     console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
     let position = e.target.dataset.position
-    // let articulo = registros[parseInt(e.target.dataset.position)]
-    // console.log("Los registros son:",registros)
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
   }
 
@@ -165,8 +156,6 @@ export default function NewPago(){
         .finally(()=>{
           setOpenloader(false)
         })
-
-        
       }}/>,
       controls: true,
       header: false,
@@ -202,34 +191,6 @@ export default function NewPago(){
     }
     openModal(params_modal)
   }
-  const searchpedido = ()=>{
-    let params_modal = null
-    params_modal = {
-      open:true,
-      content: <Pedidos actions={(item)=>{  
-        // console.log("El item seleccionado es: ",item)
-        setOpenloader(true)
-        setOpen(false)
-        Consulta({url: 'produccion/pedido/' + item.idx})
-        .then(resp => {
-          setInfo(info=>({...info,id_pedido_origen:item.idx,nro_pedido_origen:item.idx,id_proveedor_CAB:item.id_proveedor_CAB,proveedor:item.proveedor}))
-          setRegistros(resp[1])
-        })
-        .catch((err)=>{
-          setOpenloader(false)
-        })
-        .finally(()=>{
-          setOpenloader(false)
-        })
-      }}/>,
-      controls: true,
-      header: false,
-      action:()=>{
-      }
-    }
-    openModal(params_modal)
-  }
-
   const onchange = (e)=>{
     console.log("Cambiando tipo de pedido")
     // console.log("VA o neleet")
@@ -290,17 +251,17 @@ export default function NewPago(){
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <InputSelect title={'Tipo Operación'} name={"tipo_operacion"} data={
                     [
-                      { indice: 'MIBANCO', option: 'TRANSFERENCIA', selected: true },
-                      { indice: 'BCP', option: 'DEPOSITO'},
-                      { indice: 'SCB', option: 'CHEQUE'},
+                      { indice: 'TRANSFERENCIA', option: 'TRANSFERENCIA', selected: true },
+                      { indice: 'DEPOSITO', option: 'DEPOSITO'},
+                      { indice: 'CHEQUE', option: 'CHEQUE'},
+                      { indice: 'EFECTIVO', option: 'EFECTIVO'},
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo_operacion : null} 
                   />
+                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
+                  <Input name="proveedor" title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text"/>
                 </div>
                 <div className="flex gap-3">
-                  
-                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <Input name={'num_operacion'} defaults={Object.keys(info).length > 0 && info.num_operacion ? info.num_operacion : null} title="Número Operación" type="text" />
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
@@ -311,6 +272,8 @@ export default function NewPago(){
                   />
                   <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" />
                   <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="ImportePago" type="number"/>
+                  <Input name={'saldo'} defaults={Object.keys(info).length > 0 && info.saldo ? info.saldo : null} title="Saldo" type="number" action={nuevoproveedor} mode={'static'}/>
+                  <Input name={'pago'} defaults={Object.keys(info).length > 0 && info.pago ? info.pago : null} title="Pago" type="number"/>
                 </div>
                 <div>
                   {/* <span>Artículos:</span> */}
@@ -319,7 +282,7 @@ export default function NewPago(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell">Id</th>
-                          <th className="lg:table-cell">HDC</th>
+                          {/* <th className="lg:table-cell">HDC</th> */}
                           <th className="lg:table-cell">Servicio</th>
                           <th className="lg:table-cell">Producto</th>
                           <th className="lg:table-cell">Marca</th>
@@ -328,48 +291,31 @@ export default function NewPago(){
                           <th className="lg:table-cell">Guias</th>
                           <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Despacho</th>
-                          {/* <th className="lg:table-cell">Importe</th> */}
+                          <th className="lg:table-cell">Caidos</th>
+                          <th className="lg:table-cell">Total</th>
                           <th className="lg:table-cell">Acciones</th>                          
                         </tr>
                       </thead>
                       <tbody>
                         {
                           registros.length > 0 && registros.map((row,key)=>(
-
-                            // <tr className={`${selected.find((item)=>item.idxsub == row.idxsub) ? 'selected' : ''}`} key={key}></tr>
-
                             <tr key={key} className={`${selected.find((item)=>item.idx == row.idx) ? 'selected' : ''} focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center`}>
                               <td>{row.idx}</td>
-                              <td>#{row.orden_ref}</td>
+                              {/* <td>#{row.orden_ref}</td> */}
                               <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                               <td>{row.articulo}</td>
                               <td>{row.marca}</td>
                               <td>{row.modelo}</td>
                               <td>S/.{row.costo}</td>
-                              <td>{row.guia}</td>
+                              <td>{row.id_despacho}</td>
                               <td>{row.cantidad}</td>
-                              <td>{row.total_despacho}</td>
-                              {/* <td>S/.{row.importe}</td> */}
-                              {/* {
-                                tipo == 0
-                                ?
-                                  <>
-                                  </>
-                                :
-                                  <>
-                                    <td><input type="text" onChange={editvalue} data-name="producto" data-position={key} defaultValue={row.producto} /></td>
-                                    <td><input type="text" onChange={editvalue} data-position={key} data-name="color" defaultValue={row.color} /></td>
-                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
-                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
-                                    <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
-                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
-                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
-                                  </>
-                              } */}
+                              <td>{row.despacho}</td>
+                              <td>{row.caidos}</td>
+                              <td>{row.despacho - row.caidos}</td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} data-position={key}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                     </div>
                                   </li>
@@ -389,7 +335,7 @@ export default function NewPago(){
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-position={key} data-action="add" onClick={onclick}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-position={key} data-action="add" onClick={()=>{}}>
                                       <svg  xmlns="http://www.w3.org/2000/svg"  width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
                                     </div>
                                   </li>

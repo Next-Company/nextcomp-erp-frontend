@@ -1,27 +1,70 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
-import { colortipoabono } from "../../utils/utils";
-import { colorfase } from "../../utils/utils";
+// import { colortipomuestras } from "../../utils/utils";
 
-const CuerpoInforme = ({cuerpo})=>{
+const colorfase = {
+  'MUESTRA/PROTOTIPO':'bg-purple-500',
+  'ACABADOS':'bg-gray-500',
+  'REPARACION':'bg-red-500',
+  'PRESTAMO':'bg-green-500'
+}
+const CuerpoInforme_ = ({cuerpo})=>{
   return(
     <>
-      <iframe src="http://192.168.18.20:4000/produccion/informe/12" className="w-[60vw] h-[60vh]"></iframe>
+      <iframe src="http://192.168.18.20:4000/produccion/showinformeservicio/16" className="w-[60vw] h-[60vh]"></iframe>
       {/* <div dangerouslySetInnerHTML={{ __html: cuerpo }} /> */}
     </>
   )
 }
-export default function ListaPagos(){
+const CuerpoInforme = ({servicioid})=>{
+  let [ruta,setRuta] = useState("")
+  useEffect(()=>{
+    let crear = async ()=>{
+      await Consulta({url:`produccion/showinformeservicio/${servicioid}`,params:{
+        method:'GET'
+      }})
+      .then(resp => {
+        let binaryString = window.atob(resp.data);
+        let binaryLen = binaryString.length;
+        let bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+            let ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+        setRuta(file)
+      })
+      .catch((err)=>{
+      })
+    }
+    crear()
+  },[])
+  return(
+    <>
+      <div>
+        {/* <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe> */}
+        <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
+        <div className="flex flex-row justify-center gap-2 mt-2">
+          <Button action={()=>{}} type="button" tipo="default">Cerrar</Button>
+          <Button action={()=>{}} type="button" tipo="default">Imprimir</Button>
+        </div>
+      </div>
+    </>
+  )
+}
+export default function ListaMuestras(){
+  const lista = useRef(null)
   const [info,setInfo] = useState([])
+  const [infoestado,setInfoestado] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   // const [refresh,setRefresh] = useState(false)
-
+  console.log("Rerenderizado!!!")
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id  
@@ -36,13 +79,13 @@ export default function ListaPagos(){
           action:()=>{
             setOpenloader(true)
             Consulta({
-              url: 'abonos/deleteabono/' + id, params: {
+              url: 'produccion/borrarguia/' + id, params: {
                 method: 'DELETE'
               }
             })
               .then(resp => {
                 // setOrdenes(resp)
-                toast.success('Despacho eliminado con éxito!', { theme: "colored" })
+                toast.success('Guia eliminado con éxito!', { theme: "colored" })
                 // setRefresh(true)
                 recargarinfo()
                 setOpenloader(false)
@@ -56,7 +99,7 @@ export default function ListaPagos(){
               })
           }
         }
-        openModal(params_modal)
+        // openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -72,6 +115,7 @@ export default function ListaPagos(){
                 credentials: 'include'
               })
               .then(resp=>{
+                // console.log("MOstrar status informe estampado:",resp.status)
                 if(resp.ok){
                   return resp.json()
                 }else{
@@ -104,15 +148,22 @@ export default function ListaPagos(){
             desc()
           }
         }
-        // openModal(params_modal)
+        openModal(params_modal)
         break;
       case 'edit':
-        const altura = 18
-        navigate("/main/pagos/nuevo/"+ id + "/" + altura)
+        navigate("/main/muestras/nuevo/"+ id)
         break;
       case 'review':
-        // navigate("/main/estampado/review/"+ id)
+        params_modal = {
+          open:true,
+          content: <CuerpoInforme servicioid={id} />,
+          controls: false,
+          header: false,
+          action:()=>{}
+        }
+        openModal(params_modal)
         break;
+    
       default:
         break;
     } 
@@ -122,18 +173,19 @@ export default function ListaPagos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      // url: 'abonos/100', params: {
-      url: 'abonos/servicios/100', params: {
+      url: 'produccion/getListaMuestras', params: {
         method: 'GET'
       }
     })
     .then(resp => {
+      console.log("Info muestas   ")
       console.log(resp)
       setOpenloader(false)
-      setInfo(resp)  
+      setInfo(resp)
+      setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && row.estado !== 'ANULADO'))
     })
     .catch((error) => {
-      console.log(error)
+      console.log("El mnesaje de error es:",error)
       // logout()
       // toast.error('Error en la consulta de base', { theme: "colored" })
     })
@@ -143,16 +195,51 @@ export default function ListaPagos(){
     })
   },[])
 
+  const filtrarestado = (e)=>{
+    const estado = e.target.dataset.estado
+    console.log("El estado es:",estado)
+    setOpenloader(true)
+    let pp = async ()=>{
+      await Consulta({
+        url: 'produccion/getListaMuestras', params: {
+          method: 'GET'
+        }
+      })
+      .then(resp => {
+        console.log(resp)
+        setOpenloader(false)
+        lista.current.querySelector('button.active').classList.remove('active')
+        e.target.classList.add('active')
+        if(estado == 1){
+          setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && row.estado !== 'ANULADO'))
+        }
+        if(estado == 2){
+          setInfoestado(resp.filter(row=>row.cantidad_servicio <= row.ingresos))
+        }
+        if(estado == 3){
+          setInfoestado(resp.filter(row=>row.estado == 'ANULADO'))
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(()=>{
+        setOpenloader(false)
+      })
+    }
+    pp()
+  }
+
   const recargarinfo = ()=>{
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'abonos/100', params: {
+      url: 'produccion/getListaMuestras', params: {
         method: 'GET'
       }
     })
     .then(resp => {
-      console.log(resp)
+      console.log("Resultado lista de guias:",resp)
       setOpenloader(false)
       setInfo(resp)  
     })
@@ -166,128 +253,127 @@ export default function ListaPagos(){
       // setOpenloader(false)
     })
   }
-  const nuevoabono = ()=>{
-    navigate('/main/pagos/nuevo')
+  const nuevamuestra = ()=>{
+    navigate('/main/muestras/nuevo')
   }
-  const showinforme = (e)=>{
-    const params_modal = {
-      open:true,
-      content: <CuerpoInforme cuerpo={""} />,
-      controls: true,
-      header: false,
-      action:async ()=>{
+  // const showinforme = async ()=>{
+
+  //   const params_modal = {
+  //     open:true,
+  //     content: <CuerpoInforme cuerpo={""} />,
+  //     controls: true,
+  //     header: false,
+  //     action:async ()=>{
+  //     }
+  //   }
+  //   openModal(params_modal)
+  // }
+  let busquedaglobal = async (input)=>{
+    // let data = new FormData()
+    // data.append('busqueda',input.value)
+    Consulta({
+      url: 'produccion/getListaMuestras/' + (input.value == '' ? '_' : input.value), params: {
+        method: 'GET'
       }
-    }
-    openModal(params_modal)
+    })
+    .then(resp => {
+      console.log(resp)
+      setOpenloader(false)
+      setInfo(resp)
+      setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
+    })
+    .catch((error) => {
+      console.log("El mnesaje de error es:",error)
+    })
+    .finally(()=>{
+      console.log("Horror en la consulta de base de datos")
+    })
   }
 
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
-      
         <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
-
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Pagos</h2>
+              <h2 className="font-medium text-[16px]">Muestras</h2>
               <div className="w-[500px]">
-                <Search config={{ width: '200px' }} action={()=>{}} />
+                <Search config={{ width: '250px' }} action={busquedaglobal} />
               </div>
             </div>
-            {/* <hr /> */}
           </div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             <hr />
             <div>
-              <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="1" onClick={()=>{}}>
+              <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+                <button className="group active" data-estado="1" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="1" onClick={()=>{}}>
+                <button className="group" data-estado="2" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Completados
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                {/* <button className="group" data-estado="3" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Abonados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
-                </button>
-                <button className="group" data-estado="2" onClick={()=>{}}>
+                </button> */}
+                {/* <button className="group" data-estado="4" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Pagos Realizados
+                    Finalizados
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button> */}
+                <button className="group" data-estado="3" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
               </ul>
             </div>
             <hr />
-            <div className="flex-1 scrollbar-special overflow-y-scroll">
+            <div className="flex-1 scrollbar-special overflow-y-scroll relative mb-2">
               <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
-                    {
-                      1==2
-                      ?
-                      <>
-                        <th className="lg:table-cell">Id</th>
-                        <th className="lg:table-cell">OrigenAbono</th>
-                        <th className="lg:table-cell">Banco</th>
-                        <th className="lg:table-cell">Proveedor</th>
-                        <th className="lg:table-cell">Moneda</th>
-                        <th className="lg:table-cell">Importe</th>
-                        <th className="lg:table-cell">FechaPago</th>
-                        <th className="lg:table-cell text-center">Accciones</th>
-                      </>
-                      :
-                      <>
-                        <th className="lg:table-cell">Id</th>
-                        <th className="lg:table-cell">Servicio</th>
-                        <th className="lg:table-cell">Proveedor</th>
-                        <th className="lg:table-cell">Producto</th>
-                        <th className="lg:table-cell">Marca</th>
-                        <th className="lg:table-cell">Modelo</th>
-                        <th className="lg:table-cell">Costo</th>
-                        <th className="lg:table-cell">Cantidad</th>
-                        <th className="lg:table-cell">Ingresos</th>
-                        <th className="lg:table-cell">Importe</th>
-                        <th className="lg:table-cell">Saldo</th>
-                        <th className="lg:table-cell text-center">Accciones</th>
-                      </>
-                    }
+                    <th className="lg:table-cell">Id</th>
+                    <th className="lg:table-cell">Tipo</th>
+                    <th className="lg:table-cell">Proveedor</th>
+                    <th className="lg:table-cell">Producto</th>
+                    <th className="lg:table-cell">Marca</th>
+                    <th className="lg:table-cell">Modelo</th>
+                    <th className="lg:table-cell">FechaEmisión</th>
+                    <th className="lg:table-cell">FechaRetorno</th>
+                    <th className="lg:table-cell">TiempoProd</th>
+                    <th className="lg:table-cell">DiasPendientes</th>
+                    {/* <th className="lg:table-cell">Estado</th> */}
+                    <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {
-                    info.length > 0
-                      ? info.map((row, key) => (
+                    infoestado.length > 0
+                      ? infoestado.map((row, key) => (
                         <tr key={key} className="">
-                          {
-                            1==2
-                            ?
-                            <>
-                              <td>{row.idx}</td>
-                              <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
-                              <td>{row.entidad_bancaria}</td>
-                              <td>{row.id_proveedor}</td>
-                              <td>{row.moneda == 'S' ? 'SOLES' : 'DOLARES'}</td>
-                              <td><strong>S/.{row.importe}</strong></td>
-                              <td>{row.fec_pago}</td>
-                            </>
-                            :
-                            <>
-                              <td>{row.idx}</td>
-                              <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                              <td>{row.proveedor}</td>
-                              <td>{row.producto}</td>
-                              <td>{row.marca}</td>
-                              <td>{row.modelo}</td>
-                              <td>S/.{row.costo}</td>
-                              <td>{row.cantidad}</td>
-                              <td>{row.despacho}</td>
-                              <td>{row.importe}</td>
-                              <td>{row.importe - row.cancelado}</td>
-                            </>
-                          }
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
+                          <td><div className={`text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor.length > 40 ? row.proveedor.substr(0,40) + '...' : row.proveedor}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision_guia}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_retorno_guia}</td>
+                          {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.costo}</td> */}
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.tiempo_produccion}</td>
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
+                          {/* <td>{row.estado == 'PENDIENTE' ? <div className={`w-[5px] h-[5px] bg-red-600 rounded-full`}></div> : 'hola'}</td> */}
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -301,13 +387,14 @@ export default function ListaPagos(){
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx} onClick={onclick}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                  {/* <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg> */}
                                 </div>
                               </li>
                               <li>
@@ -323,6 +410,7 @@ export default function ListaPagos(){
                       <tr className="h-[40px]"><td colSpan={13} className="text-center"><span>Datos no encontrados</span></td></tr>
                   }
                 </tbody>
+                {/* <tfoot className="absolute bottom-0 w-full bg-yellow-300"> */}
                 <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
                   <tr>
                     <td className="h-[45px] border-t border-t-gray-600" colSpan={12}>
@@ -347,9 +435,10 @@ export default function ListaPagos(){
             <div className="flex flex-row justify-end">
               <div className="flex gap-2">
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevoabono} tipo={'accept'}>Nuevo</Button>
+                <Button action={nuevamuestra} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
+
           </div>
         </div>
       </div>
