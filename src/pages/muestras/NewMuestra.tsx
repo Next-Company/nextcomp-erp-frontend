@@ -156,7 +156,7 @@ export default function NewMuestra(){
                   {/* <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" /> */}
                   <InputSelect title={'Tipo'} name={"tipo"} data={
                     [
-                      { indice: 'MUESTRA/PROTOTIPO', option: 'MUESTRA/PROTOTIPO', selected: true }, 
+                      { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true }, 
                       { indice: 'ACABADOS', option: 'ACABADOS' },
                       { indice: 'REPARACION', option: 'REPARACION' },
                       { indice: 'PRESTAMO', option: 'PRESTAMO' },

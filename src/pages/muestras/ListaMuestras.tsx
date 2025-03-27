@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 // import { colortipomuestras } from "../../utils/utils";
 
 const colorfase = {
-  'MUESTRA/PROTOTIPO':'bg-purple-500',
+  'MUESTRA_PROTOTIPO':'bg-purple-500',
   'ACABADOS':'bg-gray-500',
   'REPARACION':'bg-red-500',
   'PRESTAMO':'bg-green-500'

@@ -23,7 +23,7 @@ const colorfase = {
 }
 export default function NewDespacho(){
   // const [estampado,setEstampado] = useState([])
-  const [tipo,setTipo] = useState(0)
+  const [tipo,setTipo] = useState(2)
   const urlparams = useParams()
   const [info,setInfo] = useState({})
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
@@ -80,7 +80,7 @@ export default function NewDespacho(){
             console.log("Los datos del despacho son:",resp)
             setInfo(resp[0])
             setRegistros(resp[1])
-            setTipo(resp[0].tipo == 'SERVICIOS' ? 0 : 1)
+            setTipo(resp[0].tipo == 'PEDIDOS' ? 1 : ( resp[0].tipo == 'SERVICIOS' ? 2 : 0 ))
             setOpenloader(false)
           })
           .catch((err)=>{
@@ -93,7 +93,8 @@ export default function NewDespacho(){
       pp()
     }
     const handleInputChange = (event) => {
-      setTipo(event.detail.valor == 'SERVICIOS' ? 0 : 1)
+      // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
+      setTipo(event.detail.valor == 'PEDIDOS' ? 1 : ( event.detail.valor == 'SERVICIOS' ? 2 : 0 ))
       setRegistros([])
     };
     form.current.addEventListener("salamandra", handleInputChange);
@@ -176,6 +177,33 @@ export default function NewDespacho(){
     }
     openModal(params_modal)
   }
+  const searchmuestra = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Guias tipo={tipo == 2 ? 'SERVICIOS' : 'MUESTRA_PROTOTIPO'} actions={(item)=>{  
+        // console.log("El item seleccionado es: ",item)
+        setOpenloader(true)
+        setOpen(false)
+        Consulta({url: 'produccion/guia/' + item.idx})
+        .then(resp => {
+          setInfo(info=>({...info,id_guia_origen:item.idx,nro_guia_origen:item.idx,id_proveedor_CAB:item.id_proveedor_CAB,proveedor:item.proveedor}))
+          setRegistros(resp[1].map(row=>({...row,despacho:0,caidos:0})))
+        })
+        .catch((err)=>{
+          setOpenloader(false)
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openModal(params_modal)
+  }
   const searchpedido = ()=>{
     let params_modal = null
     params_modal = {
@@ -238,7 +266,8 @@ export default function NewDespacho(){
                   <InputSelect title={'OrigenDespacho'} formref={form} name={"tipo"} data={
                     [
                       { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 
-                      { indice: 'PEDIDOS', option: 'PEDIDOS' }, 
+                      { indice: 'PEDIDOS', option: 'PEDIDOS' },
+                      { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO' },
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
@@ -246,17 +275,26 @@ export default function NewDespacho(){
                   <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" />
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   {
-                    tipo
+                    tipo == 1
                     ?
                     <>
                       <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" />
-                      <Input name={'nro_pedido_origen'} title={`${tipo ? 'IdPedido' : 'IdServicio'}`} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'}/>
+                      <Input name={'nro_pedido_origen'} title={`${tipo == 1 ? 'IdPedido' : (tipo == 2 ? 'IdServicio' : 'IdMuestra')}`} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'}/>
                     </>
                     :
                     <>
                       <Input name={'id_guia_origen'} defaults={Object.keys(info).length > 0 ? info.id_guia_origen : null} type="hidden" />
-                      <Input name={'nro_guia_origen'} title={`${tipo ? 'IdPedido' : 'IdServicio'}`} defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchguia} mode={'static'}/>
-                      
+                      {
+                        tipo == 2
+                        ?
+                        <>
+                        <Input name={'nro_guia_origen'} title={`${tipo == 2 ? 'IdServicio' : 'IdMuestra'}`} defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchguia} mode={'static'}/>
+                        </>
+                        :
+                        <>
+                        <Input name={'nro_guia_origen'} title={`${tipo == 2 ? 'IdServicio' : 'IdMuestra'}`} defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchmuestra} mode={'static'}/>
+                        </>
+                      }
                     </>
                   }
                 </div>
@@ -266,8 +304,8 @@ export default function NewDespacho(){
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" />
                   <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuiaReferencia" type="text"/>
 
-                  <Input name={'nro_factura'} defaults={Object.keys(info).length > 0 && info.nro_factura ? info.nro_factura : null} title="NroFactura" type="text"/>
-                  <Input name={'imp_factura'} defaults={Object.keys(info).length > 0 && info.imp_factura ? info.imp_factura : null} title="ImporteFactura" type="number"/>
+                  {/* <Input name={'nro_factura'} defaults={Object.keys(info).length > 0 && info.nro_factura ? info.nro_factura : null} title="NroFactura" type="text"/>
+                  <Input name={'imp_factura'} defaults={Object.keys(info).length > 0 && info.imp_factura ? info.imp_factura : null} title="ImporteFactura" type="number"/> */}
                 </div>
                 <div>
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
@@ -278,7 +316,7 @@ export default function NewDespacho(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           {
-                            tipo == 0
+                            tipo !== 1
                             ?
                               <>
                                 <th className="lg:table-cell">Id</th>
@@ -316,7 +354,7 @@ export default function NewDespacho(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center">
                               {
-                                tipo == 0
+                                tipo !== 1
                                 ?
                                   <>
                                     <td>{row.idx}</td>

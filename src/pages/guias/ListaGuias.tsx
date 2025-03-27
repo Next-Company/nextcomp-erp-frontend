@@ -65,10 +65,9 @@ export default function ListaGuias(){
   const lista = useRef(null)
   const [info,setInfo] = useState([])
   const [infoestado,setInfoestado] = useState([])
+  const [estado,setEstado] = useState(1)
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
-  // const [refresh,setRefresh] = useState(false)
-  console.log("Rerenderizado!!!")
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id  
@@ -185,7 +184,7 @@ export default function ListaGuias(){
       console.log(resp)
       setOpenloader(false)
       setInfo(resp)
-      setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && row.estado !== 'ANULADO'))
+      setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && !['ANULADO','FINALIZADO'].includes(row.estado)))
     })
     .catch((error) => {
       console.log("El mnesaje de error es:",error)
@@ -211,13 +210,13 @@ export default function ListaGuias(){
       .then(resp => {
         console.log(resp)
         setOpenloader(false)
-        lista.current.querySelector('button.active').classList.remove('active')
-        e.target.classList.add('active')
+        // lista.current.querySelector('button.active').classList.remove('active')
+        // e.target.classList.add('active')
         // console.log("EL filt4ro 1 es:",resp.filter(row=>row.cantidad_servicio <= row.ingresos))
         if(estado == 1){
           // setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos || row.estado == 'PENDIENTE'))  
           // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE' && row.cantidad_servicio > row.ingresos))
-          setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && row.estado !== 'ANULADO'))
+          setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && !['ANULADO','FINALIZADO'].includes(row.estado)))
           // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))  
         }
         if(estado == 2){
@@ -228,7 +227,7 @@ export default function ListaGuias(){
         if(estado == 3){
           setInfoestado(resp.filter(row=>row.estado == 'ANULADO'))
         }
-        // setInfoestado(estado)
+        setEstado(estado)
       })
       .catch((error) => {
         console.log(error)
@@ -279,18 +278,26 @@ export default function ListaGuias(){
   //   openModal(params_modal)
   // }
   let busquedaglobal = async (input)=>{
-    // let data = new FormData()
-    // data.append('busqueda',input.value)
     Consulta({
-      url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value), params: {
+      // url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value ), params: {
+      url: 'produccion/getListaGuias/' + input.value, params: {
         method: 'GET'
       }
     })
     .then(resp => {
       console.log(resp)
       setOpenloader(false)
-      setInfo(resp)
-      setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
+      // setInfo(resp)
+      if(estado == 1){
+        setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && !['ANULADO','FINALIZADO'].includes(row.estado)))
+      }
+      if(estado == 2){
+        setInfoestado(resp.filter(row=>row.cantidad_servicio <= row.ingresos))
+      }
+      if(estado == 3){
+        setInfoestado(resp.filter(row=>row.estado == 'ANULADO'))
+      }
+      // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
     })
     .catch((error) => {
       console.log("El mnesaje de error es:",error)
@@ -316,13 +323,13 @@ export default function ListaGuias(){
             <hr />
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="1" onClick={filtrarestado}>
+                <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado="1" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="2" onClick={filtrarestado}>
+                <button className={`group ${estado == 2 ? 'active' : ''}`} data-estado="2" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Completados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -340,7 +347,7 @@ export default function ListaGuias(){
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button> */}
-                <button className="group" data-estado="3" onClick={filtrarestado}>
+                <button className={`group ${estado == 3 ? 'active' : ''}`} data-estado="3" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -377,7 +384,7 @@ export default function ListaGuias(){
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
                           <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor.length > 40 ? row.proveedor.substr(0,40) + '...' : row.proveedor}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0,40) + '...' : row.proveedor)}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>

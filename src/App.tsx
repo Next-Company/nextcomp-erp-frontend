@@ -35,6 +35,9 @@ import LayoutPagos from './pages/pagos/LayoutPagos.tsx'
 import LayoutMuestras from './pages/muestras/LayoutMuestras.tsx'
 import ListaMuestras from './pages/muestras/ListaMuestras.tsx'
 import NewMuestra from './pages/muestras/NewMuestra.tsx'
+import { LayoutLetras } from './pages/letras/LayoutLetras.tsx'
+import ListaLetras from './pages/letras/ListaLetras.tsx'
+import NewLetra from './pages/letras/NewLetra.tsx'
 
 const routes = [
   {
@@ -114,6 +117,16 @@ const routes = [
           { path: "nuevo", element: <NewPago/> },
           { path: "nuevo/:id", element: <NewPago/> },
           { path: "nuevo/:id/:altura", element: <NewPago/> },
+        ]
+      },
+      { 
+        path: "letras", 
+        element: <LayoutLetras/>,
+        children: [
+          { path: "inicio", element: <ListaLetras/> },
+          { path: "nuevo", element: <NewLetra/> },
+          { path: "nuevo/:id", element: <NewLetra/> },
+          // { path: "nuevo/:id/:altura", element: <NewPago/> },
         ]
       },
       { 

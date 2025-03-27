@@ -7,13 +7,11 @@ import { toast } from "react-toastify";
 import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
-import Proveedores from "../../components/Common/Proveedores"
 import Guias from "../../components/Common/Guias"
-import Pedidos from "../../components/Common/Pedidos"
 import { colorfase } from "../../utils/utils"
+import Pagos from "../../components/Common/Pagos"
 
 export default function NewPago(){
-  // const [estampado,setEstampado] = useState([])
   const [tipo,setTipo] = useState(0)
   const urlparams = useParams()
   const [info,setInfo] = useState({})
@@ -81,20 +79,20 @@ export default function NewPago(){
           setOpenloader(false)
         })
       }else{
-        // setOpenloader(true)
-        // Consulta({url: 'abonos/getabono/' + urlparams.id,})
-        // .then(resp => {
-        //   console.log("Los datos del abono son los siguientes:",resp)
-        //   setInfo(resp[0])
-        //   setRegistros(resp[1])
-        //   setOpenloader(false)
-        // })
-        // .catch((err)=>{
-        //   setOpenloader(false)
-        // })
-        // .finally(()=>{
-        //   setOpenloader(false)
-        // })
+        setOpenloader(true)
+        Consulta({url: 'abonos/getabono/' + urlparams.id,})
+        .then(resp => {
+          console.log("Los datos del abono son los siguientes:",resp)
+          setRegistros(resp[1])
+          setInfo(resp[0])
+          setOpenloader(false)
+        })
+        .catch((err)=>{
+          setOpenloader(false)
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
       }
       }else{
         
@@ -136,11 +134,11 @@ export default function NewPago(){
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
   }
 
-  const nuevoproveedor = ()=>{
+  const vistapagos = ()=>{
     let params_modal = null
     params_modal = {
       open:true,
-      content: <Proveedores actions={(item)=>{  
+      content: <Pagos idref={41} actions={(item)=>{  
         console.log("El item seleccionado es: ",item)
         setOpen(false)
         setOpenloader(true)
@@ -272,7 +270,7 @@ export default function NewPago(){
                   />
                   <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" />
                   <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="ImportePago" type="number"/>
-                  <Input name={'saldo'} defaults={Object.keys(info).length > 0 && info.saldo ? info.saldo : null} title="Saldo" type="number" action={nuevoproveedor} mode={'static'}/>
+                  <Input name={'saldo'} defaults={Object.keys(info).length > 0 && info.saldo ? info.saldo : null} title="Saldo" type="number" action={vistapagos} mode={'static'}/>
                   <Input name={'pago'} defaults={Object.keys(info).length > 0 && info.pago ? info.pago : null} title="Pago" type="number"/>
                 </div>
                 <div>

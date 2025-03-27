@@ -18,6 +18,7 @@ const CuerpoInforme = ({cuerpo})=>{
 }
 export default function ListaPagos(){
   const [info,setInfo] = useState([])
+  const [estado,setEstado] = useState('0')
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   // const [refresh,setRefresh] = useState(false)
@@ -106,9 +107,11 @@ export default function ListaPagos(){
         }
         // openModal(params_modal)
         break;
-      case 'edit':
-        const altura = 18
-        navigate("/main/pagos/nuevo/"+ id + "/" + altura)
+      case 'edit_pago':
+        navigate("/main/pagos/nuevo/"+ id )
+        break;
+      case 'add_pago':
+        navigate("/main/pagos/nuevo/"+ id + "/" + 18)
         break;
       case 'review':
         // navigate("/main/estampado/review/"+ id)
@@ -142,6 +145,30 @@ export default function ListaPagos(){
       // setOpenloader(false)
     })
   },[])
+
+  const filtrarestado = (e)=>{
+    const estado = e.target.dataset.estado
+
+    // setEstado(estado)
+    setOpenloader(true)
+    let url = parseInt(estado) ? 'abonos/100' : 'abonos/servicios/100'
+    Consulta({
+      url: url, params: {
+        method: 'GET'
+      }
+    })
+    .then(resp => {
+      setOpenloader(false)
+      setInfo(resp)
+      setEstado(estado)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(()=>{
+      setOpenloader(false)
+    })
+  }
 
   const recargarinfo = ()=>{
     const data = new FormData()
@@ -181,6 +208,7 @@ export default function ListaPagos(){
     openModal(params_modal)
   }
 
+
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -200,19 +228,19 @@ export default function ListaPagos(){
             <hr />
             <div>
               <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="1" onClick={()=>{}}>
+                <button className={`group ${estado == 0 ? 'active' : ''}`} data-estado={0} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="1" onClick={()=>{}}>
+                {/* <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Abonados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
-                </button>
-                <button className="group" data-estado="2" onClick={()=>{}}>
+                </button> */}
+                <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pagos Realizados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -226,12 +254,15 @@ export default function ListaPagos(){
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     {
-                      1==2
+                      parseInt(estado)
                       ?
                       <>
                         <th className="lg:table-cell">Id</th>
                         <th className="lg:table-cell">OrigenAbono</th>
                         <th className="lg:table-cell">Banco</th>
+                        <th className="lg:table-cell">IdRef</th>
+                        <th className="lg:table-cell">TipoOperación</th>
+                        <th className="lg:table-cell">NumOperación</th>
                         <th className="lg:table-cell">Proveedor</th>
                         <th className="lg:table-cell">Moneda</th>
                         <th className="lg:table-cell">Importe</th>
@@ -262,13 +293,16 @@ export default function ListaPagos(){
                       ? info.map((row, key) => (
                         <tr key={key} className="">
                           {
-                            1==2
+                            parseInt(estado)
                             ?
                             <>
                               <td>{row.idx}</td>
                               <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
                               <td>{row.entidad_bancaria}</td>
-                              <td>{row.id_proveedor}</td>
+                              <td>{row.idref}</td>
+                              <td>{row.tipo_operacion}</td>
+                              <td>{row.num_operacion}</td>
+                              <td>{row.proveedor}</td>
                               <td>{row.moneda == 'S' ? 'SOLES' : 'DOLARES'}</td>
                               <td><strong>S/.{row.importe}</strong></td>
                               <td>{row.fec_pago}</td>
@@ -311,7 +345,7 @@ export default function ListaPagos(){
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action={`${parseInt(estado) ? 'edit_pago' : 'add_pago'}`} onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                 </div>
                               </li>
