@@ -45,7 +45,7 @@ export default function NewPago(){
         }})
         .then(resp => {
           setOpenloader(false)
-          // navigate('/main/pagos/inicio')
+          navigate('/main/pagos/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -270,8 +270,15 @@ export default function NewPago(){
                   />
                   <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" />
                   <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="ImportePago" type="number"/>
-                  <Input name={'saldo'} defaults={Object.keys(info).length > 0 && info.saldo ? info.saldo : null} title="Saldo" type="number" action={vistapagos} mode={'static'}/>
-                  <Input name={'pago'} defaults={Object.keys(info).length > 0 && info.pago ? info.pago : null} title="Pago" type="number"/>
+                  {
+                    urlparams.altura
+                    &&
+                    <>
+                      <Input name={'saldo'} defaults={Object.keys(info).length > 0 && info.saldo ? info.saldo : null} title="Saldo" type="number" action={vistapagos} mode={'static'}/>
+                      <Input name={'pago'} defaults={Object.keys(info).length > 0 && info.pago ? info.pago : null} title="Pago" type="number"/>
+                    </>
+                  }
+                  
                 </div>
                 <div>
                   {/* <span>Artículos:</span> */}

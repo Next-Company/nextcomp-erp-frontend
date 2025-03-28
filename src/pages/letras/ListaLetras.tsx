@@ -266,15 +266,11 @@ export default function ListaLetras(){
       setOpenloader(false)
       // setInfo(resp)
       if(estado == 1){
-        setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && !['ANULADO','FINALIZADO'].includes(row.estado)))
+        setInfoestado(resp.filter(row=>['EMIT'].includes(row.estado)))
       }
       if(estado == 2){
-        setInfoestado(resp.filter(row=>row.cantidad_servicio <= row.ingresos))
+        setInfoestado(resp.filter(row=>!['EMIT'].includes(row.estado)))
       }
-      if(estado == 3){
-        setInfoestado(resp.filter(row=>row.estado == 'ANULADO'))
-      }
-      // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
     })
     .catch((error) => {
       console.log("El mnesaje de error es:",error)

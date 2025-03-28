@@ -57,7 +57,7 @@ export default function ListaPagos(){
               })
           }
         }
-        openModal(params_modal)
+        // openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -105,7 +105,7 @@ export default function ListaPagos(){
             desc()
           }
         }
-        // openModal(params_modal)
+        openModal(params_modal)
         break;
       case 'edit_pago':
         navigate("/main/pagos/nuevo/"+ id )
@@ -271,8 +271,8 @@ export default function ListaPagos(){
                       </>
                       :
                       <>
-                        <th className="lg:table-cell">Id</th>
-                        <th className="lg:table-cell">Servicio</th>
+                        <th className="lg:table-cell">IdServ</th>
+                        <th className="lg:table-cell">Origen</th>
                         <th className="lg:table-cell">Proveedor</th>
                         <th className="lg:table-cell">Producto</th>
                         <th className="lg:table-cell">Marca</th>
@@ -296,7 +296,7 @@ export default function ListaPagos(){
                             parseInt(estado)
                             ?
                             <>
-                              <td>{row.idx}</td>
+                              <td className="text-center">{row.idx}</td>
                               <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
                               <td>{row.entidad_bancaria}</td>
                               <td>{row.idref}</td>
@@ -309,17 +309,17 @@ export default function ListaPagos(){
                             </>
                             :
                             <>
-                              <td>{row.idx}</td>
-                              <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                              <td>{row.proveedor}</td>
-                              <td>{row.producto}</td>
-                              <td>{row.marca}</td>
-                              <td>{row.modelo}</td>
-                              <td>S/.{row.costo}</td>
-                              <td>{row.cantidad}</td>
-                              <td>{row.despacho}</td>
-                              <td>{row.importe}</td>
-                              <td>{row.importe - row.cancelado}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.idx}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 45 ? row.proveedor.substr(1,45) +  '...' : row.proveedor}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.producto}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.marca}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.modelo}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.costo}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.cantidad}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.despacho}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.importe}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.importe - row.cancelado}</td>
                             </>
                           }
                           <td className="w-[250px]">
