@@ -205,6 +205,20 @@ export default function NewPedido(){
     }
     openModal(params_modal)   
   }
+  const listafacturas = async ()=>{
+    const data = new FormData()
+    data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
+    data.append('detalle',JSON.stringify(registros))
+    const params_modal = {
+      open:true,
+      content: <CuerpoInforme info={data} tipo={tipo} />,
+      controls: false,
+      header: false,
+      action:async ()=>{
+      }
+    }
+    openModal(params_modal)   
+  }
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -267,7 +281,13 @@ export default function NewPedido(){
                   <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
                 </div>
                 <div>
-                  <span>Artículos:</span>
+                  <div className="flex flex-row justify-center">
+                    <div className="flex flex-row justify-between p-1 bg-gray-300 rounded-l-full rounded-r-full w-[250px]">
+                      <div className={`text-white w-[100px] text-center text-[9px] rounded-l-full rounded-r-full bg-green-600 cursor-pointer`}>Artículos</div>
+                      <div className={`text-white w-[100px] text-center text-[9px] rounded-l-full rounded-r-full bg-red-600 cursor-pointer`}>Facturas</div>
+                    </div>
+                  </div>
+                  
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
@@ -341,17 +361,26 @@ export default function NewPedido(){
                       </tfoot>
                     </table>
                   </div>
+
+
                 </div>
                 <div>
                   <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={4} />
                 </div>
               </div>
               <div className="flex justify-between gap-2 mt-2 p-1">
-                <div>
+                <div className="flex flex-row gap-2">
                   {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
-                  <Button action={vistaprevia} type={'button'} tipo={'accept'}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
-                  </Button>  
+                  <div>
+                    <Button action={vistaprevia} type={'button'} tipo={'accept'}>
+                      <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
+                    </Button>
+                  </div>
+                  <div>
+                    <Button action={listafacturas} type={'button'} tipo={'warning'}>
+                      <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-receipt-dollar"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2" /><path d="M14.8 8a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" /><path d="M12 6v10" /></svg>
+                    </Button>
+                  </div>
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button action={() => navigate('/main/pedidos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>

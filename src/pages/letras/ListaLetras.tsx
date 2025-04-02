@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
-import { useNavigate } from "react-router-dom";
+import { resolvePath, useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
@@ -279,7 +279,50 @@ export default function ListaLetras(){
       console.log("Horror en la consulta de base de datos")
     })
   }
+  let exportarexcel = async()=>{
+    // const pp = await fetch('http://192.168.18.20:5001/test1',{mode:'no-cors'})
+    // const json = await pp.json  ()
+    // console.log("asdfasfdasf :",json)
 
+    // await fetch('http://192.168.18.20:5001/test1',{mode:'no-cors'})
+    await fetch('http://192.168.18.20:5001/test1')
+    .then(resp=>{
+      console.log("Ifr :",resp)
+      // if(resp.ok) return resp.json()
+      return resp.json()
+    })
+    .then(res=>{
+      console.log("POPPOPO",res)
+      // let binaryString = window.atob(res.data);
+      // let binaryLen = binaryString.length;
+      // let bytes = new Uint8Array(binaryLen);
+      // for (let i = 0; i < binaryLen; i++) {
+      //     let ascii = binaryString.charCodeAt(i);
+      //     bytes[i] = ascii;
+      // }
+      let hexString = res.data;
+      let bytes = new Uint8Array(hexString.length / 2)
+
+      for (let i = 0; i < hexString.length; i += 2) {
+        bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
+      }
+      // let file= window.URL.createObjectURL(new Blob([bytes], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}))
+      // let file= window.URL.createObjectURL(new Blob([bytes], {type: "application/vnd.ms-excel"}))
+      let file= window.URL.createObjectURL(new Blob([bytes], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}))
+      let a = document.createElement("a");
+      a.classList.add("pdf_link")
+      a.href = file;
+      a.download = res.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a)
+
+    })
+    // .then(resp=>{
+    //   console.log("asdfasfdasf :",resp)
+    // })
+
+  }
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -397,6 +440,7 @@ export default function ListaLetras(){
             </div>
             <div className="flex flex-row justify-end">
               <div className="flex gap-2">
+                <Button action={exportarexcel} tipo={'success'}>Exportar</Button>
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevaletra} tipo={'accept'}>Nuevo</Button>
               </div>

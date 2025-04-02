@@ -8,7 +8,7 @@ const colorfase = {
   'ACABADOS':'bg-red-500',
   'LAVANDERIA':'bg-green-500',
   'MOLDES':'bg-orange-500',
-  'OJAL BOTON':'bg-blue-500',
+  'OJAL':'bg-blue-500',
   'CORTE':'bg-rose-400',
   'BORDADO':'bg-yellow-500',
 }

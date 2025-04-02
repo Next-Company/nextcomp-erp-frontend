@@ -109,6 +109,15 @@ export default function NewLetra(){
                 </div>
                 <div className="flex flex-row gap-3">
                   <Input name={'num_letra'} title="NumeroLetra" defaults={Object.keys(info).length > 0 ? info.num_letra : null} type="text" />
+                  
+                  <InputSelect title={'Moneda'} name={"moneda"} data={
+                    [
+                      { indice: 'MN', option: 'SOLES', selected: true }, 
+                      { indice: 'USD', option: 'DOLARES' },
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.moneda : null} 
+                  />
+
                   <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
                   <Input name={'importe'} title="Importe" defaults={Object.keys(info).length > 0 ? info.importe : null} type="number" />
                   <InputSelect title={'Estado'} name={"estado"} data={

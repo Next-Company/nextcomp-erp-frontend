@@ -138,7 +138,7 @@ export default function NewPago(){
     let params_modal = null
     params_modal = {
       open:true,
-      content: <Pagos idref={41} actions={(item)=>{  
+      content: <Pagos idref={urlparams.id} actions={(item)=>{  
         console.log("El item seleccionado es: ",item)
         setOpen(false)
         setOpenloader(true)

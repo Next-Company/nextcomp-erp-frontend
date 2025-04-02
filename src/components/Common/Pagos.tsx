@@ -90,7 +90,8 @@ export default function Pagos(children){
               {lista.length > 0 && lista.map((row,key)=>(
                 <tr key={key}>
                   <td>{row.idx}</td>
-                  <td>{row.entidad_bancaria}</td>
+                  {/* <td>{row.entidad_bancaria}</td> */}
+                  <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full bg-orange-400`}>{row.entidad_bancaria}</div></td>
                   <td>{row.cuenta_corriente}</td>
                   <td>{row.tipo_operacion}</td>
                   <td>{row.num_operacion}</td>
