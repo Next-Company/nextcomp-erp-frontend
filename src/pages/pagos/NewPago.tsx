@@ -195,7 +195,6 @@ export default function NewPago(){
       params_modal = {
         open:true,
         content: <Cuentas actions={(item)=>{  
-          console.log("El item seleccionado es: ",item)
           setInfo(info=>({...info,id_cuenta_CAB:item.idx,cuenta_corriente:item.nom}))
           setOpen(false)
         }}/>,

@@ -10,8 +10,9 @@ export default function Cuentas(children){
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'produccion/proveedoreslist/50'})
+      await Consulta({url: 'abonos/listacuentasbancos'})
       .then(resp => {
+        console.log(resp)
         setLista(resp)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
@@ -36,7 +37,8 @@ export default function Cuentas(children){
     // console.log("EL valor consultado es:",input.value)
     // console.log("La ruta de consulta es :",'produccion/searchproveedor/'+input.value)  
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'produccion/searchproveedor/'+ (input.value == '' ? '_' : input.value )})
+      // await Consulta({url: 'abonos/listacuentasbancos/'+ (input.value == '' ? '_' : input.value )})
+      await Consulta({url: 'abonos/listacuentasbancos' + (input.value !== '' ? `/${input.value}` : '' )})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)
@@ -75,18 +77,22 @@ export default function Cuentas(children){
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
-                <th className="lg:table-cell">Ruc</th>  
-                <th className="lg:table-cell">Proveedor</th>
-                <th className="lg:table-cell">Direccion</th>
+                <th className="lg:table-cell">Id</th>
+                <th className="lg:table-cell">Cuenta</th>
+                <th className="lg:table-cell">Tipo</th>
+                <th className="lg:table-cell">Moneda</th>
+                <th className="lg:table-cell">NroCuenta</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
                 <tr key={key}>
-                  <td>{row.ruc}</td>
+                  <td>{row.idx}</td>
                   <td>{row.nom}</td>
-                  <td>{row.direccion}</td>
+                  <td>{row.tipo}</td>
+                  <td>{row.moneda == 'MN' ? 'Soles' : 'Dolares'}</td>
+                  <td>{row.nro_cuenta}</td>
                   <td className="w-[250px]">
                     <ul className="flex flex-row justify-end">
                       <li>

@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "../../components/Atoms/Button/Button"
-import { createRef, useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext"
 import { toast } from "react-toastify";
@@ -25,7 +25,7 @@ export default function NewDespacho(){
   // const [estampado,setEstampado] = useState([])
   const [tipo,setTipo] = useState(2)
   const urlparams = useParams()
-  const [info,setInfo] = useState({})
+  const [info,setInfo] = useState({idx:null,tipo:'',fec_despacho:'',fec_emision_guia:'',ruc:'',id_pedido_origen:'',nro_pedido_origen:'',id_guia_origen:'',nro_guia_origen:'',id_proveedor_CAB:'',proveedor:'',responsable:'',nro_guia:''})
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros,setRegistros] = useState([])
