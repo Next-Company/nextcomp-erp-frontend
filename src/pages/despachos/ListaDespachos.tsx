@@ -280,12 +280,11 @@ export default function ListaDespachos(){
                       <>
                         <th className="lg:table-cell">Id</th>
                         <th className="lg:table-cell">NroGuia</th>
-                        {/* <th className="lg:table-cell">Tipo</th> */}
-                        <th className="lg:table-cell">Servicio</th>
                         <th className="lg:table-cell">Proveedor</th>
                         <th className="lg:table-cell">Producto</th>
                         <th className="lg:table-cell">Marca</th>
                         <th className="lg:table-cell">Modelo</th>
+                        <th className="lg:table-cell">Servicio</th>
                         <th className="lg:table-cell">FechaEmisionGuia</th>
                         <th className="lg:table-cell">FechaDespacho</th>
                         <th className="lg:table-cell text-center">Accciones</th>
@@ -314,12 +313,11 @@ export default function ListaDespachos(){
                             <>
                               <td>{row.idx}</td>
                               <td>{row.nro_guia}</td>
-                              {/* <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho[row.tipo]}`}>{row.tipo}</div></td> */}
-                              <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                               <td>{row.proveedor.length >= 45 ? row.proveedor.substr(0,45) + '...' : row.proveedor}</td>
                               <td>{row.producto}</td>
                               <td>{row.marca}</td>
                               <td>{row.modelo}</td>
+                              <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                               <td>{row.fec_emision_guia}</td>
                               <td>{row.fec_despacho}</td>
                             </>

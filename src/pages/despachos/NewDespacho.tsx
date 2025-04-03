@@ -29,6 +29,8 @@ export default function NewDespacho(){
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros,setRegistros] = useState([])
+  const [facturas,setFacturas] = useState([])
+  const [panelactive,setPanelActive] = useState(0)
   const navigate = useNavigate()
 
   const onsubmit = (e)=>{
@@ -48,6 +50,7 @@ export default function NewDespacho(){
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',JSON.stringify(registros.filter(row=>(row.despacho ?? 0) > 0)))
+        data.append('facturas',JSON.stringify(facturas))
 
         await Consulta({url: 'produccion/guardardespacho/',params:{
           method:'PUT',
@@ -55,7 +58,7 @@ export default function NewDespacho(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/despachos/inicio')
+          // navigate('/main/despachos/inicio')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -105,7 +108,7 @@ export default function NewDespacho(){
   },[])
 
   const nuevoregistro = ()=>{
-    setRegistros([...registros,tipo ? {item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0,despacho:0,caidos:0} : {item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+    setFacturas([...facturas,{serie:'',numero:'',fec_emision:'',unidades:0,importe_bruto:0,base_imponible:0,monto_inafecto:0,igv:0,importe_total:0}])
   }
 
   const onclick = (e)=>{
@@ -114,14 +117,19 @@ export default function NewDespacho(){
     switch(action){
 
       case 'delete':
-        setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
-        console.log("Eliminado registros de la fila ",position)
+        setFacturas(facturas.filter((row,key)=>key !== parseInt(position) ))
         break;
       default :
     }
 
     console.log("La accion seleccionada es la siguiente:",action)
 
+  }
+  const editfacturas = (e)=>{
+    let column = e.target.dataset.name
+    let position = e.target.dataset.position
+    // console.log("Los nuevos registros son:",[...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
+    setFacturas([...facturas.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
   }
   const editvalue = (e)=>{
     let column = e.target.dataset.name
@@ -237,6 +245,10 @@ export default function NewDespacho(){
     // console.log("VA o neleet")
     // console.log("Otros cambios adicionales")
   }
+  const changepanel = (e)=>{
+    let position = parseInt(e.target.dataset.position)
+    setPanelActive(position)
+  }
   useEffect(()=>{
     console.log("Los items ingresados son:",registros)
   },[registros])
@@ -308,114 +320,186 @@ export default function NewDespacho(){
                   <Input name={'imp_factura'} defaults={Object.keys(info).length > 0 && info.imp_factura ? info.imp_factura : null} title="ImporteFactura" type="number"/> */}
                 </div>
                 <div>
-                  <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
-                      {/* <caption>
-                        He-Man and Skeletor facts
-                      </caption> */}
-                      <thead className="text-left sticky top-0 bg-white">
-                        <tr>
+                  <div className="flex flex-row justify-center">
+                    <div className="flex flex-row justify-between p-1 bg-gray-200 rounded-l-full rounded-r-full relative">
+                      <div className={`w-[120px] h-[14px] text-center text-[9px] rounded-l-full rounded-r-full ${!panelactive ? 'bg-green-600' : 'bg-red-600 translate-x-full'} transition-all cursor-pointer absolute`}></div>
+                      <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full cursor-pointer z-10 ${!panelactive && 'text-white'} transition-all`} onClick={changepanel} data-position="0">Artículos</div>
+                      <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full  cursor-pointer z-10 ${panelactive && 'text-white'} transition-all`} onClick={changepanel} data-position="1">Facturas</div>
+                    </div>
+                  </div>
+
+                  <div className={`w-[200%] h-[400px] ${panelactive && 'translate-x-[-50%]'} flex flex-row transition-all overflow-hidden`}>
+                    {/* PANEL ARTICULOS */}
+                    <div className="flex-1 h-[100%] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
+                      <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                        <thead className="text-left sticky top-0 bg-white">
+                          <tr>
+                            {
+                              tipo !== 1
+                              ?
+                                <>
+                                  <th className="lg:table-cell">Id</th>
+                                  <th className="lg:table-cell">Servicio</th>
+                                  <th className="lg:table-cell">Descripción</th>
+                                  <th className="lg:table-cell">Modelo</th>
+                                  <th className="lg:table-cell">XS / 26</th>
+                                  <th className="lg:table-cell">S / 28</th>
+                                  <th className="lg:table-cell">M / 30</th>
+                                  <th className="lg:table-cell">L / 32</th>
+                                  <th className="lg:table-cell">XL / 34</th>
+                                  <th className="lg:table-cell">XXL / 36</th>
+                                  <th className="lg:table-cell">Cantidad</th>
+                                  <th className="lg:table-cell">Despacho</th>
+                                  <th className="lg:table-cell">Caidos</th>
+                                  <th className="lg:table-cell">Acciones</th>
+                                </>
+                              :
+                                <>
+                                  <th className="lg:table-cell w-[500px]">Descripción</th>  
+                                  <th className="lg:table-cell">Color</th>
+                                  <th className="lg:table-cell">Rollos</th>
+                                  <th className="lg:table-cell">Cantidad</th>
+                                  <th className="lg:table-cell">Unidad</th>
+                                  <th className="lg:table-cell">Precio</th>
+                                  <th className="lg:table-cell">Despacho</th>
+                                  <th className="lg:table-cell">Acciones</th>
+                                </>
+                            }
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
                           {
-                            tipo !== 1
-                            ?
-                              <>
-                                <th className="lg:table-cell">Id</th>
-                                <th className="lg:table-cell">Servicio</th>
-                                <th className="lg:table-cell">Descripción</th>
-                                <th className="lg:table-cell">Modelo</th>
-                                <th className="lg:table-cell">XS / 26</th>
-                                <th className="lg:table-cell">S / 28</th>
-                                <th className="lg:table-cell">M / 30</th>
-                                <th className="lg:table-cell">L / 32</th>
-                                <th className="lg:table-cell">XL / 34</th>
-                                <th className="lg:table-cell">XXL / 36</th>
-                                <th className="lg:table-cell">Cantidad</th>
-                                <th className="lg:table-cell">Despacho</th>
-                                <th className="lg:table-cell">Caidos</th>
-                                <th className="lg:table-cell">Acciones</th>
-                              </>
-                            :
-                              <>
-                                <th className="lg:table-cell w-[500px]">Descripción</th>  
-                                <th className="lg:table-cell">Color</th>
-                                <th className="lg:table-cell">Rollos</th>
-                                <th className="lg:table-cell">Cantidad</th>
-                                <th className="lg:table-cell">Unidad</th>
-                                <th className="lg:table-cell">Precio</th>
-                                <th className="lg:table-cell">Despacho</th>
-                                <th className="lg:table-cell">Acciones</th>
-                              </>
+                            registros.length > 0 && registros.map((row,key)=>(
+                              <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center">
+                                {
+                                  tipo !== 1
+                                  ?
+                                    <>
+                                      <td>{row.idx}</td>
+                                      <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                                      <td>{row.articulo}</td>
+                                      <td>{row.modelo}</td>
+                                      <td>{row.xs}</td>
+                                      <td>{row.s}</td>
+                                      <td>{row.m}</td>
+                                      <td>{row.l}</td>
+                                      <td>{row.xl}</td>
+                                      <td>{row.xxl}</td>
+                                      <td>{row.cantidad}</td>
+                                      <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
+                                      <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" defaultValue={row.caidos ?? 0} /></td>
+                                    </>
+                                  :
+                                    <>
+                                      <td><input type="text" onChange={editvalue} data-name="producto" data-position={key} defaultValue={row.producto} /></td>
+                                      <td><input type="text" onChange={editvalue} data-position={key} data-name="color" defaultValue={row.color} /></td>
+                                      <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
+                                      <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
+                                      <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
+                                      <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
+                                      <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
+                                    </>
+                                }
+                                <td className="w-[250px]">
+                                  <ul className="flex flex-row justify-end">
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-position={key}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </td>
+                              </tr>
+                            ))
                           }
-                          
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                          registros.length > 0 && registros.map((row,key)=>(
-                            <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center">
-                              {
-                                tipo !== 1
-                                ?
-                                  <>
-                                    <td>{row.idx}</td>
-                                    <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                                    <td>{row.articulo}</td>
-                                    <td>{row.modelo}</td>
-                                    <td>{row.xs}</td>
-                                    <td>{row.s}</td>
-                                    <td>{row.m}</td>
-                                    <td>{row.l}</td>
-                                    <td>{row.xl}</td>
-                                    <td>{row.xxl}</td>
-                                    <td>{row.cantidad}</td>
-                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
-                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" defaultValue={row.caidos ?? 0} /></td>
-                                  </>
-                                :
-                                  <>
-                                    <td><input type="text" onChange={editvalue} data-name="producto" data-position={key} defaultValue={row.producto} /></td>
-                                    <td><input type="text" onChange={editvalue} data-position={key} data-name="color" defaultValue={row.color} /></td>
-                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
-                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
-                                    <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
-                                    <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
-                                    <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
-                                  </>
-                              }
-                              <td className="w-[250px]">
-                                <ul className="flex flex-row justify-end">
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </td>
-                            </tr>
-                          ))
-                        }
-                      </tbody>
-                      {/* <tfoot className="sticky bottom-0">
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* PANEL FACTURAS */}
+                    <div className="flex-1 h-[100%] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
+                      <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                        <thead className="text-left sticky top-0 bg-white">
+                          <tr>
+                            <th className="lg:table-cell">Serie</th>  
+                            <th className="lg:table-cell">Numero</th>
+                            <th className="lg:table-cell">FecEmisión</th>
+                            <th className="lg:table-cell">TotalUnidades</th>
+                            <th className="lg:table-cell">ImporteBruto</th>
+                            <th className="lg:table-cell">BaseImponible</th>
+                            <th className="lg:table-cell">MontoInafecto</th>
+                            <th className="lg:table-cell">Igv</th>
+                            <th className="lg:table-cell">MontoTotal</th>
+                            <th className="lg:table-cell">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {
+                            facturas.length > 0 && facturas.map((row,key)=>(
+                              <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center">
+                                <td><input type="text" onChange={editfacturas} data-name="serie" data-position={key} defaultValue={row.serie} /></td>
+                                <td><input type="text" onChange={editfacturas} data-position={key} data-name="numero" defaultValue={row.numero} /></td>
+                                <td><input type="date" onChange={editfacturas} data-position={key} data-name="fec_emision" defaultValue={row.fec_emision} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="unidades" defaultValue={row.unidades} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="importe_bruto" defaultValue={row.importe_bruto} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="base_imponible" defaultValue={row.base_imponible} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="monto_inafecto" defaultValue={row.monto_inafecto} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="igv" defaultValue={row.igv} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="importe_total" defaultValue={row.importe_total} /></td>
+                                <td className="w-[250px]">
+                                  <ul className="flex flex-row justify-end">
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                        <tfoot className="sticky bottom-0">
                         <tr>
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center">
@@ -425,8 +509,9 @@ export default function NewDespacho(){
                             </div>
                           </td>
                         </tr>
-                      </tfoot> */}
-                    </table>
+                      </tfoot>
+                      </table>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -448,42 +533,3 @@ export default function NewDespacho(){
     </>
   )
 }
-
-
-// Componente InputSelect
-// export function InputSelect({ title, name, data, df }) {
-//   // ... (resto del código)
-
-//   const onSelectChange = (key) => {
-//     setSelect(key);
-//     const event = new CustomEvent("inputSelectChange", {
-//       detail: { value: info[key].indice },
-//     });
-//     ref_menu.current.dispatchEvent(event); // Disparamos el evento en un elemento del DOM
-//   };
-
-//   // ... (resto del código)
-// }
-
-// // Componente padre
-// function MiFormulario() {
-//   const handleInputChange = (event) => {
-//     console.log("Valor seleccionado en el formulario:", event.detail.value);
-//   };
-
-//   useEffect(() => {
-//     const menu = ref_menu.current; // Obtén una referencia al elemento donde se dispara el evento
-//     menu.addEventListener("inputSelectChange", handleInputChange); // Escuchamos el evento personalizado
-
-//     return () => {
-//       menu.removeEventListener("inputSelectChange", handleInputChange); // Limpiamos el listener al desmontar el componente
-//     };
-//   }, []);
-
-//   return (
-//     <form ref={ref_form}>
-//       <InputSelect title="Mi InputSelect" name="miInput" data={data} df={df} ref={ref_menu} />
-//       {/* ... otros elementos del formulario */}
-//     </form>
-//   );
-// }

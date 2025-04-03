@@ -10,6 +10,7 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Guias from "../../components/Common/Guias"
 import { colorfase } from "../../utils/utils"
 import Pagos from "../../components/Common/Pagos"
+import Cuentas from "../../components/Common/Cuentas"
 
 export default function NewPago(){
   const [tipo,setTipo] = useState(0)
@@ -189,6 +190,22 @@ export default function NewPago(){
     }
     openModal(params_modal)
   }
+  const nuevacuenta = ()=>{
+      let params_modal = null
+      params_modal = {
+        open:true,
+        content: <Cuentas actions={(item)=>{  
+          console.log("El item seleccionado es: ",item)
+          setInfo(info=>({...info,id_cuenta_CAB:item.idx,cuenta_corriente:item.nom}))
+          setOpen(false)
+        }}/>,
+        controls: true,
+        header: false,
+        action:()=>{
+        }
+      }
+      openModal(params_modal)
+    }
   const onchange = (e)=>{
     console.log("Cambiando tipo de pedido")
     // console.log("VA o neleet")
@@ -245,7 +262,8 @@ export default function NewPago(){
                     df={Object.keys(info).length > 0 ? info.entidad_bancaria : null} 
                   />
                   {/* <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionDespacho" type="date" /> */}
-                  <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text"/>
+                  <Input name={'id_cuenta_CAB'} defaults={Object.keys(info).length > 0 && info.id_cuenta_CAB ? info.id_cuenta_CAB : null} title="Cuenta Corriente" type="hidden"/>
+                  <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text" action={nuevacuenta} mode={'static'}/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <InputSelect title={'Tipo Operación'} name={"tipo_operacion"} data={
                     [

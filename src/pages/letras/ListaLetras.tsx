@@ -362,6 +362,7 @@ export default function ListaLetras(){
                     <th className="lg:table-cell">NroLetra</th>
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">DocumentosRef</th>
+                    <th className="lg:table-cell">Moneda</th>
                     <th className="lg:table-cell">FecEmisión</th>
                     <th className="lg:table-cell">FecVigencia</th>
                     <th className="lg:table-cell">Importe</th>
@@ -378,6 +379,7 @@ export default function ListaLetras(){
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.num_letra}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0,40) + '...' : row.proveedor)}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.documentos_ref}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.moneda}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_vencimiento}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>S/.{row.importe}</td>

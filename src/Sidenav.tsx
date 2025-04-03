@@ -229,7 +229,7 @@ export function Sidenav() {
               </NavLink>
               <div className="absolute h-8 rounded-md bg-gray-800 text-white hidden items-center left-[55px] z-20 p-2 group-hover/sub:flex">
                 <div className="absolute border-r-[6px] border-r-gray-800 border-b-[6px] border-b-transparent border-t-[6px] border-t-transparent left-[-5px]"></div>
-                Pagos
+                Obligaciones
               </div>
             </li>
             <li className="group/sub">
