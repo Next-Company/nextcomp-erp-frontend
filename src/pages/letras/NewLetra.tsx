@@ -12,6 +12,8 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function NewLetra(){
   const urlparams = useParams()
   const [info,setInfo] = useState([])
+  const [origen,setOrigen] = useState('SERVICIO')
+  const [registros,setRegistros] = useState([])
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const navigate = useNavigate()
@@ -66,8 +68,34 @@ export default function NewLetra(){
       }
       pp()
     }
+    const handleInputChange = (event) => {
+      // setOrigen(event.detail.valor == 'PEDIDOS' ? 1 : ( event.detail.valor == 'SERVICIOS' ? 2 : 0 ))
+      console.log("El valor de origen es:",event.detail.valor)
+      setOrigen(event.detail.valor)
+    };
+    form.current.addEventListener("salamandra", handleInputChange);
+    
+    return () => {
+      if(form.current) form.current.removeEventListener("salamandra", handleInputChange);
+    };
   },[])
   const nuevoproveedor = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Proveedores actions={(item)=>{  
+        console.log("El item seleccionado es: ",item)
+        setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom}))
+        setOpen(false)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openModal(params_modal)
+  }
+  const listafacturas = ()=>{
     let params_modal = null
     params_modal = {
       open:true,
@@ -103,13 +131,19 @@ export default function NewLetra(){
                 <div className="flex flex-row gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
+                  {/* <InputSelect title={'Origen'} formref={form} name={"origen"} data={
+                    [
+                      { indice: 'SERVICIO', option: 'SERVICIO', selected: true }, 
+                      { indice: 'PEDIDO', option: 'PEDIDO' },
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.origen : null} 
+                  /> */}
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
                   <Input name={'fec_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_vencimiento : null} type="date" />
                 </div>
                 <div className="flex flex-row gap-3">
                   <Input name={'num_letra'} title="NumeroLetra" defaults={Object.keys(info).length > 0 ? info.num_letra : null} type="text" />
-                  
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
                       { indice: 'MN', option: 'SOLES', selected: true }, 
@@ -117,8 +151,15 @@ export default function NewLetra(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.moneda : null} 
                   />
-
-                  <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
+                  {
+                    origen == 'PEDIDO'
+                    ?<>
+                      <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" action={listafacturas} mode={'static'}/>
+                    </>
+                    :<>
+                      <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
+                    </>
+                  }
                   <Input name={'importe'} title="Importe" defaults={Object.keys(info).length > 0 ? info.importe : null} type="number" />
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [

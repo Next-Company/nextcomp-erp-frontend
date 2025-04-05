@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "../../components/Atoms/Button/Button"
-import { createRef, useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext"
 import { toast } from "react-toastify";
@@ -8,10 +8,7 @@ import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
-import { InputTest } from "../../components/Atoms/Input/InputTest"
 import Productos from "../../components/Common/Productos"
-import ReviewEstampado from "../estampado/ReviewEstampado"
-
 
 const CuerpoInforme = ({info,tipo})=>{
   let [ruta,setRuta] = useState("")
@@ -94,9 +91,6 @@ export default function NewPedido(){
       }
     })
   }
-  const testkey = ()=>{
-    
-  }
   useEffect(()=>{
     if(urlparams.id){
       setOpenloader(true)
@@ -121,7 +115,6 @@ export default function NewPedido(){
   },[])
 
   const nuevoproducto = ()=>{
-    // console.log("Registros actuales :",registros)
     openModal({
       open:true,
       content: <Productos actions={(items)=>{  
@@ -239,7 +232,7 @@ export default function NewPedido(){
           </div>
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
 
-            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={()=>{}} onInputCapture={onchange}>
+            <form ref={form} onSubmit={onsubmit} onChange={()=>{}} onInputCapture={onchange}>
               <div className={` flex-col gap-3 flex`}>
 
                 <div className="flex gap-3">

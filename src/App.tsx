@@ -38,6 +38,7 @@ import NewMuestra from './pages/muestras/NewMuestra.tsx'
 import { LayoutLetras } from './pages/letras/LayoutLetras.tsx'
 import ListaLetras from './pages/letras/ListaLetras.tsx'
 import NewLetra from './pages/letras/NewLetra.tsx'
+import NewLetraV2 from './pages/letras/NewLetrav2.tsx'
 
 const routes = [
   {
@@ -124,8 +125,8 @@ const routes = [
         element: <LayoutLetras/>,
         children: [
           { path: "inicio", element: <ListaLetras/> },
-          { path: "nuevo", element: <NewLetra/> },
-          { path: "nuevo/:id", element: <NewLetra/> },
+          { path: "nuevo", element: <NewLetraV2/> },
+          { path: "nuevo/:id", element: <NewLetraV2/> },
           // { path: "nuevo/:id/:altura", element: <NewPago/> },
         ]
       },

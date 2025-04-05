@@ -60,6 +60,7 @@ export default function Informe(){
     //   console.log("Horror en la consulta de base de datos")
     // })
     const handleInputChange = (event) => {
+      console.log("Dentro del componente informes")
       let pp = new FormData(form.current)
       let params = new URLSearchParams()
       for(let valor of pp.entries()){

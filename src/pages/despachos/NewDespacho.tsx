@@ -82,7 +82,9 @@ export default function NewDespacho(){
           .then(resp => {
             console.log("Los datos del despacho son:",resp)
             setInfo(resp[0])
-            setRegistros(resp[1])
+            setRegistros(resp[1][0])
+            setFacturas(resp[1][1])
+
             setTipo(resp[0].tipo == 'PEDIDOS' ? 1 : ( resp[0].tipo == 'SERVICIOS' ? 2 : 0 ))
             setOpenloader(false)
           })
@@ -97,6 +99,7 @@ export default function NewDespacho(){
     }
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
+      console.log("Hola Ivon")
       setTipo(event.detail.valor == 'PEDIDOS' ? 1 : ( event.detail.valor == 'SERVICIOS' ? 2 : 0 ))
       setRegistros([])
     };
@@ -223,7 +226,11 @@ export default function NewDespacho(){
         Consulta({url: 'produccion/pedido/' + item.idx})
         .then(resp => {
           setInfo(info=>({...info,id_pedido_origen:item.idx,nro_pedido_origen:item.idx,id_proveedor_CAB:item.id_proveedor_CAB,proveedor:item.proveedor}))
-          setRegistros(resp[1])
+          setRegistros(resp[1].map(row=>{
+            row = {...row,id_item:row.idx}
+            Reflect.deleteProperty(row,'idx')
+            return row
+          }))
         })
         .catch((err)=>{
           setOpenloader(false)
