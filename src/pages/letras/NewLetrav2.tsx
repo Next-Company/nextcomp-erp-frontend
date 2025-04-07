@@ -70,8 +70,9 @@ export default function NewLetraV2() {
       const pp = async () => {
         await Consulta({ url: 'letras/getLetraById/' + urlparams.id, })
           .then(resp => {
-            console.log("info guia :", resp)
-            setInfo(resp[0])
+            console.log("Letra info :", resp[1][0])
+            setInfo(resp[0][0])
+            setRegistros(resp[1])
             setOpenloader(false)
           })
           .catch((err) => {
@@ -223,16 +224,16 @@ export default function NewLetraV2() {
                         {
                           registros.length > 0 && registros.map((row, key) => (
                             <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item) => item.idxsub == row.idxsub) ? 'selected' : ''}`}>
-                              <td><input type="text" data-name="idx" data-position={key} value={row.idx} /></td>
-                              <td><input data-name="tipodoc" type="text" data-position={key} value={row.tipodoc == '2' ? 'NOTA CREDITO' : 'FACTURA'} /></td>
-                              <td><input data-name="serie" type="text" data-position={key} value={row.serie} /></td>
-                              <td><input data-name="numero" type="text" data-position={key} value={row.numero} /></td>
-                              <td><input data-name="fec_emision" type="date" data-position={key} value={row.fec_emision} /></td>
-                              <td><input data-name="importe_bruto" type="number" data-position={key} value={row.importe_bruto} /></td>
-                              <td><input data-name="base_imponible" type="number" data-position={key} value={row.base_imponible} /></td>
-                              <td><input data-name="monto_inafecto" type="number" data-position={key} value={row.monto_inafecto} /></td>
-                              <td><input data-name="igv" type="number" data-position={key} value={row.igv} /></td>
-                              <td><input data-name="importe_total" type="number" data-position={key} value={row.importe_total} /></td>
+                              <td className="text-center">{row.idx}</td>
+                              <td className="text-center">{row.tipodoc == '2' ? 'NOTA CREDITO' : 'FACTURA'}</td>
+                              <td className="text-center">{row.serie}</td>
+                              <td className="text-center">{row.numero}</td>
+                              <td className="text-center">{row.fec_emision}</td>
+                              <td className="text-center">{row.importe_bruto}</td>
+                              <td className="text-center">{row.base_imponible}</td>
+                              <td className="text-center">{row.monto_inafecto}</td>
+                              <td className="text-center">{row.igv}</td>
+                              <td className="text-center">{row.importe_total}</td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>

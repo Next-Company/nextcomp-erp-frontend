@@ -39,6 +39,7 @@ import { LayoutLetras } from './pages/letras/LayoutLetras.tsx'
 import ListaLetras from './pages/letras/ListaLetras.tsx'
 import NewLetra from './pages/letras/NewLetra.tsx'
 import NewLetraV2 from './pages/letras/NewLetrav2.tsx'
+import SeguimientoGuia from './pages/guias/NewSeguimiento.tsx'
 
 const routes = [
   {
@@ -75,6 +76,7 @@ const routes = [
           { path: "inicio", element: <ListaGuias/> },
           { path: "nuevo", element: <NewGuia/> },
           { path: "nuevo/:id", element: <NewGuia/> },
+          { path: "seguimiento/:id", element: <SeguimientoGuia/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ]

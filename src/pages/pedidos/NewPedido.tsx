@@ -111,6 +111,18 @@ export default function NewPedido(){
           })
       }
       pp()
+    }else{
+      setOpenloader(true)
+      Consulta({url: 'produccion/nuevopedido'})
+        .then(resp => {
+          console.log("Busqueda info pedido:",resp)
+          setInfo({...info,orden_ref: resp[0].correlativo})
+          setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
+          setOpenloader(false)
+        })
+        .catch((err)=>{
+          setOpenloader(false)
+        })
     }
   },[])
 
@@ -237,16 +249,17 @@ export default function NewPedido(){
 
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="Orden Pedido" type="text" />
+                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="text" />
                   <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" />
                   {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" />
-                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
+                  
                 </div>
                 <div className="flex gap-3">
+                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
                   <InputSelect title={'TipoPedido'} name={"tipo"} data={
                     [
                       { indice: 'TELAS', option: 'TELAS', selected: true }, 
@@ -256,7 +269,9 @@ export default function NewPedido(){
                   />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" />
                   <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" />
-
+                  <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text" />
+                </div>
+                <div className="flex gap-3">
                   <InputSelect title={'Moneda'} formref={form} name={"moneda"} data={
                     [
                       { indice: 'S', option: 'SOLES', selected: true }, 
@@ -275,7 +290,7 @@ export default function NewPedido(){
                 </div>
                 <div>
                   <span>Artículos</span>                  
-                  <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
+                  <div className="h-[370px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>

@@ -318,7 +318,7 @@ export default function ListaPedidos() {
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">OC/OP</th>
+                    <th className="lg:table-cell">N°Orden</th>
                     <th className="lg:table-cell">Tipo</th>
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">FechaEmision</th>

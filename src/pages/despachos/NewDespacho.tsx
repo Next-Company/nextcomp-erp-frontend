@@ -39,6 +39,7 @@ export default function NewDespacho() {
       toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
       return
     }
+    console.log("Los datos del formulario son:", registros)
     openModal({
       open: true,
       header: false,
