@@ -9,17 +9,17 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function NewLetraV2(){
+export default function NewLetraV2() {
   const urlparams = useParams()
-  const [info,setInfo] = useState({idx:null,id_proveedor_CAB:null,proveedor:null,fec_emision:null,fec_vencimiento:null,num_letra:null,documentos_ref:null,importe:null,estado:'EMIT',origen:'SERVICIO'})
-  const [origen,setOrigen] = useState('SERVICIO')
-  const [registros,setRegistros] = useState([])
-  const [selected,setSelected] = useState([])
+  const [info, setInfo] = useState({ idx: null, id_proveedor_CAB: null, proveedor: null, fec_emision: null, fec_vencimiento: null, num_letra: null, documentos_ref: null, importe: null, estado: 'EMIT', origen: 'SERVICIO' })
+  const [origen, setOrigen] = useState('SERVICIO')
+  const [registros, setRegistros] = useState([])
+  const [selected, setSelected] = useState([])
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const navigate = useNavigate()
 
-  const onsubmit = (e)=>{
+  const onsubmit = (e) => {
     e.preventDefault()
     openModal({
       open: true,
@@ -29,53 +29,55 @@ export default function NewLetraV2(){
       action: async () => {
         setOpenloader(true)
         const data = new FormData()
-        urlparams.id && data.append('id',urlparams.id)
-        data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('registros',JSON.stringify(registros))
-        await Consulta({url: 'letras/saveLetra/',params:{
-          method:'PUT',
-          body:data
-        }})
-        .then(resp => {
-          setOpenloader(false)
-          // navigate('/main/letras/inicio')
-          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+        urlparams.id && data.append('id', urlparams.id)
+        data.append('info', JSON.stringify(Object.fromEntries(new FormData(form.current))))
+        data.append('registros', JSON.stringify(registros))
+        await Consulta({
+          url: 'letras/saveLetra/', params: {
+            method: 'PUT',
+            body: data
+          }
         })
-        .catch((err)=>{
-          setOpenloader(false)
-          toast.error('Se produjo un error!!', { theme: "colored" })
-        })
-        .finally(()=>{
-          setOpenloader(false)
-        })
+          .then(resp => {
+            setOpenloader(false)
+            // navigate('/main/letras/inicio')
+            toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          })
+          .catch((err) => {
+            setOpenloader(false)
+            toast.error('Se produjo un error!!', { theme: "colored" })
+          })
+          .finally(() => {
+            setOpenloader(false)
+          })
       }
     })
   }
-  const onclick = (e)=>{
+  const onclick = (e) => {
     // actions(lista[e.target.dataset.position])
     const item = registros[parseInt(e.target.dataset.position)]
-    if(selected.find((row)=>row.idx == item.idx)){
-      setSelected([...selected.filter(row=>row.idx !== item.idx)])
-      setInfo({...info,importe:parseFloat(info.importe ?? 0) - parseFloat(item.importe_total)})
-    }else{
-      setSelected([...selected,registros[parseInt(e.target.dataset.position)]])
-      setInfo({...info,importe:parseFloat(info.importe ?? 0) + parseFloat(item.importe_total)})
+    if (selected.find((row) => row.idx == item.idx)) {
+      setSelected([...selected.filter(row => row.idx !== item.idx)])
+      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) - parseFloat(item.importe_total) })
+    } else {
+      setSelected([...selected, registros[parseInt(e.target.dataset.position)]])
+      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) + parseFloat(item.importe_total) })
     }
   }
-  useEffect(()=>{
-    if(urlparams.id){
+  useEffect(() => {
+    if (urlparams.id) {
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'letras/getLetraById/' + urlparams.id,})
+        await Consulta({ url: 'letras/getLetraById/' + urlparams.id, })
           .then(resp => {
-            console.log("info guia :",resp)
+            console.log("info guia :", resp)
             setInfo(resp[0])
             setOpenloader(false)
           })
-          .catch((err)=>{
+          .catch((err) => {
             setOpenloader(false)
           })
-          .finally(()=>{
+          .finally(() => {
             setOpenloader(false)
           })
       }
@@ -83,61 +85,61 @@ export default function NewLetraV2(){
     }
     const handleInputChange = (event) => {
       // setOrigen(event.detail.valor == 'PEDIDOS' ? 1 : ( event.detail.valor == 'SERVICIOS' ? 2 : 0 ))
-      console.log("El valor de origen es:",event.detail.valor)
+      console.log("El valor de origen es:", event.detail.valor)
       setOrigen(event.detail.valor)
     };
     form.current.addEventListener("salamandra", handleInputChange);
-    
+
     return () => {
-      if(form.current) form.current.removeEventListener("salamandra", handleInputChange);
+      if (form.current) form.current.removeEventListener("salamandra", handleInputChange);
     };
-  },[])
-  const nuevoproveedor = ()=>{
+  }, [])
+  const nuevoproveedor = () => {
     let params_modal = null
     params_modal = {
-      open:true,
-      content: <Proveedores actions={(item)=>{
-        console.log("El item seleccionado es: ",item)
+      open: true,
+      content: <Proveedores actions={(item) => {
+        console.log("El item seleccionado es: ", item)
         setOpen(false)
         setOpenloader(true)
-        Consulta({url: 'letras/getfacturasbyproveedor/'+ item.idx})
-        .then(resp => {
-          // setRegistros(resp)
-          console.log("Lista de facturas",resp)
-          setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom}))
-          setOpenloader(false)
-          setRegistros(resp)
-          // navigate('/main/guias/inicio')
-        })
-        .catch((err)=>{
-          // setOpenloader(false)
-        })
+        Consulta({ url: 'letras/getfacturasbyproveedor/' + item.idx })
+          .then(resp => {
+            // setRegistros(resp)
+            console.log("Lista de facturas", resp)
+            setInfo(info => ({ ...info, id_proveedor_CAB: item.idx, proveedor: item.nom }))
+            setOpenloader(false)
+            setRegistros(resp)
+            // navigate('/main/guias/inicio')
+          })
+          .catch((err) => {
+            // setOpenloader(false)
+          })
 
-        
-      }}/>,
+
+      }} />,
       controls: true,
       header: false,
-      action:()=>{
+      action: () => {
       }
     }
     openModal(params_modal)
   }
-  const listafacturas = ()=>{
+  const listafacturas = () => {
     let params_modal = null
     params_modal = {
-      open:true,
-      content: <Proveedores actions={(item)=>{  
-        setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom}))
+      open: true,
+      content: <Proveedores actions={(item) => {
+        setInfo(info => ({ ...info, id_proveedor_CAB: item.idx, proveedor: item.nom }))
         setOpen(false)
-      }}/>,
+      }} />,
       controls: true,
       header: false,
-      action:()=>{
+      action: () => {
       }
     }
     openModal(params_modal)
   }
-  return(
+  return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
@@ -159,10 +161,10 @@ export default function NewLetraV2(){
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <InputSelect title={'Origen'} formref={form} name={"origen"} data={
                     [
-                      { indice: 'SERVICIO', option: 'SERVICIO', selected: true }, 
+                      { indice: 'SERVICIO', option: 'SERVICIO', selected: true },
                       { indice: 'PEDIDO', option: 'PEDIDO' },
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.origen : null} 
+                    ]}
+                    df={Object.keys(info).length > 0 ? info.origen : null}
                   />
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
@@ -172,40 +174,41 @@ export default function NewLetraV2(){
                   <Input name={'num_letra'} title="NumeroLetra" defaults={Object.keys(info).length > 0 ? info.num_letra : null} type="text" />
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
-                      { indice: 'MN', option: 'SOLES', selected: true }, 
+                      { indice: 'MN', option: 'SOLES', selected: true },
                       { indice: 'USD', option: 'DOLARES' },
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.moneda : null} 
+                    ]}
+                    df={Object.keys(info).length > 0 ? info.moneda : null}
                   />
                   {
                     origen == 'PEDIDO'
-                    ?<>
-                      <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" action={listafacturas} mode={'static'}/>
-                    </>
-                    :<>
-                      <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
-                    </>
+                      ? <>
+                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" action={listafacturas} mode={'static'} />
+                      </>
+                      : <>
+                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
+                      </>
                   }
                   <Input name={'importe'} title="Importe" defaults={Object.keys(info).length > 0 ? info.importe : null} type="number" />
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
-                      { indice: 'EMIT', option: 'PENDIENTE', selected: true }, 
-                      { indice: 'TERM', option: 'FINALIZADO' }, 
-                      { indice: 'ANUL', option: 'ANULADO' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.estado : null} 
+                      { indice: 'EMIT', option: 'PENDIENTE', selected: true },
+                      { indice: 'TERM', option: 'FINALIZADO' },
+                      { indice: 'ANUL', option: 'ANULADO' },
+                    ]}
+                    df={Object.keys(info).length > 0 ? info.estado : null}
                   />
                 </div>
 
 
                 <div>
                   <span>Artículos:</span>
-                  <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
+                  <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          <th className="lg:table-cell">Id</th>  
-                          <th className="lg:table-cell">Serie</th>  
+                          <th className="lg:table-cell">Id</th>
+                          <th className="lg:table-cell">TipoDoc</th>
+                          <th className="lg:table-cell">Serie</th>
                           <th className="lg:table-cell">Numero</th>
                           <th className="lg:table-cell">FecEmision</th>
                           <th className="lg:table-cell">ImporteBruto</th>
@@ -218,17 +221,18 @@ export default function NewLetraV2(){
                       </thead>
                       <tbody>
                         {
-                          registros.length > 0 && registros.map((row,key)=>(
-                            <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item)=>item.idxsub == row.idxsub) ? 'selected' : ''}`}>
+                          registros.length > 0 && registros.map((row, key) => (
+                            <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item) => item.idxsub == row.idxsub) ? 'selected' : ''}`}>
                               <td><input type="text" data-name="idx" data-position={key} value={row.idx} /></td>
-                              <td><input data-name="serie" type="number" data-position={key} value={row.serie}/></td>
-                              <td><input data-name="numero" type="number" data-position={key} value={row.numero}/></td>
-                              <td><input data-name="fec_emision" type="date" data-position={key} value={row.fec_emision}/></td>
-                              <td><input data-name="importe_bruto" type="number" data-position={key} value={row.importe_bruto}/></td>
-                              <td><input data-name="base_imponible" type="number" data-position={key} value={row.base_imponible}/></td>
-                              <td><input data-name="monto_inafecto" type="number" data-position={key} value={row.monto_inafecto}/></td>
-                              <td><input data-name="igv" type="number" data-position={key} value={row.igv}/></td>
-                              <td><input data-name="importe_total" type="number" data-position={key} value={row.importe_total}/></td>
+                              <td><input data-name="tipodoc" type="text" data-position={key} value={row.tipodoc == '2' ? 'NOTA CREDITO' : 'FACTURA'} /></td>
+                              <td><input data-name="serie" type="text" data-position={key} value={row.serie} /></td>
+                              <td><input data-name="numero" type="text" data-position={key} value={row.numero} /></td>
+                              <td><input data-name="fec_emision" type="date" data-position={key} value={row.fec_emision} /></td>
+                              <td><input data-name="importe_bruto" type="number" data-position={key} value={row.importe_bruto} /></td>
+                              <td><input data-name="base_imponible" type="number" data-position={key} value={row.base_imponible} /></td>
+                              <td><input data-name="monto_inafecto" type="number" data-position={key} value={row.monto_inafecto} /></td>
+                              <td><input data-name="igv" type="number" data-position={key} value={row.igv} /></td>
+                              <td><input data-name="importe_total" type="number" data-position={key} value={row.importe_total} /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -247,13 +251,13 @@ export default function NewLetraV2(){
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={() => { }}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                                     </div>
                                   </li>
                                   <li>
                                     <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={onclick} data-position={key} data-action="add">
-                                      <svg  xmlns="http://www.w3.org/2000/svg"  width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l5 5l10 -10" /></svg>
                                     </div>
                                   </li>
                                 </ul>
