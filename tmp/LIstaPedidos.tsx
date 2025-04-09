@@ -5,55 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
-import { Input } from "../../components/Atoms/Input/Input";
-import { InputSelect } from "../../components/Atoms/Input/InputSelect";
+import { AuthPermitions } from "../../contexts/contexts";
 
-const CuerpoInforme_ = ({ cuerpo }) => {
-  return (
-    <>
-      <iframe src="http://192.168.18.20:4000/produccion/showinformeservicio/16" className="w-[60vw] h-[60vh]"></iframe>
-      {/* <div dangerouslySetInnerHTML={{ __html: cuerpo }} /> */}
-    </>
-  )
+const colorfase = {
+  'TELAS': 'bg-orange-500',
+  'AVIOS': 'bg-violet-500'
 }
-const ExportFilters = ({ actions, close }) => {
-  const form = useRef()
-  const exportar = () => {
-    actions(new FormData(form.current))
-  }
-  return (
-    <>
-      <div className="w-[600px] h-[350px] flex flex-col">
-        <div className="w-full flex-1">
-          <div>
-            <form ref={form} className="flex flex-col gap-2">
-              <Input name={'proveedor'} title="Proveedor" type="text" />
-              <Input name={'fec_desde'} title="FechaDesde" type="date" />
-              <Input name={'fec_hasta'} title="FechaHasta" type="date" />
-              <InputSelect title={'Estado'} formref={form} name={"estado"} data={
-                [
-                  { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
-                  { indice: 'TERMINADO', option: 'TERMINADO' }, 
-                ]} 
-                df={null} 
-              />
-            </form>
-          </div>
-        </div>
-        <div className="flex flex-row justify-end gap-2">
-          <Button tipo="default" action={()=>close(false)} type="button">Cancelar</Button>
-          <Button action={exportar} tipo="success" type="button">Exportar</Button>
-        </div>
-      </div>
-    </>
-  )
-}
-const CuerpoInforme = ({ servicioid }) => {
+const CuerpoCuadrePedido = ({ pedidoid }) => {
   const [ruta, setRuta] = useState("")
   useEffect(() => {
     const crear = async () => {
       await Consulta({
-        url: `produccion/showinformeservicio/${servicioid}`, params: {
+        url: `produccion/showinformepedido/${pedidoid}`, params: {
           method: 'GET'
         }
       })
@@ -86,13 +49,25 @@ const CuerpoInforme = ({ servicioid }) => {
     </>
   )
 }
-export default function ListaLetras() {
-  const lista = useRef(null)
+const CuerpoInforme = ({ cuerpo }) => {
+  return (
+    <>
+      <iframe src="http://192.168.18.20:4000/produccion/informe/12" className="w-[60vw] h-[60vh]"></iframe>
+      {/* <div dangerouslySetInnerHTML={{ __html: cuerpo }} /> */}
+    </>
+  )
+}
+
+export default function ListaPedidos() {
+  const lista = useRef()
   const [info, setInfo] = useState([])
-  const [infoestado, setInfoestado] = useState([])
-  const [estado, setEstado] = useState(1)
+  // const [infoestado, setInfoestado] = useState([])
+  const [infoestado, setInfoestado] = useState('PENDIENTE')
   const navigate = useNavigate()
-  const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
+  const { logout } = useContext(AuthPermitions)
+  const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  // const [refresh,setRefresh] = useState(false)
+
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id
@@ -107,7 +82,7 @@ export default function ListaLetras() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: 'letras/borrarletra/' + id, params: {
+              url: 'produccion/borrarpedido/' + id, params: {
                 method: 'DELETE'
               }
             })
@@ -132,12 +107,41 @@ export default function ListaLetras() {
       case 'download':
         params_modal = {
           open: true,
-          content: <div>Desea continuar con la descarga de la guia de traslado interno?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+          content: <div>Desea continuar con la descarga del pedido de insumos?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
           controls: true,
           header: false,
           action: () => {
             const desc = async () => {
-              // setOpenloader(true)
+              const data = new FormData()
+              data.append('id', id)
+              const tipo = info.filter(row => row.idx == id)[0].tipo
+
+              setOpenloader(true)
+              Consulta({
+                url: `produccion/vistapreviapedido/${tipo == 'TELAS' ? 'telas' : 'avios'}`, params: {
+                  method: 'POST',
+                  body: data
+                }
+              })
+                .then(resp => {
+                  setOpenloader(false)
+                  const binaryString = window.atob(resp.data);
+                  const binaryLen = binaryString.length;
+                  const bytes = new Uint8Array(binaryLen);
+                  for (let i = 0; i < binaryLen; i++) {
+                    const ascii = binaryString.charCodeAt(i);
+                    bytes[i] = ascii;
+                  }
+                  const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+                  const link = document.createElement('a')
+                  link.href = file
+                  link.target = 'blank'
+                  link.click()
+                })
+                .catch((err) => {
+                  setOpenloader(false)
+                  toast.error('Se produjo un error!!', { theme: "colored" })
+                })
             }
             desc()
           }
@@ -145,17 +149,19 @@ export default function ListaLetras() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/letras/nuevo/" + id)
+        navigate("/main/pedidos/nuevo/" + id)
         break;
       case 'review':
-        params_modal = {
+        // navigate("/main/estampado/review/"+ id)
+        const params = {
           open: true,
-          content: <CuerpoInforme servicioid={id} />,
+          content: <CuerpoCuadrePedido pedidoid={id} />,
           controls: false,
           header: false,
-          action: () => { }
+          action: async () => {
+          }
         }
-        openModal(params_modal)
+        openModal(params)
         break;
 
       default:
@@ -167,19 +173,20 @@ export default function ListaLetras() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'letras/', params: {
+      url: 'produccion/getListaPedidos/PENDIENTE', params: {
         method: 'GET'
       }
     })
       .then(resp => {
+        console.log(resp)
         setOpenloader(false)
-        console.log("info letras:", resp)
         setInfo(resp)
-        // setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos && !['ANULADO','FINALIZADO'].includes(row.estado)))
+        setInfoestado('PENDIENTE')
+        // setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
-        console.log("El mnesaje de error es:", error)
-        // logout()
+        // console.log(error)
+        logout()
         // toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
@@ -188,59 +195,19 @@ export default function ListaLetras() {
       })
   }, [])
 
-  const filtrarestado = (e) => {
-    const estado = e.target.dataset.estado
-    console.log("El estado es:", estado)
-    setOpenloader(true)
-    const pp = async () => {
-      await Consulta({
-        url: 'produccion/getListaGuias', params: {
-          method: 'GET'
-        }
-      })
-        .then(resp => {
-          console.log(resp)
-          setOpenloader(false)
-          // lista.current.querySelector('button.active').classList.remove('active')
-          // e.target.classList.add('active')
-          // console.log("EL filt4ro 1 es:",resp.filter(row=>row.cantidad_servicio <= row.ingresos))
-          if (estado == 1) {
-            // setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos || row.estado == 'PENDIENTE'))  
-            // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE' && row.cantidad_servicio > row.ingresos))
-            setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-            // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))  
-          }
-          if (estado == 2) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-            // setInfoestado(resp.filter(row=>row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))  
-            // setInfoestado(resp.filter(row=>row.estado == 'FINALIZADO'))  
-          }
-          if (estado == 3) {
-            setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-          }
-          setEstado(estado)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-        .finally(() => {
-          setOpenloader(false)
-        })
-    }
-    pp()
-  }
-
   const recargarinfo = () => {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'letras/', params: {
+      url: 'produccion/getListaPedidos/' + infoestado, params: {
         method: 'GET'
       }
     })
       .then(resp => {
+        console.log("Recargado informacion :", resp)
         setOpenloader(false)
         setInfo(resp)
+        // setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
         console.log(error)
@@ -252,145 +219,118 @@ export default function ListaLetras() {
         // setOpenloader(false)
       })
   }
-  const nuevaletra = () => {
-    navigate('/main/letras/nuevo')
+  const nuevopedido = () => {
+    navigate('/main/pedidos/nuevo')
   }
-  const busquedaglobal = async (input) => {
+  const showinforme = async () => {
+    const params_modal = {
+      open: true,
+      content: <CuerpoInforme cuerpo={""} />,
+      controls: true,
+      header: false,
+      action: async () => {
+      }
+    }
+    openModal(params_modal)
+  }
+  const filtrarestado = (e) => {
+    const estado = e.target.dataset.estado
+    setOpenloader(true)
     Consulta({
-      // url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value ), params: {
-      url: 'produccion/getListaGuias/' + input.value, params: {
+      url: 'produccion/getListaPedidos/' + estado, params: {
         method: 'GET'
       }
     })
       .then(resp => {
-        console.log(resp)
         setOpenloader(false)
-        // setInfo(resp)
-        if (estado == 1) {
-          setInfoestado(resp.filter(row => ['EMIT'].includes(row.estado)))
-        }
-        if (estado == 2) {
-          setInfoestado(resp.filter(row => !['EMIT'].includes(row.estado)))
-        }
+        lista.current.querySelector('button.active').classList.remove('active')
+        e.target.classList.add('active')
+        setInfo(resp)
+        setInfoestado(estado)
+        // setInfoestado(resp.filter(row => row.estado == estado))
       })
       .catch((error) => {
-        console.log("El mnesaje de error es:", error)
+        console.log(error)
       })
       .finally(() => {
-        console.log("Horror en la consulta de base de datos")
+        setOpenloader(false)
+      })
+
+  }
+  const filtrarpedidos = (input)=>{
+    // console.log(input.value)
+    setOpenloader(true)
+    Consulta({
+      url: 'produccion/getListaPedidos/' + infoestado + ' ' + input.value , params: {
+        method: 'GET'
+      }
+    })
+      .then(resp => {
+        setOpenloader(false)
+        setInfo(resp)
+        // setInfoestado(resp.filter(row => row.orden_ref.toLowerCase().includes(input.value.toLowerCase())))
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => {
+        setOpenloader(false)
       })
   }
-  const exportarexcel = () => {
-    openModal({
-      open: true,
-      header: false,
-      controls: false,
-      content: <ExportFilters close={setOpen} actions={async (info)=>{
-        setOpen(false)
-        console.log("El filtro es:",Object.fromEntries(info))
-        setOpenloader(true)
-        await Consulta({
-          url: 'reports/letras'
-        })
-          .then(resp => {
-            setOpenloader(false)
-            const hexString = resp.data;
-            const bytes = new Uint8Array(hexString.length / 2)
-            for (let i = 0; i < hexString.length; i += 2) {
-              bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
-            }
-            const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }))
-            const a = document.createElement("a");
-            a.classList.add("pdf_link")
-            a.href = file;
-            a.download = resp.name;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a)
-          })
-          .catch((error) => {
-            console.log("El mnesaje de error es:", error)
-          })
-          .finally(() => {
-          })
 
-        // setOpenloader(true)
-        // Consulta({
-        //   url: 'reports/letras'
-        // })
-        //   .then(res => {
-        //     setOpenloader(false)
-        //     const hexString = res.data;
-        //     const bytes = new Uint8Array(hexString.length / 2)
-        //     for (let i = 0; i < hexString.length; i += 2) {
-        //       bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
-        //     }
-        //     const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }))
-        //     const a = document.createElement("a");
-        //     a.classList.add("pdf_link")
-        //     a.href = file;
-        //     a.download = res.name;
-        //     document.body.appendChild(a);
-        //     a.click();
-        //     document.body.removeChild(a)
-
-        //   })
-        //   .catch((error) => {
-        //     console.log("El mnesaje de error es:", error)
-        //   })
-        //   .finally(() => {
-        //     console.log("Horror en la consulta de base de datos")
-        //   })
-
-      }} />,
-      action: async () => {}
-    })
-
-  }
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
         <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Letras</h2>
+              <h2 className="font-medium text-[16px]">Pedidos</h2>
               <div className="w-[500px]">
-                <Search config={{ width: '250px' }} action={busquedaglobal} />
+                <Search config={{ width: '200px' }} action={filtrarpedidos} />
               </div>
             </div>
+            {/* <hr /> */}
           </div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             <hr />
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado="1" onClick={filtrarestado}>
+                <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Emitidas
+                    Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 2 ? 'active' : ''}`} data-estado="2" onClick={filtrarestado}>
+                <button className="group" data-estado="FINALIZADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Canceladas
+                    Completados
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
               </ul>
             </div>
             <hr />
-            <div className="flex-1 scrollbar-special overflow-y-scroll relative mb-2">
+            <div className="flex-1 scrollbar-special overflow-y-scroll">
               <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">NroLetra</th>
+                    <th className="lg:table-cell">N°Orden</th>
+                    <th className="lg:table-cell">Tipo</th>
                     <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">DocumentosRef</th>
-                    <th className="lg:table-cell">Moneda</th>
-                    <th className="lg:table-cell">FecEmisión</th>
-                    <th className="lg:table-cell">FecVigencia</th>
-                    <th className="lg:table-cell">Importe</th>
-                    <th className="lg:table-cell">DiaPendientes</th>
+                    <th className="lg:table-cell">FechaEmision</th>
+                    <th className="lg:table-cell">FechaRetorno</th>
+                    <th className="lg:table-cell">FormaPago</th>
+                    <th className="lg:table-cell">TiempoProd</th>
+                    <th className="lg:table-cell">DiasPendientes</th>
+                    <th className="lg:table-cell">Cantidad</th>
+                    <th className="lg:table-cell">Ingresos</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -399,15 +339,21 @@ export default function ListaLetras() {
                     info.length > 0
                       ? info.map((row, key) => (
                         <tr key={key} className="">
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.num_letra}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.documentos_ref}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.moneda}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_vencimiento}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>S/.{row.importe}</td>
+                          <td>{row.idx}</td>
+                          <td>{row.orden_ref}</td>
+                          {/* <td>{row.tipo}</td> */}
+                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                          <td>{row.proveedor}</td>
+                          <td>{row.fec_emision}</td>
+                          <td>{row.fec_retorno}</td>
+                          <td>{row.forma_pago}</td>
+                          <td>{row.tiempo_produccion}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.cantidad}</td>
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.despacho}</td>
+                          {/* <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td> */}
+                          {/* <td>{row.estado}</td> */}
+                          {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -421,13 +367,14 @@ export default function ListaLetras() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx} onClick={onclick}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={() => { }}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                  {/* <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg> */}
                                 </div>
                               </li>
                               <li>
@@ -465,10 +412,23 @@ export default function ListaLetras() {
               </table>
             </div>
             <div className="flex flex-row justify-end">
+              {/* <div className="flex justify-between items-center p-3 gap-2">
+                <div>
+                  Resultados del {position*rango} al {rango*(position+1)} de 120
+                </div>
+                <div className="flex flex-row">
+                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveback}>
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
+                  </div>
+                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveforward}>
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-compact-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 4l3 8l-3 8" /></svg>
+                  </div>
+                </div>
+              </div> */}
               <div className="flex gap-2">
-                <Button action={exportarexcel} tipo={'success'}>Reporte</Button>
+                {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevaletra} tipo={'accept'}>Nuevo</Button>
+                <Button action={nuevopedido} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
 

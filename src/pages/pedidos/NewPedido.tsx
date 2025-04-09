@@ -13,8 +13,10 @@ import Productos from "../../components/Common/Productos"
 const CuerpoInforme = ({info,tipo})=>{
   let [ruta,setRuta] = useState("")
   useEffect(()=>{
+    console.log("El tipo de pedido es:",tipo)
     let crear = async ()=>{
-      await Consulta({url: `${tipo ? 'produccion/vistapreviapedido/avios' : 'produccion/vistapreviapedido/telas'}`,params:{
+      // await Consulta({url: `${tipo ? 'produccion/vistapreviapedido/avios' : 'produccion/vistapreviapedido/telas'}`,params:{
+      await Consulta({url: `${tipo ? 'produccion/vistapreviapedido/avios' : 'produccion/vistapreviapedido/telas' }`,params:{
         method:'POST',
         body:info
       }})
@@ -124,6 +126,17 @@ export default function NewPedido(){
           setOpenloader(false)
         })
     }
+    const handleInputChange = (event) => {
+      // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
+      console.log("Hola Ivon",event.detail.valor)
+      setTipo(event.detail.valor == 'TELAS' ? 0 : 1)
+      // setRegistros([])
+    };
+    form.current.addEventListener("salamandra", handleInputChange);
+
+    return () => {
+      if (form.current) form.current.removeEventListener("salamandra", handleInputChange);
+    };
   },[])
 
   const nuevoproducto = ()=>{
@@ -132,7 +145,8 @@ export default function NewPedido(){
       content: <Productos actions={(items)=>{  
         setOpen(false)
         // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])}
-        setRegistros([...registros,...items.filter(row=>!registros.map(row2=>row2.id_producto_CAB).includes(row.idxsub)).map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])
+        // setRegistros([...registros,...items.filter(row=>!registros.map(row2=>row2.id_producto_CAB).includes(row.idxsub)).map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])
+        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
       }}
         closemodal={()=>setOpen(false)}
       />,
@@ -260,7 +274,7 @@ export default function NewPedido(){
                 </div>
                 <div className="flex gap-3">
                   <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
-                  <InputSelect title={'TipoPedido'} name={"tipo"} data={
+                  <InputSelect title={'TipoPedido'} formref={form} name={"tipo"} data={
                     [
                       { indice: 'TELAS', option: 'TELAS', selected: true }, 
                       { indice: 'AVIOS', option: 'AVIOS' }, 
@@ -272,21 +286,21 @@ export default function NewPedido(){
                   <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text" />
                 </div>
                 <div className="flex gap-3">
-                  <InputSelect title={'Moneda'} formref={form} name={"moneda"} data={
+                  <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
                       { indice: 'S', option: 'SOLES', selected: true }, 
                       { indice: 'USD', option: 'DOLARES' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.moneda : null} 
                   />
-                  <InputSelect title={'IGV'} formref={form} name={"igv"} data={
+                  <InputSelect title={'IGV'} name={"igv"} data={
                     [
                       { indice: '0', option: 'INAFECTO', selected: true }, 
                       { indice: '1', option: 'AFECTO' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.igv : null} 
                   />
-                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
+                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
                 </div>
                 <div>
                   <span>Artículos</span>                  

@@ -13,6 +13,11 @@ export const colortipoabono = {
   'SERV': 'bg-orange-500',
   'PEDD': 'bg-violet-500'
 }
+export const colortipodoc = {
+  'FACTURA': 'bg-orange-500',
+  'NOTA CREDITO': 'bg-violet-500',
+  'NOTA DEBITO': 'bg-violet-500'
+}
 export function convertToHex(str) {
   let hex = '';
   for (let i = 0; i < str.length; i++) {

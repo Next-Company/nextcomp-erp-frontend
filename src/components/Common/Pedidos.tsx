@@ -11,9 +11,10 @@ export default function Pedidos(children){
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'produccion/getListaPedidos/50'})
+      await Consulta({url: 'produccion/getListaPedidos'})
       .then(resp => {
-        setLista(resp)
+        console.log("La respuesta es:",resp)
+        setLista(resp.filter(row=>row.estado !== 'ANULADO'))
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -33,7 +34,8 @@ export default function Pedidos(children){
     // console.log("EL valor consultado es:",input.value)
     // console.log("La ruta de consulta es :",'produccion/searchproveedor/'+input.value)  
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'produccion/searchpedido/'+ (input.value == '' ? '_' : input.value )})
+      // await Consulta({url: 'produccion/searchpedido/'+ (input.value == '' ? '_' : input.value )})
+      await Consulta({url: 'produccion/getListaPedidos/'+ input.value})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)
@@ -72,6 +74,7 @@ export default function Pedidos(children){
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
+                <th className="lg:table-cell">Id</th>
                 <th className="lg:table-cell">NroPedido</th>
                 <th className="lg:table-cell">Tipo</th>
                 <th className="lg:table-cell">Proveedor</th>
@@ -84,7 +87,7 @@ export default function Pedidos(children){
               {lista.length > 0 && lista.map((row,key)=>(
                 <tr>
                   <td>{row.idx}</td>
-                  {/* <td>{row.tipo}</td> */}
+                  <td>{row.orden_ref}</td>
                   <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
                   <td>{row.proveedor}</td>
                   <td>{row.fec_emision}</td>

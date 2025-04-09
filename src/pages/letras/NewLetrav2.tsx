@@ -7,7 +7,8 @@ import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
-import { useNavigate, useParams } from "react-router-dom";
+import { createMemoryRouter, useNavigate, useParams } from "react-router-dom";
+import { colortipodoc } from "../../utils/utils";
 
 export default function NewLetraV2() {
   const urlparams = useParams()
@@ -56,13 +57,15 @@ export default function NewLetraV2() {
   const onclick = (e) => {
     // actions(lista[e.target.dataset.position])
     const item = registros[parseInt(e.target.dataset.position)]
+    console.log("Factra seleccionada: ", item)
     if (selected.find((row) => row.idx == item.idx)) {
       setSelected([...selected.filter(row => row.idx !== item.idx)])
-      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) - parseFloat(item.importe_total) })
+      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) - parseFloat(item.tipodoc == '2' ? item.importe_total*-1 : item.importe_total) })
     } else {
       setSelected([...selected, registros[parseInt(e.target.dataset.position)]])
-      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) + parseFloat(item.importe_total) })
+      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) + parseFloat(item.tipodoc == '2' ? item.importe_total*-1 : item.importe_total) })
     }
+    // console.log("El item seleccionado es: ", selected)
   }
   useEffect(() => {
     if (urlparams.id) {
@@ -183,7 +186,8 @@ export default function NewLetraV2() {
                   {
                     origen == 'PEDIDO'
                       ? <>
-                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" action={listafacturas} mode={'static'} />
+                        {/* <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" action={listafacturas} mode={'static'} /> */}
+                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
                       </>
                       : <>
                         <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
@@ -208,6 +212,7 @@ export default function NewLetraV2() {
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell">Id</th>
+                          <th className="lg:table-cell">NroPedido</th>
                           <th className="lg:table-cell">TipoDoc</th>
                           <th className="lg:table-cell">Serie</th>
                           <th className="lg:table-cell">Numero</th>
@@ -223,9 +228,15 @@ export default function NewLetraV2() {
                       <tbody>
                         {
                           registros.length > 0 && registros.map((row, key) => (
-                            <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item) => item.idxsub == row.idxsub) ? 'selected' : ''}`}>
+                            <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item) => item.idx == row.idx) ? 'selected' : ''}`}>
                               <td className="text-center">{row.idx}</td>
-                              <td className="text-center">{row.tipodoc == '2' ? 'NOTA CREDITO' : 'FACTURA'}</td>
+                              <td className="text-center">{row.orden_ref}</td>
+                              {/* <td className="text-center">{row.tipodoc == '2' ? 'NOTA CREDITO' : 'FACTURA'}</td> */}
+                              {/* <td className="text-center">{['FACTURA','NOTA CREDIDO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]}</td> */}
+
+
+                              <td><div className={`text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipodoc[['FACTURA','NOTA CREDITO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]]}`}>{['FACTURA','NOTA CREDIDO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]}</div></td>
+
                               <td className="text-center">{row.serie}</td>
                               <td className="text-center">{row.numero}</td>
                               <td className="text-center">{row.fec_emision}</td>
@@ -233,7 +244,7 @@ export default function NewLetraV2() {
                               <td className="text-center">{row.base_imponible}</td>
                               <td className="text-center">{row.monto_inafecto}</td>
                               <td className="text-center">{row.igv}</td>
-                              <td className="text-center">{row.importe_total}</td>
+                              <td className="text-center">{row.tipodoc == '2' ? row.importe_total*-1 : row.importe_total}</td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -267,6 +278,21 @@ export default function NewLetraV2() {
                           ))
                         }
                       </tbody>
+                      <tfoot className="sticky bottom-0">
+                        <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
+                          <td className="text-center" colSpan={9}></td>
+                          <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
+                          <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                            return carry + parseFloat(value.tipodoc == '2' ? value.importe_total*-1 : value.importe_total)
+                          },0).toLocaleString('es-PE', {
+                            style: 'currency',
+                            currency: 'PEN',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2  
+                          })}</td>
+                          <td className="text-center"></td>
+                        </tr>
+                      </tfoot>
                     </table>
                   </div>
                 </div>

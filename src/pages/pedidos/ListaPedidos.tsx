@@ -172,7 +172,7 @@ export default function ListaPedidos() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos/50', params: {
+      url: 'produccion/getListaPedidos', params: {
         method: 'GET'
       }
     })
@@ -197,7 +197,7 @@ export default function ListaPedidos() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos/50', params: {
+      url: 'produccion/getListaPedidos', params: {
         method: 'GET'
       }
     })
@@ -219,10 +219,6 @@ export default function ListaPedidos() {
       })
   }
   const nuevopedido = () => {
-    // if(info.filter(row=>new Date(Date.now()).toLocaleDateString() == new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()).length > 0){
-    //   alert("Ya existe un registro para la fecha actual")
-    // }else{
-    // }
     navigate('/main/pedidos/nuevo')
   }
   const showinforme = async () => {
@@ -236,24 +232,11 @@ export default function ListaPedidos() {
     }
     openModal(params_modal)
   }
-  // const busquepedidoestado = async (e)=>{
-  //   let estado = e.target.data.estado
-  //   let data = new FormData()
-  //   data.append('estado',estado)
-  //   Consulta({url:"produccion/",params:{
-  //     method:'POST',
-  //     body:data
-  //   }})
-  //   .then(()=>{
-
-  //   })
-
-  // }
   const filtrarestado = (e) => {
     const estado = e.target.dataset.estado
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos/50', params: {
+      url: 'produccion/getListaPedidos', params: {
         method: 'GET'
       }
     })
@@ -272,6 +255,26 @@ export default function ListaPedidos() {
       })
 
   }
+  const filtrarpedidos = (input)=>{
+    // console.log(input.value)
+    setOpenloader(true)
+    Consulta({
+      url: 'produccion/getListaPedidos/' + input.value, params: {
+        method: 'GET'
+      }
+    })
+      .then(resp => {
+        setOpenloader(false)
+        setInfo(resp)
+        setInfoestado(resp.filter(row => row.orden_ref.toLowerCase().includes(input.value.toLowerCase())))
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => {
+        setOpenloader(false)
+      })
+  }
 
   return (
     <>
@@ -283,7 +286,7 @@ export default function ListaPedidos() {
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Pedidos</h2>
               <div className="w-[500px]">
-                <Search config={{ width: '200px' }} action={() => { }} />
+                <Search config={{ width: '200px' }} action={filtrarpedidos} />
               </div>
             </div>
             {/* <hr /> */}
@@ -326,6 +329,8 @@ export default function ListaPedidos() {
                     <th className="lg:table-cell">FormaPago</th>
                     <th className="lg:table-cell">TiempoProd</th>
                     <th className="lg:table-cell">DiasPendientes</th>
+                    <th className="lg:table-cell">Cantidad</th>
+                    <th className="lg:table-cell">Ingresos</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -343,8 +348,9 @@ export default function ListaPedidos() {
                           <td>{row.fec_retorno}</td>
                           <td>{row.forma_pago}</td>
                           <td>{row.tiempo_produccion}</td>
-                          {/* <td>{row.dias_pendientes}</td> */}
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.cantidad}</td>
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.despacho}</td>
                           {/* <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td> */}
                           {/* <td>{row.estado}</td> */}
                           {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}

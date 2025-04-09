@@ -38,7 +38,8 @@ export default function Productos(children){
   
   const searchproveedor = (input)=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
+      // await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
+      await Consulta({url: 'productos/searchproducto/'+ input.value})
       .then(resp => {
         setLista(resp.map((row)=>({...row,selected:false})))
         // setLista(resp)

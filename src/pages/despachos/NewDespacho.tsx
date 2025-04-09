@@ -61,7 +61,7 @@ export default function NewDespacho() {
         })
           .then(resp => {
             setOpenloader(false)
-            // navigate('/main/despachos/inicio')
+            navigate('/main/despachos/inicio')
             toast.success('Estampado guardado con éxito!!', { theme: "colored" })
           })
           .catch((err) => {
@@ -174,7 +174,12 @@ export default function NewDespacho() {
           .then(resp => {
             setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
             console.log("Los registros de la guia son:", resp[1])
-            setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
+            // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
+            setRegistros(resp[1].map(row => {
+              row = { ...row, id_item: row.idx, despacho: 0, caidos: 0 }
+              Reflect.deleteProperty(row, 'idx')
+              return row
+            }))
             // setRegistros(resp[1])
           })
           .catch((err) => {
@@ -202,7 +207,12 @@ export default function NewDespacho() {
         Consulta({ url: 'produccion/guia/' + item.idx })
           .then(resp => {
             setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
-            setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
+            // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
+            setRegistros(resp[1].map(row => {
+              row = { ...row, id_item: row.idx, despacho: 0, caidos: 0 }
+              Reflect.deleteProperty(row, 'idx')
+              return row
+            }))
           })
           .catch((err) => {
             setOpenloader(false)
@@ -472,6 +482,7 @@ export default function NewDespacho() {
                                   <select onChange={editfacturas} data-name="tipodoc" data-position={key} defaultValue={row.tipodoc}>
                                     <option value="1" selected={row.tipodoc == '1' && true}>FACTURA</option>
                                     <option value="2" selected={row.tipodoc == '2' && true}>NOTA CREDITO</option>
+                                    <option value="3" selected={row.tipodoc == '3' && true}>NOTA DEBITO</option>
                                   </select>
                                 </td>
                                 <td><input type="text" onChange={editfacturas} data-name="serie" data-position={key} defaultValue={row.serie} /></td>
