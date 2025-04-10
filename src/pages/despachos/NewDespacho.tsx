@@ -113,7 +113,7 @@ export default function NewDespacho() {
   }, [])
 
   const nuevoregistro = () => {
-    setFacturas([...facturas, { tipodoc: 1, serie: '', numero: '', fec_emision: '', unidades: 0, importe_bruto: 0, base_imponible: 0, monto_inafecto: 0, igv: 0, importe_total: 0 }])
+    setFacturas([...facturas, { tipodoc: 1,moneda: 'MN', serie: '', numero: '', fec_emision: '', unidades: 0, importe_bruto: 0, base_imponible: 0, monto_inafecto: 0, igv: 0, importe_total: 0 }])
   }
 
   const onclick = (e) => {
@@ -208,11 +208,11 @@ export default function NewDespacho() {
           .then(resp => {
             setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
             // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
-            setRegistros(resp[1].map(row => {
-              row = { ...row, id_item: row.idx, despacho: 0, caidos: 0 }
+            setRegistros([...registros,...resp[1].filter(row=>!registros.map(rr=>rr.id_item).includes(row.idx)).map(row => {
+              row = { ...row, id_item: row.idx }
               Reflect.deleteProperty(row, 'idx')
               return row
-            }))
+            })])
           })
           .catch((err) => {
             setOpenloader(false)
@@ -233,17 +233,16 @@ export default function NewDespacho() {
     params_modal = {
       open: true,
       content: <Pedidos actions={(item) => {
-        // console.log("El item seleccionado es: ",item)
         setOpenloader(true)
         setOpen(false)
         Consulta({ url: 'produccion/pedido/' + item.idx })
           .then(resp => {
             setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
-            setRegistros(resp[1].map(row => {
+            setRegistros([...registros,...resp[1].filter(row=>!registros.map(rr=>rr.id_item).includes(row.idx)).map(row => {
               row = { ...row, id_item: row.idx }
               Reflect.deleteProperty(row, 'idx')
               return row
-            }))
+            })])
           })
           .catch((err) => {
             setOpenloader(false)
@@ -462,6 +461,7 @@ export default function NewDespacho() {
                         <thead className="text-left sticky top-0 bg-white">
                           <tr>
                             <th className="lg:table-cell">TipoDoc</th>
+                            <th className="lg:table-cell">Moneda</th>
                             <th className="lg:table-cell">Serie</th>
                             <th className="lg:table-cell">Numero</th>
                             <th className="lg:table-cell">FecEmisión</th>
@@ -483,6 +483,12 @@ export default function NewDespacho() {
                                     <option value="1" selected={row.tipodoc == '1' && true}>FACTURA</option>
                                     <option value="2" selected={row.tipodoc == '2' && true}>NOTA CREDITO</option>
                                     <option value="3" selected={row.tipodoc == '3' && true}>NOTA DEBITO</option>
+                                  </select>
+                                </td>
+                                <td className="w-[100px]">
+                                  <select onChange={editfacturas} data-name="moneda" data-position={key} defaultValue={row.moneda}>
+                                    <option value="MN" selected={row.tipodoc == 'MN' && true}>SOLES</option>
+                                    <option value="USD" selected={row.tipodoc == 'USD' && true}>DOLARES</option>
                                   </select>
                                 </td>
                                 <td><input type="text" onChange={editfacturas} data-name="serie" data-position={key} defaultValue={row.serie} /></td>

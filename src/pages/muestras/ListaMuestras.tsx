@@ -207,7 +207,7 @@ export default function ListaMuestras() {
         console.log(resp)
         setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado !== 'ANULADO'))
+        setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -236,10 +236,10 @@ export default function ListaMuestras() {
           lista.current.querySelector('button.active').classList.remove('active')
           e.target.classList.add('active')
           if (estado == 1) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado !== 'ANULADO'))
+            setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
           }
           if (estado == 2) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
+            setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))
           }
           if (estado == 3) {
             setInfoestado(resp.filter(row => row.estado == 'ANULADO'))

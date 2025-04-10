@@ -621,3 +621,6 @@ div.other>div {
   display: flex;
   justify-content: space-between;
 }
+.Toastify__toast-container {
+  width: fit-content;
+}

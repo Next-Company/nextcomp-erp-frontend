@@ -22,6 +22,10 @@ export default function NewLetraV2() {
 
   const onsubmit = (e) => {
     e.preventDefault()
+    if(selected.length == 0){
+      toast.error(<div>No se han seleccionado facturas para continuar <br/>con el registro de la letra</div>, { theme: "colored" })
+      return 0
+    }
     openModal({
       open: true,
       header: false,
@@ -60,10 +64,10 @@ export default function NewLetraV2() {
     console.log("Factra seleccionada: ", item)
     if (selected.find((row) => row.idx == item.idx)) {
       setSelected([...selected.filter(row => row.idx !== item.idx)])
-      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) - parseFloat(item.tipodoc == '2' ? item.importe_total*-1 : item.importe_total) })
+      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) - parseFloat(item.tipodoc == '2' ? item.saldo*-1 : item.saldo) })
     } else {
       setSelected([...selected, registros[parseInt(e.target.dataset.position)]])
-      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) + parseFloat(item.tipodoc == '2' ? item.importe_total*-1 : item.importe_total) })
+      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) + parseFloat(item.tipodoc == '2' ? item.saldo*-1 : item.saldo) })
     }
     // console.log("El item seleccionado es: ", selected)
   }
@@ -108,11 +112,13 @@ export default function NewLetraV2() {
         setOpenloader(true)
         Consulta({ url: 'letras/getfacturasbyproveedor/' + item.idx })
           .then(resp => {
-            // setRegistros(resp)
             console.log("Lista de facturas", resp)
-            setInfo(info => ({ ...info, id_proveedor_CAB: item.idx, proveedor: item.nom }))
+            setInfo(info => ({ ...info, id_proveedor_CAB: item.idx, proveedor: item.nom}))
             setOpenloader(false)
-            setRegistros(resp)
+            // setRegistros([...resp,saldo: item.importe_total - item.cancelado )
+            setRegistros(resp.map((row) => {
+              return { ...row, saldo: row.importe_total - row.cancelado }
+            }))
             // navigate('/main/guias/inicio')
           })
           .catch((err) => {
@@ -208,12 +214,13 @@ export default function NewLetraV2() {
                 <div>
                   <span>Artículos:</span>
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
+                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-yellow-200">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell">Id</th>
                           <th className="lg:table-cell">NroPedido</th>
                           <th className="lg:table-cell">TipoDoc</th>
+                          <th className="lg:table-cell">Moneda</th>
                           <th className="lg:table-cell">Serie</th>
                           <th className="lg:table-cell">Numero</th>
                           <th className="lg:table-cell">FecEmision</th>
@@ -222,6 +229,7 @@ export default function NewLetraV2() {
                           <th className="lg:table-cell">MontoInafecto</th>
                           <th className="lg:table-cell">Igv</th>
                           <th className="lg:table-cell">ImporteTotal</th>
+                          <th className="lg:table-cell">Saldo</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -231,12 +239,8 @@ export default function NewLetraV2() {
                             <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item) => item.idx == row.idx) ? 'selected' : ''}`}>
                               <td className="text-center">{row.idx}</td>
                               <td className="text-center">{row.orden_ref}</td>
-                              {/* <td className="text-center">{row.tipodoc == '2' ? 'NOTA CREDITO' : 'FACTURA'}</td> */}
-                              {/* <td className="text-center">{['FACTURA','NOTA CREDIDO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]}</td> */}
-
-
                               <td><div className={`text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipodoc[['FACTURA','NOTA CREDITO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]]}`}>{['FACTURA','NOTA CREDIDO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]}</div></td>
-
+                              <td className="text-center">{row.moneda}</td>
                               <td className="text-center">{row.serie}</td>
                               <td className="text-center">{row.numero}</td>
                               <td className="text-center">{row.fec_emision}</td>
@@ -245,6 +249,7 @@ export default function NewLetraV2() {
                               <td className="text-center">{row.monto_inafecto}</td>
                               <td className="text-center">{row.igv}</td>
                               <td className="text-center">{row.tipodoc == '2' ? row.importe_total*-1 : row.importe_total}</td>
+                              <td className="text-center">{row.saldo}</td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -280,7 +285,7 @@ export default function NewLetraV2() {
                       </tbody>
                       <tfoot className="sticky bottom-0">
                         <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
-                          <td className="text-center" colSpan={9}></td>
+                          <td className="text-center" colSpan={11}></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
                           <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
                             return carry + parseFloat(value.tipodoc == '2' ? value.importe_total*-1 : value.importe_total)

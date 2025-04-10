@@ -326,11 +326,13 @@ export default function ListaPedidos() {
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">FechaEmision</th>
                     <th className="lg:table-cell">FechaRetorno</th>
-                    <th className="lg:table-cell">FormaPago</th>
+                    {/* <th className="lg:table-cell">FormaPago</th> */}
                     <th className="lg:table-cell">TiempoProd</th>
                     <th className="lg:table-cell">DiasPendientes</th>
                     <th className="lg:table-cell">Cantidad</th>
+                    <th className="lg:table-cell">Importe</th>
                     <th className="lg:table-cell">Ingresos</th>
+                    <th className="lg:table-cell">Cancelado</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -346,11 +348,13 @@ export default function ListaPedidos() {
                           <td>{row.proveedor}</td>
                           <td>{row.fec_emision}</td>
                           <td>{row.fec_retorno}</td>
-                          <td>{row.forma_pago}</td>
+                          {/* <td>{row.forma_pago}</td> */}
                           <td>{row.tiempo_produccion}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.cantidad}</td>
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.importe_despacho == 0 ? row.importe : row.importe_despacho}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.despacho}</td>
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.cancelado}</td>
                           {/* <td>{new Date(new Date(row.created_at.substr(0,10)).getTime() + 86400000).toLocaleDateString()}</td> */}
                           {/* <td>{row.estado}</td> */}
                           {/* <td><div className="bg-orange-400 text-white text-center text-[10px] rounded-l-full rounded-r-full">{row.status}</div></td> */}
@@ -392,7 +396,7 @@ export default function ListaPedidos() {
                 </tbody>
                 <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
                   <tr>
-                    <td className="h-[45px] border-t border-t-gray-600" colSpan={12}>
+                    <td className="h-[45px] border-t border-t-gray-600" colSpan={13}>
                       <div className="flex flex-row justify-between items-center">
                         <div>
                           Showing 1 to 4 of 4 entries (filtered from 57 total entries)

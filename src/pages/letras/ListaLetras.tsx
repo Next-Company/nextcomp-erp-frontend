@@ -17,33 +17,63 @@ const CuerpoInforme_ = ({ cuerpo }) => {
   )
 }
 const ExportFilters = ({ actions, close }) => {
+  const [stage, setStage] = useState(1)
   const form = useRef()
   const exportar = () => {
     actions(new FormData(form.current))
   }
   return (
     <>
-      <div className="w-[600px] h-[350px] flex flex-col">
-        <div className="w-full flex-1">
-          <div>
-            <form ref={form} className="flex flex-col gap-2">
-              <Input name={'proveedor'} title="Proveedor" type="text" />
-              <Input name={'fec_desde'} title="FechaDesde" type="date" />
-              <Input name={'fec_hasta'} title="FechaHasta" type="date" />
-              <InputSelect title={'Estado'} formref={form} name={"estado"} data={
-                [
-                  { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
-                  { indice: 'TERMINADO', option: 'TERMINADO' }, 
-                ]} 
-                df={null} 
-              />
-            </form>
+      <div className="w-[750px] h-[450px] flex flex-col overflow-y-hidden overflow-x-auto">
+        
+        <div className="border-t-[.2px] border-b-[.2px] border-gray-300">
+          <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+            <button className={`group ${stage == 1 ? 'active' : ''}`} data-stage="1" onClick={()=>setStage(1)}>
+              <span className="relative h-[100%] flex items-center pointer-events-none">
+                Exportar
+                <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+              </span>
+            </button>
+            <button className={`group ${stage == 2 ? 'active' : ''}`} data-stage="2" onClick={()=>setStage(2)}>
+              <span className="relative h-[100%] flex items-center pointer-events-none">
+                Cargar
+                <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+              </span>
+            </button>
+          </ul>
+        </div>
+        sdds
+        <div className={`w-[200%] h-[150px] flex flex-row justify-between items-center ${stage == 1 ? 'translate-x-0' : 'translate-x-[-50%]'} transition-transform duration-300`}>
+          <div className="flex-1 bg-red-300">
+
+            <div className="w-full flex-1 pt-2">
+              <div>
+                <form ref={form} className="flex flex-col gap-2">
+                  <Input name={'proveedor'} title="Proveedor" type="text" />
+                  <Input name={'fec_desde'} title="FechaDesde" type="date" />
+                  <Input name={'fec_hasta'} title="FechaHasta" type="date" />
+                  <InputSelect title={'Estado'} formref={form} name={"estado"} data={
+                    [
+                      { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
+                      { indice: 'TERMINADO', option: 'TERMINADO' }, 
+                    ]} 
+                    df={null} 
+                  />
+                </form>
+              </div>
+            </div>
+            <div className="flex flex-row justify-end gap-2">
+              <Button tipo="default" action={()=>close(false)} type="button">Cancelar</Button>
+              <Button action={exportar} tipo="success" type="button">Exportar</Button>
+            </div>
+
+          </div>
+          <div className="flex-1 bg-green-300">
+            sdfsdasd adad
           </div>
         </div>
-        <div className="flex flex-row justify-end gap-2">
-          <Button tipo="default" action={()=>close(false)} type="button">Cancelar</Button>
-          <Button action={exportar} tipo="success" type="button">Exportar</Button>
-        </div>
+        
+
       </div>
     </>
   )
@@ -290,7 +320,11 @@ export default function ListaLetras() {
         console.log("El filtro es:",Object.fromEntries(info))
         setOpenloader(true)
         await Consulta({
-          url: 'reports/letras'
+          url: 'reports/letras',
+          params: {
+            body: info,
+            method: 'POST'
+          }
         })
           .then(resp => {
             setOpenloader(false)
@@ -402,7 +436,7 @@ export default function ListaLetras() {
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.num_letra}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.documentos_ref}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.facturas_ref !== '' ? row.facturas_ref : row.documentos_ref}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.moneda}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_vencimiento}</td>
@@ -466,6 +500,7 @@ export default function ListaLetras() {
             </div>
             <div className="flex flex-row justify-end">
               <div className="flex gap-2">
+                {/* <Button action={exportarexcel} tipo={'warning'}>Upload</Button> */}
                 <Button action={exportarexcel} tipo={'success'}>Reporte</Button>
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevaletra} tipo={'accept'}>Nuevo</Button>

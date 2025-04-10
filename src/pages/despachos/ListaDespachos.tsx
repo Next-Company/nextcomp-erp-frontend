@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 import { colorfase } from "../../utils/utils";
 
 const colordespacho = {
-  'SERVICIOS': 'bg-orange-500',
-  'PEDIDOS': 'bg-violet-500'
+  'PEDIDOS': 'bg-orange-500',
+  'MUESTRA_PROTOTIPO': 'bg-violet-500'
 }
 const CuerpoInforme = ({ cuerpo }) => {
   return (
@@ -316,7 +316,7 @@ export default function ListaDespachos() {
                               <>
                                 <td>{row.idx}</td>
                                 <td>{row.nro_guia}</td>
-                                <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho[row.tipo]}`}>{row.tipo}</div></td>
+                                <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho[row.tipo]}`}>{row.tipo}</div></td>
                                 <td>{row.proveedor}</td>
                                 <td>{row.fec_emision_guia}</td>
                                 <td>{row.fec_despacho}</td>

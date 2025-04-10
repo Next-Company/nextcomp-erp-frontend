@@ -217,7 +217,7 @@ export default function ListaPagos(){
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Obligaciones</h2>
+              <h2 className="font-medium text-[16px]">Cuentas por pagar</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={()=>{}} />
               </div>
@@ -230,31 +230,25 @@ export default function ListaPagos(){
               <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
                 <button className={`group ${estado == 0 ? 'active' : ''}`} data-estado={0} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Cuentas por Pagar
+                    Servicios
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                {/* <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
-                  <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Abonados
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button> */}
                 <button className={`group ${estado == 2 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Cuentas por Cobrar
+                    Letras
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
                 <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Abonos
+                    Prestamos
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
                 <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Cobros
+                    Otros Gastos
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
