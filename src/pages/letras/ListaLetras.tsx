@@ -7,6 +7,7 @@ import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowCont
 import { toast } from "react-toastify";
 import { Input } from "../../components/Atoms/Input/Input";
 import { InputSelect } from "../../components/Atoms/Input/InputSelect";
+import { ButtonLoader } from "../../components/Atoms/Button/ButtonLoader";
 
 const CuerpoInforme_ = ({ cuerpo }) => {
   return (
@@ -16,15 +17,72 @@ const CuerpoInforme_ = ({ cuerpo }) => {
     </>
   )
 }
-const ExportFilters = ({ actions, close }) => {
+const ExportFilters = ({ close, loader, update }) => {
   const [stage, setStage] = useState(1)
-  const form = useRef()
-  const exportar = () => {
-    actions(new FormData(form.current))
+  const [laoding, setLoading] = useState(false)
+  const form_export = useRef()
+  const form_import = useRef()
+  const exportletra = () => {
+    // export_letras(new FormData(form_export.current))
+    // close(false)
+    // loader(true)
+    setLoading(true)
+    Consulta({
+      url: 'reports/letras',
+      params: {
+        body: new FormData(form_export.current),
+        method: 'POST'
+      }
+    })
+      .then(resp => {
+        // loader(false)
+        // setLoading(false)
+        const hexString = resp.data;
+        const bytes = new Uint8Array(hexString.length / 2)
+        for (let i = 0; i < hexString.length; i += 2) {
+          bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
+        }
+        const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }))
+        const a = document.createElement("a");
+        a.classList.add("pdf_link")
+        a.href = file;
+        a.download = resp.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a)
+      })
+      .catch((error) => {
+        console.log("El mnesaje de error es:", error)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+  const importletra = (e) => {
+    e.preventDefault()
+    console.log(Object.fromEntries(new FormData(form_import.current)))
+    setLoading(true)
+    Consulta({url:'reports/import',params:{
+      method:'POST',
+      body:new FormData(form_import.current)
+    }})
+    .then(resp=>{
+      console.log(resp)
+      close(false)
+      // setLoading(false)
+      update()
+    })
+    .catch(err=>{ 
+      console.log(err)
+    })
+    .finally(()=>{
+      console.log("Finaliza la consulta")
+      setLoading(false)
+    })
   }
   return (
     <>
-      <div className="w-[750px] h-[450px] flex flex-col overflow-y-hidden overflow-x-auto">
+      <div className="w-[800px] h-[500px] overflow-hidden flex flex-col">
         
         <div className="border-t-[.2px] border-b-[.2px] border-gray-300">
           <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
@@ -36,44 +94,56 @@ const ExportFilters = ({ actions, close }) => {
             </button>
             <button className={`group ${stage == 2 ? 'active' : ''}`} data-stage="2" onClick={()=>setStage(2)}>
               <span className="relative h-[100%] flex items-center pointer-events-none">
-                Cargar
+                Importar
                 <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
               </span>
             </button>
           </ul>
         </div>
-        sdds
-        <div className={`w-[200%] h-[150px] flex flex-row justify-between items-center ${stage == 1 ? 'translate-x-0' : 'translate-x-[-50%]'} transition-transform duration-300`}>
-          <div className="flex-1 bg-red-300">
-
-            <div className="w-full flex-1 pt-2">
-              <div>
-                <form ref={form} className="flex flex-col gap-2">
-                  <Input name={'proveedor'} title="Proveedor" type="text" />
-                  <Input name={'fec_desde'} title="FechaDesde" type="date" />
-                  <Input name={'fec_hasta'} title="FechaHasta" type="date" />
-                  <InputSelect title={'Estado'} formref={form} name={"estado"} data={
-                    [
-                      { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
-                      { indice: 'TERMINADO', option: 'TERMINADO' }, 
-                    ]} 
-                    df={null} 
-                  />
-                </form>
+        <div className="flex-1">
+          <div className={`w-[200%] h-[100%] flex flex-row ${stage == 1 ? 'translate-x-0' : 'translate-x-[-50%]'} transition-transform duration-200`}>
+            {/* EXPORTAR */}
+            <div className="flex-1 h-full flex flex-col">
+              <div className="w-full pt-2 flex-1">
+                <div>
+                  <form ref={form_export} className="flex flex-col gap-2">
+                    <Input name={'proveedor'} title="Proveedor" type="text" />
+                    <Input name={'fec_desde'} title="FechaDesde" type="date" />
+                    <Input name={'fec_hasta'} title="FechaHasta" type="date" />
+                    <InputSelect title={'Estado'} name={"estado"} data={
+                      [
+                        { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
+                        { indice: 'TERMINADO', option: 'TERMINADO' }, 
+                      ]} 
+                      df={null} 
+                    />
+                  </form>
+                </div>
+              </div>
+              <div className="flex flex-row justify-end gap-2 pb-2">
+                <Button tipo="default" action={()=>close(false)} type="button">Cancelar</Button>
+                {/* <Button action={exportletra} tipo="success" type="button">Exportar</Button> */}
+                <ButtonLoader task={exportletra} tipo={'success'} type="button" loading={laoding}>Exportar</ButtonLoader>
               </div>
             </div>
-            <div className="flex flex-row justify-end gap-2">
-              <Button tipo="default" action={()=>close(false)} type="button">Cancelar</Button>
-              <Button action={exportar} tipo="success" type="button">Exportar</Button>
+            {/* IMPORTAR */}
+            <div className="flex-1 flex flex-col">
+              <form ref={form_import} onSubmit={importletra} className="flex flex-col gap-2 h-full">
+                <div className="flex-1 p-2">
+                  <input type="file" name="filenext" accept=".xlsx,application/vnd.ms-excels" required className="w-full h-[40px] border-[.2px] border-gray-200 bg-zinc-300 cursor-pointer"/>
+                </div>
+                <div className="flex flex-row justify-between items-center gap-2 pb-2">
+                  <a href="http://192.168.18.20:4000/templates/plantilla_letras.xlsx" target="_blank" download={'nueva_imagen'}>* Descargar plantilla</a>
+                  <div className="flex flex-row gap-2">
+                    <Button tipo="default" action={()=>close(false)} type="button">Cancelar</Button>
+                    {/* <ButtonLoader task={importletra} tipo={'accept'} type="submit" loading={laoding}>Importar</ButtonLoader> */}
+                    <ButtonLoader tipo={'accept'} type="submit" loading={laoding}>Importar</ButtonLoader>
+                  </div>
+                </div>
+              </form>
             </div>
-
-          </div>
-          <div className="flex-1 bg-green-300">
-            sdfsdasd adad
           </div>
         </div>
-        
-
       </div>
     </>
   )
@@ -315,68 +385,44 @@ export default function ListaLetras() {
       open: true,
       header: false,
       controls: false,
-      content: <ExportFilters close={setOpen} actions={async (info)=>{
-        setOpen(false)
-        console.log("El filtro es:",Object.fromEntries(info))
-        setOpenloader(true)
-        await Consulta({
-          url: 'reports/letras',
-          params: {
-            body: info,
-            method: 'POST'
-          }
-        })
-          .then(resp => {
-            setOpenloader(false)
-            const hexString = resp.data;
-            const bytes = new Uint8Array(hexString.length / 2)
-            for (let i = 0; i < hexString.length; i += 2) {
-              bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
-            }
-            const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }))
-            const a = document.createElement("a");
-            a.classList.add("pdf_link")
-            a.href = file;
-            a.download = resp.name;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a)
-          })
-          .catch((error) => {
-            console.log("El mnesaje de error es:", error)
-          })
-          .finally(() => {
-          })
+      content: <ExportFilters close={setOpen} loader={setOpenloader} update={recargarinfo}
+      // export_letras={async (info)=>{
+      //   setOpen(false)
+      //   console.log("El filtro es:",Object.fromEntries(info))
+      //   setOpenloader(true)
+      //   await Consulta({
+      //     url: 'reports/letras',
+      //     params: {
+      //       body: info,
+      //       method: 'POST'
+      //     }
+      //   })
+      //     .then(resp => {
+      //       setOpenloader(false)
+      //       const hexString = resp.data;
+      //       const bytes = new Uint8Array(hexString.length / 2)
+      //       for (let i = 0; i < hexString.length; i += 2) {
+      //         bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
+      //       }
+      //       const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }))
+      //       const a = document.createElement("a");
+      //       a.classList.add("pdf_link")
+      //       a.href = file;
+      //       a.download = resp.name;
+      //       document.body.appendChild(a);
+      //       a.click();
+      //       document.body.removeChild(a)
+      //     })
+      //     .catch((error) => {
+      //       console.log("El mnesaje de error es:", error)
+      //     })
+      //     .finally(() => {
+      //     })
+      // }}
+      // import_letras={async (info)=>{
 
-        // setOpenloader(true)
-        // Consulta({
-        //   url: 'reports/letras'
-        // })
-        //   .then(res => {
-        //     setOpenloader(false)
-        //     const hexString = res.data;
-        //     const bytes = new Uint8Array(hexString.length / 2)
-        //     for (let i = 0; i < hexString.length; i += 2) {
-        //       bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
-        //     }
-        //     const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }))
-        //     const a = document.createElement("a");
-        //     a.classList.add("pdf_link")
-        //     a.href = file;
-        //     a.download = res.name;
-        //     document.body.appendChild(a);
-        //     a.click();
-        //     document.body.removeChild(a)
-
-        //   })
-        //   .catch((error) => {
-        //     console.log("El mnesaje de error es:", error)
-        //   })
-        //   .finally(() => {
-        //     console.log("Horror en la consulta de base de datos")
-        //   })
-
-      }} />,
+      // }}
+       />,
       action: async () => {}
     })
 
@@ -501,7 +547,7 @@ export default function ListaLetras() {
             <div className="flex flex-row justify-end">
               <div className="flex gap-2">
                 {/* <Button action={exportarexcel} tipo={'warning'}>Upload</Button> */}
-                <Button action={exportarexcel} tipo={'success'}>Reporte</Button>
+                <Button action={exportarexcel} tipo={'success'}>Acciones</Button>
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevaletra} tipo={'accept'}>Nuevo</Button>
               </div>
