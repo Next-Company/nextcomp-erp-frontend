@@ -125,12 +125,21 @@ svg {
   gap: 18px;
   padding: 15px;
 }
+#sidenav a{
+  color: gray;
+  border-radius: 8px;
+  box-sizing:border-box;
+}
 #sidenav a.active{
   color: black;
+  /* background-color: rgb(203, 203, 203); */
+  background-color: rgb(193, 193, 193);
+  /* box-shadow: 5px 5px 5px 5px; */
 }
 #sidenav a.default{
-  color: green;
+  color: gray;
 }
 #sidenav a.default:hover{
   color: black;
+  background-color: rgb(215, 215, 215);
 }

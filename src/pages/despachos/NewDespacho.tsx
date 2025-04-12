@@ -61,7 +61,7 @@ export default function NewDespacho() {
         })
           .then(resp => {
             setOpenloader(false)
-            navigate('/main/despachos/inicio')
+            navigate('/main/despachos/')
             toast.success('Estampado guardado con éxito!!', { theme: "colored" })
           })
           .catch((err) => {
@@ -453,6 +453,18 @@ export default function NewDespacho() {
                             ))
                           }
                         </tbody>
+                        <tfoot className="sticky bottom-0">
+                          <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
+                            <td className="text-center" colSpan={9}></td>
+                            <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
+                            <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                              return carry + parseFloat(value.cantidad)
+                            },0)}</td>
+                            <td className="text-center text-[16px] italic">0</td>
+                            <td className="text-center"></td>
+                            <td className="text-center"></td>
+                          </tr>
+                        </tfoot>
                       </table>
                     </div>
                     {/* PANEL FACTURAS */}
@@ -556,7 +568,7 @@ export default function NewDespacho() {
                 <div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={() => navigate('/main/despachos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={() => navigate('/main/despachos/')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>
               </div>

@@ -80,7 +80,7 @@ export default function NewPedido(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/pedidos/inicio')
+          navigate('/main/pedidos/')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -394,7 +394,7 @@ export default function NewPedido(){
                   </div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={() => navigate('/main/pedidos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={() => navigate('/main/pedidos/')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>  
                 {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}

@@ -18,7 +18,7 @@ const CuerpoInforme = ({cuerpo})=>{
 }
 export default function ListaPagos(){
   const [info,setInfo] = useState([])
-  const [estado,setEstado] = useState('0')
+  const [estado,setEstado] = useState(0)
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   // const [refresh,setRefresh] = useState(false)
@@ -151,7 +151,22 @@ export default function ListaPagos(){
 
     // setEstado(estado)
     setOpenloader(true)
-    let url = parseInt(estado) ? 'abonos/100' : 'abonos/servicios/100'
+    // let url = parseInt(estado) == 1 ? 'abonos/100' : 'abonos/servicios/100'
+    let url = undefined
+    switch (parseInt(estado)) {
+      case 0:
+        url = 'abonos/servicios/100'
+        break;
+      case 1:
+        url = 'letras/'
+        break;
+      case 2:
+        url = 'abonos/100'
+        break;
+
+      default:
+        break;
+    }
     Consulta({
       url: url, params: {
         method: 'GET'
@@ -234,13 +249,31 @@ export default function ListaPagos(){
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 2 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
+                <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Letras
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
+                <button className={`group ${estado == 3 ? 'active' : ''}`} data-estado={3} onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Prestamos
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                <button className={`group ${estado == 4 ? 'active' : ''}`} data-estado={4} onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Adicionales
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                <button className={`group ${estado == 2 ? 'active' : ''}`} data-estado={2} onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Pagos
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                {/* <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Prestamos
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -251,32 +284,16 @@ export default function ListaPagos(){
                     Otros Gastos
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
-                </button>
+                </button> */}
               </ul>
             </div>
             <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll">
-              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     {
-                      parseInt(estado)
-                      ?
-                      <>
-                        <th className="lg:table-cell">Id</th>
-                        <th className="lg:table-cell">OrigenAbono</th>
-                        <th className="lg:table-cell">Banco</th>
-                        <th className="lg:table-cell">IdRef</th>
-                        <th className="lg:table-cell">TipoOperación</th>
-                        <th className="lg:table-cell">NumOperación</th>
-                        <th className="lg:table-cell">Proveedor</th>
-                        <th className="lg:table-cell">Moneda</th>
-                        <th className="lg:table-cell">Importe</th>
-                        <th className="lg:table-cell">FechaPago</th>
-                        <th className="lg:table-cell text-center">Accciones</th>
-                      </>
-                      :
-                      <>
+                      parseInt(estado) == 0 && <>
                         <th className="lg:table-cell">IdServ</th>
                         <th className="lg:table-cell">Origen</th>
                         <th className="lg:table-cell">Proveedor</th>
@@ -291,6 +308,36 @@ export default function ListaPagos(){
                         <th className="lg:table-cell text-center">Accciones</th>
                       </>
                     }
+                    {
+                      parseInt(estado) == 1 && <>
+                        <th className="lg:table-cell">Id</th>
+                        <th className="lg:table-cell">NroLetra</th>
+                        <th className="lg:table-cell">Proveedor</th>
+                        <th className="lg:table-cell">DocumentosRef</th>
+                        <th className="lg:table-cell">Moneda</th>
+                        <th className="lg:table-cell">FecEmisión</th>
+                        <th className="lg:table-cell">FecVigencia</th>
+                        <th className="lg:table-cell">Importe</th>
+                        <th className="lg:table-cell">DiaPendientes</th>
+                        <th className="lg:table-cell">Saldo</th>
+                        <th className="lg:table-cell text-center">Accciones</th>
+                      </>
+                    }
+                    {
+                      parseInt(estado) == 2 && <>
+                        <th className="lg:table-cell">Id</th>
+                        <th className="lg:table-cell">OrigenAbono</th>
+                        <th className="lg:table-cell">Banco</th>
+                        <th className="lg:table-cell">IdRef</th>
+                        <th className="lg:table-cell">TipoOperación</th>
+                        <th className="lg:table-cell">NumOperación</th>
+                        <th className="lg:table-cell">Proveedor</th>
+                        <th className="lg:table-cell">Moneda</th>
+                        <th className="lg:table-cell">Importe</th>
+                        <th className="lg:table-cell">FechaPago</th>
+                        <th className="lg:table-cell text-center">Accciones</th>
+                      </>
+                    }
                   </tr>
                 </thead>
                 <tbody>
@@ -299,22 +346,7 @@ export default function ListaPagos(){
                       ? info.map((row, key) => (
                         <tr key={key} className="">
                           {
-                            parseInt(estado)
-                            ?
-                            <>
-                              <td className="text-center">{row.idx}</td>
-                              <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
-                              <td>{row.entidad_bancaria}</td>
-                              <td>{row.idref}</td>
-                              <td>{row.tipo_operacion}</td>
-                              <td>{row.num_operacion}</td>
-                              <td>{row.proveedor}</td>
-                              <td>{row.moneda == 'S' ? 'SOLES' : 'DOLARES'}</td>
-                              <td><strong>S/.{row.importe}</strong></td>
-                              <td>{row.fec_pago}</td>
-                            </>
-                            :
-                            <>
+                            parseInt(estado) == 0 && <>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.idx}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 45 ? row.proveedor.substr(1,45) +  '...' : row.proveedor}</td>
@@ -328,31 +360,60 @@ export default function ListaPagos(){
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{(row.importe - row.cancelado).toFixed(2)}</td>
                             </>
                           }
+                          {
+                            parseInt(estado) == 1 && <>
+                              <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
+                              <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.num_letra}</td>
+                              <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>
+                              <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.facturas_ref !== '' ? row.facturas_ref : row.documentos_ref}</td>
+                              <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.moneda}</td>
+                              <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision}</td>
+                              <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_vencimiento}</td>
+                              <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>S/.{row.importe}</td>
+                              <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
+                              <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>S/.{row.importe - row.cancelado}</td>
+                            </>
+                          }
+                          {
+                            parseInt(estado) == 2 && <>
+                              <td className="text-center">{row.idx}</td>
+                              <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
+                              <td>{row.entidad_bancaria}</td>
+                              <td>{row.idref}</td>
+                              <td>{row.tipo_operacion}</td>
+                              <td>{row.num_operacion}</td>
+                              <td>{row.proveedor}</td>
+                              <td>{row.moneda == 'S' ? 'SOLES' : 'DOLARES'}</td>
+                              <td><strong>S/.{row.importe}</strong></td>
+                              <td>{row.fec_pago}</td>
+                            </>
+                          }
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action={`${parseInt(estado) ? 'edit_pago' : 'add_pago'}`} onClick={onclick} data-id={row.idx}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`${parseInt(estado) ? 'edit_pago' : 'add_pago'}`} onClick={onclick} data-id={row.idx}>
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-credit-card-pay"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19h-6a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" /><path d="M3 10h18" /><path d="M16 19h6" /><path d="M19 16l3 3l-3 3" /><path d="M7.005 15h.005" /><path d="M11 15h2" /></svg>
+                                {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  strokeLinecap="round"  stroke-linejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-cash-register"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 15h-2.5c-.398 0 -.779 .158 -1.061 .439c-.281 .281 -.439 .663 -.439 1.061c0 .398 .158 .779 .439 1.061c.281 .281 .663 .439 1.061 .439h1c.398 0 .779 .158 1.061 .439c.281 .281 .439 .663 .439 1.061c0 .398 -.158 .779 -.439 1.061c-.281 .281 -.663 .439 -1.061 .439h-2.5" /><path d="M19 21v1m0 -8v1" /><path d="M13 21h-7c-.53 0 -1.039 -.211 -1.414 -.586c-.375 -.375 -.586 -.884 -.586 -1.414v-10c0 -.53 .211 -1.039 .586 -1.414c.375 -.375 .884 -.586 1.414 -.586h2m12 3.12v-1.12c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-2" /><path d="M16 10v-6c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-4c-.53 0 -1.039 .211 -1.414 .586c-.375 .375 -.586 .884 -.586 1.414v6m8 0h-8m8 0h1m-9 0h-1" /><path d="M8 14v.01" /><path d="M8 17v.01" /><path d="M12 13.99v.01" /><path d="M12 17v.01" /></svg> */}
                                 </div>
                               </li>
                             </ul>
@@ -384,7 +445,7 @@ export default function ListaPagos(){
                 </tfoot>
               </table>
             </div>
-            <div className="flex flex-row justify-end">
+            <div className="flex flex-row justify-end mt-2">
               <div className="flex gap-2">
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevoabono} tipo={'accept'}>Nuevo</Button>

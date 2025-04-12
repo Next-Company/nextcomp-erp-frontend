@@ -45,7 +45,7 @@ export default function NewLetraV2() {
         })
           .then(resp => {
             setOpenloader(false)
-            // navigate('/main/letras/inicio')
+            // navigate('/main/letras/')
             toast.success('Estampado guardado con éxito!!', { theme: "colored" })
           })
           .catch((err) => {
@@ -307,7 +307,7 @@ export default function NewLetraV2() {
                 </div>
               </div>
               <div className="flex justify-end gap-2 mt-2">
-                <Button action={() => navigate('/main/letras/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                <Button action={() => navigate('/main/letras/')} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>
             </form>

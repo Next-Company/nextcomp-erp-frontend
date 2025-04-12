@@ -60,9 +60,7 @@ export function Home() {
   return (
     <>
       <div className="directory flex flex-col p-4 m-3 rounded-md bg-white w-full relative">
-
-
-          
+        <h2 className="text-[20px]">Home</h2>
         {/* <div className="grid_article scrollbar-special">
           {data && data.articles.map((res, index) => <Articulo key={index} info={res} />)}
         </div> */}
@@ -78,18 +76,12 @@ export function Home() {
             ]} 
             df={Object.keys(info).length > 0 ? info.servicio : null} 
           />
-
         </div>
         
         <div className="mt-4 w-[250px]">
           <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
         </div>
-        
-      
-      
-
       </div>
-
       {
         loading && createPortal(
           <LoadingWindow />, document.querySelector("#root")

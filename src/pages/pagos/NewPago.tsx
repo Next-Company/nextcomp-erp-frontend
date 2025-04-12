@@ -46,7 +46,7 @@ export default function NewPago(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/pagos/inicio')
+          navigate('/main/pagos/')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -63,6 +63,7 @@ export default function NewPago(){
     
   }
   useEffect(()=>{
+    console.log("Info urlparams:",urlparams)
     if(urlparams.id){
       if(urlparams.altura){
         setOpenloader(true)
@@ -97,7 +98,7 @@ export default function NewPago(){
       }
       }else{
         
-    }
+      }
     const handleInputChange = (event) => {
       setTipo(event.detail.valor == 'SERVICIOS' ? 0 : 1)
       setRegistros([])
@@ -300,7 +301,7 @@ export default function NewPago(){
                 <div>
                   {/* <span>Artículos:</span> */}
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
+                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell">Id</th>
@@ -378,7 +379,7 @@ export default function NewPago(){
                 <div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={() => navigate('/main/pagos/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={() => navigate('/main/pagos/')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>
               </div>

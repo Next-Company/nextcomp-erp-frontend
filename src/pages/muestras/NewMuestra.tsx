@@ -41,7 +41,7 @@ export default function NewMuestra(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/muestras/inicio')
+          navigate('/main/muestras/')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -106,7 +106,10 @@ export default function NewMuestra(){
     console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
     let position = e.target.dataset.position
     let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
-    let total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{carry+=parseInt(row[1]);return carry;},0) + parseInt(e.target.value)
+    let total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,value)=>{
+      carry+=parseInt(value[1]);
+      return carry;
+    },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
   }
 
@@ -284,7 +287,7 @@ export default function NewMuestra(){
               </div>
               <div className="flex justify-end gap-2 mt-2">
                 {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
-                <Button action={() => navigate('/main/muestras/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                <Button action={() => navigate('/main/muestras/')} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
               </div>

@@ -33,7 +33,7 @@ export default function NuevoEstampado(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/estampado/inicio')
+          navigate('/main/estampado/')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -109,7 +109,7 @@ export default function NuevoEstampado(){
               } */}
               {/* <FormFase info={estampado}/> */}
               <div className="flex justify-end gap-2 mt-2">
-                <Button action={() => navigate('/main/estampado/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                <Button action={() => navigate('/main/estampado/')} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button action={nuevoregistro} type={'button'} tipo={'accept'}>Agregar</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>

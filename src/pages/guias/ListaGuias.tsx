@@ -310,7 +310,8 @@ export default function ListaGuias() {
         <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Guias</h2>
+              <h2 className="font-medium text-[16px] flex flex-row">Guias</h2>
+              {/* <div className="rounded-l-full rounded-r-full w-[200px] bg-gray-500 text-white">GUIAS</div> */}
               <div className="w-[500px]">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
               </div>
@@ -342,7 +343,7 @@ export default function ListaGuias() {
             </div>
             <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll relative mb-2">
-              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible ">
+              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>

@@ -63,7 +63,7 @@ const routes = [
         path: "estampado", 
         element: <Estampado/>,
         children: [
-          { path: "inicio", element: <ListaEstampado/> },
+          { path: "", element: <ListaEstampado/> },
           { path: "nuevo", element: <NuevoEstampado/> },
           { path: "nuevo/:id", element: <NuevoEstampado/> },
           { path: "review/:id", element: <ReviewEstampado/> },
@@ -73,19 +73,17 @@ const routes = [
         path: "guias", 
         element: <LayoutGuia/>,
         children: [
-          { path: "inicio", element: <ListaGuias/> },
+          { path: "", element: <ListaGuias/> },
           { path: "nuevo", element: <NewGuia/> },
           { path: "nuevo/:id", element: <NewGuia/> },
           { path: "seguimiento/:id", element: <SeguimientoGuia/> },
-          // { path: "nuevo/:id", element: <NuevoEstampado/> },
-          // { path: "review/:id", element: <ReviewEstampado/> },
         ]
       },
       { 
         path: "muestras", 
         element: <LayoutMuestras/>,
         children: [
-          { path: "inicio", element: <ListaMuestras/> },
+          { path: "", element: <ListaMuestras/> },
           { path: "nuevo", element: <NewMuestra/> },
           { path: "nuevo/:id", element: <NewMuestra/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
@@ -96,7 +94,7 @@ const routes = [
         path: "pedidos", 
         element: <LayoutPedido/>,
         children: [
-          { path: "inicio", element: <ListaPedidos/> },
+          { path: "", element: <ListaPedidos/> },
           { path: "nuevo", element: <NewPedido/> },
           { path: "nuevo/:id", element: <NewPedido/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
@@ -107,7 +105,7 @@ const routes = [
         path: "despachos", 
         element: <LayoutDespacho/>,
         children: [
-          { path: "inicio", element: <ListaDespachos/> },
+          { path: "", element: <ListaDespachos/> },
           { path: "nuevo", element: <NewDespacho/> },
           { path: "nuevo/:id", element: <NewDespacho/> },
         ]
@@ -116,7 +114,7 @@ const routes = [
         path: "pagos", 
         element: <LayoutPagos/>,
         children: [
-          { path: "inicio", element: <ListaPagos/> },
+          { path: "", element: <ListaPagos/> },
           { path: "nuevo", element: <NewPago/> },
           { path: "nuevo/:id", element: <NewPago/> },
           { path: "nuevo/:id/:altura", element: <NewPago/> },
@@ -126,7 +124,7 @@ const routes = [
         path: "letras", 
         element: <LayoutLetras/>,
         children: [
-          { path: "inicio", element: <ListaLetras/> },
+          { path: "", element: <ListaLetras/> },
           { path: "nuevo", element: <NewLetraV2/> },
           { path: "nuevo/:id", element: <NewLetraV2/> },
           // { path: "nuevo/:id/:altura", element: <NewPago/> },
@@ -136,7 +134,7 @@ const routes = [
         path: "informes", 
         element: <LayoutInforme/>,
         children: [
-          { path: "inicio", element: <Informe/> },
+          { path: "", element: <Informe/> },
         ]
       },
       { path: "soporte", element: <Soporte /> },
@@ -144,7 +142,7 @@ const routes = [
         path: "operaciones",
         element: <Operaciones />,
         children: [
-          { path: "inicio", element: <Inicio /> },
+          { path: "", element: <Inicio /> },
           // { path: "nuevo", element: <><h1>Editando el detalle</h1></> }
           { path: "nuevo", element: <NuevaOrdenProduccion/> },
           { path: "nuevo/:id", element: <NuevaOrdenProduccion/> }
