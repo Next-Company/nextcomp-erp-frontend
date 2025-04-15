@@ -40,6 +40,8 @@ import ListaLetras from './pages/letras/ListaLetras.tsx'
 import NewLetra from './pages/letras/NewLetra.tsx'
 import NewLetraV2 from './pages/letras/NewLetrav2.tsx'
 import SeguimientoGuia from './pages/guias/NewSeguimiento.tsx'
+import NewPagoServicio from './pages/pagos/NewPagoServicio.tsx'
+import NewPagoLetra from './pages/pagos/NewPagoLetras.tsx'
 
 const routes = [
   {
@@ -115,9 +117,11 @@ const routes = [
         element: <LayoutPagos/>,
         children: [
           { path: "", element: <ListaPagos/> },
-          { path: "nuevo", element: <NewPago/> },
-          { path: "nuevo/:id", element: <NewPago/> },
-          { path: "nuevo/:id/:altura", element: <NewPago/> },
+          { path: "nuevopagoservicio/:id", element: <NewPagoServicio/> },
+          { path: "nuevopagoservicio/:id/:tipo", element: <NewPagoServicio/> },
+          { path: "nuevopagoletra/:id", element: <NewPagoLetra/> },
+          { path: "nuevopagoletra/:id/:tipo", element: <NewPagoLetra/> },
+          // { path: "nuevo/:id/:altura", element: <NewPagoServicio/> },
         ]
       },
       { 

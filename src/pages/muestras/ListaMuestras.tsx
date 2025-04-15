@@ -294,8 +294,6 @@ export default function ListaMuestras() {
   //   openModal(params_modal)
   // }
   const busquedaglobal = async (input) => {
-    // let data = new FormData()
-    // data.append('busqueda',input.value)
     Consulta({
       url: 'produccion/getListaMuestras/' + (input.value == '' ? '_' : input.value), params: {
         method: 'GET'

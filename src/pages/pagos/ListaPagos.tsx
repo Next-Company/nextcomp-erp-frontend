@@ -107,15 +107,28 @@ export default function ListaPagos(){
         }
         openModal(params_modal)
         break;
-      case 'edit_pago':
-        navigate("/main/pagos/nuevo/"+ id )
+      case 'abonar':
+        switch(parseInt(estado)){
+          case 0 :
+            navigate("/main/pagos/nuevopagoservicio/"+ id + "/servicios")
+            break
+          case 1 :
+            navigate("/main/pagos/nuevopagoletra/"+ id + "/letras")
+            break
+          case 2 :
+            break
+          case 3 :
+            break
+          default:
+            break
+        }
         break;
-      case 'add_pago':
-        navigate("/main/pagos/nuevo/"+ id + "/" + 18)
-        break;
-      case 'review':
-        // navigate("/main/estampado/review/"+ id)
-        break;
+      // case 'edit_pago':
+      //   navigate("/main/pagos/nuevo/"+ id )
+      //   break;
+      // case 'add_pago':
+      //   navigate("/main/pagos/nuevo/"+ id + "/" + 18)
+      //   break;
       default:
         break;
     } 
@@ -158,12 +171,20 @@ export default function ListaPagos(){
         url = 'abonos/servicios/100'
         break;
       case 1:
-        url = 'letras/'
+        url = 'abonos/letras'
         break;
       case 2:
-        url = 'abonos/100'
+        // url = 'abonos/100'
         break;
-
+      case 3:
+        // url = 'abonos/100'
+        break;
+      case 4:
+        // url = 'abonos/100'
+        break;
+      case 5:
+        url = 'abonos/getabonoslist/100'
+        break;
       default:
         break;
     }
@@ -267,24 +288,12 @@ export default function ListaPagos(){
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 2 ? 'active' : ''}`} data-estado={2} onClick={filtrarestado}>
+                <button className={`group ${estado == 5 ? 'active' : ''}`} data-estado={5} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pagos
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                {/* <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
-                  <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Prestamos
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button>
-                <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado={1} onClick={filtrarestado}>
-                  <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Otros Gastos
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button> */}
               </ul>
             </div>
             <hr />
@@ -324,7 +333,7 @@ export default function ListaPagos(){
                       </>
                     }
                     {
-                      parseInt(estado) == 2 && <>
+                      parseInt(estado) == 5 && <>
                         <th className="lg:table-cell">Id</th>
                         <th className="lg:table-cell">OrigenAbono</th>
                         <th className="lg:table-cell">Banco</th>
@@ -375,7 +384,7 @@ export default function ListaPagos(){
                             </>
                           }
                           {
-                            parseInt(estado) == 2 && <>
+                            parseInt(estado) == 5 && <>
                               <td className="text-center">{row.idx}</td>
                               <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
                               <td>{row.entidad_bancaria}</td>
@@ -411,9 +420,9 @@ export default function ListaPagos(){
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`${parseInt(estado) ? 'edit_pago' : 'add_pago'}`} onClick={onclick} data-id={row.idx}>
-                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-credit-card-pay"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19h-6a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" /><path d="M3 10h18" /><path d="M16 19h6" /><path d="M19 16l3 3l-3 3" /><path d="M7.005 15h.005" /><path d="M11 15h2" /></svg>
-                                {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  strokeLinecap="round"  stroke-linejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-cash-register"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 15h-2.5c-.398 0 -.779 .158 -1.061 .439c-.281 .281 -.439 .663 -.439 1.061c0 .398 .158 .779 .439 1.061c.281 .281 .663 .439 1.061 .439h1c.398 0 .779 .158 1.061 .439c.281 .281 .439 .663 .439 1.061c0 .398 -.158 .779 -.439 1.061c-.281 .281 -.663 .439 -1.061 .439h-2.5" /><path d="M19 21v1m0 -8v1" /><path d="M13 21h-7c-.53 0 -1.039 -.211 -1.414 -.586c-.375 -.375 -.586 -.884 -.586 -1.414v-10c0 -.53 .211 -1.039 .586 -1.414c.375 -.375 .884 -.586 1.414 -.586h2m12 3.12v-1.12c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-2" /><path d="M16 10v-6c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-4c-.53 0 -1.039 .211 -1.414 .586c-.375 .375 -.586 .884 -.586 1.414v6m8 0h-8m8 0h1m-9 0h-1" /><path d="M8 14v.01" /><path d="M8 17v.01" /><path d="M12 13.99v.01" /><path d="M12 17v.01" /></svg> */}
+                                {/* <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`${parseInt(estado) ? 'edit_pago' : 'add_pago'}`} onClick={onclick} data-id={row.idx}> */}
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={row.idx}>
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-credit-card-pay"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19h-6a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" /><path d="M3 10h18" /><path d="M16 19h6" /><path d="M19 16l3 3l-3 3" /><path d="M7.005 15h.005" /><path d="M11 15h2" /></svg>
                                 </div>
                               </li>
                             </ul>

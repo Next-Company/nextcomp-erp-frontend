@@ -455,14 +455,14 @@ export default function NewDespacho() {
                         </tbody>
                         <tfoot className="sticky bottom-0">
                           <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
-                            <td className="text-center" colSpan={9}></td>
+                            <td className="text-center" colSpan={tipo !== 1 ? 10 : 4}></td>
                             <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
                             <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
                               return carry + parseFloat(value.cantidad)
                             },0)}</td>
                             <td className="text-center text-[16px] italic">0</td>
                             <td className="text-center"></td>
-                            <td className="text-center"></td>
+                            {/* <td className="text-center"></td> */}
                           </tr>
                         </tfoot>
                       </table>
@@ -547,7 +547,7 @@ export default function NewDespacho() {
                         </tbody>
                         <tfoot className="sticky bottom-0">
                           <tr>
-                            <td colSpan={11} >
+                            <td colSpan={12} >
                               <div className="flex flex-row justify-center">
                                 <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                   +

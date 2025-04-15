@@ -37,7 +37,7 @@ export function InputSelect({ title, name, data, df, formref=null }) {
   }
 
   useEffect(() => {
-    console.log("El valor de df es:",df)
+    // console.log("El valor de df es:",df)
     const result = info.findIndex(row => row.indice == df)
     console.log(result)
     setSelect(result == -1 ? 0 : result)
