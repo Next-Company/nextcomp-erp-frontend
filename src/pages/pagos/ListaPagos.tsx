@@ -243,8 +243,6 @@ export default function ListaPagos(){
     }
     openModal(params_modal)
   }
-
-
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">

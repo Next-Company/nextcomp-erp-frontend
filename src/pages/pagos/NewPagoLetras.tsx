@@ -10,8 +10,11 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Guias from "../../components/Common/Guias"
 import Pagos from "../../components/Common/Pagos"
 import Cuentas from "../../components/Common/Cuentas"
-import { colortipodoc } from "../../utils/utils"
 
+const colorfase = {
+  'TELAS': 'bg-orange-500',
+  'AVIOS': 'bg-violet-500'
+}
 export default function NewPagoLetra(){
   const [tipo,setTipo] = useState(0)
   const urlparams = useParams()
@@ -59,21 +62,78 @@ export default function NewPagoLetra(){
       }
     })
   }
+  const onclick = (e) => {
+    const action = e.target.dataset.action
+    const position = parseInt(e.target.dataset.position)
+    let params_modal = null
+    switch(action){
+      case 'review':
+        break;
+      case 'download':
+        params_modal = {
+          open: true,
+          content: <div>Desea continuar con la descarga del pedido de insumos?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+          controls: true,
+          header: false,
+          action: () => {
+            const desc = async () => {
+              const data = new FormData()
+              data.append('id', registros[position].idx)
+              // const tipo = info.filter(row => row.idx == id)[0].tipo
+
+              setOpenloader(true)
+              Consulta({
+                url: `produccion/vistapreviapedido/telas`, params: {
+                  method: 'POST',
+                  body: data
+                }
+              })
+                .then(resp => {
+                  setOpenloader(false)
+                  const binaryString = window.atob(resp.data);
+                  const binaryLen = binaryString.length;
+                  const bytes = new Uint8Array(binaryLen);
+                  for (let i = 0; i < binaryLen; i++) {
+                    const ascii = binaryString.charCodeAt(i);
+                    bytes[i] = ascii;
+                  }
+                  const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+                  const link = document.createElement('a')
+                  link.href = file
+                  link.target = 'blank'
+                  link.click()
+                })
+                .catch((err) => {
+                  setOpenloader(false)
+                  toast.error('Se produjo un error!!', { theme: "colored" })
+                })
+            }
+            desc()
+          }
+        }
+        openModal(params_modal)
+        break;
+      default :
+        break;
+    }
+  }
   useEffect(()=>{
     // console.log("Info urlparams:",urlparams)
     // if(urlparams.id){
     if(urlparams.id && urlparams.tipo){
       // Consulta({url'abonos/getgt'}z
       setOpenloader(true)
-      Consulta({ url: 'letras/getLetraById/' + urlparams.id, })
+      // Consulta({ url: 'letras/getLetraById/' + urlparams.id, })
+      Consulta({ url: 'abonos/letrastatusdetalle/' + urlparams.id })
       .then(resp => {
+        console.log("INfo nuevo abono letra:",resp)
         // let total = resp[1].reduce((carry,row)=>{carry += parseFloat(row.tipodoc == '2' ? row.importe_total*-1 : row.importe_total*1); return carry},0)
-        let total = resp[1].reduce((carry,row)=>{carry += parseFloat(row.tipodoc == '2' ? row.importe_total : row.importe_total*1);return carry},0)
+        // let total = resp[1].reduce((carry,row)=>{carry += parseFloat(row.tipodoc == '2' ? row.importe_total : row.importe_total*1);return carry},0)
+        // let total = resp[1].reduce((carry,row)=>{carry += row.importe_despacho -  row.cancelado;return carry},0)
         
-        // console.log("Data letras a pagar:",resp)
-        // console.log("El total es :",total)
-        setRegistros(resp[1])
-        setInfo({...info,id_proveedor_CAB:resp[0].id_proveedor_CAB,proveedor:resp[0].proveedor,importe:total,saldo:total - (resp[0].cancelado ?? 0),pago:0})
+        setRegistros(resp)
+        // setInfo({...info,id_proveedor_CAB:resp[0].id_proveedor_CAB,proveedor:resp[0][0].proveedor,saldo:resp[0][0].importe - (resp[0].cancelado ?? 0),pago:0})
+        setInfo({...info,id_proveedor_CAB:resp[0].id_proveedor_CAB,proveedor:resp[0][0].proveedor,importe:resp[0][0].proveedor,pago:0})
         setOpenloader(false)
       })
       .catch((err) => {
@@ -288,18 +348,17 @@ export default function NewPagoLetra(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell">Id</th>
-                          <th className="lg:table-cell">NroPedido</th>
-                          <th className="lg:table-cell">TipoDoc</th>
-                          <th className="lg:table-cell">Moneda</th>
-                          <th className="lg:table-cell">Serie</th>
-                          <th className="lg:table-cell">Numero</th>
+                          <th className="lg:table-cell">Tipo</th>
+                          <th className="lg:table-cell">OP</th>
                           <th className="lg:table-cell">FecEmision</th>
-                          <th className="lg:table-cell">ImporteBruto</th>
-                          <th className="lg:table-cell">BaseImponible</th>
-                          <th className="lg:table-cell">MontoInafecto</th>
-                          <th className="lg:table-cell">Igv</th>
-                          <th className="lg:table-cell">ImporteTotal</th>
-                          <th className="lg:table-cell">Saldo</th>
+                          <th className="lg:table-cell">FecRetorno</th>
+                          <th className="lg:table-cell">TiempoProducción</th>
+                          <th className="lg:table-cell">FormaPago</th>
+                          <th className="lg:table-cell">Cantidad</th>
+                          <th className="lg:table-cell">Despacho</th>
+                          <th className="lg:table-cell">Importe</th>
+                          {/* <th className="lg:table-cell">Cancelado</th>
+                          <th className="lg:table-cell">Saldo</th> */}
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -308,19 +367,15 @@ export default function NewPagoLetra(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item) => item.idx == row.idx) ? 'selected' : ''}`}>
                               <td className="text-center">{row.idx}</td>
-                              <td className="text-center">{row.orden_ref}</td>
-                              <td><div className={`text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipodoc[['FACTURA','NOTA CREDITO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]]}`}>{['FACTURA','NOTA CREDIDO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]}</div></td>
-                              <td className="text-center">{row.moneda}</td>
-                              <td className="text-center">{row.serie}</td>
-                              <td className="text-center">{row.numero}</td>
+                              <td className="w-[150px]"><div className={`w-full text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                              <td className="text-center"><strong>{row.orden_ref}</strong></td>
                               <td className="text-center">{row.fec_emision}</td>
-                              <td className="text-center">{row.importe_bruto}</td>
-                              <td className="text-center">{row.base_imponible}</td>
-                              <td className="text-center">{row.monto_inafecto}</td>
-                              <td className="text-center">{row.igv}</td>
-                              <td className="text-center">{row.tipodoc == '2' ? row.importe_total*-1 : row.importe_total}</td>
-                              <td className="text-center">{row.saldo}</td>
-                              {/* <td className="w-[250px]"></td> */}
+                              <td className="text-center">{row.fec_retorno}</td>
+                              <td className="text-center">{row.tiempo_produccion}</td>
+                              <td className="text-center">{row.forma_pago}</td>
+                              <td className="text-center">{row.cantidad}</td>
+                              <td className="text-center">{row.despacho}</td>
+                              <td className="text-center">{row.importe_despacho}</td>                              
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -329,7 +384,7 @@ export default function NewPagoLetra(){
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download">
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                     </div>
                                   </li>

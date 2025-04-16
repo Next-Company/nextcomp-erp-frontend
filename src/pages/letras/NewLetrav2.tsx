@@ -7,9 +7,13 @@ import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
-import { createMemoryRouter, useNavigate, useParams } from "react-router-dom";
-import { colortipodoc } from "../../utils/utils";
+import { useNavigate, useParams } from "react-router-dom";
+import Facturas from "../../components/Common/Facturas";
 
+const colorfase = {
+  'TELAS': 'bg-orange-500',
+  'AVIOS': 'bg-violet-500'
+}
 export default function NewLetraV2() {
   const urlparams = useParams()
   const [info, setInfo] = useState({ idx: null, id_proveedor_CAB: null, proveedor: null, fec_emision: null, fec_vencimiento: null, num_letra: null, documentos_ref: null, importe: null, estado: 'EMIT', origen: 'SERVICIO' })
@@ -36,7 +40,7 @@ export default function NewLetraV2() {
         const data = new FormData()
         urlparams.id && data.append('id', urlparams.id)
         data.append('info', JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('registros', JSON.stringify(registros))
+        data.append('registros', JSON.stringify(selected))
         await Consulta({
           url: 'letras/saveLetra/', params: {
             method: 'PUT',
@@ -58,18 +62,92 @@ export default function NewLetraV2() {
       }
     })
   }
-  const onclick = (e) => {
-    // actions(lista[e.target.dataset.position])
-    const item = registros[parseInt(e.target.dataset.position)]
-    console.log("Factra seleccionada: ", item)
-    if (selected.find((row) => row.idx == item.idx)) {
-      setSelected([...selected.filter(row => row.idx !== item.idx)])
-      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) - parseFloat(item.tipodoc == '2' ? item.saldo*-1 : item.saldo) })
-    } else {
-      setSelected([...selected, registros[parseInt(e.target.dataset.position)]])
-      setInfo({ ...info, importe: parseFloat(info.importe ?? 0) + parseFloat(item.tipodoc == '2' ? item.saldo*-1 : item.saldo) })
+  const onkeyup = (e)=>{
+    if(e.target.matches("input[name='importe']")){
+      // console.log("ELementeto disparado:",e.target.value,parseFloat(e.target.value))
+      setInfo({...info,importe:parseFloat(e.target.value) || 0})
     }
-    // console.log("El item seleccionado es: ", selected)
+  }
+  const onclick = (e) => {
+    const action = e.target.dataset.action
+    const position = parseInt(e.target.dataset.position)
+    let params_modal = null
+    switch(action){
+      case 'review':
+        // let params_modal = null
+        params_modal = {
+          open: true,
+          content: <Facturas actions={(item) => {}} idproveedor={info.id_proveedor_CAB} />,
+          controls: true,
+          header: false,
+          action: () => {
+          }
+        }
+        openModal(params_modal)
+        break;
+      case 'add':
+        const item = registros[parseInt(e.target.dataset.position)]
+        console.log("El seleccionado es:",item)
+        if (selected.find((row) => row.idx == item.idx)) {
+          setSelected([...selected.filter(row => row.idx !== item.idx)])
+          console.log("Datos suma1 :",parseFloat(item.importe_despacho),parseFloat(item.cancelado))
+          console.log("DAtos info1 :",info)
+          // setInfo({ ...info, importe: parseFloat(info.importe ?? 0) - (parseFloat(item.importe_despacho) - parseFloat(item.cancelado)) })
+        } else {
+          setSelected([...selected, registros[parseInt(e.target.dataset.position)]])
+          console.log("Datos suma2 :",parseFloat(item.importe_despacho),parseFloat(item.cancelado))
+          console.log("DAtos info2 :",info)
+          // setInfo({ ...info, importe: parseFloat(info.importe ?? 0) + parseFloat(item.importe_despacho) - parseFloat(item.cancelado) })
+        }
+        break;
+      case 'download':
+        console.log(registros,position)
+        params_modal = {
+          open: true,
+          content: <div>Desea continuar con la descarga del pedido de insumos?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+          controls: true,
+          header: false,
+          action: () => {
+            const desc = async () => {
+              const data = new FormData()
+              data.append('id', registros[position].idpedido)
+              // const tipo = info.filter(row => row.idx == id)[0].tipo
+
+              setOpenloader(true)
+              Consulta({
+                url: `produccion/vistapreviapedido/telas`, params: {
+                  method: 'POST',
+                  body: data
+                }
+              })
+                .then(resp => {
+                  setOpenloader(false)
+                  const binaryString = window.atob(resp.data);
+                  const binaryLen = binaryString.length;
+                  const bytes = new Uint8Array(binaryLen);
+                  for (let i = 0; i < binaryLen; i++) {
+                    const ascii = binaryString.charCodeAt(i);
+                    bytes[i] = ascii;
+                  }
+                  const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+                  const link = document.createElement('a')
+                  link.href = file
+                  link.target = 'blank'
+                  link.click()
+                })
+                .catch((err) => {
+                  setOpenloader(false)
+                  toast.error('Se produjo un error!!', { theme: "colored" })
+                })
+            }
+            desc()
+          }
+        }
+        openModal(params_modal)
+        break;
+      default :
+        break;
+    }
   }
   useEffect(() => {
     if (urlparams.id) {
@@ -110,37 +188,22 @@ export default function NewLetraV2() {
         console.log("El item seleccionado es: ", item)
         setOpen(false)
         setOpenloader(true)
-        Consulta({ url: 'letras/getfacturasbyproveedor/' + item.idx })
+        // Consulta({ url: 'letras/getfacturasbyproveedor/' + item.idx })
+        Consulta({ url: 'letras/getpedidosbyproveedor/' + item.idx })
           .then(resp => {
-            console.log("Lista de facturas", resp)
+            console.log("Lista de pedidos :", resp)
             setInfo(info => ({ ...info, id_proveedor_CAB: item.idx, proveedor: item.nom}))
             setOpenloader(false)
-            // setRegistros([...resp,saldo: item.importe_total - item.cancelado )
+            // setRegistros(resp)
             setRegistros(resp.map((row) => {
-              return { ...row, saldo: row.importe_total - row.cancelado }
+              row = { ...row, idpedido: row.idx }
+              Reflect.deleteProperty(row,'idx')
+              return row
             }))
-            // navigate('/main/guias/inicio')
           })
           .catch((err) => {
             // setOpenloader(false)
           })
-
-
-      }} />,
-      controls: true,
-      header: false,
-      action: () => {
-      }
-    }
-    openModal(params_modal)
-  }
-  const listafacturas = () => {
-    let params_modal = null
-    params_modal = {
-      open: true,
-      content: <Proveedores actions={(item) => {
-        setInfo(info => ({ ...info, id_proveedor_CAB: item.idx, proveedor: item.nom }))
-        setOpen(false)
       }} />,
       controls: true,
       header: false,
@@ -163,8 +226,7 @@ export default function NewLetraV2() {
             <hr />
           </div>
           <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
-
-            <form ref={form} onSubmit={onsubmit}>
+            <form ref={form} onSubmit={onsubmit} onKeyUp={onkeyup}>
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex flex-row gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
@@ -177,6 +239,7 @@ export default function NewLetraV2() {
                     df={Object.keys(info).length > 0 ? info.origen : null}
                   />
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                  {/* <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" /> */}
                   <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
                   <Input name={'fec_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_vencimiento : null} type="date" />
                 </div>
@@ -209,26 +272,23 @@ export default function NewLetraV2() {
                     df={Object.keys(info).length > 0 ? info.estado : null}
                   />
                 </div>
-
-
                 <div>
                   <span>Artículos:</span>
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-yellow-200">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          <th className="lg:table-cell">Id</th>
-                          <th className="lg:table-cell">NroPedido</th>
-                          <th className="lg:table-cell">TipoDoc</th>
-                          <th className="lg:table-cell">Moneda</th>
-                          <th className="lg:table-cell">Serie</th>
-                          <th className="lg:table-cell">Numero</th>
+                          <th className="lg:table-cell">IdPedido</th>
+                          <th className="lg:table-cell">Tipo</th>
+                          <th className="lg:table-cell">OP</th>
                           <th className="lg:table-cell">FecEmision</th>
-                          <th className="lg:table-cell">ImporteBruto</th>
-                          <th className="lg:table-cell">BaseImponible</th>
-                          <th className="lg:table-cell">MontoInafecto</th>
-                          <th className="lg:table-cell">Igv</th>
-                          <th className="lg:table-cell">ImporteTotal</th>
+                          <th className="lg:table-cell">FecRetorno</th>
+                          <th className="lg:table-cell">TiempoProducción</th>
+                          <th className="lg:table-cell">FormaPago</th>
+                          <th className="lg:table-cell">Cantidad</th>
+                          <th className="lg:table-cell">Despacho</th>
+                          <th className="lg:table-cell">Importe</th>
+                          <th className="lg:table-cell">Cancelado</th>
                           <th className="lg:table-cell">Saldo</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
@@ -237,19 +297,18 @@ export default function NewLetraV2() {
                         {
                           registros.length > 0 && registros.map((row, key) => (
                             <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item) => item.idx == row.idx) ? 'selected' : ''}`}>
-                              <td className="text-center">{row.idx}</td>
-                              <td className="text-center">{row.orden_ref}</td>
-                              <td><div className={`text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipodoc[['FACTURA','NOTA CREDITO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]]}`}>{['FACTURA','NOTA CREDIDO','NOTA DEBITO'][parseInt(row.tipodoc) - 1]}</div></td>
-                              <td className="text-center">{row.moneda}</td>
-                              <td className="text-center">{row.serie}</td>
-                              <td className="text-center">{row.numero}</td>
+                              <td className="text-center">{row.idpedido}</td>
+                              <td className="w-[150px]"><div className={`w-full text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                              <td className="text-center"><strong>{row.orden_ref}</strong></td>
                               <td className="text-center">{row.fec_emision}</td>
-                              <td className="text-center">{row.importe_bruto}</td>
-                              <td className="text-center">{row.base_imponible}</td>
-                              <td className="text-center">{row.monto_inafecto}</td>
-                              <td className="text-center">{row.igv}</td>
-                              <td className="text-center">{row.tipodoc == '2' ? row.importe_total*-1 : row.importe_total}</td>
-                              <td className="text-center">{row.saldo}</td>
+                              <td className="text-center">{row.fec_retorno}</td>
+                              <td className="text-center">{row.tiempo_produccion}</td>
+                              <td className="text-center">{row.forma_pago}</td>
+                              <td className="text-center">{row.cantidad}</td>
+                              <td className="text-center">{row.despacho}</td>
+                              <td className="text-center">{row.importe_despacho}</td>
+                              <td className="text-center">{row.cancelado}</td>
+                              <td className="text-center">{row.importe_despacho - row.cancelado}</td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -258,12 +317,12 @@ export default function NewLetraV2() {
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={onclick} data-action="download" data-position={key}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" onClick={onclick} data-position={key} data-action="review">
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                     </div>
                                   </li>
@@ -285,10 +344,26 @@ export default function NewLetraV2() {
                       </tbody>
                       <tfoot className="sticky bottom-0">
                         <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
-                          <td className="text-center" colSpan={11}></td>
+                          <td className="text-center" colSpan={8}></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
                           <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
-                            return carry + parseFloat(value.tipodoc == '2' ? value.importe_total*-1 : value.importe_total)
+                            return carry + parseFloat(value.importe_despacho)
+                          },0).toLocaleString('es-PE', {
+                            style: 'currency',
+                            currency: 'PEN',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2  
+                          })}</td>
+                          <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                            return carry + parseFloat(value.cancelado)
+                          },0).toLocaleString('es-PE', {
+                            style: 'currency',
+                            currency: 'PEN',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2  
+                          })}</td>
+                          <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                            return carry + parseFloat(value.importe_despacho) - parseFloat(value.cancelado)
                           },0).toLocaleString('es-PE', {
                             style: 'currency',
                             currency: 'PEN',

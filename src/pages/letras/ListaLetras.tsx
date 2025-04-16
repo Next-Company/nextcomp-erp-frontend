@@ -425,7 +425,6 @@ export default function ListaLetras() {
        />,
       action: async () => {}
     })
-
   }
   return (
     <>

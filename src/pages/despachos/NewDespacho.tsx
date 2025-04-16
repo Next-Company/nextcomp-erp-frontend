@@ -35,7 +35,7 @@ export default function NewDespacho() {
 
   const onsubmit = (e) => {
     e.preventDefault()
-    if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0) {
+    if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
       toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
       return
     }
@@ -50,7 +50,7 @@ export default function NewDespacho() {
         const data = new FormData()
         urlparams.id && data.append('id', urlparams.id)
         data.append('info', JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle', JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0)))
+        data.append('detalle', JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0)))
         data.append('facturas', JSON.stringify(facturas))
 
         await Consulta({
@@ -455,12 +455,18 @@ export default function NewDespacho() {
                         </tbody>
                         <tfoot className="sticky bottom-0">
                           <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
-                            <td className="text-center" colSpan={tipo !== 1 ? 10 : 4}></td>
+                            <td className="text-center" colSpan={tipo !== 1 ? 9 : 4}></td>
                             <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
                             <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
                               return carry + parseFloat(value.cantidad)
                             },0)}</td>
-                            <td className="text-center text-[16px] italic">0</td>
+                            <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                              return carry + parseFloat(value.despacho)
+                            },0)}</td>
+                            <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                              return carry + parseFloat(value.caidos)
+                            },0)}</td>
+                            {/* <td className="text-center text-[16px] italic">0</td> */}
                             <td className="text-center"></td>
                             {/* <td className="text-center"></td> */}
                           </tr>
