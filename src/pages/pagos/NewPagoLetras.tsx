@@ -10,6 +10,7 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Guias from "../../components/Common/Guias"
 import Pagos from "../../components/Common/Pagos"
 import Cuentas from "../../components/Common/Cuentas"
+import Facturas from "../../components/Common/Facturas"
 
 const colorfase = {
   'TELAS': 'bg-orange-500',
@@ -39,7 +40,7 @@ export default function NewPagoLetra(){
       action: async () => {
         setOpenloader(true)
         const data = new FormData()
-        urlparams.id && ( !urlparams.altura && data.append('id',urlparams.id) )
+        urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
 
@@ -68,6 +69,15 @@ export default function NewPagoLetra(){
     let params_modal = null
     switch(action){
       case 'review':
+        params_modal = {
+          open: true,
+          content: <Facturas actions={(item) => {}} idpedido={registros[position].idpedido} />,
+          controls: true,
+          header: false,
+          action: () => {
+          }
+        }
+        openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -78,7 +88,7 @@ export default function NewPagoLetra(){
           action: () => {
             const desc = async () => {
               const data = new FormData()
-              data.append('id', registros[position].idx)
+              data.append('id', registros[position].idpedido)
               // const tipo = info.filter(row => row.idx == id)[0].tipo
 
               setOpenloader(true)
@@ -122,6 +132,7 @@ export default function NewPagoLetra(){
     // if(urlparams.id){
     if(urlparams.id && urlparams.tipo){
       // Consulta({url'abonos/getgt'}z
+      console.log("Dentro de la primero condicion")
       setOpenloader(true)
       // Consulta({ url: 'letras/getLetraById/' + urlparams.id, })
       Consulta({ url: 'abonos/letrastatusdetalle/' + urlparams.id })
@@ -133,7 +144,7 @@ export default function NewPagoLetra(){
         
         setRegistros(resp)
         // setInfo({...info,id_proveedor_CAB:resp[0].id_proveedor_CAB,proveedor:resp[0][0].proveedor,saldo:resp[0][0].importe - (resp[0].cancelado ?? 0),pago:0})
-        setInfo({...info,id_proveedor_CAB:resp[0].id_proveedor_CAB,proveedor:resp[0][0].proveedor,importe:resp[0][0].proveedor,pago:0})
+        setInfo({...info,idletra:resp[0].idletra,id_proveedor_CAB:resp[0].id_proveedor_CAB,importe:resp[0].importe,proveedor:resp[0].proveedor,saldo:resp[0].importe - resp[0].cancelado,pago:0})
         setOpenloader(false)
       })
       .catch((err) => {
@@ -164,7 +175,7 @@ export default function NewPagoLetra(){
 
     const handleInputChange = (event) => {
       setTipo(event.detail.valor == 'SERVICIOS' ? 0 : 1)
-      setRegistros([])
+      // setRegistros([])
     };
     form.current.addEventListener("salamandra", handleInputChange);
     
@@ -273,6 +284,7 @@ export default function NewPagoLetra(){
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
+                  <Input name={'idletra'} defaults={Object.keys(info).length > 0 ? info.idletra : null} type="hidden" />
                   <InputSelect title={'Origen'} formref={form} name={"tipo"} data={
                     [
                       { indice: 'SERV', option: 'SERVICIOS', selected: true },
@@ -384,12 +396,12 @@ export default function NewPagoLetra(){
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-position={key} data-action="download" onClick={onclick}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review">
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-position={key} data-action="review" onClick={onclick}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                     </div>
                                   </li>

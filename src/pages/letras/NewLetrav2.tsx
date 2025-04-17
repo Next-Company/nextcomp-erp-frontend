@@ -74,10 +74,9 @@ export default function NewLetraV2() {
     let params_modal = null
     switch(action){
       case 'review':
-        // let params_modal = null
         params_modal = {
           open: true,
-          content: <Facturas actions={(item) => {}} idproveedor={info.id_proveedor_CAB} />,
+          content: <Facturas actions={(item) => {}} idpedido={registros[position].idpedido} />,
           controls: true,
           header: false,
           action: () => {

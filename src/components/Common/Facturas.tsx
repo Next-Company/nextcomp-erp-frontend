@@ -6,11 +6,11 @@ import { colortipodoc } from "../../utils/utils";
 
 export default function Facturas(children){
   const { logout} = useContext(AuthPermitions)
-  let {actions = ()=>{},idproveedor} = children
+  let {actions = ()=>{},idpedido} = children
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'letras/getfacturasbyproveedor/' + idproveedor})
+      await Consulta({url: 'letras/getfacturasbypedido/' + idpedido})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)

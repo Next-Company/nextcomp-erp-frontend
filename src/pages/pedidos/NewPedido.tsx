@@ -293,6 +293,13 @@ export default function NewPedido(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.moneda : null} 
                   />
+                  <InputSelect title={'AfectoRetención'} name={"afec_retencion"} data={
+                    [
+                      { indice: '0', option: 'NO APLICA', selected: true }, 
+                      { indice: '1', option: 'APLICA' }, 
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.afec_retencion : null} 
+                  />
                   <InputSelect title={'IGV'} name={"igv"} data={
                     [
                       { indice: '0', option: 'INAFECTO', selected: true }, 

@@ -245,6 +245,19 @@ export default function ListaPedidos() {
         lista.current.querySelector('button.active').classList.remove('active')
         e.target.classList.add('active')
         setInfo(resp)
+        // switch (estado) {
+        //   case 'PENDIENTE':
+        //     setInfoestado(resp.filter(row=>row.cantidad >= row.ingresos && !['ANULADO','FINALIZADO'].includes(row.estado)))
+        //     break;
+        //   case 'FINALIZADO':
+        //     setInfoestado(resp.filter(row=>row.cantidad <= row.ingresos || row.estado == 'FINALIZADO'))
+        //     break;
+        //   case 'ANULADO':
+        //     setInfoestado(resp.filter(row=>row.estado == 'ANULADO'))
+        //     break;
+        //   default:
+        //     break;
+        // }
         setInfoestado(resp.filter(row => row.estado == estado))
       })
       .catch((error) => {
