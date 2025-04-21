@@ -30,14 +30,12 @@ import NewDespacho from './pages/despachos/NewDespacho.tsx'
 import LayoutInforme from './pages/informes/LayoutInforme.tsx'
 import Informe from './pages/informes/Informe.tsx'
 import ListaPagos from './pages/pagos/ListaPagos.tsx'
-import NewPago from './pages/pagos/NewPago.tsx'
 import LayoutPagos from './pages/pagos/LayoutPagos.tsx'
 import LayoutMuestras from './pages/muestras/LayoutMuestras.tsx'
 import ListaMuestras from './pages/muestras/ListaMuestras.tsx'
 import NewMuestra from './pages/muestras/NewMuestra.tsx'
 import { LayoutLetras } from './pages/letras/LayoutLetras.tsx'
 import ListaLetras from './pages/letras/ListaLetras.tsx'
-import NewLetra from './pages/letras/NewLetra.tsx'
 import NewLetraV2 from './pages/letras/NewLetrav2.tsx'
 import SeguimientoGuia from './pages/guias/NewSeguimiento.tsx'
 import NewPagoServicio from './pages/pagos/NewPagoServicio.tsx'
@@ -61,84 +59,85 @@ const routes = [
       { path: "directorio/:directoryId", element: <Directory /> },
       { path: "chatroom", element: <ChatRoom /> },
       { path: "calendario", element: <Agenda /> },
-      { 
-        path: "estampado", 
-        element: <Estampado/>,
+      {
+        path: "estampado",
+        element: <Estampado />,
         children: [
-          { path: "", element: <ListaEstampado/> },
-          { path: "nuevo", element: <NuevoEstampado/> },
-          { path: "nuevo/:id", element: <NuevoEstampado/> },
-          { path: "review/:id", element: <ReviewEstampado/> },
+          { path: "", element: <ListaEstampado /> },
+          { path: "nuevo", element: <NuevoEstampado /> },
+          { path: "nuevo/:id", element: <NuevoEstampado /> },
+          { path: "review/:id", element: <ReviewEstampado /> },
         ]
       },
-      { 
-        path: "guias", 
-        element: <LayoutGuia/>,
+      {
+        path: "guias",
+        element: <LayoutGuia />,
         children: [
-          { path: "", element: <ListaGuias/> },
-          { path: "nuevo", element: <NewGuia/> },
-          { path: "nuevo/:id", element: <NewGuia/> },
-          { path: "seguimiento/:id", element: <SeguimientoGuia/> },
+          { path: "", element: <ListaGuias /> },
+          { path: "nuevo", element: <NewGuia /> },
+          { path: "nuevo/:id", element: <NewGuia /> },
+          { path: "seguimiento/:id", element: <SeguimientoGuia /> },
         ]
       },
-      { 
-        path: "muestras", 
-        element: <LayoutMuestras/>,
+      {
+        path: "muestras",
+        element: <LayoutMuestras />,
         children: [
-          { path: "", element: <ListaMuestras/> },
-          { path: "nuevo", element: <NewMuestra/> },
-          { path: "nuevo/:id", element: <NewMuestra/> },
+          { path: "", element: <ListaMuestras /> },
+          { path: "nuevo", element: <NewMuestra /> },
+          { path: "nuevo/:id", element: <NewMuestra /> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ]
       },
-      { 
-        path: "pedidos", 
-        element: <LayoutPedido/>,
+      {
+        path: "pedidos",
+        element: <LayoutPedido />,
         children: [
-          { path: "", element: <ListaPedidos/> },
-          { path: "nuevo", element: <NewPedido/> },
-          { path: "nuevo/:id", element: <NewPedido/> },
+          { path: "", element: <ListaPedidos /> },
+          { path: "nuevo", element: <NewPedido /> },
+          { path: "nuevo/:id", element: <NewPedido /> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ]
       },
-      { 
-        path: "despachos", 
-        element: <LayoutDespacho/>,
+      {
+        path: "despachos",
+        element: <LayoutDespacho />,
         children: [
-          { path: "", element: <ListaDespachos/> },
-          { path: "nuevo", element: <NewDespacho/> },
-          { path: "nuevo/:id", element: <NewDespacho/> },
+          { path: "", element: <ListaDespachos /> },
+          { path: "nuevo", element: <NewDespacho /> },
+          { path: "nuevo/:id", element: <NewDespacho /> },
+          { path: "load/:idmuestra", element: <NewDespacho /> },
         ]
       },
-      { 
-        path: "pagos", 
-        element: <LayoutPagos/>,
+      {
+        path: "pagos",
+        element: <LayoutPagos />,
         children: [
-          { path: "", element: <ListaPagos/> },
-          { path: "nuevopagoservicio/:id", element: <NewPagoServicio/> },
-          { path: "nuevopagoservicio/:id/:tipo", element: <NewPagoServicio/> },
-          { path: "nuevopagoletra/:id", element: <NewPagoLetra/> },
-          { path: "nuevopagoletra/:id/:tipo", element: <NewPagoLetra/> },
+          { path: "", element: <ListaPagos /> },
+          { path: "nuevopagoservicio/:id", element: <NewPagoServicio /> },
+          { path: "nuevopagoservicio/:id/:tipo", element: <NewPagoServicio /> },
+          { path: "nuevopagoletra/:id", element: <NewPagoLetra /> },
+          { path: "nuevopagoletra/:id/:tipo", element: <NewPagoLetra /> },
           // { path: "nuevo/:id/:altura", element: <NewPagoServicio/> },
         ]
       },
-      { 
-        path: "letras", 
-        element: <LayoutLetras/>,
+      {
+        path: "letras",
+        element: <LayoutLetras />,
         children: [
-          { path: "", element: <ListaLetras/> },
-          { path: "nuevo", element: <NewLetraV2/> },
-          { path: "nuevo/:id", element: <NewLetraV2/> },
+          { path: "", element: <ListaLetras /> },
+          { path: "nuevo", element: <NewLetraV2 /> },
+          { path: "nuevo/:id", element: <NewLetraV2 /> },
           // { path: "nuevo/:id/:altura", element: <NewPago/> },
         ]
       },
-      { 
-        path: "informes", 
-        element: <LayoutInforme/>,
+      {
+        path: "informes",
+        element: <LayoutInforme />,
         children: [
-          { path: "", element: <Informe/> },
+          { path: "", element: <Informe /> },
         ]
       },
       { path: "soporte", element: <Soporte /> },
@@ -148,8 +147,8 @@ const routes = [
         children: [
           { path: "", element: <Inicio /> },
           // { path: "nuevo", element: <><h1>Editando el detalle</h1></> }
-          { path: "nuevo", element: <NuevaOrdenProduccion/> },
-          { path: "nuevo/:id", element: <NuevaOrdenProduccion/> }
+          { path: "nuevo", element: <NuevaOrdenProduccion /> },
+          { path: "nuevo/:id", element: <NuevaOrdenProduccion /> }
         ]
       }
     ]

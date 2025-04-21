@@ -74,9 +74,19 @@ export default function NewDespacho() {
       }
     })
   }
-  const testkey = () => {
+  useEffect(() => {
+    const handleInputChange = (event) => {
+      // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
+      console.log("Hola Ivon")
+      setTipo(event.detail.valor == 'PEDIDOS' ? 1 : (event.detail.valor == 'SERVICIOS' ? 2 : 0))
+      setRegistros([])
+    };
+    form.current.addEventListener("salamandra", handleInputChange);
 
-  }
+    return () => {
+      if (form.current) form.current.removeEventListener("salamandra", handleInputChange);
+    };
+  }, [])
   useEffect(() => {
     if (urlparams.id) {
       setOpenloader(true)
@@ -99,21 +109,63 @@ export default function NewDespacho() {
       }
       pp()
     }
-    const handleInputChange = (event) => {
-      // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
-      console.log("Hola Ivon")
-      setTipo(event.detail.valor == 'PEDIDOS' ? 1 : (event.detail.valor == 'SERVICIOS' ? 2 : 0))
-      setRegistros([])
-    };
-    form.current.addEventListener("salamandra", handleInputChange);
+    if (urlparams.idmuestra) {
+      Consulta({ url: 'produccion/guia/' + urlparams.idmuestra })
+        .then(resp => {
+          console.log("Despacho directo:", resp)
+          // setInfo(resp[0])
+          setTipo(resp[0].tipo)
+          setInfo(info => ({ ...info, id_guia_origen: resp[0].idx, nro_guia_origen: resp[0].idx, id_proveedor_CAB: resp[0].id_proveedor_CAB, proveedor: resp[0].proveedor }))
+          // setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+          //   row = { ...row, id_item: row.idx }
+          //   Reflect.deleteProperty(row, 'idx')
+          //   return row
+          // })])
+          setRegistros(resp[1].map(row => {
+            row = { ...row, id_item: row.idx }
+            Reflect.deleteProperty(row, 'idx')
+            return row
+          }))
+        })
+        .catch((err) => {
+          // setOpenloader(false)
+        })
+        .finally(() => {
+          // setOpenloader(false)
+        })
 
-    return () => {
-      if (form.current) form.current.removeEventListener("salamandra", handleInputChange);
-    };
-  }, [])
+      // const buscarguia = async ()=>{
+      //   await Consulta({url: `${tipo == 'SERVICIOS' ? 'produccion/getListaGuias' : 'produccion/getListaMuestras'}`})
+      //   .then(resp => {
+      //     setLista(resp)
+      //     // setOpenloader(false)
+      //     // navigate('/main/guias/inicio')
+      //     // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+      //   })
+      //   .catch((err)=>{
+      //     // setOpenloader(false)
+      //     // toast.error('Se produjo un error!!', { theme: "colored" })
+      //   })
+      //   .finally(()=>{
+      //     // setOpenloader(false)
+      //   })
+      // }
+      // buscarguia()
+
+
+      // setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
+      // console.log("Los registros de la guia son:", resp[1])
+      // setRegistros(resp[1].map(row => {
+      //   row = { ...row, id_item: row.idx, despacho: 0, caidos: 0 }
+      //   Reflect.deleteProperty(row, 'idx')
+      //   return row
+      // }))
+
+    }
+  }, [setOpenloader, urlparams])
 
   const nuevoregistro = () => {
-    setFacturas([...facturas, { tipodoc: 1,moneda: 'MN', serie: '', numero: '', fec_emision: '', unidades: 0, importe_bruto: 0, base_imponible: 0, monto_inafecto: 0, igv: 0, importe_total: 0 }])
+    setFacturas([...facturas, { tipodoc: 1, moneda: 'MN', serie: '', numero: '', fec_emision: '', unidades: 0, importe_bruto: 0, base_imponible: 0, monto_inafecto: 0, igv: 0, importe_total: 0 }])
   }
 
   const onclick = (e) => {
@@ -208,7 +260,7 @@ export default function NewDespacho() {
           .then(resp => {
             setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
             // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
-            setRegistros([...registros,...resp[1].filter(row=>!registros.map(rr=>rr.id_item).includes(row.idx)).map(row => {
+            setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
               row = { ...row, id_item: row.idx }
               Reflect.deleteProperty(row, 'idx')
               return row
@@ -238,7 +290,7 @@ export default function NewDespacho() {
         Consulta({ url: 'produccion/pedido/' + item.idx })
           .then(resp => {
             setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
-            setRegistros([...registros,...resp[1].filter(row=>!registros.map(rr=>rr.id_item).includes(row.idx)).map(row => {
+            setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
               row = { ...row, id_item: row.idx }
               Reflect.deleteProperty(row, 'idx')
               return row
@@ -290,7 +342,7 @@ export default function NewDespacho() {
             <hr />
           </div>
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
-            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={() => { }} onInputCapture={onchange}>
+            <form ref={form} onSubmit={onsubmit} onChange={() => { }} onInputCapture={onchange}>
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
@@ -457,15 +509,15 @@ export default function NewDespacho() {
                           <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
                             <td className="text-center" colSpan={tipo !== 1 ? 9 : 4}></td>
                             <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
-                            <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                            <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                               return carry + parseFloat(value.cantidad)
-                            },0)}</td>
-                            <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                            }, 0)}</td>
+                            <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                               return carry + parseFloat(value.despacho)
-                            },0)}</td>
-                            <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                            }, 0)}</td>
+                            <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                               return carry + parseFloat(value.caidos)
-                            },0)}</td>
+                            }, 0)}</td>
                             {/* <td className="text-center text-[16px] italic">0</td> */}
                             <td className="text-center"></td>
                             {/* <td className="text-center"></td> */}

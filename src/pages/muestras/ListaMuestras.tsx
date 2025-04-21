@@ -64,6 +64,7 @@ export default function ListaMuestras() {
   const [infoestado, setInfoestado] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  const [estado, setEstado] = useState('PENDIENTE')
   // const [refresh,setRefresh] = useState(false)
   console.log("Rerenderizado!!!")
   const onclick = (e) => {
@@ -188,7 +189,9 @@ export default function ListaMuestras() {
         }
         openModal(params_modal)
         break;
-
+      case 'register':
+        navigate("/main/despachos/load/" + id)
+        break;
       default:
         break;
     }
@@ -198,7 +201,7 @@ export default function ListaMuestras() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaMuestras', params: {
+      url: 'produccion/getListaMuestras' + '/PENDIENTE', params: {
         method: 'GET'
       }
     })
@@ -207,7 +210,8 @@ export default function ListaMuestras() {
         console.log(resp)
         setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
+        setInfoestado(resp)
+        // setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -226,7 +230,7 @@ export default function ListaMuestras() {
     setOpenloader(true)
     const pp = async () => {
       await Consulta({
-        url: 'produccion/getListaMuestras', params: {
+        url: 'produccion/getListaMuestras/' + estado, params: {
           method: 'GET'
         }
       })
@@ -235,15 +239,17 @@ export default function ListaMuestras() {
           setOpenloader(false)
           lista.current.querySelector('button.active').classList.remove('active')
           e.target.classList.add('active')
-          if (estado == 1) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
-          }
-          if (estado == 2) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))
-          }
-          if (estado == 3) {
-            setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-          }
+          setInfoestado(resp)
+          setEstado(estado)
+          // if (estado == 1) {
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
+          // }
+          // if (estado == 2) {
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))
+          // }
+          // if (estado == 3) {
+          //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
+          // }
         })
         .catch((error) => {
           console.log(error)
@@ -295,7 +301,8 @@ export default function ListaMuestras() {
   // }
   const busquedaglobal = async (input) => {
     Consulta({
-      url: 'produccion/getListaMuestras/' + (input.value == '' ? '_' : input.value), params: {
+      // url: 'produccion/getListaMuestras/' + (input.value == '' ? '_' : input.value), params: {
+      url: 'produccion/getListaMuestras/' + (input.value + ` ${estado}`).trim(), params: {
         method: 'GET'
       }
     })
@@ -303,7 +310,8 @@ export default function ListaMuestras() {
         console.log(resp)
         setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
+        setInfoestado(resp)
+        // setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -329,31 +337,19 @@ export default function ListaMuestras() {
             <hr />
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="1" onClick={filtrarestado}>
+                <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="2" onClick={filtrarestado}>
+                <button className="group" data-estado="FINALIZADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Completados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                {/* <button className="group" data-estado="3" onClick={filtrarestado}>
-                  <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Abonados
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button> */}
-                {/* <button className="group" data-estado="4" onClick={filtrarestado}>
-                  <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Finalizados
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button> */}
-                <button className="group" data-estado="3" onClick={filtrarestado}>
+                <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -419,9 +415,8 @@ export default function ListaMuestras() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={() => { }}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                  {/* <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg> */}
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="register" onClick={onclick} data-id={row.idx}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-package-import"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12v9" /><path d="M12 12l-8 -4.5" /><path d="M22 18h-7" /><path d="M18 15l-3 3l3 3" /></svg>
                                 </div>
                               </li>
                               <li>
