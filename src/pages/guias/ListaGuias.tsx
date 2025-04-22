@@ -67,7 +67,7 @@ export default function ListaGuias() {
   const lista = useRef(null)
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
-  const [estado, setEstado] = useState(1)
+  const [estado, setEstado] = useState('PENDIENTE')
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   const onclick = (e) => {
@@ -173,7 +173,7 @@ export default function ListaGuias() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaGuias', params: {
+      url: 'produccion/getListaGuias/' + estado, params: {
         method: 'GET'
       }
     })
@@ -181,7 +181,8 @@ export default function ListaGuias() {
         console.log(resp)
         setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
+        setInfoestado(resp)
+        // setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -200,7 +201,7 @@ export default function ListaGuias() {
     setOpenloader(true)
     const pp = async () => {
       await Consulta({
-        url: 'produccion/getListaGuias', params: {
+        url: 'produccion/getListaGuias/' + estado, params: {
           method: 'GET'
         }
       })
@@ -210,20 +211,16 @@ export default function ListaGuias() {
           // lista.current.querySelector('button.active').classList.remove('active')
           // e.target.classList.add('active')
           // console.log("EL filt4ro 1 es:",resp.filter(row=>row.cantidad_servicio <= row.ingresos))
-          if (estado == 1) {
-            // setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos || row.estado == 'PENDIENTE'))  
-            // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE' && row.cantidad_servicio > row.ingresos))
-            setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-            // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))  
-          }
-          if (estado == 2) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-            // setInfoestado(resp.filter(row=>row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))  
-            // setInfoestado(resp.filter(row=>row.estado == 'FINALIZADO'))  
-          }
-          if (estado == 3) {
-            setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-          }
+          setInfoestado(resp)
+          // if (estado == 1) {
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
+          // }
+          // if (estado == 2) {
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
+          // }
+          // if (estado == 3) {
+          //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
+          // }
           setEstado(estado)
         })
         .catch((error) => {
@@ -240,7 +237,7 @@ export default function ListaGuias() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaGuias', params: {
+      url: 'produccion/getListaGuias/' +  estado, params: {
         method: 'GET'
       }
     })
@@ -248,6 +245,7 @@ export default function ListaGuias() {
         console.log("Resultado lista de guias:", resp)
         setOpenloader(false)
         setInfo(resp)
+        setInfoestado(resp)
       })
       .catch((error) => {
         console.log(error)
@@ -277,23 +275,24 @@ export default function ListaGuias() {
   const busquedaglobal = async (input) => {
     Consulta({
       // url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value ), params: {
-      url: 'produccion/getListaGuias/' + input.value, params: {
+      url: 'produccion/getListaGuias/' + (input.value + ` ${estado}`).trim(), params: {
         method: 'GET'
       }
     })
       .then(resp => {
         console.log(resp)
         setOpenloader(false)
+        setInfoestado(resp)
         // setInfo(resp)
-        if (estado == 1) {
-          setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-        }
-        if (estado == 2) {
-          setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-        }
-        if (estado == 3) {
-          setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-        }
+        // if (estado == 1) {
+        //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
+        // }
+        // if (estado == 2) {
+        //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
+        // }
+        // if (estado == 3) {
+        //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
+        // }
         // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
@@ -321,19 +320,19 @@ export default function ListaGuias() {
             <hr />
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado="1" onClick={filtrarestado}>
+                <button className={`group ${estado == 'PENDIENTE' ? 'active' : ''}`} data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 2 ? 'active' : ''}`} data-estado="2" onClick={filtrarestado}>
+                <button className={`group ${estado == 'FINALIZADO' ? 'active' : ''}`} data-estado="FINALIZADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Completados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 3 ? 'active' : ''}`} data-estado="3" onClick={filtrarestado}>
+                <button className={`group ${estado == 'ANULADO' ? 'active' : ''}`} data-estado="ANULADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -415,7 +414,7 @@ export default function ListaGuias() {
                         </tr>
                       ))
                       :
-                      <tr className="h-[40px]"><td colSpan={13} className="text-center"><span>Datos no encontrados</span></td></tr>
+                      <tr className="h-[40px]"><td colSpan={14} className="text-center"><span>Datos no encontrados</span></td></tr>
                   }
                 </tbody>
                 {/* <tfoot className="absolute bottom-0 w-full bg-yellow-300"> */}

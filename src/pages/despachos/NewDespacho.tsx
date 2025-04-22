@@ -110,12 +110,14 @@ export default function NewDespacho() {
       pp()
     }
     if (urlparams.idmuestra) {
+      setOpenloader(true)
       Consulta({ url: 'produccion/guia/' + urlparams.idmuestra })
         .then(resp => {
+          setOpenloader(false)
           console.log("Despacho directo:", resp)
           // setInfo(resp[0])
           setTipo(resp[0].tipo)
-          setInfo(info => ({ ...info, id_guia_origen: resp[0].idx, nro_guia_origen: resp[0].idx, id_proveedor_CAB: resp[0].id_proveedor_CAB, proveedor: resp[0].proveedor }))
+          setInfo(info => ({ ...info,tipo:resp[0].tipo, id_guia_origen: resp[0].idx, nro_guia_origen: resp[0].idx, id_proveedor_CAB: resp[0].id_proveedor_CAB, proveedor: resp[0].proveedor }))
           // setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
           //   row = { ...row, id_item: row.idx }
           //   Reflect.deleteProperty(row, 'idx')
