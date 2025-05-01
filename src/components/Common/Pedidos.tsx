@@ -53,12 +53,13 @@ export default function Pedidos(children){
     buscarproveedor()
   }
   const onclick = (e)=>{
-    let action = e.target.dataset.action
+    let action = e.target.dataset.action ?? e.currentTarget.dataset.action
+    let position = e.target.dataset.position ?? e.currentTarget.dataset.position
     // console.log("La accion es la siguiente:",action)
     switch(action){
       case 'add':
         // console.log("Agregando al proveedor",lista[e.target.dataset.position])
-        actions(lista[e.target.dataset.position])
+        actions(lista[position])
         break;
       default:
         break;
@@ -85,7 +86,7 @@ export default function Pedidos(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr>
+                <tr onClick={onclick} data-position={key} data-action="add">
                   <td>{row.idx}</td>
                   <td>{row.orden_ref}</td>
                   <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>

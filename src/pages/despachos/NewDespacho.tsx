@@ -422,6 +422,7 @@ export default function NewDespacho() {
                                   <th className="lg:table-cell">XL / 34</th>
                                   <th className="lg:table-cell">XXL / 36</th>
                                   <th className="lg:table-cell">Cantidad</th>
+                                  <th className="lg:table-cell">Saldo</th>
                                   <th className="lg:table-cell">Despacho</th>
                                   <th className="lg:table-cell">Caidos</th>
                                   <th className="lg:table-cell">Acciones</th>
@@ -460,6 +461,7 @@ export default function NewDespacho() {
                                       <td>{row.xl}</td>
                                       <td>{row.xxl}</td>
                                       <td>{row.cantidad}</td>
+                                      <td>{row.cantidad - row.ingresos}</td>
                                       <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                       <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" defaultValue={row.caidos ?? 0} /></td>
                                     </>
@@ -509,16 +511,20 @@ export default function NewDespacho() {
                         </tbody>
                         <tfoot className="sticky bottom-0">
                           <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
-                            <td className="text-center" colSpan={tipo !== 1 ? 9 : 4}></td>
+                            {/* <td className="text-center" colSpan={tipo !== 1 ? 9 : 4}></td> */}
+                            <td className="text-center" colSpan={tipo == 1 ? 2 : 9}></td>
                             <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
                             <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                               return carry + parseFloat(value.cantidad)
+                            }, 0).toFixed(2)}</td>
+                            <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                              return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.ingresos ?? 0)
                             }, 0)}</td>
                             <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                              return carry + parseFloat(value.despacho)
+                              return carry + parseFloat(value.despacho  ?? 0)
                             }, 0)}</td>
                             <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                              return carry + parseFloat(value.caidos)
+                              return carry + parseFloat(value.caidos  ?? 0)
                             }, 0)}</td>
                             {/* <td className="text-center text-[16px] italic">0</td> */}
                             <td className="text-center"></td>
@@ -567,11 +573,11 @@ export default function NewDespacho() {
                                 <td><input type="text" onChange={editfacturas} data-position={key} data-name="numero" defaultValue={row.numero} /></td>
                                 <td><input type="date" onChange={editfacturas} data-position={key} data-name="fec_emision" defaultValue={row.fec_emision} /></td>
                                 <td><input type="number" onChange={editfacturas} data-position={key} data-name="unidades" defaultValue={row.unidades} /></td>
-                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="importe_bruto" defaultValue={row.importe_bruto} /></td>
-                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="base_imponible" defaultValue={row.base_imponible} /></td>
-                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="monto_inafecto" defaultValue={row.monto_inafecto} /></td>
-                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="igv" defaultValue={row.igv} /></td>
-                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="importe_total" defaultValue={row.importe_total} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="importe_bruto" step={0.01} defaultValue={row.importe_bruto} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="base_imponible" step={0.01} defaultValue={row.base_imponible} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="monto_inafecto" step={0.01} defaultValue={row.monto_inafecto} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="igv" step={0.01} defaultValue={row.igv} /></td>
+                                <td><input type="number" onChange={editfacturas} data-position={key} data-name="importe_total" step={0.01} defaultValue={row.importe_total} /></td>
                                 <td className="w-[250px]">
                                   <ul className="flex flex-row justify-end">
                                     <li>
