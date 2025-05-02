@@ -62,25 +62,25 @@ export default function NewPrestamo() {
       }
     })
   }
-  const onkeyup = (e)=>{
-    if(e.target.matches("input[name='importe']")){
+  const onkeyup = (e) => {
+    if (e.target.matches("input[name='importe']")) {
       // console.log("ELementeto disparado:",e.target.value,parseFloat(e.target.value))
-      setInfo({...info,importe:parseFloat(e.target.value) || 0})
+      setInfo({ ...info, importe: parseFloat(e.target.value) || 0 })
     }
   }
   const onclick = (e) => {
     const action = e.target.dataset.action
     const position = parseInt(e.target.dataset.position)
     let params_modal = null
-    switch(action){
+    switch (action) {
       case 'delete':
-        setRegistros(registros.filter((row,key)=>key !== parseInt(position)).map((row2,key)=>({...row2,['nro_cuota']:key + 1})))
+        setRegistros(registros.filter((row, key) => key !== parseInt(position)).map((row2, key) => ({ ...row2, ['nro_cuota']: key + 1 })))
         // console.log("Eliminado registros de la fila ",position)
         break;
       case 'review':
         params_modal = {
           open: true,
-          content: <Facturas actions={(item) => {}} idpedido={registros[position].idpedido} />,
+          content: <Facturas actions={(item) => { }} idpedido={registros[position].idpedido} />,
           controls: true,
           header: false,
           action: () => {
@@ -90,21 +90,21 @@ export default function NewPrestamo() {
         break;
       case 'add':
         const item = registros[parseInt(e.target.dataset.position)]
-        console.log("El seleccionado es:",item)
+        console.log("El seleccionado es:", item)
         if (selected.find((row) => row.idx == item.idx)) {
           setSelected([...selected.filter(row => row.idx !== item.idx)])
-          console.log("Datos suma1 :",parseFloat(item.importe_despacho),parseFloat(item.cancelado))
-          console.log("DAtos info1 :",info)
+          console.log("Datos suma1 :", parseFloat(item.importe_despacho), parseFloat(item.cancelado))
+          console.log("DAtos info1 :", info)
           // setInfo({ ...info, importe: parseFloat(info.importe ?? 0) - (parseFloat(item.importe_despacho) - parseFloat(item.cancelado)) })
         } else {
           setSelected([...selected, registros[parseInt(e.target.dataset.position)]])
-          console.log("Datos suma2 :",parseFloat(item.importe_despacho),parseFloat(item.cancelado))
-          console.log("DAtos info2 :",info)
+          console.log("Datos suma2 :", parseFloat(item.importe_despacho), parseFloat(item.cancelado))
+          console.log("DAtos info2 :", info)
           // setInfo({ ...info, importe: parseFloat(info.importe ?? 0) + parseFloat(item.importe_despacho) - parseFloat(item.cancelado) })
         }
         break;
       case 'download':
-        console.log(registros,position)
+        console.log(registros, position)
         params_modal = {
           open: true,
           content: <div>Desea continuar con la descarga del pedido de insumos?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
@@ -148,7 +148,7 @@ export default function NewPrestamo() {
         }
         openModal(params_modal)
         break;
-      default :
+      default:
         break;
     }
   }
@@ -190,9 +190,9 @@ export default function NewPrestamo() {
       content: <Proveedores actions={(item) => {
         console.log("El item seleccionado es: ", item)
         setOpen(false)
-        setInfo(info => ({ ...info, id_proveedor_CAB: item.idx, proveedor: item.nom}))
+        setInfo(info => ({ ...info, id_proveedor_CAB: item.idx, proveedor: item.nom }))
         // setOpenloader(false)
-        
+
       }} />,
       controls: true,
       header: false,
@@ -201,15 +201,15 @@ export default function NewPrestamo() {
     }
     openModal(params_modal)
   }
-  const nuevoregistro = ()=>{
+  const nuevoregistro = () => {
     // console.log("Registros actuales :",registros)
-    let new_cuota = registros.length > 0 ? registros.length + 1 : 1
-    setRegistros([...registros,{idx:null,nro_cuota:new_cuota,fec_vencimiento:0,monto_cuota:0,abono:0,saldo:0}])
+    const new_cuota = registros.length > 0 ? registros.length + 1 : 1
+    setRegistros([...registros, { idx: null, nro_cuota: new_cuota, fec_vencimiento: 0, monto_cuota: 0, abono: 0, saldo: 0 }])
   }
-  const editvalue = (e)=>{
-    let column = e.target.dataset.name
-    let position = e.target.dataset.position
-    setRegistros([...registros.map((item,key)=>position == key ? {...item,[column]:e.target.value} : item)])
+  const editvalue = (e) => {
+    const column = e.target.dataset.name
+    const position = e.target.dataset.position
+    setRegistros([...registros.map((item, key) => position == key ? { ...item, [column]: e.target.value } : item)])
   }
   return (
     <>
@@ -240,7 +240,7 @@ export default function NewPrestamo() {
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
-                      { indice: 'MN', option: 'SOLES', selected: true },
+                      { indice: 'PEN', option: 'SOLES', selected: true },
                       { indice: 'USD', option: 'DOLARES' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.moneda : null}
@@ -258,7 +258,7 @@ export default function NewPrestamo() {
                   <Input name={'monto_capital'} title="Capital" defaults={Object.keys(info).length > 0 ? info.monto_capital : null} type="number" />
                   <Input name={'monto_intereses'} title="Intereses" defaults={Object.keys(info).length > 0 ? info.monto_intereses : null} type="number" />
                   <Input name={'monto_prestamo'} title="ImporteTotal" defaults={Object.keys(info).length > 0 ? info.monto_prestamo : null} type="number" />
-                  <InputSelect title={'Estado'} name={"estado"} data={
+                  <InputSelect title={'Estado'} name={"estado_prestamo"} data={
                     [
                       { indice: 'EMIT', option: 'PENDIENTE', selected: true },
                       { indice: 'TERM', option: 'FINALIZADO' },
@@ -328,29 +328,29 @@ export default function NewPrestamo() {
                         <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
                           <td className="text-center" colSpan={1}></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
-                          <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                          <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                             return carry + parseFloat(value.importe_despacho)
-                          },0).toLocaleString('es-PE', {
+                          }, 0).toLocaleString('es-PE', {
                             style: 'currency',
                             currency: 'PEN',
                             minimumFractionDigits: 2,
-                            maximumFractionDigits: 2  
+                            maximumFractionDigits: 2
                           })}</td>
-                          <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                          <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                             return carry + parseFloat(value.cancelado)
-                          },0).toLocaleString('es-PE', {
+                          }, 0).toLocaleString('es-PE', {
                             style: 'currency',
                             currency: 'PEN',
                             minimumFractionDigits: 2,
-                            maximumFractionDigits: 2  
+                            maximumFractionDigits: 2
                           })}</td>
-                          <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
+                          <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                             return carry + parseFloat(value.importe_despacho) - parseFloat(value.cancelado)
-                          },0).toLocaleString('es-PE', {
+                          }, 0).toLocaleString('es-PE', {
                             style: 'currency',
                             currency: 'PEN',
                             minimumFractionDigits: 2,
-                            maximumFractionDigits: 2  
+                            maximumFractionDigits: 2
                           })}</td>
                           <td className="text-center"></td>
                         </tr>
