@@ -107,10 +107,10 @@ export default function NewMuestra(){
     let position = e.target.dataset.position
     let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
     let total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,value)=>{
-      carry+=parseInt(value[1]);
+      carry+=parseFloat(value[1]);
       return carry;
     },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
+    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total.toFixed(2)}:item)])
   }
 
   const nuevoproveedor = ()=>{
