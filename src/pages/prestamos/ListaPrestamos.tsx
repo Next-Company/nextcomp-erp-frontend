@@ -61,8 +61,10 @@ export default function ListaPrestamos() {
   // const [refresh,setRefresh] = useState(false)
   console.log("Rerenderizado!!!")
   const onclick = (e) => {
+    console.log("Dentro del evento onclick")
     const action = e.target.dataset.action
     const id = e.target.dataset.id
+    console.log("Datos del target :",action,id)
     let params_modal = null
     switch (action) {
       case 'delete':
@@ -74,14 +76,12 @@ export default function ListaPrestamos() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarguia/' + id, params: {
+              url: 'prestamos/' + id, params: {
                 method: 'DELETE'
               }
             })
               .then(resp => {
-                // setOrdenes(resp)
-                toast.success('Guia eliminado con éxito!', { theme: "colored" })
-                // setRefresh(true)
+                toast.success('Prestamo eliminado con éxito!', { theme: "colored" })
                 recargarinfo()
                 setOpenloader(false)
               })
@@ -94,7 +94,7 @@ export default function ListaPrestamos() {
               })
           }
         }
-        // openModal(params_modal)
+        openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -135,7 +135,7 @@ export default function ListaPrestamos() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/muestras/nuevo/" + id)
+        navigate("/main/prestamos/nuevo/" + id)
         break;
       case 'review':
         params_modal = {
@@ -150,6 +150,34 @@ export default function ListaPrestamos() {
       case 'register':
         navigate("/main/despachos/load/" + id)
         break;
+      // case 'delete':
+      //   params_modal = {
+      //     open: true,
+      //     content: <div>Desea continuar con el eliminado del prestamo seleccionado?.</div>,
+      //     controls: true,
+      //     header: false,
+      //     action: () => {
+      //       const desc = async () => {
+      //         setOpenloader(true)
+      //         Consulta({
+      //           url: "prestamos/" + id, params: {
+      //             method: 'DELETE'
+      //           }
+      //         })
+      //           .then((resp) => {
+      //             toast.success('Guia eliminado con éxito!', { theme: "colored" })
+      //             recargarinfo()
+      //             setOpenloader(false)
+      //           })
+      //           .catch(error => {
+      //             console.log(error)
+      //           })
+      //       }
+      //       desc()
+      //     }
+      //   }
+      //   openModal(params_modal)
+      //   break;
       default:
         break;
     }
@@ -213,7 +241,7 @@ export default function ListaPrestamos() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaMuestras', params: {
+      url: 'prestamos/', params: {
         method: 'GET'
       }
     })

@@ -34,7 +34,7 @@ export default function NewPrestamo() {
       open: true,
       header: false,
       controls: true,
-      content: <div>Desea continuar con el registro de la letra ingresada?</div>,
+      content: <div>Desea continuar con el registro del siguiente prestamo?</div>,
       action: async () => {
         setOpenloader(true)
         const data = new FormData()
@@ -49,7 +49,7 @@ export default function NewPrestamo() {
         })
           .then(resp => {
             setOpenloader(false)
-            // navigate('/main/letras/')
+            navigate('/main/prestamos/')
             toast.success('Estampado guardado con éxito!!', { theme: "colored" })
           })
           .catch((err) => {
@@ -154,13 +154,13 @@ export default function NewPrestamo() {
   }
   useEffect(() => {
     if (urlparams.id) {
-      setOpenloader(true)
       const pp = async () => {
-        await Consulta({ url: 'letras/getLetraById/' + urlparams.id, })
+        setOpenloader(true)
+        await Consulta({ url: 'prestamos/' + urlparams.id, })
           .then(resp => {
-            console.log("Letra info :", resp[1][0])
-            setInfo(resp[0][0])
-            setRegistros(resp[1])
+            console.log("Letra info :", resp)
+            setInfo(resp[0].data.cab[0])
+            setRegistros(resp[0].data.det)
             setOpenloader(false)
           })
           .catch((err) => {
@@ -254,7 +254,7 @@ export default function NewPrestamo() {
                 <div className="flex flex-row gap-3">
                   <Input name={'numero_cuotas'} title="NumeroCuotas" defaults={Object.keys(info).length > 0 ? info.numero_cuotas : null} type="number" />
                   <Input name={'fec_solicitud'} title="FecSolicitud" defaults={Object.keys(info).length > 0 ? info.fec_solicitud : null} type="date" />
-                  <Input name={'fec_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_vencimiento : null} type="date" />
+                  <Input name={'fec_ultimo_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_ultimo_vencimiento : null} type="date" />
                   <Input name={'monto_capital'} title="Capital" defaults={Object.keys(info).length > 0 ? info.monto_capital : null} type="number" />
                   <Input name={'monto_intereses'} title="Intereses" defaults={Object.keys(info).length > 0 ? info.monto_intereses : null} type="number" />
                   <Input name={'monto_prestamo'} title="ImporteTotal" defaults={Object.keys(info).length > 0 ? info.monto_prestamo : null} type="number" />
