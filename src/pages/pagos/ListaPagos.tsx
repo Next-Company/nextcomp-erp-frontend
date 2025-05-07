@@ -118,6 +118,7 @@ export default function ListaPagos(){
           case 2 :
             break
           case 3 :
+            navigate("/main/pagos/nuevopagoprestamo/"+ id + "/prestamos")
             break
           default:
             break
@@ -177,7 +178,7 @@ export default function ListaPagos(){
         // url = 'abonos/100'
         break;
       case 3:
-        // url = 'abonos/100'
+        url = 'prestamos/'
         break;
       case 4:
         // url = 'abonos/100'
@@ -194,8 +195,13 @@ export default function ListaPagos(){
       }
     })
     .then(resp => {
+      console.log("Obligaciones consultadas:",resp)
       setOpenloader(false)
-      setInfo(resp)
+      if(parseInt(estado) == 3){
+        setInfo(resp[0])
+      }else{
+        setInfo(resp)
+      }
       setEstado(estado)
     })
     .catch((error) => {
@@ -331,6 +337,23 @@ export default function ListaPagos(){
                       </>
                     }
                     {
+                      parseInt(estado) == 3 && <>
+                        <th className="lg:table-cell">Id</th>
+                        <th className="lg:table-cell">Proveedor</th>
+                        <th className="lg:table-cell">Moneda</th>
+                        <th className="lg:table-cell">TipoTasa</th>
+                        <th className="lg:table-cell">TCEA</th>
+                        <th className="lg:table-cell">PlazoPago</th>
+                        <th className="lg:table-cell">NroCuotas</th>
+                        <th className="lg:table-cell">FecSolicitud</th>
+                        <th className="lg:table-cell">FecProxVencimiento</th>
+                        <th className="lg:table-cell">MontoPrestamo</th>
+                        <th className="lg:table-cell">Abono</th>
+                        <th className="lg:table-cell">Saldo</th>
+                        <th className="lg:table-cell text-center">Accciones</th>
+                      </>
+                    }
+                    {
                       parseInt(estado) == 5 && <>
                         <th className="lg:table-cell">Id</th>
                         <th className="lg:table-cell">OrigenAbono</th>
@@ -379,6 +402,22 @@ export default function ListaPagos(){
                               <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>S/.{row.importe}</td>
                               <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
                               <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>S/.{row.importe - row.cancelado}</td>
+                            </>
+                          }
+                          {
+                            parseInt(estado) == 3 && <>
+                              <td>{row.idx}</td>
+                              <td>{row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor}</td>
+                              <td>{row.moneda}</td>
+                              <td>{row.tipo_tasa_interes}</td>
+                              <td>{row.tcea}</td>
+                              <td>{row.plazo_pago}</td>
+                              <td>{row.numero_cuotas}</td>
+                              <td>{row.fec_solicitud}</td>
+                              <td>{''}</td>
+                              <td>{row.monto_prestamo}</td>
+                              <td>{0}</td>
+                              <td>{0}</td>
                             </>
                           }
                           {
@@ -433,7 +472,7 @@ export default function ListaPagos(){
                 </tbody>
                 <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
                   <tr>
-                    <td className="h-[45px] border-t border-t-gray-600" colSpan={12}>
+                    <td className="h-[45px] border-t border-t-gray-600" colSpan={estado == 3 ? 13 : 12}>
                       <div className="flex flex-row justify-between items-center">
                         <div>
                           Showing 1 to 4 of 4 entries (filtered from 57 total entries)

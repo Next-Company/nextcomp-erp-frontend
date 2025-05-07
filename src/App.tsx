@@ -43,6 +43,7 @@ import NewPagoLetra from './pages/pagos/NewPagoLetras.tsx'
 import LayoutPrestamo from './pages/prestamos/LayoutPrestamo.tsx'
 import ListaPrestamos from './pages/prestamos/ListaPrestamos.tsx'
 import NewPrestamo from './pages/prestamos/NewPrestamo.tsx'
+import NewPagoPrestamo from './pages/pagos/NewPagoPrestamos.tsx'
 
 const routes = [
   {
@@ -123,6 +124,8 @@ const routes = [
           { path: "nuevopagoservicio/:id/:tipo", element: <NewPagoServicio /> },
           { path: "nuevopagoletra/:id", element: <NewPagoLetra /> },
           { path: "nuevopagoletra/:id/:tipo", element: <NewPagoLetra /> },
+          { path: "nuevopagoprestamo/:id", element: <NewPagoPrestamo /> },
+          { path: "nuevopagoprestamo/:id/:tipo", element: <NewPagoPrestamo /> },
           // { path: "nuevo/:id/:altura", element: <NewPagoServicio/> },
         ]
       },

@@ -49,7 +49,7 @@ export default function NewPrestamo() {
         })
           .then(resp => {
             setOpenloader(false)
-            navigate('/main/prestamos/')
+            // navigate('/main/prestamos/')
             toast.success('Estampado guardado con éxito!!', { theme: "colored" })
           })
           .catch((err) => {
@@ -329,7 +329,7 @@ export default function NewPrestamo() {
                           <td className="text-center" colSpan={1}></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
                           <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                            return carry + parseFloat(value.importe_despacho)
+                            return carry + parseFloat(value.monto_cuota)
                           }, 0).toLocaleString('es-PE', {
                             style: 'currency',
                             currency: 'PEN',
@@ -337,7 +337,7 @@ export default function NewPrestamo() {
                             maximumFractionDigits: 2
                           })}</td>
                           <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                            return carry + parseFloat(value.cancelado)
+                            return carry + parseFloat(value.abono)
                           }, 0).toLocaleString('es-PE', {
                             style: 'currency',
                             currency: 'PEN',
@@ -345,7 +345,7 @@ export default function NewPrestamo() {
                             maximumFractionDigits: 2
                           })}</td>
                           <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                            return carry + parseFloat(value.importe_despacho) - parseFloat(value.cancelado)
+                            return carry + parseFloat(value.monto_cuota) - parseFloat(value.abono)
                           }, 0).toLocaleString('es-PE', {
                             style: 'currency',
                             currency: 'PEN',

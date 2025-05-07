@@ -226,13 +226,13 @@ export default function NewMuestra(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
-                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
-                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
-                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
-                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} value={row.l}/></td>
-                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} value={row.xl}/></td>
-                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl}/></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
+                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xs}/></td>
+                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.s}/></td>
+                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.m}/></td>
+                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.l}/></td>
+                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xl}/></td>
+                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xxl}/></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" step={0.01} value={row.cantidad} /></td>
                               <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
