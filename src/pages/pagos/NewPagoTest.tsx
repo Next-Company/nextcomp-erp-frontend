@@ -385,15 +385,9 @@ export default function NewPagoPrestamo(){
                 </div>
               </div>
               <div className="flex justify-between gap-2 mt-2 p-1">
-                <div>
-                </div>
                 <div className="flex justify-end gap-2">
                   <Button action={() => navigate('/main/pagos/')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
-                </div>
-                <div>
-                  <Button action={()=>console.log("Ejecutando la accion") } type="button" tipo={'default'}></Button>
-                  <Button action={()=>console.log("Nuevo ingreos de productos") type=={'default'}>Inicia nuevo proces de prestamo</Button>}
                 </div>
               </div>
             </form>

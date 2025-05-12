@@ -26,25 +26,32 @@ export default function NewPagoPrestamo(){
   const [selected,setSelected] = useState([])
   const navigate = useNavigate()
 
+  ///////////////////////////////////////////////////
+  // FUNCION ENVIO DE INFORMACION AL SERVIDOR - START
+  ///////////////////////////////////////////////////
   const onsubmit = (e)=>{
     e.preventDefault()
     if(!urlparams.id && selected.length == 0){
       toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
       return
     }
+
+    // console.log("Listando datos a enviar - cabecera:",JSON.stringify(Object.fromEntries(new FormData(form.current))))
+    // console.log("Listando datos a enviar - detalle:",JSON.stringify(Object.fromEntries(new FormData(form.current))))
+
     openModal({
       open: true,
       header: false,
       controls: true,
-      content: <div>Desea continuar con el registro pago ingresado?</div>,
+      content: <div>Desea continuar con el registro del abono a cuota?</div>,
       action: async () => {
         setOpenloader(true)
         const data = new FormData()
         urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
+        data.append('detalle',!urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
 
-        await Consulta({url: 'abonos/saveabonoLetra',params:{
+        await Consulta({url: 'abonos/saveabonoPrestamo',params:{
           method:'PUT',
           body:data
         }})
@@ -55,14 +62,18 @@ export default function NewPagoPrestamo(){
         })
         .catch((err)=>{
           setOpenloader(false)
-          // toast.error('Se produjo un error!!', { theme: "colored" })
         })
         .finally(()=>{
           setOpenloader(false)
         })
       }
     })
+
   }
+
+  ////////////////////////////////////
+  // FUNCION EVENTOS ONCLICK - START
+  ////////////////////////////////////
   const onclick = (e) => {
     const action = e.target.dataset.action
     const position = parseInt(e.target.dataset.position)
@@ -126,10 +137,12 @@ export default function NewPagoPrestamo(){
       case 'add':
         const item = registros[position]
         if(selected.find((row)=>row.idx == item.idx)){
-          setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.monto_cuota,0)) - parseFloat(item.monto_cuota)})
+          let calculado = parseFloat(selected.reduce((carry,item)=>{carry += item.monto_cuota; return carry;},0)) - parseFloat(item.monto_cuota)
+          setInfo({...info,importe:calculado.toFixed(2)})
           setSelected([...selected.filter(row=>row.idx !== item.idx)])
         }else{
-          setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.monto_cuota,0)) + parseFloat(item.monto_cuota)})
+          let calculado = parseFloat(selected.reduce((carry,item)=>{carry += item.monto_cuota; return carry;},0)) + parseFloat(item.monto_cuota)
+          setInfo({...info,importe:calculado.toFixed(2)})
           setSelected([...selected,registros[position]])
         }
         break;
@@ -137,6 +150,10 @@ export default function NewPagoPrestamo(){
         break;
     }
   }
+
+  ////////////////////////////////////
+  // EFECTOS DEL FRONTED - ACCIONES INI
+  ////////////////////////////////////
   useEffect(()=>{
     if(urlparams.id && urlparams.tipo){
       setOpenloader(true)
@@ -146,6 +163,7 @@ export default function NewPagoPrestamo(){
         setRegistros(resp)
         // setInfo({...info,idletra:resp[0].idletra,id_proveedor_CAB:resp[0].id_proveedor_CAB,importe:resp[0].importe,proveedor:resp[0].proveedor,saldo:resp[0].importe - resp[0].cancelado,pago:0})
         setOpenloader(false)
+        setEstado({...info,})
       })
       .catch((err) => {
         setOpenloader(false)
@@ -256,7 +274,7 @@ export default function NewPagoPrestamo(){
                   <Input name={'idletra'} defaults={Object.keys(info).length > 0 ? info.idletra : null} type="hidden" />
                   <InputSelect title={'Origen'} formref={form} name={"tipo"} data={
                     [
-                      { indice: 'PRES', option: 'PRESTAMO', selected: true },
+                      { indice: 'PREST', option: 'PRESTAMO', selected: true },
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
@@ -284,7 +302,6 @@ export default function NewPagoPrestamo(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.entidad_bancaria : null} 
                   />
-
                   <Input name={'id_cuenta_CAB'} defaults={Object.keys(info).length > 0 && info.id_cuenta_CAB ? info.id_cuenta_CAB : null} title="Cuenta Corriente" type="hidden"/>
                   <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text" action={nuevacuenta} mode={'static'}/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
@@ -319,12 +336,10 @@ export default function NewPagoPrestamo(){
                       <Input name={'pago'} defaults={Object.keys(info).length > 0 && info.pago ? info.pago : null} title="Pago" type="number"/>
                     </>
                   }
-                  
                 </div>
                 <div>
-                  {/* <span>Artículos:</span> */}
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-green-300">
+                    <table className={`w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 [&_tbody_tr.selected:nth-child(n)]:bg-green-300 [&_tbody_tr.selected:nth-child(2n-1):hover]:bg-green-300`}>
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell">NroCuota</th>
