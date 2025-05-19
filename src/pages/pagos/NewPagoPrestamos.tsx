@@ -136,15 +136,18 @@ export default function NewPagoPrestamo(){
         break;
       case 'add':
         const item = registros[position]
-        if(selected.find((row)=>row.idx == item.idx)){
-          let calculado = parseFloat(selected.reduce((carry,item)=>{carry += item.monto_cuota; return carry;},0)) - parseFloat(item.monto_cuota)
-          setInfo({...info,importe:calculado.toFixed(2)})
-          setSelected([...selected.filter(row=>row.idx !== item.idx)])
-        }else{
-          let calculado = parseFloat(selected.reduce((carry,item)=>{carry += item.monto_cuota; return carry;},0)) + parseFloat(item.monto_cuota)
-          setInfo({...info,importe:calculado.toFixed(2)})
-          setSelected([...selected,registros[position]])
-        }
+        console.log("Info de la cuota seleccionada :",item)
+        setInfo({...info,importe:parseFloat(item.monto_cuota).toFixed(2)})
+        setSelected([item])
+        // if(selected.find((row)=>row.idx == item.idx)){
+        //   let calculado = parseFloat(selected.reduce((carry,item)=>{carry += item.monto_cuota; return carry;},0)) - parseFloat(item.monto_cuota)
+        //   setInfo({...info,importe:calculado.toFixed(2)})
+        //   setSelected([...selected.filter(row=>row.idx !== item.idx)])
+        // }else{
+        //   let calculado = parseFloat(selected.reduce((carry,item)=>{carry += item.monto_cuota; return carry;},0)) + parseFloat(item.monto_cuota)
+        //   setInfo({...info,importe:calculado.toFixed(2)})
+        //   setSelected([...selected,registros[position]])
+        // }
         break;
       default :
         break;
@@ -274,10 +277,12 @@ export default function NewPagoPrestamo(){
                   <Input name={'idletra'} defaults={Object.keys(info).length > 0 ? info.idletra : null} type="hidden" />
                   <InputSelect title={'Origen'} formref={form} name={"tipo"} data={
                     [
-                      { indice: 'PREST', option: 'PRESTAMO', selected: true },
+                      { indice: 'PRES', option: 'PRESTAMO', selected: true },
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
+                  <Input name={'id_cuenta_CAB'} defaults={Object.keys(info).length > 0 && info.id_cuenta_CAB ? info.id_cuenta_CAB : null} title="Cuenta Corriente" type="hidden"/>
+                  <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text" action={nuevacuenta} mode={'static'}/>
                   <InputSelect title={'Entidad Bancaria'} name={"entidad_bancaria"} data={
                     [
                       { indice: 'MIBANCO', option: 'MIBANCO', selected: true },
@@ -302,8 +307,6 @@ export default function NewPagoPrestamo(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.entidad_bancaria : null} 
                   />
-                  <Input name={'id_cuenta_CAB'} defaults={Object.keys(info).length > 0 && info.id_cuenta_CAB ? info.id_cuenta_CAB : null} title="Cuenta Corriente" type="hidden"/>
-                  <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text" action={nuevacuenta} mode={'static'}/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <InputSelect title={'Tipo Operación'} name={"tipo_operacion"} data={
                     [
@@ -326,7 +329,7 @@ export default function NewPagoPrestamo(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.moneda : null} 
                   />
-                  <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" />
+                  <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaOperacion" type="date" />
                   <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="ImportePago" type="number"/>
                   {
                     urlparams.id

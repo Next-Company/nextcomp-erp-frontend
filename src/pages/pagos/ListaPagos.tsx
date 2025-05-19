@@ -145,7 +145,7 @@ export default function ListaPagos(){
       }
     })
     .then(resp => {
-      console.log(resp)
+      console.log("Respuesta lista servicios a pagar:",resp)
       setOpenloader(false)
       setInfo(resp)  
     })
@@ -216,7 +216,7 @@ export default function ListaPagos(){
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'abonos/100', params: {
+      url: 'abonos/getabonoslist/100', params: {
         method: 'GET'
       }
     })
@@ -286,12 +286,12 @@ export default function ListaPagos(){
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 4 ? 'active' : ''}`} data-estado={4} onClick={filtrarestado}>
+                {/* <button className={`group ${estado == 4 ? 'active' : ''}`} data-estado={4} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Adicionales
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
-                </button>
+                </button> */}
                 <button className={`group ${estado == 5 ? 'active' : ''}`} data-estado={5} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pagos
@@ -379,7 +379,9 @@ export default function ListaPagos(){
                             parseInt(estado) == 0 && <>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.idx}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 45 ? row.proveedor.substr(1,45) +  '...' : row.proveedor}</td>
+                              {/* <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 45 ? row.proveedor.substr(1,45) +  '...' : row.proveedor}</td> */}
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>Proveedor</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>Hola mundo como</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.producto}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.marca}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.modelo}</td>
@@ -416,8 +418,8 @@ export default function ListaPagos(){
                               <td>{row.fec_solicitud}</td>
                               <td>{''}</td>
                               <td>{row.monto_prestamo}</td>
-                              <td>{0}</td>
-                              <td>{0}</td>
+                              <td>{row.abono}</td>
+                              <td>{(row.monto_prestamo - row.abono).toFixed(2)}</td>
                             </>
                           }
                           {

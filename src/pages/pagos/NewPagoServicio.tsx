@@ -138,7 +138,7 @@ export default function NewPagoServicio(){
 
     if(urlparams.id && urlparams.tipo){
       setOpenloader(true)
-      Consulta({url: 'abonos/letrastatusdetalle/' + urlparams.id,})
+      Consulta({url: 'abonos/serviciostatusdetalle/' + urlparams.id,})
       .then(resp => {
         let total_pagar = resp.filter(row=>!row.isprototipo).reduce((carry,item)=>{carry += item.costo*(item.despacho - item.caidos);return carry;},0)
         setRegistros(resp)

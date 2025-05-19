@@ -44,6 +44,9 @@ import LayoutPrestamo from './pages/prestamos/LayoutPrestamo.tsx'
 import ListaPrestamos from './pages/prestamos/ListaPrestamos.tsx'
 import NewPrestamo from './pages/prestamos/NewPrestamo.tsx'
 import NewPagoPrestamo from './pages/pagos/NewPagoPrestamos.tsx'
+import ListaOrdenes from './pages/ordenes/ListaOrdenes.tsx'
+import { NewOrden } from './pages/ordenes/NewOrden.tsx'
+import LayoutOrden from './pages/ordenes/LayoutOrden.tsx'
 
 const routes = [
   {
@@ -103,6 +106,15 @@ const routes = [
           { path: "nuevo/:id", element: <NewPedido /> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
+        ]
+      },
+      {
+        path: "ordenes",
+        element: <LayoutOrden />,
+        children: [
+          { path: "", element: <ListaOrdenes /> },
+          { path: "nuevo", element: <NewOrden /> },
+          { path: "nuevo/:id", element: <NewOrden /> },
         ]
       },
       {

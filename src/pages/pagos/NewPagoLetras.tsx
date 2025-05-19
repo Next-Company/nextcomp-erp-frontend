@@ -287,8 +287,7 @@ export default function NewPagoLetra(){
                   <Input name={'idletra'} defaults={Object.keys(info).length > 0 ? info.idletra : null} type="hidden" />
                   <InputSelect title={'Origen'} formref={form} name={"tipo"} data={
                     [
-                      { indice: 'SERV', option: 'SERVICIOS', selected: true },
-                      { indice: 'PEDD', option: 'PEDIDOS'},
+                      { indice: 'CRED', option: 'CREDITOS', selected: true }
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
