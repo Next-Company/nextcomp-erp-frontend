@@ -346,6 +346,7 @@ export default function ListaGuias() {
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
+                    <th className="lg:table-cell">IdOrden</th>
                     <th className="lg:table-cell">Hoja de Corte</th>
                     <th className="lg:table-cell">Servicio</th>
                     <th className="lg:table-cell">Proveedor</th>
@@ -368,6 +369,7 @@ export default function ListaGuias() {
                       ? infoestado.map((row, key) => (
                         <tr key={key}>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.id_orden_CAB}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
                           <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>

@@ -10,6 +10,8 @@ import { InputMultiSelect } from "../../components/Atoms/Input/InputMultiSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea";
 import { OrdenPedidoAvios } from "../../templates/OrdenPedidoAvios";
 import { OrdenPedidoTelas } from "../../templates/OrdenPedidoTelas";
+import Proveedores from "../../components/Common/Proveedores";
+import Pedidos from "../../components/Common/Pedidos";
 
 const listTables = [
   'tbl2_fases_prod_ordenes',
@@ -23,12 +25,13 @@ const listTables = [
   'tbl2_fases_prod_bordado',
   'tbl2_fases_prod_acabados'
 ]
-function FormFase({ position, info}) {
+function FormFase({ position, info, setorden, setopen }) {
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   useEffect(()=>{
     console.log("Cargando informacion de detalle orden")
     
   },[])
+  console.log("La info de la orden es:", info)
 
   const printpedidoavios = ()=>{
     openModal({
@@ -50,6 +53,48 @@ function FormFase({ position, info}) {
       }
     })
   }
+  const nuevoproveedor = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Proveedores actions={(item)=>{  
+        setorden(orden=>([{...orden,id_cliente_CAB:item.idx ,cliente:item.nom}]))
+        setopen(false)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openModal(params_modal)
+  }
+  const searchpedido = () => {
+      let params_modal = null
+      params_modal = {
+        open: true,
+        content: <Pedidos actions={(item) => {
+          console.log("El pedido seleccionado es:", item, { id_pedido_origen: item.idx, nro_pedido_origen: item.orden_ref })
+          setopen(false)
+          setorden(orden => ([{ ...orden, id_pedido_origen: item.idx, nro_pedido_origen: item.orden_ref }]))
+
+          // Consulta({ url: 'produccion/pedido/' + item.idx })
+          //   .then(resp => {
+          //     setorden(orden => ({ ...orden, id_pedido_origen: item.idx, nro_pedido_origen: item.idx }))
+          //   })
+          //   .catch((err) => {
+          //     setOpenloader(false)
+          //   })
+          //   .finally(() => {
+          //     setOpenloader(false)
+          //   })
+        }} />,
+        controls: true,
+        header: false,
+        action: () => {
+        }
+      }
+      openModal(params_modal)
+    }
 
   return(
     <div className="flex-1 overflow-y-scroll scrollbar-special">
@@ -57,12 +102,27 @@ function FormFase({ position, info}) {
         <div className="flex gap-3">
           <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
           <Input name={'oc'} title="OC" defaults={info.length > 0 ? info[0].oc : null} type="text" />
-          <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" />
+
+          {/* <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" /> */}
+          <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" />
+          <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} />
+
           <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" />
-          <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaEntrega" type="date" />
+          <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" />
+
+          {/* <Input name={'orden_pedido'} title="OrdenPedido" defaults={info.length > 0 ? info[0].orden_pedido : null} type="text" /> */}
+
+          <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
+          <InputSelect title={'UsoStock'} name={"servicio"} data={
+            [
+              { indice: 0, option: 'NO', selected: true  },
+              { indice: 1, option: 'SI' }
+            ]} 
+            df={Object.keys(info).length > 0 ? info.servicio : null} 
+          />
+          <Input name={'nro_pedido_origen'} title={'OrdenPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
         </div>
         <div className="flex gap-3">
-          <Input name={'orden_pedido'} title="OrdenPedido" defaults={info.length > 0 ? info[0].orden_pedido : null} type="text" />
           <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" />
           <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Producto" type="text" />
           <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
@@ -112,35 +172,15 @@ function FormFase({ position, info}) {
           <div className="flex-1 min-w-[200px]">
             <Input name={'combo14_orden'} defaults={info.length > 0 ? info[0].combo14_orden : null} dataset={[{group:'combo'}]} title="Combo14" type="number" />
           </div>
-          <div className="flex-1 min-w-[200px]">
+          <div className="flex-1 min-w-[300px]">
             <Input name={'acumulado'} defaults={0} title="Total" type="number" style={{pointerEvents:'none'}} />
           </div>
-          <div className="flex-1 min-w-[200px]">
+          <div className="flex-1 min-w-[300px]">
             <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
           </div>
         </div>
-      </div>
-      {/* FASE DE TELAS */}
-      <div className={` flex-col gap-3 pt-4 ${position == 1 ? 'flex' : 'hidden'}`}>
-        <div className="flex gap-3">
-          <Input name={'orden_pedido'} defaults={info.length > 0 && info[0].orden_pedido ? info[0].orden_pedido : null} title="Orden Pedido" type="text" />
-          <Input name={'fec_pedido'} defaults={info.length > 0 && info[0].fec_pedido ? info[0].fec_pedido : null} title="FechaPedido" type="date" />
-          <Input name={'proveedor'} defaults={info.length > 0 && info[0].proveedor ? info[0].proveedor : null} title="Proveedor" type="text" />
-          <Input name={'tela'} defaults={info.length > 0 && info[0].tela ? info[0].tela : null} title="Tela" type="text" />
-        </div>
-        <div className="flex gap-3">
-          <Input name={'articulo'} defaults={info.length > 0 && info[0].articulo ? info[0].articulo : null} title="Articulo" type="text" />
-          <Input name={'guia_ingreso'} defaults={info.length > 0 && info[0].guia_ingreso ? info[0].guia_ingreso : null} title="GuiaIngreso" type="text" />
-          <InputSelect title={'Estado'} name={"estado_telas"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_telas : null} />
-        </div>
         <div>
-          <TextArea title="Observaciones" name="observaciones_fase_telas" rows={8} />
-        </div>
-        <div className="flex flex-row justify-end">
-          {/* <button type="button">Exportar</button> */}
-          <Button action={() => printpedidoavios()} type={'button'} tipo={'default'}>Exportar pedido avios</Button>
-          <Button action={() => printpedidotelas()} type={'button'} tipo={'default'}>Exportar pedido telas</Button>
-          {/* <Button action={() => console.log('otro pedido')} type={'button'} tipo={'default'} >Multinivel</Button> */}
+          <TextArea title="Observaciones" name="observaciones_fase_ordenes" />
         </div>
       </div>
       {/* FASE DE MOLDE */}
@@ -228,7 +268,7 @@ function FormFase({ position, info}) {
 export function NewOrden() {
   const form = useRef()
   const urlparams = useParams()
-  const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const [orden, setOrden] = useState([])
   const [position, setPosition] = useState(0)
   const navigate = useNavigate()
@@ -241,18 +281,18 @@ export function NewOrden() {
       open: true,
       header: false,
       controls: true,
-      content: <div>Desea continuar con el registro del soporte ingresado?</div>,
+      content: <div>Desea continuar con el registro de la orden registrada?</div>,
       action: async () => {
         setOpenloader(true)
         await Consulta({
-          url: 'produccion/',
+          url: 'ordenes/',
           params: {
             method: 'POST', body: data
           }
         })
           .then(resp => {
             setOpenloader(false)
-            navigate("/main/ordenes/inicio")
+            navigate("/main/ordenes/")
             toast.success('Soporte guardado con éxito!!', { theme: "colored" })
           })
           .catch((err)=>{
@@ -362,12 +402,6 @@ export function NewOrden() {
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group flex-row items-center gap-1 ${position == 1 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(1)} data-estado="EMIT">
-                <span className="relative h-[100%] flex items-center pointer-events-none">
-                  Telas
-                  <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                </span>
-              </button>
               <button className={`group flex-row items-center gap-1 ${position == 2 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(2)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Molde
@@ -383,9 +417,9 @@ export function NewOrden() {
             </ul>
             <hr />
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden">
-              <FormFase position={position} info={orden} />
+              <FormFase position={position} info={orden} setorden={setOrden} setopen={setOpen} />
               <div className="flex justify-end gap-2 mt-2">
-                <Button action={() => navigate('/main/operaciones/inicio')} type={'button'} tipo={'default'}>Cancelar</Button>
+                <Button action={() => navigate('/main/ordenes/')} type={'button'} tipo={'default'}>Cancelar</Button>
                 {/* <Button action={() => printpedido()} type={'button'} tipo={'default'}>Print</Button> */}
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>

@@ -8,6 +8,7 @@ import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowCont
 import { toast } from "react-toastify";
 
 const colorfase = {
+  'ORDENES':'bg-green-500',
   'CONFECCION':'bg-purple-500',
   'ESTAMPADO':'bg-gray-500',
   'ACABADOS':'bg-red-500',
@@ -41,7 +42,7 @@ export default function ListaOrdenes() {
           action:()=>{
             setOpenloader(true)
             Consulta({
-              url: 'produccion/' + id, params: {
+              url: 'ordenes/' + id, params: {
                 method: 'DELETE'
               }
             })
@@ -63,7 +64,7 @@ export default function ListaOrdenes() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/operaciones/nuevo/"+ id)
+        navigate("/main/ordenes/nuevo/"+ id)
         break;
     
       default:
@@ -265,7 +266,7 @@ export default function ListaOrdenes() {
                         <tr key={key} className="">
                           {/* <td>{row.idx}</td> */}
                           <td>{row.oc}</td>
-                          <td>{row.cliente}</td>
+                          <td><strong>{row.cliente}</strong></td>
                           <td>{row.fec_emitida}</td>
                           <td>{row.fec_entrega}</td>
                           <td>{row.marca}</td>
@@ -273,7 +274,7 @@ export default function ListaOrdenes() {
                           <td>{row.base}</td>
                           <td>{row.precio}</td>
                           <td>{row.modelos}</td>
-                          <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status]}`}>{row.status}</div></td>
+                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
