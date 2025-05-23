@@ -35,7 +35,6 @@ export default function NewPagoPrestamo(){
       toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
       return
     }
-
     // console.log("Listando datos a enviar - cabecera:",JSON.stringify(Object.fromEntries(new FormData(form.current))))
     // console.log("Listando datos a enviar - detalle:",JSON.stringify(Object.fromEntries(new FormData(form.current))))
 
@@ -56,9 +55,15 @@ export default function NewPagoPrestamo(){
           body:data
         }})
         .then(resp => {
+          console.log("Respuesta del servidor miguel durante:",resp)
           setOpenloader(false)
           // navigate('/main/pagos/')
-          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          if(resp.ok){
+            toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          }else{
+            toast.error('La caja no se encuentra aperturada', { theme: "colored" })
+          }
+          
         })
         .catch((err)=>{
           setOpenloader(false)
@@ -67,6 +72,7 @@ export default function NewPagoPrestamo(){
           setOpenloader(false)
         })
       }
+
     })
 
   }

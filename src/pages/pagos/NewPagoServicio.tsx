@@ -24,40 +24,63 @@ export default function NewPagoServicio(){
 
   const onsubmit = (e)=>{
     e.preventDefault()
-    if(!urlparams.id && selected.length == 0){
-      toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
-      return
-    }
-    openModal({
-      open: true,
-      header: false,
-      controls: true,
-      content: <div>Desea continuar con el registro pago ingresado?</div>,
-      action: async () => {
-        setOpenloader(true)
-        const data = new FormData()
-        urlparams.id && ( !urlparams.altura && data.append('id',urlparams.id) )
-        data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
-
-        await Consulta({url: 'abonos/saveabono/',params:{
-          method:'PUT',
-          body:data
-        }})
-        .then(resp => {
-          setOpenloader(false)
-          navigate('/main/pagos/')
-          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
-        })
-        .catch((err)=>{
-          setOpenloader(false)
-          // toast.error('Se produjo un error!!', { theme: "colored" })
-        })
-        .finally(()=>{
-          setOpenloader(false)
-        })
-      }
+    // console.log("Data urlparams:",urlparams)
+    // return 0
+    // if(!urlparams.id && selected.length == 0){
+    //   toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
+    //   return
+    // }
+    let data = Object.fromEntries(new FormData(form.current))
+    new Promise((resolve, reject) => {
+      Object.keys(data).forEach((item)=>{
+        if(['cuenta_corriente','fec_pago','num_operacion','pago',].includes(item) && data[item] == ''){
+          reject(item)
+        }
+      })
+      resolve(1)
     })
+    .then((resp) => {
+      openModal({
+        open: true,
+        header: false,
+        controls: true,
+        content: <div>Desea continuar con el registro pago ingresado?</div>,
+        action: async () => {
+          setOpenloader(true)
+          const data = new FormData()
+          urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
+          data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
+          data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
+  
+          await Consulta({url: 'abonos/saveabonoServicio/',params:{
+            method:'PUT',
+            body:data
+          }})
+          .then(resp => {
+            setOpenloader(false)
+            navigate('/main/pagos/')
+            toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          })
+          .catch((err)=>{
+            setOpenloader(false)
+            // toast.error('Se produjo un error!!', { theme: "colored" })
+          })
+          .finally(()=>{
+            setOpenloader(false)
+          })
+        }
+      })
+
+    })
+    .catch((item) => {
+      toast.error(`El campo ${item} se encuentra vacio. Por favor verifique,`, { theme: "colored" })
+    })
+    
+    // if(Object.fromEntries(new FormData(form.current))){
+    //   toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
+    //   return
+    // }
+    
   }
   const testkey = ()=>{
     

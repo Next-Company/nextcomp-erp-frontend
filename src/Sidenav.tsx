@@ -137,7 +137,7 @@ export function Sidenav() {
                 Colaboradores
               </div>
             </li> */}
-            <NavLink
+            {/* <NavLink
               to="calendar"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "active" : "default"
@@ -150,8 +150,8 @@ export function Sidenav() {
                   Calendario
                 </div>
               </div>
-            </NavLink>
-            <NavLink
+            </NavLink> */}
+            {/* <NavLink
               to="estampado/"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "active" : "default"
@@ -164,7 +164,7 @@ export function Sidenav() {
                   Estampado
                 </div>
               </div>
-            </NavLink>
+            </NavLink> */}
             <NavLink
               to="pedidos/"
               className={({ isActive, isPending }) =>
@@ -293,7 +293,7 @@ export function Sidenav() {
                 </div>
               </div>
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to="caja/"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "active" : "default"
@@ -306,7 +306,7 @@ export function Sidenav() {
                   <div className="text-nowrap">FLujo de Caja</div>
                 </div>
               </div>
-            </NavLink>
+            </NavLink> */}
             <NavLink
               to="informes/"
               className={({ isActive, isPending }) =>
@@ -321,7 +321,7 @@ export function Sidenav() {
                 </div>
               </div>
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to="soporte/"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "active" : "default"
@@ -334,13 +334,8 @@ export function Sidenav() {
                   Soporte
                 </div>
               </div>
-            </NavLink>
+            </NavLink> */}
           </ul>
-          {/* <div className="bg-white border-t-[1px] border-t-gray-300 rounded-lg border-b-[2px] border-b-white h-[300px]"></div> */}
-          {/* <div className="group-[.collapsee]:[&_>div]:p-0 group-[.collapsee]:[&_div>span]:hidden">
-            <ChatUser />
-            <ChatUser />
-          </div> */}
         </div>
         <div className="border-t h-14 p-3">
           {/* <span className="before:content-['\eb7d']">Vista colapsada</span> */}

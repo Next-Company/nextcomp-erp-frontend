@@ -29,35 +29,51 @@ export default function ListaPagos(){
     let params_modal = null
     switch (action) {
       case 'delete':
-        params_modal = {
-          open:true,
-          content: <div>Desea eliminar el registro seleccionado?. Tenga en cuenta de que el <br/> proceso no es reversible.</div>,
-          controls: true,
-          header: false,
-          action:()=>{
-            setOpenloader(true)
-            Consulta({
-              url: 'abonos/deleteabono/' + id, params: {
-                method: 'DELETE'
-              }
-            })
-              .then(resp => {
-                // setOrdenes(resp)
-                toast.success('Despacho eliminado con éxito!', { theme: "colored" })
-                // setRefresh(true)
-                recargarinfo()
-                setOpenloader(false)
-              })
-              .catch(() => {
-                setOpenloader(false)
-                // logout()
-              })
-              .finally(()=>{
-                setOpenloader(false)
-              })
+        if(estado == 5){
+          let rutaDelete = ''
+          switch(e.target.dataset.origenabono){
+            case 'SERV':
+              rutaDelete = 'abonos/deleteabonoServicio/'
+              break
+            case 'CRED':
+              rutaDelete = 'abonos/deleteabonoLetra/'
+              break
+            case 'PRES':
+              rutaDelete = 'abonos/deleteabonoPrestamo/'
+              break
+            default:
+              break
           }
+          params_modal = {
+            open:true,
+            content: <div>Desea eliminar el registro seleccionado?. Tenga en cuenta de que el <br/> proceso no es reversible.</div>,
+            controls: true,
+            header: false,
+            action:()=>{
+              setOpenloader(true)    
+              Consulta({
+                url: rutaDelete + id, params: {
+                  method: 'DELETE'
+                }
+              })
+                .then(resp => {
+                  // setOrdenes(resp)
+                  toast.success('Despacho eliminado con éxito!', { theme: "colored" })
+                  // setRefresh(true)
+                  recargarinfo()
+                  setOpenloader(false)
+                })
+                .catch(() => {
+                  setOpenloader(false)
+                  // logout()
+                })
+                .finally(()=>{
+                  setOpenloader(false)
+                })
+            }
+          }
+          openModal(params_modal)
         }
-        openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -380,8 +396,7 @@ export default function ListaPagos(){
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.idx}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                               {/* <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 45 ? row.proveedor.substr(1,45) +  '...' : row.proveedor}</td> */}
-                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>Proveedor</td>
-                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>Hola mundo como</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 40 ? row.proveedor.substr(0,40) : row.proveedor}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.producto}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.marca}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.modelo}</td>
@@ -425,7 +440,7 @@ export default function ListaPagos(){
                           {
                             parseInt(estado) == 5 && <>
                               <td className="text-center">{row.idx}</td>
-                              <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
+                              <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : (row.tipo == 'CRED' ? 'LETRA' : 'PRESTAMO')}</div></td>
                               <td>{row.entidad_bancaria}</td>
                               <td>{row.idref}</td>
                               <td>{row.tipo_operacion}</td>
@@ -439,7 +454,7 @@ export default function ListaPagos(){
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-origenabono={estado == 5 ? row.tipo : ''}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                 </div>
                               </li>

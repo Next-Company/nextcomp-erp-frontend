@@ -11,7 +11,8 @@ export const colorfase = {
 }
 export const colortipoabono = {
   'SERV': 'bg-orange-500',
-  'PEDD': 'bg-violet-500'
+  'CRED': 'bg-violet-500',
+  'PRES': 'bg-green-500'
 }
 export const colortipodoc = {
   'FACTURA': 'bg-orange-500',
