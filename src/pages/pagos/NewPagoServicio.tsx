@@ -12,6 +12,102 @@ import { colorfase } from "../../utils/utils"
 import Pagos from "../../components/Common/Pagos"
 import Cuentas from "../../components/Common/Cuentas"
 
+const CuerpoFacturas = ({idguia})=>{
+  const [registros,setRegistros] = useState([])
+
+  useEffect(()=>{
+    // setloader(true)
+    Consulta({url: 'abonos/getpenalidadbyguia/' + idguia})
+    .then(resp => {
+      setRegistros(resp)
+      // setloader(false)
+    })    
+    .catch(err=>{
+
+    })
+  },[idguia])
+  const nuevoregistro = ()=>{
+    console.log("Registros actuales :",registros)
+    setRegistros([...registros,{penalidad:'',importe:0}])
+  }
+  const onclick = (e)=>{
+    const action = e.target.dataset.action
+    const position = e.target.dataset.position
+    switch(action){
+      case 'delete':
+        setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+        break;
+      default :
+    }
+  }
+
+  const editvalue = (e)=>{}
+  return(
+    <div className="flex flex-col gap-2 w-[860px]">
+      <div className="flex justify-start items-center">
+        <h2 className="font-medium text-[16px] pr-2">Registro de descuentos /</h2>
+        <span className="text-blue-500 font-bold">
+          Nueva Penalidad
+        </span>
+      </div>
+      <div>
+        <div className="h-[350px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2 mb-2"> 
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
+            <thead className="text-left sticky top-0 bg-white">
+              <tr>
+                <th className="lg:table-cell">Penalidad</th>  
+                <th className="lg:table-cell">Importe</th>
+                <th className="lg:table-cell">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                registros.length > 0 && registros.map((row,key)=>(
+                  <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                    <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
+                    <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" step={0.01} value={row.cantidad} /></td>
+                    <td className="w-[250px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+            <tfoot className="sticky bottom-0">
+              <tr>
+                <td colSpan={10} >
+                  <div className="flex flex-row justify-center">
+                    <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                      +
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
 export default function NewPagoServicio(){
   const [tipo,setTipo] = useState(0)
   const urlparams = useParams()
@@ -136,6 +232,51 @@ export default function NewPagoServicio(){
         }
         openModal(params_modal)
         break;
+      case 'add':
+        break;
+      case 'discount':
+        params_modal = {
+          open: true,
+          content: <CuerpoFacturas idguia={e.target.dataset.id} />,
+          controls: true,
+          header: false,
+          action: () => {
+            // const desc = async () => {
+            //   const data = new FormData()
+            //   data.append('id', registros[position].idx)
+
+            //   setOpenloader(true)
+            //   Consulta({
+            //     url: `produccion/vistapreviapedido/telas`, params: {
+            //       method: 'POST',
+            //       body: data
+            //     }
+            //   })
+            //     .then(resp => {
+            //       setOpenloader(false)
+            //       const binaryString = window.atob(resp.data);
+            //       const binaryLen = binaryString.length;
+            //       const bytes = new Uint8Array(binaryLen);
+            //       for (let i = 0; i < binaryLen; i++) {
+            //         const ascii = binaryString.charCodeAt(i);
+            //         bytes[i] = ascii;
+            //       }
+            //       const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+            //       const link = document.createElement('a')
+            //       link.href = file
+            //       link.target = 'blank'
+            //       link.click()
+            //     })
+            //     .catch((err) => {
+            //       setOpenloader(false)
+            //       toast.error('Se produjo un error!!', { theme: "colored" })
+            //     })
+            // }
+            // desc()
+          }
+        }
+        openModal(params_modal)
+        break;
       default :
         break;
     }
@@ -161,7 +302,7 @@ export default function NewPagoServicio(){
 
     if(urlparams.id && urlparams.tipo){
       setOpenloader(true)
-      Consulta({url: 'abonos/serviciostatusdetalle/' + urlparams.id,})
+      Consulta({url: 'abonos/proveedorserviciostatusdetalle/' + urlparams.id,})
       .then(resp => {
         let total_pagar = resp.filter(row=>!row.isprototipo).reduce((carry,item)=>{carry += item.costo*(item.despacho - item.caidos);return carry;},0)
         setRegistros(resp)
@@ -359,15 +500,15 @@ export default function NewPagoServicio(){
                     df={Object.keys(info).length > 0 ? info.moneda : null} 
                   />
                   <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" />
-                  <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="ImportePago" type="number"/>
-                  {
+                  <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="TotalPago" type="number"/>
+                  {/* {
                     urlparams.tipo
                     &&
                     <>
                       <Input name={'saldo'} defaults={Object.keys(info).length > 0 && info.saldo ? info.saldo : null} title="Saldo" type="number" action={vistapagos} mode={'static'}/>
                       <Input name={'pago'} defaults={Object.keys(info).length > 0 && info.pago ? info.pago : null} title="Pago" type="number"/>
                     </>
-                  }
+                  } */}
                   
                 </div>
                 <div>
@@ -376,8 +517,7 @@ export default function NewPagoServicio(){
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          <th className="lg:table-cell">Id</th>
-                          {/* <th className="lg:table-cell">HDC</th> */}
+                          {/* <th className="lg:table-cell">Id</th>
                           <th className="lg:table-cell">Servicio</th>
                           <th className="lg:table-cell">Producto</th>
                           <th className="lg:table-cell">Marca</th>
@@ -388,15 +528,26 @@ export default function NewPagoServicio(){
                           <th className="lg:table-cell">Despacho</th>
                           <th className="lg:table-cell">Caidos</th>
                           <th className="lg:table-cell">Total</th>
-                          <th className="lg:table-cell">Acciones</th>                          
+                          <th className="lg:table-cell">Acciones</th> */}
+                          <th className="lg:table-cell">IdGuia</th>
+                          <th className="lg:table-cell">Tipo</th>
+                          <th className="lg:table-cell">Producto</th>
+                          <th className="lg:table-cell">Costo</th>
+                          <th className="lg:table-cell">Cantidad</th>
+                          <th className="lg:table-cell">Despacho</th>
+                          <th className="lg:table-cell">Subtotal</th>
+                          <th className="lg:table-cell">Descuentos</th>
+                          <th className="lg:table-cell">Total</th>
+                          <th className="lg:table-cell">Abonado</th>
+                          <th className="lg:table-cell">ImportePago</th>
+                          <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className={`${selected.find((item)=>item.idx == row.idx) ? 'selected' : ''} focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center`}>
-                              <td>{row.idx}</td>
-                              {/* <td>#{row.orden_ref}</td> */}
+                              {/* <td>{row.idx}</td>
                               <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
                               <td>{row.articulo}</td>
                               <td>{row.marca}</td>
@@ -406,31 +557,42 @@ export default function NewPagoServicio(){
                               <td>{row.cantidad}</td>
                               <td>{row.despacho}</td>
                               <td>{row.caidos}</td>
-                              <td>{row.despacho - row.caidos}</td>
-                              <td className="w-[250px]">
+                              <td>{row.despacho - row.caidos}</td> */}
+                              <td>{row.idx}</td>
+                              <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                              <td>{row.producto + ' ' + row.marca + ' ' + row.modelo}</td>
+                              <td>S/.{row.costo}</td>
+                              <td>{row.cantidad}</td>
+                              <td>{row.despacho}</td>
+                              <td>{row.importe}</td>
+                              <td>{0}</td>
+                              <td>{0}</td>
+                              <td>{row.cancelado ?? 0}</td>
+                              <td>{0}</td>
+                              <td className="w-[200px]">
                                 <ul className="flex flex-row justify-end">
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} data-position={key}>
+                                  {/* <li>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} data-position={key}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                     </div>
-                                  </li>
+                                  </li> */}
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download" onClick={onclick}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review">
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="discount" onClick={onclick} data-id={row.idx}>
+                                      <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-adjustments-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 10a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M6 4v4" /><path d="M6 12v8" /><path d="M13.653 14.874a2 2 0 1 0 -.586 2.818" /><path d="M12 4v10" /><path d="M12 18v2" /><path d="M16 7a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M18 4v1" /><path d="M18 9v4" /><path d="M22 22l-5 -5" /><path d="M17 22l5 -5" /></svg>
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-position={key} data-action="add" onClick={()=>{}}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-position={key} data-action="add" onClick={onclick}>
                                       <svg  xmlns="http://www.w3.org/2000/svg"  width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
                                     </div>
                                   </li>

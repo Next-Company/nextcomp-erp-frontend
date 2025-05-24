@@ -156,7 +156,7 @@ export default function ListaPagos(){
     setOpenloader(true)
     Consulta({
       // url: 'abonos/100', params: {
-      url: 'abonos/servicios/100', params: {
+      url: 'abonos/servicios/', params: {
         method: 'GET'
       }
     })
@@ -185,7 +185,7 @@ export default function ListaPagos(){
     let url = undefined
     switch (parseInt(estado)) {
       case 0:
-        url = 'abonos/servicios/100'
+        url = 'abonos/servicios/'
         break;
       case 1:
         url = 'abonos/letras'
@@ -265,6 +265,43 @@ export default function ListaPagos(){
     }
     openModal(params_modal)
   }
+  const busquedaglobal = async (input) => {
+    let ruta_consulta = ''
+    switch(parseInt(estado)){
+      case 0 :
+        ruta_consulta = "abonos/servicios/"+ input.value 
+        break
+      case 1 :
+        ruta_consulta = "abonos/letras/"
+        break
+      case 2 :
+        break
+      case 3 :
+        ruta_consulta = "prestamos/"
+        break
+      default:
+        break
+    }
+    setOpenloader(true)
+    Consulta({
+      url: ruta_consulta , params: {
+        method: 'GET'
+      }
+    })
+      .then(resp => {
+        console.log(resp)
+        setOpenloader(false)
+        setInfo(resp)
+      })
+      .catch((error) => {
+        console.log("El mnesaje de error es:", error)
+      })
+      .finally(() => {
+        console.log("Horror en la consulta de base de datos")
+        setOpenloader(false)
+      })
+  }
+
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -275,7 +312,7 @@ export default function ListaPagos(){
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Cuentas por pagar</h2>
               <div className="w-[500px]">
-                <Search config={{ width: '200px' }} action={()=>{}} />
+                <Search config={{ width: '200px' }} action={busquedaglobal} />
               </div>
             </div>
             {/* <hr /> */}
@@ -323,13 +360,20 @@ export default function ListaPagos(){
                   <tr>
                     {
                       parseInt(estado) == 0 && <>
-                        <th className="lg:table-cell">IdServ</th>
+                        {/* <th className="lg:table-cell">IdServ</th>
                         <th className="lg:table-cell">Origen</th>
                         <th className="lg:table-cell">Proveedor</th>
                         <th className="lg:table-cell">Producto</th>
                         <th className="lg:table-cell">Marca</th>
                         <th className="lg:table-cell">Modelo</th>
                         <th className="lg:table-cell">Costo</th>
+                        <th className="lg:table-cell">Cantidad</th>
+                        <th className="lg:table-cell">Ingresos</th>
+                        <th className="lg:table-cell">Importe</th>
+                        <th className="lg:table-cell">Saldo</th> */}
+                        <th className="lg:table-cell">#</th>
+                        <th className="lg:table-cell">Ruc</th>
+                        <th className="lg:table-cell">Proveedor</th>
                         <th className="lg:table-cell">Cantidad</th>
                         <th className="lg:table-cell">Ingresos</th>
                         <th className="lg:table-cell">Importe</th>
@@ -393,14 +437,20 @@ export default function ListaPagos(){
                         <tr key={key} className="">
                           {
                             parseInt(estado) == 0 && <>
-                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.idx}</td>
+                              {/* <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.idx}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                              {/* <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 45 ? row.proveedor.substr(1,45) +  '...' : row.proveedor}</td> */}
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 40 ? row.proveedor.substr(0,40) : row.proveedor}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.producto}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.marca}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.modelo}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.costo}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.cantidad}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.despacho}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.importe.toFixed(2)}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{(row.importe - row.cancelado).toFixed(2)}</td> */}
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{key + 1}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.ruc}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 50 ? row.proveedor.substr(0,50) : row.proveedor}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.cantidad}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.despacho}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.importe.toFixed(2)}</td>
@@ -475,7 +525,7 @@ export default function ListaPagos(){
                               </li>
                               <li>
                                 {/* <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`${parseInt(estado) ? 'edit_pago' : 'add_pago'}`} onClick={onclick} data-id={row.idx}> */}
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={row.idx ?? 0}>
                                   <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-credit-card-pay"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19h-6a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" /><path d="M3 10h18" /><path d="M16 19h6" /><path d="M19 16l3 3l-3 3" /><path d="M7.005 15h.005" /><path d="M11 15h2" /></svg>
                                 </div>
                               </li>
@@ -511,7 +561,7 @@ export default function ListaPagos(){
             <div className="flex flex-row justify-end mt-2">
               <div className="flex gap-2">
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevoabono} tipo={'accept'}>Nuevo</Button>
+                {/* <Button action={nuevoabono} tipo={'accept'}>Nuevo</Button> */}
               </div>
             </div >
           </div>

@@ -422,7 +422,7 @@ export default function ListaGuias() {
                 {/* <tfoot className="absolute bottom-0 w-full bg-yellow-300"> */}
                 <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
                   <tr>
-                    <td className="h-[45px] border-t border-t-gray-600" colSpan={14}>
+                    <td className="h-[45px] border-t border-t-gray-600" colSpan={15}>
                       <div className="flex flex-row justify-between items-center">
                         <div>
                           Showing 1 to 4 of 4 entries (filtered from 57 total entries)

@@ -343,7 +343,7 @@ export default function NewDespacho() {
             </div>
             <hr />
           </div>
-          <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
+          <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2 overflow-x-hidden">
             <form ref={form} onSubmit={onsubmit} onChange={() => { }} onInputCapture={onchange}>
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
@@ -462,8 +462,8 @@ export default function NewDespacho() {
                                       <td>{row.xxl}</td>
                                       <td>{row.cantidad}</td>
                                       <td>{row.cantidad - row.ingresos}</td>
-                                      <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
-                                      <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" defaultValue={row.caidos ?? 0} /></td>
+                                      <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
+                                      <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" defaultValue={row.caidos ?? 0} /></td>
                                     </>
                                     :
                                     <>
