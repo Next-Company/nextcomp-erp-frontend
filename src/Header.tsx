@@ -4,7 +4,7 @@ import { SideNavMobile } from './components/SideNavMobile/SideNavMobileContext'
 export function Header({ logout, credentials }) {
   // const { isAuthenticated, logout } = useContext(AuthPermitions)
   // const [isvisible, setIsvisible] = useState(false)
-  console.log("Mis credenciales son :",credentials)
+  // console.log("Mis credenciales son :",credentials)
   const user = credentials !== '' ? JSON.parse(credentials) : {}
   const navigate = useNavigate()
   // const sidenav = useRef()

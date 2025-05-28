@@ -9,6 +9,130 @@ import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 
+// const VentanaDescuentos = ({idguia,penalidades,setregistros,infopenalidades})=>{
+// const VentanaDescuentos = ({idguia,penalidades,setregistros,infopenalidades})=>{
+const VentanaDescuentos = ({idguia})=>{
+  const { openModal } = useContext(ModalWindowContext)
+  // const [registros,setRegistros] = useState(infopenalidades.filter(row=>row.idx == idguia)[0].penalidades ?? [])
+  const [registros,setRegistros] = useState([])
+  // const penalidades = useRef([])
+
+  const nuevoregistro = ()=>{
+    console.log("Registros actuales :",registros)
+    setRegistros([...registros,{idguia:idguia,idx:'',penalidad:'',observacion:'',importe:0}])
+  }
+  const onclick = (e)=>{
+    // const action = e.target.dataset.action
+    // const position = e.target.dataset.position
+    // switch(action){
+    //   case 'delete':
+    //     setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+    //     break;
+    //   default :
+    // }
+  }
+  const editvalue = (e)=>{
+    // if(e.target.dataset.name == 'penalidad'){
+    //   setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,idx:e.target.value,penalidad:e.target.options[e.target.selectedIndex].text} : row))
+    // }else{
+    //   setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,[e.target.dataset.name]:e.target.dataset.name == 'observacion' ? e.target.value : parseFloat(e.target.value)} : row))
+    // }
+  } 
+  const agregar = ()=>{
+    // console.log("Mostrando la lista de penalidades a enviar:",registros)
+    // if(registros.filter(row=>row.idx == '').length > 0){
+    //   toast.error(`Debe seleccionar una penalidad del listado`, { theme: "colored" })
+    //   return 0
+    // }
+    // openModal(false)
+    // setregistros(lista=>lista.map((item)=>(
+    //     item.idx == idguia 
+    //     ? {...item,penalidades:registros,descuentos: registros.reduce((carry,item)=>{carry += parseFloat(item.importe);return carry;},0).toFixed(2)}
+    //     : item
+    //   )
+    // ))
+  }
+  return(
+    <div className="flex flex-col gap-2 w-[950px]">
+      <div className="flex justify-start items-center">
+        <h2 className="font-medium text-[16px] pr-2">Registro de descuentos /</h2>
+        <span className="text-blue-500 font-bold">
+          Nueva Penalidad
+        </span>
+      </div>
+      <div>
+        <div className="h-[350px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2 mb-2"> 
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
+            <thead className="text-left sticky top-0 bg-white">
+              <tr>
+                <th className="lg:table-cell">Penalidad</th>  
+                <th className="lg:table-cell">Observacion</th>  
+                <th className="lg:table-cell">Importe</th>
+                <th className="lg:table-cell">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                registros.length > 0 && registros.map((row,key)=>(
+                  <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                    <td>
+                      {/* {
+                        penalidades.current.length > 0 &&
+                        <select onChange={editvalue} data-name="penalidad" data-position={key} className="w-full bg-transparent h-[40px] outline-none text-center">
+                          <option key={-1} defaultValue={''}></option>
+                          {
+                            penalidades.current.map((item, index) => <option key={index} value={item.idx} selected={item.idx == row.idx ? true : false } defaultValue={item.idx ?? null}>{item.penalidad}</option>)
+                          }
+                        </select> 
+                      } */}
+                    </td>
+                    <td><input className="h-[40px]" type="text" onChange={editvalue} data-position={key} data-name="observacion" defaultValue={row.observacion ?? ''} /></td>
+                    <td><input className="h-[40px]" type="number" onChange={editvalue} data-position={key} data-name="importe" step={0.01} defaultValue={row.importe ?? 0} /></td>
+                    <td className="w-[180px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+            <tfoot className="sticky bottom-0">
+              <tr>
+                <td colSpan={10} >
+                  <div className="flex flex-row justify-center">
+                    <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                      +
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div className="flex justify-end gap-2">
+        <Button type={'button'} tipo={'default'} action={()=>openModal(false)}>Cancelar</Button>
+        <Button type={'button'} tipo={'default'} action={agregar}>Agregar</Button>
+      </div>
+    </div>
+  )
+}
+
 export default function NewGuia(){
   const [estampado,setEstampado] = useState([])
   const urlparams = useParams()
@@ -122,6 +246,18 @@ export default function NewGuia(){
         setOpen(false)
       }}/>,
       controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openModal(params_modal)
+  }
+  const opendescuentos = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <VentanaDescuentos idguia={333} />,
+      controls: false,
       header: false,
       action:()=>{
       }
@@ -283,10 +419,15 @@ export default function NewGuia(){
                   <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={4} />
                 </div>
               </div>
-              <div className="flex justify-end gap-2 mt-2">
+              <div className="flex justify-between gap-2 mt-2">
                 {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
-                <Button action={() => navigate('/main/guias/')} type={'button'} tipo={'default'}>Cancelar</Button>
-                <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                <div>
+                  <Button type={'button'} tipo={'accept'} action={opendescuentos}>Configurar penalidades</Button>
+                </div>
+                <div>
+                  <Button action={() => navigate('/main/guias/')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                </div>
                 {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
               </div>
             </form>

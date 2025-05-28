@@ -11,24 +11,16 @@ import Guias from "../../components/Common/Guias"
 import { colorfase } from "../../utils/utils"
 import Pagos from "../../components/Common/Pagos"
 import Cuentas from "../../components/Common/Cuentas"
+import { isHtmlElement } from "react-router-dom/dist/dom"
 
-const CuerpoFacturas = ({idguia})=>{
-  const [registros,setRegistros] = useState([])
+const CuerpoFacturas = ({idguia,penalidades,setregistros,infopenalidades})=>{
+  const { openModal } = useContext(ModalWindowContext)
+  const [registros,setRegistros] = useState(infopenalidades.filter(row=>row.idx == idguia)[0].penalidades ?? [])
+  // const penalidades = useRef([])
 
-  useEffect(()=>{
-    // setloader(true)
-    Consulta({url: 'abonos/getpenalidadbyguia/' + idguia})
-    .then(resp => {
-      setRegistros(resp)
-      // setloader(false)
-    })    
-    .catch(err=>{
-
-    })
-  },[idguia])
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
-    setRegistros([...registros,{penalidad:'',importe:0}])
+    setRegistros([...registros,{idguia:idguia,idx:'',penalidad:'',observacion:'',importe:0}])
   }
   const onclick = (e)=>{
     const action = e.target.dataset.action
@@ -40,10 +32,43 @@ const CuerpoFacturas = ({idguia})=>{
       default :
     }
   }
+  const editvalue = (e)=>{
 
-  const editvalue = (e)=>{}
+    // console.log("Mostrando valor del comhbo penalidad",e.target.value,e.target.options[e.target.selectedIndex].text)
+
+    if(e.target.dataset.name == 'penalidad'){
+      setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,idx:e.target.value,penalidad:e.target.options[e.target.selectedIndex].text} : row))
+    }else{
+      setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,[e.target.dataset.name]:e.target.dataset.name == 'observacion' ? e.target.value : parseFloat(e.target.value)} : row))
+    }
+
+    // if(e.target.dataset.name == 'penalidad'){
+    //   setRegistros(registros.map((item,key)=> key == e.target.dataset.position ? {...item,idx: e.target.value,penalidad: e.target.,[e.target.dataset.name]: (['penalidad','observacion'].includes(e.target.dataset.name) ? e.target.value : parseFloat(e.target.value))}:item))  
+    // }else{
+    //   setRegistros(registros.map((item,key)=>{
+    //     return {...registros()}
+    //   }))
+    // }
+    // setRegistros(registros.map((item,key)=> key == e.target.dataset.position ? {...item,idx: ['penalidad','observacion'].includes(e.target.dataset.name) ? e.target.value : '',[e.target.dataset.name]: (['penalidad','observacion'].includes(e.target.dataset.name) ? e.target.value : parseFloat(e.target.value))}:item))
+    // console.log("Los registros actuales registrados: ",registros)
+
+  } 
+  const agregar = ()=>{
+    console.log("Mostrando la lista de penalidades a enviar:",registros)
+    if(registros.filter(row=>row.idx == '').length > 0){
+      toast.error(`Debe seleccionar una penalidad del listado`, { theme: "colored" })
+      return 0
+    }
+    openModal(false)
+    setregistros(lista=>lista.map((item)=>(
+        item.idx == idguia 
+        ? {...item,penalidades:registros,descuentos: registros.reduce((carry,item)=>{carry += parseFloat(item.importe);return carry;},0).toFixed(2)}
+        : item
+      )
+    ))
+  }
   return(
-    <div className="flex flex-col gap-2 w-[860px]">
+    <div className="flex flex-col gap-2 w-[950px]">
       <div className="flex justify-start items-center">
         <h2 className="font-medium text-[16px] pr-2">Registro de descuentos /</h2>
         <span className="text-blue-500 font-bold">
@@ -56,6 +81,7 @@ const CuerpoFacturas = ({idguia})=>{
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell">Penalidad</th>  
+                <th className="lg:table-cell">Observacion</th>  
                 <th className="lg:table-cell">Importe</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
@@ -64,9 +90,20 @@ const CuerpoFacturas = ({idguia})=>{
               {
                 registros.length > 0 && registros.map((row,key)=>(
                   <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                    <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
-                    <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" step={0.01} value={row.cantidad} /></td>
-                    <td className="w-[250px]">
+                    <td>
+                      {
+                        penalidades.current.length > 0 &&
+                        <select onChange={editvalue} data-name="penalidad" data-position={key} className="w-full bg-transparent h-[40px] outline-none text-center">
+                          <option key={-1} defaultValue={''}></option>
+                          {
+                            penalidades.current.map((item, index) => <option key={index} value={item.idx} selected={item.idx == row.idx ? true : false } defaultValue={item.idx ?? null}>{item.penalidad}</option>)
+                          }
+                        </select> 
+                      }
+                    </td>
+                    <td><input className="h-[40px]" type="text" onChange={editvalue} data-position={key} data-name="observacion" defaultValue={row.observacion ?? ''} /></td>
+                    <td><input className="h-[40px]" type="number" onChange={editvalue} data-position={key} data-name="importe" step={0.01} defaultValue={row.importe ?? 0} /></td>
+                    <td className="w-[180px]">
                       <ul className="flex flex-row justify-end">
                         <li>
                           <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-position={key}>
@@ -103,10 +140,13 @@ const CuerpoFacturas = ({idguia})=>{
           </table>
         </div>
       </div>
+      <div className="flex justify-end gap-2">
+        <Button type={'button'} tipo={'default'} action={()=>openModal(false)}>Cancelar</Button>
+        <Button type={'button'} tipo={'default'} action={agregar}>Agregar</Button>
+      </div>
     </div>
   )
 }
-
 
 export default function NewPagoServicio(){
   const [tipo,setTipo] = useState(0)
@@ -117,6 +157,7 @@ export default function NewPagoServicio(){
   const [registros,setRegistros] = useState([])
   const [selected,setSelected] = useState([])
   const navigate = useNavigate()
+  const penalidades = useRef([])
 
   const onsubmit = (e)=>{
     e.preventDefault()
@@ -142,11 +183,13 @@ export default function NewPagoServicio(){
         controls: true,
         content: <div>Desea continuar con el registro pago ingresado?</div>,
         action: async () => {
-          setOpenloader(true)
+          // setOpenloader(true)
           const data = new FormData()
           urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
           data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
           data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
+
+          // console.log("Los datos a enviar son los siguientes:",registros)  
   
           await Consulta({url: 'abonos/saveabonoServicio/',params:{
             method:'PUT',
@@ -154,12 +197,11 @@ export default function NewPagoServicio(){
           }})
           .then(resp => {
             setOpenloader(false)
-            navigate('/main/pagos/')
+            // navigate('/main/pagos/')
             toast.success('Estampado guardado con éxito!!', { theme: "colored" })
           })
           .catch((err)=>{
             setOpenloader(false)
-            // toast.error('Se produjo un error!!', { theme: "colored" })
           })
           .finally(()=>{
             setOpenloader(false)
@@ -237,8 +279,8 @@ export default function NewPagoServicio(){
       case 'discount':
         params_modal = {
           open: true,
-          content: <CuerpoFacturas idguia={e.target.dataset.id} />,
-          controls: true,
+          content: <CuerpoFacturas idguia={e.target.dataset.id} penalidades={penalidades} setregistros={setRegistros} infopenalidades={registros}/>,
+          controls: false,
           header: false,
           action: () => {
             // const desc = async () => {
@@ -308,6 +350,7 @@ export default function NewPagoServicio(){
         setRegistros(resp)
         setInfo({...info,id_proveedor_CAB:resp[0].id_proveedor_CAB,proveedor:resp[0].proveedor,importe:total_pagar,saldo:total_pagar - resp[0].cancelado,pago:0})
         setOpenloader(false)
+        console.log("Los datos del abono son los siguientes:",resp)
       })
       .catch((err)=>{
         setOpenloader(false)
@@ -341,6 +384,17 @@ export default function NewPagoServicio(){
     return () => {
       if(form.current) form.current.removeEventListener("salamandra", handleInputChange);
     };
+  },[])
+
+  useEffect(()=>{
+    Consulta({url: 'abonos/getpenalidadeslist/'})
+    .then(resp => {
+      console.log("Las penalidades son las siguientes:",resp)
+      penalidades.current = resp
+    })    
+    .catch(err=>{
+
+    })   
   },[])
 
   const editvalue = (e)=>{
@@ -421,9 +475,9 @@ export default function NewPagoServicio(){
       openModal(params_modal)
     }
   const onchange = (e)=>{
-    console.log("Cambiando tipo de pedido")
-    // console.log("VA o neleet")
-    // console.log("Otros cambios adicionales")
+    console.log("Actualizando la cantidad de pago")
+    setInfo({...info,'importe': parseFloat(info['importe']) + parseFloat(e.target.value)})
+    console.log("INfo del listado de servicios:",info)
   }
   return(
     <>
@@ -439,7 +493,8 @@ export default function NewPagoServicio(){
             <hr />
           </div>
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
-            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={()=>{}} onInputCapture={onchange}>
+            {/* <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={()=>{}} onInputCapture={onchange}> */}
+            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey}>
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
@@ -565,10 +620,10 @@ export default function NewPagoServicio(){
                               <td>{row.cantidad}</td>
                               <td>{row.despacho}</td>
                               <td>{row.importe}</td>
-                              <td>{0}</td>
-                              <td>{0}</td>
+                              <td>{row.descuentos}</td>
+                              <td>{(row.importe - row.descuentos).toFixed(2)}</td>
                               <td>{row.cancelado ?? 0}</td>
-                              <td>{0}</td>
+                              <td><input name="pago" type="number" onChange={onchange} defaultValue={row.pago ?? 0} step={0.00} /></td>
                               <td className="w-[200px]">
                                 <ul className="flex flex-row justify-end">
                                   {/* <li>
