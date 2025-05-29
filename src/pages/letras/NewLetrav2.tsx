@@ -274,11 +274,12 @@ export default function NewLetraV2() {
                 <div>
                   <span>Artículos:</span>
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-yellow-200">
+                    {/* <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-yellow-200"> */}
+                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-yellow-200">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell">IdPedido</th>
-                          <th className="lg:table-cell">Tipo</th>
+                          {/* <th className="lg:table-cell">Tipo</th> */}
                           <th className="lg:table-cell">OP</th>
                           <th className="lg:table-cell">FecEmision</th>
                           <th className="lg:table-cell">FecRetorno</th>
@@ -297,7 +298,7 @@ export default function NewLetraV2() {
                           registros.length > 0 && registros.map((row, key) => (
                             <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item) => item.idx == row.idx) ? 'selected' : ''}`}>
                               <td className="text-center">{row.idpedido}</td>
-                              <td className="w-[150px]"><div className={`w-full text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                              {/* <td className="w-[150px]"><div className={`w-full text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td> */}
                               <td className="text-center"><strong>{row.orden_ref}</strong></td>
                               <td className="text-center">{row.fec_emision}</td>
                               <td className="text-center">{row.fec_retorno}</td>
@@ -343,7 +344,7 @@ export default function NewLetraV2() {
                       </tbody>
                       <tfoot className="sticky bottom-0">
                         <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
-                          <td className="text-center" colSpan={8}></td>
+                          <td className="text-center" colSpan={7}></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
                           <td className="text-center text-[16px] italic">{registros.reduce((carry,value)=>{
                             return carry + parseFloat(value.importe_despacho)

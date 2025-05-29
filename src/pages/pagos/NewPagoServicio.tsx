@@ -59,7 +59,7 @@ const CuerpoFacturas = ({idguia,penalidades,setregistros,infopenalidades})=>{
       toast.error(`Debe seleccionar una penalidad del listado`, { theme: "colored" })
       return 0
     }
-    openModal(false)
+    openModal(22)
     setregistros(lista=>lista.map((item)=>(
         item.idx == idguia 
         ? {...item,penalidades:registros,descuentos: registros.reduce((carry,item)=>{carry += parseFloat(item.importe);return carry;},0).toFixed(2)}
@@ -167,7 +167,10 @@ export default function NewPagoServicio(){
     //   toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
     //   return
     // }
+    console.log("Los datos a enviar son los siguientes:",registros)  
+    console.log("Los datos a enviar son los siguientes:",info)  
     let data = Object.fromEntries(new FormData(form.current))
+    console.log("Data array del formulario de abono:",data)
     new Promise((resolve, reject) => {
       Object.keys(data).forEach((item)=>{
         if(['cuenta_corriente','fec_pago','num_operacion','pago',].includes(item) && data[item] == ''){
@@ -183,14 +186,15 @@ export default function NewPagoServicio(){
         controls: true,
         content: <div>Desea continuar con el registro pago ingresado?</div>,
         action: async () => {
-          // setOpenloader(true)
+          
           const data = new FormData()
           urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
           data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
           data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
 
           // console.log("Los datos a enviar son los siguientes:",registros)  
-  
+          // console.log("Los datos a enviar son los siguientes:",info)  
+          setOpenloader(true)
           await Consulta({url: 'abonos/saveabonoServicio/',params:{
             method:'PUT',
             body:data
@@ -206,6 +210,7 @@ export default function NewPagoServicio(){
           .finally(()=>{
             setOpenloader(false)
           })
+
         }
       })
 
@@ -475,9 +480,13 @@ export default function NewPagoServicio(){
       openModal(params_modal)
     }
   const onchange = (e)=>{
-    console.log("Actualizando la cantidad de pago")
-    setInfo({...info,'importe': parseFloat(info['importe']) + parseFloat(e.target.value)})
-    console.log("INfo del listado de servicios:",info)
+    console.log("Actualizando la cantidad de pago",registros.filter((row,key)=>key !== parseInt(e.target.dataset.position)).reduce((carry,row)=>{carry += parseFloat(row.pago ?? 0);return carry;},0) + parseFloat(e.target.value))
+    // setInfo({...info,'pago': parseFloat(info['pago'] ?? 0) + parseFloat(e.target.value)})
+
+    setInfo({...info,'importe': registros.filter((row,key)=>key !== parseInt(e.target.dataset.position)).reduce((carry,row)=>{carry += parseFloat(row.pago ?? 0);return carry;},0) + parseFloat(e.target.value)})
+    setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,pago:parseFloat(e.target.value)} : row))
+    console.log("Info del listado de servicios:", info)
+    console.log("Info de las guias detalle:", registros)
   }
   return(
     <>
@@ -623,7 +632,7 @@ export default function NewPagoServicio(){
                               <td>{row.descuentos}</td>
                               <td>{(row.importe - row.descuentos).toFixed(2)}</td>
                               <td>{row.cancelado ?? 0}</td>
-                              <td><input name="pago" type="number" onChange={onchange} defaultValue={row.pago ?? 0} step={0.00} /></td>
+                              <td><input name="pago" type="number" onChange={onchange} data-position={key} defaultValue={row.pago ?? 0} step="0.00" /></td>
                               <td className="w-[200px]">
                                 <ul className="flex flex-row justify-end">
                                   {/* <li>

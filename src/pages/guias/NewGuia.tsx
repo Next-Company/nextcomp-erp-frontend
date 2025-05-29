@@ -9,48 +9,37 @@ import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 
-// const VentanaDescuentos = ({idguia,penalidades,setregistros,infopenalidades})=>{
-// const VentanaDescuentos = ({idguia,penalidades,setregistros,infopenalidades})=>{
-const VentanaDescuentos = ({idguia})=>{
-  const { openModal } = useContext(ModalWindowContext)
-  // const [registros,setRegistros] = useState(infopenalidades.filter(row=>row.idx == idguia)[0].penalidades ?? [])
-  const [registros,setRegistros] = useState([])
-  // const penalidades = useRef([])
+const VentanaDescuentos = ({idguia,penalidadestipo,penalidades,setpenalidades})=>{
+  const { openModal,setOpen } = useContext(ModalWindowContext)
+  const [registros,setRegistros] = useState(penalidades)
 
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
     setRegistros([...registros,{idguia:idguia,idx:'',penalidad:'',observacion:'',importe:0}])
   }
+  useEffect(()=>{
+    console.log("Lista de penalidades :",penalidadestipo.current)
+  },[])
   const onclick = (e)=>{
-    // const action = e.target.dataset.action
-    // const position = e.target.dataset.position
-    // switch(action){
-    //   case 'delete':
-    //     setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
-    //     break;
-    //   default :
-    // }
+    const action = e.target.dataset.action
+    const position = e.target.dataset.position
+    switch(action){
+      case 'delete':
+        setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+        break;
+      default :
+    }
   }
   const editvalue = (e)=>{
-    // if(e.target.dataset.name == 'penalidad'){
-    //   setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,idx:e.target.value,penalidad:e.target.options[e.target.selectedIndex].text} : row))
-    // }else{
-    //   setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,[e.target.dataset.name]:e.target.dataset.name == 'observacion' ? e.target.value : parseFloat(e.target.value)} : row))
-    // }
+    if(e.target.dataset.name == 'penalidad'){
+      setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,idx:e.target.value,penalidad:e.target.options[e.target.selectedIndex].text} : row))
+    }else{
+      setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,[e.target.dataset.name]:e.target.dataset.name == 'observacion' ? e.target.value : parseFloat(e.target.value)} : row))
+    }
   } 
   const agregar = ()=>{
-    // console.log("Mostrando la lista de penalidades a enviar:",registros)
-    // if(registros.filter(row=>row.idx == '').length > 0){
-    //   toast.error(`Debe seleccionar una penalidad del listado`, { theme: "colored" })
-    //   return 0
-    // }
-    // openModal(false)
-    // setregistros(lista=>lista.map((item)=>(
-    //     item.idx == idguia 
-    //     ? {...item,penalidades:registros,descuentos: registros.reduce((carry,item)=>{carry += parseFloat(item.importe);return carry;},0).toFixed(2)}
-    //     : item
-    //   )
-    // ))
+    setpenalidades(registros)
+    setOpen(false)
   }
   return(
     <div className="flex flex-col gap-2 w-[950px]">
@@ -76,15 +65,15 @@ const VentanaDescuentos = ({idguia})=>{
                 registros.length > 0 && registros.map((row,key)=>(
                   <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                     <td>
-                      {/* {
-                        penalidades.current.length > 0 &&
+                      {
+                        penalidadestipo.current.length > 0 &&
                         <select onChange={editvalue} data-name="penalidad" data-position={key} className="w-full bg-transparent h-[40px] outline-none text-center">
                           <option key={-1} defaultValue={''}></option>
                           {
-                            penalidades.current.map((item, index) => <option key={index} value={item.idx} selected={item.idx == row.idx ? true : false } defaultValue={item.idx ?? null}>{item.penalidad}</option>)
+                            penalidadestipo.current.map((item, index) => <option key={index} value={item.idx} selected={item.idx == row.idx ? true : false } defaultValue={item.idx ?? null}>{item.penalidad}</option>)
                           }
                         </select> 
-                      } */}
+                      }
                     </td>
                     <td><input className="h-[40px]" type="text" onChange={editvalue} data-position={key} data-name="observacion" defaultValue={row.observacion ?? ''} /></td>
                     <td><input className="h-[40px]" type="number" onChange={editvalue} data-position={key} data-name="importe" step={0.01} defaultValue={row.importe ?? 0} /></td>
@@ -127,7 +116,7 @@ const VentanaDescuentos = ({idguia})=>{
       </div>
       <div className="flex justify-end gap-2">
         <Button type={'button'} tipo={'default'} action={()=>openModal(false)}>Cancelar</Button>
-        <Button type={'button'} tipo={'default'} action={agregar}>Agregar</Button>
+        <Button type={'button'} tipo={'default'} action={agregar}>Guardar</Button>
       </div>
     </div>
   )
@@ -140,6 +129,10 @@ export default function NewGuia(){
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros,setRegistros] = useState([])
+  const penalidadestipo = useRef([])
+  const [penalidades,setPenalidades] = useState([])
+  const infopenalidades = useRef([])
+  // const [infop,setInfop] = useState([])
   const navigate = useNavigate()
 
   const onsubmit = (e)=>{
@@ -157,6 +150,7 @@ export default function NewGuia(){
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',JSON.stringify(registros))
+        penalidades.length > 0 && data.append('penalidades',JSON.stringify(penalidades))
 
         await Consulta({url: 'produccion/guardarguia/',params:{
           method:'PUT',
@@ -177,9 +171,6 @@ export default function NewGuia(){
       }
     })
   }
-  const testkey = ()=>{
-    
-  }
   useEffect(()=>{
     if(urlparams.id){
       setOpenloader(true)
@@ -189,6 +180,8 @@ export default function NewGuia(){
             console.log("info guia :",resp)
             setInfo(resp[0])
             setRegistros(resp[1])
+            setPenalidades(resp[2])
+            penalidadestipo.current = resp[3]
             setOpenloader(false)
             console.log("Opportynity never die!!!!",resp)
           })
@@ -256,7 +249,7 @@ export default function NewGuia(){
     let params_modal = null
     params_modal = {
       open:true,
-      content: <VentanaDescuentos idguia={333} />,
+      content: <VentanaDescuentos idguia={urlparams.id ?? 0} penalidadestipo={penalidadestipo} penalidades={penalidades} setpenalidades={setPenalidades} />,
       controls: false,
       header: false,
       action:()=>{
@@ -287,7 +280,7 @@ export default function NewGuia(){
           </div>
           <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
 
-            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} >
+            <form ref={form} onSubmit={onsubmit}>
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
@@ -422,9 +415,13 @@ export default function NewGuia(){
               <div className="flex justify-between gap-2 mt-2">
                 {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
                 <div>
-                  <Button type={'button'} tipo={'accept'} action={opendescuentos}>Configurar penalidades</Button>
+                  {
+                    urlparams.id && <>
+                      <Button type={'button'} tipo={'accept'} action={opendescuentos}>{`Configurar penalidades - Total: S/.${penalidades.length > 0 ? penalidades.reduce((carry,row)=>{carry += row.importe; return carry;},0).toFixed(2) : 0.00}`}</Button>
+                    </>                   
+                  }
                 </div>
-                <div>
+                <div className="flex flex-row gap-2">
                   <Button action={() => navigate('/main/guias/')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>
