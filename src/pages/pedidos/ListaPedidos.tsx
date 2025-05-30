@@ -62,6 +62,7 @@ export default function ListaPedidos() {
   const lista = useRef()
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
+  const [estado,setEstado] = useState('PENDIENTE')
   const navigate = useNavigate()
   const { logout } = useContext(AuthPermitions)
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
@@ -259,6 +260,7 @@ export default function ListaPedidos() {
         //     break;
         // }
         setInfoestado(resp.filter(row => row.estado == estado))
+        setEstado(estado)
       })
       .catch((error) => {
         console.log(error)
@@ -272,14 +274,16 @@ export default function ListaPedidos() {
     // console.log(input.value)
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos/' + input.value, params: {
+      url: 'produccion/getListaPedidos/' + input.value + ' ' + `${estado}`, params: {
         method: 'GET'
       }
     })
       .then(resp => {
         setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp.filter(row => row.orden_ref.toLowerCase().includes(input.value.toLowerCase())))
+        setInfoestado(resp)
+        // setInfoestado(resp.filter(row => row.estado == estado))
+        // setInfoestado(resp.filter(row => row.orden_ref.toLowerCase().includes(input.value.toLowerCase())))
       })
       .catch((error) => {
         console.log(error)

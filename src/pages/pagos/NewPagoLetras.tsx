@@ -32,36 +32,61 @@ export default function NewPagoLetra(){
       toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
       return
     }
-    openModal({
-      open: true,
-      header: false,
-      controls: true,
-      content: <div>Desea continuar con el registro pago ingresado?</div>,
-      action: async () => {
-        setOpenloader(true)
-        const data = new FormData()
-        urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
-        data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
 
-        await Consulta({url: 'abonos/saveabonoLetra',params:{
-          method:'PUT',
-          body:data
-        }})
-        .then(resp => {
-          setOpenloader(false)
-          // navigate('/main/pagos/')
-          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
-        })
-        .catch((err)=>{
-          setOpenloader(false)
-          // toast.error('Se produjo un error!!', { theme: "colored" })
-        })
-        .finally(()=>{
-          setOpenloader(false)
-        })
-      }
+    let data = Object.fromEntries(new FormData(form.current))
+    // console.log("Data array del formulario de abono:",data)
+    new Promise((resolve, reject) => {
+      Object.keys(data).forEach((item)=>{
+        if(['cuenta_corriente','fec_pago','num_operacion','pago',].includes(item) && data[item] == ''){
+          reject(item)
+        }
+      })
+      resolve(1)
     })
+    .then(item=>{
+      openModal({
+        open: true,
+        header: false,
+        controls: true,
+        content: <div>Desea continuar con el registro pago ingresado?</div>,
+        action: async () => {
+          setOpenloader(true)
+          const data = new FormData()
+          urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
+          data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
+          data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
+  
+          await Consulta({url: 'abonos/saveabonoLetra',params:{
+            method:'PUT',
+            body:data
+          }})
+          .then(resp => {
+            console.log("RESPUES DEL PROCESO DE PAGO :",resp)
+            if(resp.ok){
+              console.log('Registro,',resp)
+              setOpenloader(false)
+              // navigate('/main/pagos/')
+              toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+            }else{
+              throw Error(resp.message)
+              // return Promise.reject("error") 
+            }
+          })
+          .catch((err)=>{
+            setOpenloader(false)
+            toast.error(err.message, { theme: "colored" })
+          })
+          .finally(()=>{
+            setOpenloader(false)
+          })
+        }
+      })
+
+    })
+    .catch(item=>{
+      toast.error(`El campo ${item} se encuentra vacio. Por favor verifique,`, { theme: "colored" })
+    })
+    
   }
   const onclick = (e) => {
     const action = e.target.dataset.action
@@ -359,11 +384,13 @@ export default function NewPagoLetra(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell">Id</th>
-                          <th className="lg:table-cell">Tipo</th>
+                          <th className="lg:table-cell">NroLetra</th>
+                          <th className="lg:table-cell">NroPedido</th>
+                          {/* <th className="lg:table-cell">Tipo</th> */}
                           <th className="lg:table-cell">OP</th>
                           <th className="lg:table-cell">FecEmision</th>
                           <th className="lg:table-cell">FecRetorno</th>
-                          <th className="lg:table-cell">TiempoProducción</th>
+                          {/* <th className="lg:table-cell">TiempoProducción</th> */}
                           <th className="lg:table-cell">FormaPago</th>
                           <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Despacho</th>
@@ -378,11 +405,13 @@ export default function NewPagoLetra(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${selected.find((item) => item.idx == row.idx) ? 'selected' : ''}`}>
                               <td className="text-center">{row.idx}</td>
-                              <td className="w-[150px]"><div className={`w-full text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                              <td className="text-center">{row.num_letra}</td>
+                              <td className="text-center">{row.idpedido}</td>
+                              {/* <td className="w-[150px]"><div className={`w-full text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td> */}
                               <td className="text-center"><strong>{row.orden_ref}</strong></td>
                               <td className="text-center">{row.fec_emision}</td>
                               <td className="text-center">{row.fec_retorno}</td>
-                              <td className="text-center">{row.tiempo_produccion}</td>
+                              {/* <td className="text-center">{row.tiempo_produccion}</td> */}
                               <td className="text-center">{row.forma_pago}</td>
                               <td className="text-center">{row.cantidad}</td>
                               <td className="text-center">{row.despacho}</td>

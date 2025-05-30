@@ -200,9 +200,13 @@ export default function NewPagoServicio(){
             body:data
           }})
           .then(resp => {
-            setOpenloader(false)
-            // navigate('/main/pagos/')
-            toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+            if(resp.ok){
+              setOpenloader(false)
+              // navigate('/main/pagos/')
+              toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+            }else{
+              toast.error(resp.message, { theme: "colored" })
+            }
           })
           .catch((err)=>{
             setOpenloader(false)

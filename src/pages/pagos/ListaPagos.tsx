@@ -57,8 +57,9 @@ export default function ListaPagos(){
                 }
               })
                 .then(resp => {
+                  console.log("Info del servicidor :",resp)
                   // setOrdenes(resp)
-                  toast.success('Despacho eliminado con éxito!', { theme: "colored" })
+                  toast.success('Abono de letra eliminado con éxito!', { theme: "colored" })
                   // setRefresh(true)
                   recargarinfo()
                   setOpenloader(false)

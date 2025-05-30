@@ -35,45 +35,59 @@ export default function NewPagoPrestamo(){
       toast.error('Debe seleccionar primero un servicio de la lista.', { theme: "colored" })
       return
     }
-    // console.log("Listando datos a enviar - cabecera:",JSON.stringify(Object.fromEntries(new FormData(form.current))))
-    // console.log("Listando datos a enviar - detalle:",JSON.stringify(Object.fromEntries(new FormData(form.current))))
 
-    openModal({
-      open: true,
-      header: false,
-      controls: true,
-      content: <div>Desea continuar con el registro del abono a cuota?</div>,
-      action: async () => {
-        setOpenloader(true)
-        const data = new FormData()
-        urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
-        data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',!urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
-
-        await Consulta({url: 'abonos/saveabonoPrestamo',params:{
-          method:'PUT',
-          body:data
-        }})
-        .then(resp => {
-          console.log("Respuesta del servidor miguel durante:",resp)
-          setOpenloader(false)
-          // navigate('/main/pagos/')
-          if(resp.ok){
-            toast.success('Estampado guardado con éxito!!', { theme: "colored" })
-          }else{
-            toast.error('La caja no se encuentra aperturada', { theme: "colored" })
-          }
-          
-        })
-        .catch((err)=>{
-          setOpenloader(false)
-        })
-        .finally(()=>{
-          setOpenloader(false)
-        })
-      }
+    let data = Object.fromEntries(new FormData(form.current))
+    new Promise((resolve, reject) => {
+      Object.keys(data).forEach((item)=>{
+        if(['cuenta_corriente','fec_pago','num_operacion','pago',].includes(item) && data[item] == ''){
+          reject(item)
+        }
+      })
+      resolve(1)
+    })
+    .then((resp) => {
+      openModal({
+        open: true,
+        header: false,
+        controls: true,
+        content: <div>Desea continuar con el registro del abono a cuota?</div>,
+        action: async () => {
+          setOpenloader(true)
+          const data = new FormData()
+          urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
+          data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
+          data.append('detalle',!urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
+  
+          await Consulta({url: 'abonos/saveabonoPrestamo',params:{
+            method:'PUT',
+            body:data
+          }})
+          .then(resp => {
+            console.log("Respuesta del servidor miguel durante:",resp)
+            setOpenloader(false)
+            // navigate('/main/pagos/')
+            if(resp.ok){
+              toast.success('EL pago de letra de prestamo fue ejecutado con exito!!', { theme: "colored" })
+            }else{
+              toast.error('La caja no se encuentra aperturada', { theme: "colored" })
+            }
+            
+          })
+          .catch((err)=>{
+            setOpenloader(false)
+          })
+          .finally(()=>{
+            setOpenloader(false)
+          })
+        }
+      })
 
     })
+    .catch(item=>{
+      toast.error(`El campo ${item} se encuentra vacio. Por favor verifique,`, { theme: "colored" })
+    })
+
+    
 
   }
 
