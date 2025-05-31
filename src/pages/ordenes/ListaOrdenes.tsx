@@ -245,6 +245,7 @@ export default function ListaOrdenes() {
                   <tr>
                     {/* <th className="lg:table-cell">#</th> */}
                     <th className="lg:table-cell">OC</th>
+                    <th className="lg:table-cell">NroCorte</th>
                     <th className="lg:table-cell">Cliente</th>
                     <th className="lg:table-cell">Fecha Emision</th>
                     <th className="lg:table-cell">Fecha Entrega</th>
@@ -266,6 +267,7 @@ export default function ListaOrdenes() {
                         <tr key={key} className="">
                           {/* <td>{row.idx}</td> */}
                           <td>{row.oc}</td>
+                          <td>{row.numero_corte}</td>
                           <td><strong>{row.cliente}</strong></td>
                           <td>{row.fec_emitida}</td>
                           <td>{row.fec_entrega}</td>

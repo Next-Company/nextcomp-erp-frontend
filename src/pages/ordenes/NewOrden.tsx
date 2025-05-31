@@ -112,7 +112,7 @@ function FormFase({ position, info, setorden, setopen }) {
 
           {/* <Input name={'orden_pedido'} title="OrdenPedido" defaults={info.length > 0 ? info[0].orden_pedido : null} type="text" /> */}
 
-          <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
+          <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden" />
           <InputSelect title={'UsoStock'} name={"servicio"} data={
             [
               { indice: 0, option: 'NO', selected: true  },
