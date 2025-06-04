@@ -18,16 +18,18 @@ const colorfase = {
   'OJAL':'bg-blue-500',
   'CORTE':'bg-rose-400',
   'BORDADO':'bg-yellow-500',
-  'FINALIZADO':'bg-gray-400'
+  'FINALIZADO':'bg-gray-400',
+  'TRANSITO':'bg-black'
 }
 
 export default function ListaOrdenes() {
-  const [ordenes, setOrdenes] = useState([])
-  const [position, setPosition] = useState(0)
-  const [rango, setRango] = useState(30)
+  const [ ordenes, setOrdenes ] = useState([])
+  const [ position, setPosition ] = useState(0)
+  const [ rango, setRango ] = useState(30)
   const { logout, credentials } = useContext(AuthPermitions)
   const { openModal, config, setOpenloader, openloader } = useContext(ModalWindowContext)
   const [ refresh, setRefresh ] = useState(false)
+  const [ estado, setEstado ] = useState('EN PROCESO')
   const navigate = useNavigate()
 
   const onclick = (e) => {
@@ -88,54 +90,34 @@ export default function ListaOrdenes() {
   }
   const busqueda_search = async (e)=>{
     console.log('El comando presionado es :',e.code,'-',e.keyCode)
-    // if(e.code == 'Enter' || e.keyCode == 13){
-    if(1==1){
-      // let data = new FormData()
-      // if(e.target.value == ''){
-      //   data.append("params",'')
-      // }else{
-      //   data.append("params",JSON.stringify([{oc:e.target.value}]))
-      // }
-      setOpenloader(true)
-      // Consulta({
-      //   url: 'produccion/busqueda', params: {
-      //     method: 'POST',
-      //     body:data
-      //   }
-      // })
-      Consulta({
-        url: 'produccion/getordenes/' + e.value
-      })
-        .then(resp => {
-          console.log('Resultado de busqueda de orden:',resp)
-          setOrdenes(resp)
-          setOpenloader(false)
-        })
-        .catch((error) => {
-          console.log(error)
-          toast.error('Error en la consulta de base', { theme: "colored" })
-          // logout()
-        })
-        .finally(()=>{
-          console.log("Horror en la consulta de base de datos")
-          setOpenloader(false)
-        })
-    }
+    setOpenloader(true)
+    Consulta({
+      url: 'ordenes/getordenes/' + e.value + ` ${estado}`
+    })
+    .then(resp => {
+      console.log('Resultado de busqueda de orden:',resp)
+      setOrdenes(resp)
+      setOpenloader(false)
+    })
+    .catch((error) => {
+      console.log(error)
+      toast.error('Error en la consulta de base', { theme: "colored" })
+      // logout()
+    })
+    .finally(()=>{
+      console.log("Horror en la consulta de base de datos")
+      setOpenloader(false)
+    })
   }
 
   useEffect(() => {
     console.log("Empezando el primer rendeizado")
     setOpenloader(true)
-    Consulta({
-      url: 'ordenes', params: {
-        method: 'GET'
-      }
-    })
+    Consulta({url: 'ordenes/getordenes/' + ` ${estado}`})
       .then(resp => {
         console.log(resp)
         setOrdenes(resp)
         setOpenloader(false)
-        
       })
       .catch((error) => {
         console.log(error)
@@ -150,11 +132,7 @@ export default function ListaOrdenes() {
   useEffect(() => {
     if(refresh){
       setOpenloader(true)
-      Consulta({
-        url: 'ordenes', params: {
-          method: 'GET'
-        }
-      })
+      Consulta({url: 'ordenes/getordenes/' + ` ${estado}`})
         .then(resp => {
           setOrdenes(resp)
           setOpenloader(false)
@@ -173,52 +151,77 @@ export default function ListaOrdenes() {
   }, [refresh])
   const menu = useRef()
   const calculo = (e)=>{
-    const estado = e.target.dataset.estado
-    const data = new FormData()
-    data.append("params",JSON.stringify([{estado_orden:estado}]))
+    const estado_orden = e.target.dataset.estado
     if(!e.target.classList.contains('active')){
       for(const element of menu.current.querySelectorAll('button')){
         element.classList.remove('active')
       }
       e.target.classList.add("active")
     }
+    setEstado(estado)
     setOpenloader(true)
-      Consulta({
-        url: 'produccion/busqueda', params: {
-          method: 'POST',
-          body: data
-        }
-      })
-        .then(resp => {
-          setOrdenes(resp)
-          setOpenloader(false)
-          setRefresh(false)
-        })
-        .catch(() => {
-          console.log("error")
-          logout()
-          setOpenloader(false)
-        })
-        .finally(()=>{
-          setOpenloader(false)
-        })
+    Consulta({url: 'ordenes/getordenes/' + ` ${estado_orden}`})
+    .then(resp => {
+      setOrdenes(resp)
+      setOpenloader(false)
+      setRefresh(false)
+    })
+    .catch(() => {
+      console.log("error")
+      logout()
+      setOpenloader(false)
+    })
+    .finally(()=>{
+      setOpenloader(false)
+    })
   }
-  const moveback = ()=>{
-    if(position > 0){
-      setPosition(position=>position - 1)
-    }
-    console.log("Hacia atras : ",position)
-  }
-  const moveforward = ()=>{
-    if(position < Math.ceil(ordenes.length / rango) - 1){
-      setPosition(position=>position + 1)
-    }
-    console.log("Hacia adelante : ",position)
-  }
+  // const calculo_ = (e)=>{
+  //   const estado = e.target.dataset.estado
+  //   const data = new FormData()
+  //   data.append("params",JSON.stringify([{estado_orden:estado}]))
+  //   if(!e.target.classList.contains('active')){
+  //     for(const element of menu.current.querySelectorAll('button')){
+  //       element.classList.remove('active')
+  //     }
+  //     e.target.classList.add("active")
+  //   }
+  //   setOpenloader(true)
+  //     Consulta({
+  //       url: 'produccion/busqueda', params: {
+  //         method: 'POST',
+  //         body: data
+  //       }
+  //     })
+  //       .then(resp => {
+  //         setOrdenes(resp)
+  //         setOpenloader(false)
+  //         setRefresh(false)
+  //       })
+  //       .catch(() => {
+  //         console.log("error")
+  //         logout()
+  //         setOpenloader(false)
+  //       })
+  //       .finally(()=>{
+  //         setOpenloader(false)
+  //       })
+  // }
   const recargarinfo = ()=>{
     setPosition(0)
     setRefresh(true)
   }
+  // const moveback = ()=>{
+  //   if(position > 0){
+  //     setPosition(position=>position - 1)
+  //   }
+  //   console.log("Hacia atras : ",position)
+  // }
+  // const moveforward = ()=>{
+  //   if(position < Math.ceil(ordenes.length / rango) - 1){
+  //     setPosition(position=>position + 1)
+  //   }
+  //   console.log("Hacia adelante : ",position)
+  // }
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -237,19 +240,19 @@ export default function ListaOrdenes() {
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll">
             <div>
               <ul ref={menu} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="EN PROCESO" onClick={calculo}>
+                <button className={`group ${estado == 'EN PROCESO' && 'active'}`} data-estado="EN PROCESO" onClick={calculo}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Órdenes en proceso
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="FINALIZADO" onClick={calculo}>
+                <button className={`group ${estado == 'FINALIZADO' && 'active'}`} data-estado="FINALIZADO" onClick={calculo}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Órdenes finalizadas
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="ANULADO" onClick={calculo}>
+                <button className={`group ${estado == 'ANULADO' && 'active'}`} data-estado="ANULADO" onClick={calculo}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Órdenes anuladas
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -269,9 +272,9 @@ export default function ListaOrdenes() {
                     <th className="lg:table-cell">Fecha Entrega</th>
                     <th className="lg:table-cell">Marca</th>
                     <th className="lg:table-cell">Producto</th>
-                    {/* <th className="lg:table-cell">Base</th> */}
-                    {/* <th className="lg:table-cell">Precio</th> */}
                     <th className="lg:table-cell">Modelo</th>
+                    <th className="lg:table-cell">DiasProducción</th>
+                    <th className="lg:table-cell">DiasPendientes</th>
                     {/* <th className="lg:table-cell">Total</th> */}
                     <th className="lg:table-cell">FaseActual</th>
                     <th className="lg:table-cell text-center">Accciones</th>
@@ -286,17 +289,18 @@ export default function ListaOrdenes() {
                           {/* <td>{row.idx}</td> */}
                           <td>{row.oc}</td>
                           <td className="font-bold">{row.cliente}</td>
-                          <td>{row.fec_emitida}</td>
-                          <td>{row.fec_entrega}</td>
+                          <td>{row.fec_emitida_orden}</td>
+                          <td>{row.fec_entrega_orden}</td>
                           <td>{row.marca}</td>
                           <td>{row.producto}</td>
-                          {/* <td>{row.base}</td> */}
-                          {/* <td>{row.precio}</td> */}
                           <td>{row.modelos}</td>
+                          <td className="font-black">{row.dias_produccion}</td>
+                          <td className={`font-black ${row.dias_pendientes < 0 ? 'text-red-500' : 'text-black'}`}>{row.dias_pendientes}</td>
                           {/* <td><div onClick={()=>alert("HOla mudno")} className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td> */}
                           {/* <td><div onClick={()=>alert("HOla mudno")} className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td> */}
 
-                          <td onClick={()=>alert("HOla mudno")}><div className={`px-[5px] max-w-[180px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.estado_orden == 'FINALIZADO' ? 'FINALIZADO' : (row.status_servicio ? row.status_servicio : row.status)] ?? 'bg-gray-400'}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
+                          {/* <td onClick={()=>alert("HOla mudno")}><div className={`px-[5px] max-w-[180px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.estado_orden == 'FINALIZADO' ? 'FINALIZADO' : (row.status_servicio ? (row.status_servicio == '' ? 'TRANSITO' : row.status_servicio ) : row.status)] ?? 'bg-gray-400'}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td> */}
+                          <td onClick={()=>alert("HOla mudno")}><div className={`px-[5px] max-w-[180px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.estado_orden == 'FINALIZADO' ? 'FINALIZADO' : (row.nro_guias > 0 ? row.status_servicio : row.status)] ?? 'bg-gray-400'}`}>{row.nro_guias > 0 ? row.status_servicio : row.status}</div></td>
 
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
