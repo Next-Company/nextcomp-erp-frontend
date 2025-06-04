@@ -17,7 +17,7 @@ export default function StatusGeneral({id}){
   const [info,setInfo] = useState([])
   const contenedor = useRef()
   useEffect(()=>{
-    let action = async ()=>{
+    const action = async ()=>{
       setLoading(true)
       Consulta({url:'ordenes/getstatusgeneral/' + id,params:{
         method:'POST'
@@ -55,7 +55,7 @@ export default function StatusGeneral({id}){
                     <div className="w-[100px] h-[100px] rounded-full bg-orange-400 overflow-hidden">
                       <img src="https://jsjfact.com/facturador/imagenez/20522094120_pantalon_rubro.png" />
                     </div>
-                    <div>POLO - TRIPACK MAYO 2025</div>
+                    <div className="font-bold">{info[0][0].producto} {info[0][0].marca} {info[0][0].modelos}</div>
                   </div>
                   <div className="flex flex-row">
                     <div className="font-bold">#CORTE:</div>
@@ -78,7 +78,9 @@ export default function StatusGeneral({id}){
                     </div>
                   </div>
                 </div>
-                <h3>Info de la orden</h3>
+                <div className="mb-2">
+                  <h3>Historial de Servicios</h3>
+                </div>
               </div>
               <div className="overflow-y-auto h-[400px] scrollbar-special relative">
                 <div className="relative z-[10]">
@@ -89,36 +91,46 @@ export default function StatusGeneral({id}){
                     return <>
                       <div className="p-4 text-[12px] font-extrabold"><span className="bg-white p-[2px]">{key.split('-').reverse().join('/')}</span></div>
                       {
-                        info[1][key].map(item=><div className={`${colorfase[item.servicio]} text-white h-[160px] rounded-md p-3`}>
+                        info[1][key].map(item=><div className={`${colorfase[item.servicio]} text-white rounded-md p-3`}>
+                          <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
+                            <div className="text-[10px] w-[100px] text-left">{item.tiempo_produccion}</div>
+                            <div className="flex-1">{item.servicio}</div>
+                            <div className="text-[10px] w-[100px] text-right">{item.estado}</div>
+                            {/* <div className="flex flex-col items-center justify-center">
+                            </div> */}
+                          </div>
                           <div className="flex flex-row justify-between">
                             <div className="flex flex-col items-center">
-                              <div className="text-[10px] font-bold">Titulo</div>
-                              <div className="text-[16px]">contenido</div>
+                              <div className="text-[10px] font-bold">Proveedor</div>
+                              <div className="text-[14px] font-bold">{item.proveedor}</div>
                             </div>
                             <div className="flex flex-col items-center">
-                              <div className="text-[10px] font-bold">Titulo</div>
-                              <div className="text-[16px]">contenido</div>
+                              <div className="text-[10px] font-bold">FecEmision</div>
+                              <div className="text-[14px] font-bold">{item.fec_emision_guia}</div>
                             </div>
                             <div className="flex flex-col items-center">
-                              <div className="text-[10px] font-bold">Titulo</div>
-                              <div className="text-[16px]">contenido</div>
+                              <div className="text-[10px] font-bold">FecRetorno</div>
+                              <div className="text-[14px] font-bold">{item.fec_retorno_guia}</div>
                             </div>
                             <div className="flex flex-col items-center">
-                              <div className="text-[10px] font-bold">Titulo</div>
-                              <div className="text-[16px]">contenido</div>
+                              <div className="text-[10px] font-bold">Costo</div>
+                              <div className="text-[14px] font-bold">{item.costo}</div>
                             </div>
                             <div className="flex flex-col items-center">
-                              <div className="text-[10px] font-bold">Titulo</div>
-                              <div className="text-[16px]">contenido</div>
+                              <div className="text-[10px] font-bold">Cantidad</div>
+                              <div className="text-[14px] font-bold">{item.cantidad_servicio}</div>
                             </div>
                             <div className="flex flex-col items-center">
-                              <div className="text-[10px] font-bold">Titulo</div>
-                              <div className="text-[16px]">contenido</div>
+                              <div className="text-[10px] font-bold">DiasPendiente</div>
+                              <div className={`text-[14px] font-bold ${parseInt(item.dias_pendientes) < 0 ? 'text-red-500' : 'text-white'}`}>{item.dias_pendientes}</div>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <div className="text-[10px] font-bold">Ingresos</div>
+                              <div className="text-[14px] font-bold">{item.ingresos}</div>
                             </div>
                             {/* {item.servicio} - {item.modelo} */}
                           </div>
                           <div>
-
                             <ul className="flex flex-row justify-end">
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} >
@@ -155,6 +167,9 @@ export default function StatusGeneral({id}){
                   :
                   <div></div>
                 }
+                  <div className="w-full h-[50px] top-0 flex flex-row justify-center z-0">
+                    <div className="border-[.5px] border-dashed border-gray-400"></div>
+                  </div>
                 </div>
                 <div className="absolute w-full h-full top-0 flex flex-row justify-center z-0">
                   <div className="border-[.5px] border-dashed border-gray-400"></div>
