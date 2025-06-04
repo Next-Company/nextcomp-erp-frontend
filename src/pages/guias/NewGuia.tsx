@@ -8,6 +8,7 @@ import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
+import Ordenes from "../../components/Common/Ordenes"
 
 const VentanaDescuentos = ({idguia,penalidadestipo,penalidades,setpenalidades})=>{
   const { openModal,setOpen } = useContext(ModalWindowContext)
@@ -245,6 +246,21 @@ export default function NewGuia(){
     }
     openModal(params_modal)
   }
+  const listaordenes = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Ordenes actions={(item)=>{
+        setInfo(info=>({...info,id_orden_CAB:item.idx,orden_ref:item.oc}))
+        setOpen(false)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openModal(params_modal)
+  }
   const opendescuentos = ()=>{
     let params_modal = null
     params_modal = {
@@ -284,7 +300,8 @@ export default function NewGuia(){
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" />
+                  <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" />
+                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} />
                   <InputSelect title={'Tipo'} name={"tipo"} data={
                     [
                       { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 

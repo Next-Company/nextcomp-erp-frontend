@@ -1,25 +1,39 @@
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { Search } from "../Atoms/Search/Search"
 import { Consulta } from "../../utils/utils"
+import { useNavigate } from "react-router-dom"
+import { AuthPermitions } from "../../contexts/contexts"
 
 const colorfase = {
-  'TELAS':'bg-orange-500',
-  'AVIOS':'bg-violet-500'
+  'ORDENES':'bg-green-500',
+  'CONFECCION':'bg-purple-500',
+  'ESTAMPADO':'bg-gray-500',
+  'ACABADOS':'bg-red-500',
+  'LAVANDERIA':'bg-green-500',
+  'MOLDES':'bg-orange-500',
+  'OJAL':'bg-blue-500',
+  'CORTE':'bg-rose-400',
+  'BORDADO':'bg-yellow-500',
 }
-export default function Pedidos(children){
+
+export default function Ordenes(children){
+  const { logout} = useContext(AuthPermitions)
   let {actions = ()=>{}} = children
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'produccion/getListaPedidos'})
+      await Consulta({url: 'produccion/'})
       .then(resp => {
-        console.log("La respuesta es:",resp)
-        setLista(resp.filter(row=>row.estado !== 'ANULADO'))
+        setLista(resp)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
       })
       .catch((err)=>{
+        // console.log("Mensaje de error es :",JSON.parse(err).statuscode == 401)
+        if(JSON.parse(err).statuscode == 401){
+          logout()
+        }
         // setOpenloader(false)
         // toast.error('Se produjo un error!!', { theme: "colored" })
       })
@@ -30,12 +44,11 @@ export default function Pedidos(children){
     buscarproveedor()
   },[])
   
-  const searchproveedor = (input)=>{
+  const searchordenes = (input)=>{
     // console.log("EL valor consultado es:",input.value)
-    // console.log("La ruta de consulta es :",'produccion/searchproveedor/'+input.value)  
+    // console.log("La ruta de consulta es :",'produccion/searchordenes/'+input.value)  
     const buscarproveedor = async ()=>{
-      // await Consulta({url: 'produccion/searchpedido/'+ (input.value == '' ? '_' : input.value )})
-      await Consulta({url: 'produccion/getListaPedidos/'+ input.value})
+      await Consulta({url: 'produccion/getordenes/'+ input.value})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)
@@ -55,10 +68,8 @@ export default function Pedidos(children){
   const onclick = (e)=>{
     let action = e.target.dataset.action ?? e.currentTarget.dataset.action
     let position = e.target.dataset.position ?? e.currentTarget.dataset.position
-    // console.log("La accion es la siguiente:",action)
     switch(action){
       case 'add':
-        // console.log("Agregando al proveedor",lista[e.target.dataset.position])
         actions(lista[position])
         break;
       default:
@@ -69,31 +80,34 @@ export default function Pedidos(children){
     <>
       <div className="flex flex-col mb-2">
         <div className="w-full mb-2">
-          <Search config={{ width: '100%' }} action={searchproveedor} />
+          <Search config={{ width: '100%' }} action={searchordenes} />
         </div>
         <div className="h-[500px] w-[1000px] scrollbar-special rounded-md overflow-y-scroll ">
-          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr:nth-child(n):hover]:bg-gray-300">
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
-                <th className="lg:table-cell">Id</th>
-                <th className="lg:table-cell">NroPedido</th>
-                {/* <th className="lg:table-cell">Tipo</th> */}
-                <th className="lg:table-cell">Proveedor</th>
-                <th className="lg:table-cell">FechaPedido</th>
-                <th className="lg:table-cell">FechaEntrega</th>
-                <th className="lg:table-cell">Acciones</th>
+                <th className="lg:table-cell">OC</th>
+                <th className="lg:table-cell">NroCorte</th>
+                <th className="lg:table-cell">Cliente</th>
+                <th className="lg:table-cell">Marca</th>
+                <th className="lg:table-cell">Producto</th>
+                <th className="lg:table-cell">Modelo</th>
+                {/* <th className="lg:table-cell">Total</th> */}
+                <th className="lg:table-cell">FaseActual</th>
+                {/* <th className="lg:table-cell text-center">Accciones</th> */}
               </tr>
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr onClick={onclick} data-position={key} data-action="add">
-                  <td>{row.idx}</td>
-                  <td>{row.orden_ref}</td>
-                  {/* <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td> */}
-                  <td>{row.proveedor}</td>
-                  <td>{row.fec_emision}</td>
-                  <td>{row.fec_retorno}</td>
-                  <td className="w-[250px]">
+                <tr key={key} data-position={key} data-action="add" onClick={onclick}>
+                  <td className="h-[50px]">{row.oc}</td>
+                  <td>{row.numero_corte}</td>
+                  <td><strong>{row.cliente}</strong></td>
+                  <td>{row.marca}</td>
+                  <td>{row.producto}</td>
+                  <td>{row.modelos}</td>
+                  <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
+                  {/* <td className="w-[250px]">
                     <ul className="flex flex-row justify-end">
                       <li>
                         <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete">
@@ -121,7 +135,7 @@ export default function Pedidos(children){
                         </div>
                       </li>
                     </ul>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

@@ -6,6 +6,7 @@ import { AuthPermitions } from "../../contexts/contexts";
 import { Consulta } from "../../utils/utils";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
+import StatusGeneral from "./StatusGeneral";
 
 const colorfase = {
   'ORDENES':'bg-green-500',
@@ -14,9 +15,10 @@ const colorfase = {
   'ACABADOS':'bg-red-500',
   'LAVANDERIA':'bg-green-500',
   'MOLDES':'bg-orange-500',
-  'OJAL BOTON':'bg-blue-500',
+  'OJAL':'bg-blue-500',
   'CORTE':'bg-rose-400',
   'BORDADO':'bg-yellow-500',
+  'FINALIZADO':'bg-gray-400'
 }
 
 export default function ListaOrdenes() {
@@ -66,26 +68,43 @@ export default function ListaOrdenes() {
       case 'edit':
         navigate("/main/ordenes/nuevo/"+ id)
         break;
+      case 'show':
+        // navigate("/main/ordenes/nuevo/"+ id)
+        // alert("Hola mudno como estamos")
+        openModal({
+          open: true,
+          header: false,
+          controls: true,
+          content: <StatusGeneral id={id} />,
+          action: async () => {
+          }
+        })
+
+        break;
     
       default:
         break;
     } 
   }
-  const busqueda_search = (e)=>{
+  const busqueda_search = async (e)=>{
     console.log('El comando presionado es :',e.code,'-',e.keyCode)
-    if(e.code == 'Enter' || e.keyCode == 13){
-      let data = new FormData()
-      if(e.target.value == ''){
-        data.append("params",'')
-      }else{
-        data.append("params",JSON.stringify([{oc:e.target.value}]))
-      }
+    // if(e.code == 'Enter' || e.keyCode == 13){
+    if(1==1){
+      // let data = new FormData()
+      // if(e.target.value == ''){
+      //   data.append("params",'')
+      // }else{
+      //   data.append("params",JSON.stringify([{oc:e.target.value}]))
+      // }
       setOpenloader(true)
+      // Consulta({
+      //   url: 'produccion/busqueda', params: {
+      //     method: 'POST',
+      //     body:data
+      //   }
+      // })
       Consulta({
-        url: 'produccion/busqueda', params: {
-          method: 'POST',
-          body:data
-        }
+        url: 'produccion/getordenes/' + e.value
       })
         .then(resp => {
           console.log('Resultado de busqueda de orden:',resp)
@@ -240,19 +259,18 @@ export default function ListaOrdenes() {
             </div>
             <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll">
-              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1s [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:nth-child(n):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1s [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     {/* <th className="lg:table-cell">#</th> */}
                     <th className="lg:table-cell">OC</th>
-                    <th className="lg:table-cell">NroCorte</th>
                     <th className="lg:table-cell">Cliente</th>
                     <th className="lg:table-cell">Fecha Emision</th>
                     <th className="lg:table-cell">Fecha Entrega</th>
                     <th className="lg:table-cell">Marca</th>
                     <th className="lg:table-cell">Producto</th>
-                    <th className="lg:table-cell">Base</th>
-                    <th className="lg:table-cell">Precio</th>
+                    {/* <th className="lg:table-cell">Base</th> */}
+                    {/* <th className="lg:table-cell">Precio</th> */}
                     <th className="lg:table-cell">Modelo</th>
                     {/* <th className="lg:table-cell">Total</th> */}
                     <th className="lg:table-cell">FaseActual</th>
@@ -267,16 +285,19 @@ export default function ListaOrdenes() {
                         <tr key={key} className="">
                           {/* <td>{row.idx}</td> */}
                           <td>{row.oc}</td>
-                          <td>{row.numero_corte}</td>
-                          <td><strong>{row.cliente}</strong></td>
+                          <td className="font-bold">{row.cliente}</td>
                           <td>{row.fec_emitida}</td>
                           <td>{row.fec_entrega}</td>
                           <td>{row.marca}</td>
                           <td>{row.producto}</td>
-                          <td>{row.base}</td>
-                          <td>{row.precio}</td>
+                          {/* <td>{row.base}</td> */}
+                          {/* <td>{row.precio}</td> */}
                           <td>{row.modelos}</td>
-                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
+                          {/* <td><div onClick={()=>alert("HOla mudno")} className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td> */}
+                          {/* <td><div onClick={()=>alert("HOla mudno")} className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td> */}
+
+                          <td onClick={()=>alert("HOla mudno")}><div className={`px-[5px] max-w-[180px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.estado_orden == 'FINALIZADO' ? 'FINALIZADO' : (row.status_servicio ? row.status_servicio : row.status)] ?? 'bg-gray-400'}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
+
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -290,7 +311,7 @@ export default function ListaOrdenes() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" onClick={() => { }}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="show" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>
@@ -314,7 +335,7 @@ export default function ListaOrdenes() {
                 </tbody>
                 <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
                   <tr>
-                    <td className="h-[45px] border-t border-t-gray-600 z-50" colSpan={11}>
+                    <td className="h-[45px] border-t border-t-gray-600 z-50" colSpan={12}>
                       <div className="flex flex-row justify-between items-center">
                         <div>
                           Showing 1 to 4 of 4 entries (filtered from 57 total entries)
@@ -343,6 +364,7 @@ export default function ListaOrdenes() {
 
           </div>
         </div>
+        {/* <div className="w-[200x] h-[60px] bg-slate-500 absolute bottom-4 left-4 z-40">Lista de observacione</div> */}
       </div>
 
     </>

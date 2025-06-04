@@ -25,7 +25,7 @@ const listTables = [
   'tbl2_fases_prod_bordado',
   'tbl2_fases_prod_acabados'
 ]
-function FormFase({ position, info, setorden, setopen }) {
+function FormFase({ position, info, setorden, setopen, form, tipopedido}) {
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   useEffect(()=>{
     console.log("Cargando informacion de detalle orden")
@@ -58,7 +58,7 @@ function FormFase({ position, info, setorden, setopen }) {
     params_modal = {
       open:true,
       content: <Proveedores actions={(item)=>{  
-        setorden(orden=>([{...orden,id_cliente_CAB:item.idx ,cliente:item.nom}]))
+        setorden(orden=>([{...orden,id_cliente_CAB:item.idx ,cliente:item.nom.substr(0,49)}]))
         setopen(false)
       }}/>,
       controls: true,
@@ -109,18 +109,33 @@ function FormFase({ position, info, setorden, setopen }) {
 
           <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" />
           <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" />
-
           {/* <Input name={'orden_pedido'} title="OrdenPedido" defaults={info.length > 0 ? info[0].orden_pedido : null} type="text" /> */}
-
-          <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden" />
-          <InputSelect title={'UsoStock'} name={"servicio"} data={
+          {/* <InputSelect title={'UsoStock'} name={"servicio"} data={
             [
               { indice: 0, option: 'NO', selected: true  },
               { indice: 1, option: 'SI' }
             ]} 
             df={Object.keys(info).length > 0 ? info.servicio : null} 
+          /> */}
+          <InputSelect title={'TipoPedido'} name={"modalidad_pedido"} formref={form} data={
+            [
+              { indice: 'ORDN', option: 'ORDEN', selected: true  },
+              { indice: 'STK', option: 'STOCK PROPIO' }
+            ]} 
+            df={Object.keys(info).length > 0 ? info.modalidad_pedido : null} 
           />
-          <Input name={'nro_pedido_origen'} title={'OrdenPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
+          {
+            tipopedido
+            ?
+            <>
+              <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden" />
+              <Input name={'nro_pedido_origen'} title={'NroPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
+            </>
+            :
+            <>
+              <Input name={'nro_pedido_adi'} title={'DocReferencia'} defaults={info.length > 0 ? info[0].nro_pedido_adi : null} type="text" />
+            </>
+          }
         </div>
         <div className="flex gap-3">
           <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" />
@@ -271,6 +286,7 @@ export function NewOrden() {
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const [orden, setOrden] = useState([])
   const [position, setPosition] = useState(0)
+  const [tipopedido,setTipopedido] = useState(1)
   const navigate = useNavigate()
 
   const onsubmit = async (e) => {
@@ -307,14 +323,21 @@ export function NewOrden() {
   }
 
   useEffect(()=>{
+    const handleSalamandra = (event) => {
+      // console.log("asdfdsfasfd:",event.detail)
+      setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
+    };
+    form.current.addEventListener("salamandra", handleSalamandra);
+
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/' + urlparams.id,})
+        await Consulta({url: 'produccion/getordenesbyid/' + urlparams.id,})
           .then(resp => {
             // console.log(resp)
             // setOpenloader(false)
             setOrden(resp)
+            setTipopedido(resp[0].modalidad_pedido == 'ORDN' ? 1 : 0)
             console.log("Opportynity never die!!!!",resp)
           })
           .catch((err)=>{
@@ -417,7 +440,7 @@ export function NewOrden() {
             </ul>
             <hr />
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden">
-              <FormFase position={position} info={orden} setorden={setOrden} setopen={setOpen} />
+              <FormFase position={position} info={orden} setorden={setOrden} setopen={setOpen} form={form} tipopedido={tipopedido} />
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/ordenes/')} type={'button'} tipo={'default'}>Cancelar</Button>
                 {/* <Button action={() => printpedido()} type={'button'} tipo={'default'}>Print</Button> */}
