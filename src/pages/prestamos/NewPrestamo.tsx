@@ -16,7 +16,8 @@ const colorfase = {
 }
 export default function NewPrestamo() {
   const urlparams = useParams()
-  const [info, setInfo] = useState({ idx: null, id_proveedor_CAB: null, proveedor: null, fec_emision: null, fec_vencimiento: null, num_letra: null, documentos_ref: null, importe: null, estado: 'EMIT', origen: 'SERVICIO' })
+  // const [info, setInfo] = useState({ idx: null, id_proveedor_CAB: null, proveedor: null, fec_emision: null, fec_vencimiento: null, num_letra: null, documentos_ref: null, importe: null, estado: 'EMIT', origen: 'SERVICIO' })
+  const [info, setInfo] = useState({})
   const [origen, setOrigen] = useState('SERVICIO')
   const [registros, setRegistros] = useState([])
   const [selected, setSelected] = useState([])
@@ -63,6 +64,19 @@ export default function NewPrestamo() {
     })
   }
   const onkeyup = (e) => {
+    // console.log("Hla mundo comoe staso",e.target.name)
+    let calculado = 0
+    Object.keys(info).forEach((field)=>{
+      if(!['monto_capital','monto_intereses'].includes(field) && e.target.name !== field){
+        calculado += parseFloat(info[field] ?? 0)
+      }
+    })
+
+    if(['monto_capital','monto_intereses'].includes(e.target.name)){
+      setInfo({ ...info, [e.target.name]: parseFloat(e.target.value), monto_prestamo:calculado + parseFloat(e.target.value) })
+    }
+    console.log("asdfasdfjlas",info)
+
     if (e.target.matches("input[name='importe']")) {
       // console.log("ELementeto disparado:",e.target.value,parseFloat(e.target.value))
       setInfo({ ...info, importe: parseFloat(e.target.value) || 0 })

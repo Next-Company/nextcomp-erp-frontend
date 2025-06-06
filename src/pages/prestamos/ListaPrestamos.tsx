@@ -355,9 +355,24 @@ export default function ListaPrestamos() {
                           <td>{row.numero_cuotas}</td>
                           <td>{row.fec_solicitud}</td>
                           <td>{''}</td>
-                          <td>{row.monto_prestamo}</td>
-                          <td>{row.abono}</td>
-                          <td>{(row.monto_prestamo - row.abono).toFixed(2)}</td>
+                          <td className="font-extrabold">{row.monto_prestamo.toLocaleString('es-PE', {
+                            style: 'currency',
+                            currency: row.moneda,
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2  
+                          })}</td>
+                          <td className="font-extrabold">{row.abono.toLocaleString('es-PE', {
+                            style: 'currency',
+                            currency: row.moneda,
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2  
+                          })}</td>
+                          <td className="font-extrabold">{(row.monto_prestamo - row.abono).toLocaleString('es-PE', {
+                            style: 'currency',
+                            currency: row.moneda,
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2  
+                          })}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>

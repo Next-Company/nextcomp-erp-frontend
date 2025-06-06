@@ -33,8 +33,11 @@ export default function ListaOrdenes() {
   const navigate = useNavigate()
 
   const onclick = (e) => {
-    const action = e.target.dataset.action
-    const id = e.target.dataset.id
+    console.log("el culpable ",e.target,e.currentTarget)
+
+    const action = e.target.dataset.action ?? e.currentTarget.dataset.action
+    const id = e.target.dataset.id ?? e.currentTarget.dataset.id
+
     let params_modal = null
     switch (action) {
       case 'delete':
@@ -262,10 +265,9 @@ export default function ListaOrdenes() {
             </div>
             <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll">
-              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:nth-child(n):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1s [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:nth-child(n):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1s [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr:hover_td_div.stages]:scale-[1.2] [&_tbody_tr:hover_td_div.stages]:translate-x-[50px]">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
-                    {/* <th className="lg:table-cell">#</th> */}
                     <th className="lg:table-cell">OC</th>
                     <th className="lg:table-cell">Cliente</th>
                     <th className="lg:table-cell">Fecha Emision</th>
@@ -275,7 +277,6 @@ export default function ListaOrdenes() {
                     <th className="lg:table-cell">Modelo</th>
                     <th className="lg:table-cell">DiasProducción</th>
                     <th className="lg:table-cell">DiasPendientes</th>
-                    {/* <th className="lg:table-cell">Total</th> */}
                     <th className="lg:table-cell">FaseActual</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
@@ -285,10 +286,10 @@ export default function ListaOrdenes() {
                     ordenes.length > 0
                       // ? ordenes.filter((row,key)=>key > rango*position && key <= rango*(position+1)).map((row, key) => (
                       ? ordenes.map((row, key) => (
-                        <tr key={key} className="">
+                        <tr key={key} data-action="show" onClick={onclick} data-id={row.idx} className="hover">
                           {/* <td>{row.idx}</td> */}
                           <td>{row.oc}</td>
-                          <td className="font-bold">{row.cliente}</td>
+                          <td className="font-bold">{row.cliente.substr(0,30)}</td>
                           <td>{row.fec_emitida_orden}</td>
                           <td>{row.fec_entrega_orden}</td>
                           <td>{row.marca}</td>
@@ -296,13 +297,28 @@ export default function ListaOrdenes() {
                           <td>{row.modelos}</td>
                           <td className="font-black">{row.dias_produccion}</td>
                           <td className={`font-black ${row.dias_pendientes < 0 ? 'text-red-500' : 'text-black'}`}>{row.dias_pendientes}</td>
-                          {/* <td><div onClick={()=>alert("HOla mudno")} className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td> */}
-                          {/* <td><div onClick={()=>alert("HOla mudno")} className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td> */}
+                                            
+                          {/* <td onClick={()=>alert("HOla mudno")}>
+                            <div className={`px-[5px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.estado_orden == 'FINALIZADO' ? 'FINALIZADO' : (row.nro_guias > 0 ? row.status_servicio : row.status)] ?? 'bg-gray-400'} flex flex-row justify-center`}>
+                              {
+                                ['CONFECCION','ESTAMPADO','BORDADO','ESTAMPADO','LAVANDERIA','OJAL','ACABADOS'].map(item=><div className="border-[1px] border-black px-1">{item}</div>)
 
-                          {/* <td onClick={()=>alert("HOla mudno")}><div className={`px-[5px] max-w-[180px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.estado_orden == 'FINALIZADO' ? 'FINALIZADO' : (row.status_servicio ? (row.status_servicio == '' ? 'TRANSITO' : row.status_servicio ) : row.status)] ?? 'bg-gray-400'}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td> */}
-                          <td onClick={()=>alert("HOla mudno")}><div className={`px-[5px] max-w-[180px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.estado_orden == 'FINALIZADO' ? 'FINALIZADO' : (row.nro_guias > 0 ? row.status_servicio : row.status)] ?? 'bg-gray-400'}`}>{row.nro_guias > 0 ? row.status_servicio : row.status}</div></td>
+                              }
+                            </div>
+                          </td> */}
+                          <td>  
+                            {/* <div className={`text-black text-center text-[8px] flex flex-row [&_div]:border-gray-500 [&_div:nth-child(2n)]:border-x-[1px] [&_div:nth-child(2n)]:border-white border-[1px] border-black rounded-lg overflow-hidden hover:scale-[1.5] transition-all`}> */}
+                            <div className={`text-black text-center text-[10px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages`}>
+                              {
+                                // row.ruta_proceso && JSON.parse(row.ruta_proceso).map(item=><div className="px-2 flex-1 text-white bg-gray-400">{item}</div>)
+                                // row.ruta_final.map(item=><div className={`px-2 flex-1 text-white ${row.servicio == 'MOLDE' ? 'bg-[#c3c3c3]' : 'bg-gray-500'}`}>{item}</div>)
+                                row.ruta_test.map(item=><div className={`px-2 flex-1 pointer-events-none ${item.estado ? item.color + ' text-white' : 'bg-gray-200 text-gray-500'}`}>{item.fase}</div>)
 
-                          <td className="w-[250px]">
+                              }
+                            </div>
+                          </td>
+
+                          <td className="">
                             <ul className="flex flex-row justify-end">
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>

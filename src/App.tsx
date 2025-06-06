@@ -47,6 +47,9 @@ import NewPagoPrestamo from './pages/pagos/NewPagoPrestamos.tsx'
 import ListaOrdenes from './pages/ordenes/ListaOrdenes.tsx'
 import { NewOrden } from './pages/ordenes/NewOrden.tsx'
 import LayoutOrden from './pages/ordenes/LayoutOrden.tsx'
+import LayoutCobros from './pages/cobros/LayoutCobros.tsx'
+import ListaCobros from './pages/cobros/ListaCobros.tsx'
+import NewCobro from './pages/cobros/NewCobro.tsx'
 
 const routes = [
   {
@@ -128,20 +131,6 @@ const routes = [
         ]
       },
       {
-        path: "pagos",
-        element: <LayoutPagos />,
-        children: [
-          { path: "", element: <ListaPagos /> },
-          { path: "nuevopagoservicio/:id", element: <NewPagoServicio /> },
-          { path: "nuevopagoservicio/:id/:tipo", element: <NewPagoServicio /> },
-          { path: "nuevopagoletra/:id", element: <NewPagoLetra /> },
-          { path: "nuevopagoletra/:id/:tipo", element: <NewPagoLetra /> },
-          { path: "nuevopagoprestamo/:id", element: <NewPagoPrestamo /> },
-          { path: "nuevopagoprestamo/:id/:tipo", element: <NewPagoPrestamo /> },
-          // { path: "nuevo/:id/:altura", element: <NewPagoServicio/> },
-        ]
-      },
-      {
         path: "letras",
         element: <LayoutLetras />,
         children: [
@@ -158,6 +147,28 @@ const routes = [
           { path: "", element: <ListaPrestamos /> },
           { path: "nuevo", element: <NewPrestamo /> },
           { path: "nuevo/:id", element: <NewPrestamo /> },
+        ]
+      },
+      {
+        path: "pagos",
+        element: <LayoutPagos />,
+        children: [
+          { path: "", element: <ListaPagos /> },
+          { path: "nuevopagoservicio/:id", element: <NewPagoServicio /> },
+          { path: "nuevopagoservicio/:id/:tipo", element: <NewPagoServicio /> },
+          { path: "nuevopagoletra/:id", element: <NewPagoLetra /> },
+          { path: "nuevopagoletra/:id/:tipo", element: <NewPagoLetra /> },
+          { path: "nuevopagoprestamo/:id", element: <NewPagoPrestamo /> },
+          { path: "nuevopagoprestamo/:id/:tipo", element: <NewPagoPrestamo /> },
+          // { path: "nuevo/:id/:altura", element: <NewPagoServicio/> },
+        ]
+      },
+      {
+        path: "cobros",
+        element: <LayoutCobros />,
+        children: [
+          { path: "", element: <ListaCobros /> },
+          { path: "nuevocobro/:id", element: <NewCobro /> },
         ]
       },
       {

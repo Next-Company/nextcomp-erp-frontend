@@ -293,6 +293,22 @@ export function Sidenav() {
                 </div>
               </div>
             </NavLink>
+            <NavLink
+              to="cobros/"
+              className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? "active" : "default"
+              }
+            >
+              <div className="w-full h-[45px] flex flex-row justify-center items-center rounded-lg group/sub relative">
+
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-device-ipad-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v8" /><path d="M9 18h2" /><path d="M15 19l2 2l4 -4" /></svg>
+
+                <div className="absolute h-8 rounded-md bg-gray-800 text-white hidden items-center left-[55px] z-20 p-2 group-hover/sub:flex w-fit">
+                  <div className="absolute border-r-[6px] border-r-gray-800 border-b-[6px] border-b-transparent border-t-[6px] border-t-transparent left-[-5px]"></div>
+                  <div className="text-nowrap">Cuentas por cobrar</div>
+                </div>
+              </div>
+            </NavLink>
             {/* <NavLink
               to="caja/"
               className={({ isActive, isPending }) =>
