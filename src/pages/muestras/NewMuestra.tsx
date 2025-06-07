@@ -109,8 +109,9 @@ export default function NewMuestra(){
     let total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,value)=>{
       carry+=parseFloat(value[1]);
       return carry;
-    },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total.toFixed(2)}:item)])
+    },0) + (column !== 'articulo' ? parseFloat(e.target.value) : 0)
+    // setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total.toFixed(2)}:item)])
+    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
   }
 
   const nuevoproveedor = ()=>{
@@ -138,7 +139,7 @@ export default function NewMuestra(){
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Muestras /</h2>
+              <h2 className="font-medium text-[16px]">Muestra /</h2>
               <span className="text-blue-500 font-bold">
                 Nueva Muestra
                 {/* {

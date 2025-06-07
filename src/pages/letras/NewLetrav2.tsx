@@ -237,13 +237,18 @@ export default function NewLetraV2() {
                     ]}
                     df={Object.keys(info).length > 0 ? info.origen : null}
                   />
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                  <div className="w-[350px]">
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                  </div>
+                  <div className="w-[350px]">
+                    <Input name={'aceptante'} title="Aceptante" defaults={Object.keys(info).length > 0 ? info.aceptante : null} type="text" />
+                  </div>
                   {/* <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" /> */}
                   <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
                   <Input name={'fec_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_vencimiento : null} type="date" />
+                  <Input name={'num_letra'} title="NumeroLetra" defaults={Object.keys(info).length > 0 ? info.num_letra : null} type="text" />
                 </div>
                 <div className="flex flex-row gap-3">
-                  <Input name={'num_letra'} title="NumeroLetra" defaults={Object.keys(info).length > 0 ? info.num_letra : null} type="text" />
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
                       { indice: 'MN', option: 'SOLES', selected: true },

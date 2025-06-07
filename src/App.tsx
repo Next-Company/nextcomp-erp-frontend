@@ -168,7 +168,7 @@ const routes = [
         element: <LayoutCobros />,
         children: [
           { path: "", element: <ListaCobros /> },
-          { path: "nuevocobro/:id", element: <NewCobro /> },
+          { path: "nuevocobro/:id/:tipo", element: <NewCobro /> },
         ]
       },
       {

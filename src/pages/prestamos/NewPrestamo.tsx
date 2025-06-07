@@ -9,6 +9,7 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import { useNavigate, useParams } from "react-router-dom";
 import Facturas from "../../components/Common/Facturas";
+import Clientes from "../../components/Common/Clientes";
 
 const colorfase = {
   'TELAS': 'bg-orange-500',
@@ -22,15 +23,21 @@ export default function NewPrestamo() {
   const [registros, setRegistros] = useState([])
   const [selected, setSelected] = useState([])
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
+  const [moneda, setMoneda] = useState('SOLES')
   const form = useRef()
   const navigate = useNavigate()
 
   const onsubmit = (e) => {
     e.preventDefault()
-    // if(selected.length == 0){
-    //   toast.error(<div>No se han seleccionado facturas para continuar <br/>con el registro de la letra</div>, { theme: "colored" })
-    //   return 0
-    // }
+    const TOTAL_IMPORTE_CUOTAS = registros.reduce((carry,value)=>{
+      carry += parseFloat(value.monto_cuota)
+      return carry
+    },0)
+
+    if(TOTAL_IMPORTE_CUOTAS < parseFloat(info.monto_prestamo)){
+      toast.error('El importe total de cuotas no coincide con el monto total del prestamo.', { theme: "colored" })
+      return 0
+    }
     openModal({
       open: true,
       header: false,
@@ -50,7 +57,7 @@ export default function NewPrestamo() {
         })
           .then(resp => {
             setOpenloader(false)
-            // navigate('/main/prestamos/')
+            navigate('/main/prestamos/')
             toast.success('Estampado guardado con éxito!!', { theme: "colored" })
           })
           .catch((err) => {
@@ -62,25 +69,6 @@ export default function NewPrestamo() {
           })
       }
     })
-  }
-  const onkeyup = (e) => {
-    // console.log("Hla mundo comoe staso",e.target.name)
-    let calculado = 0
-    Object.keys(info).forEach((field)=>{
-      if(!['monto_capital','monto_intereses'].includes(field) && e.target.name !== field){
-        calculado += parseFloat(info[field] ?? 0)
-      }
-    })
-
-    if(['monto_capital','monto_intereses'].includes(e.target.name)){
-      setInfo({ ...info, [e.target.name]: parseFloat(e.target.value), monto_prestamo:calculado + parseFloat(e.target.value) })
-    }
-    console.log("asdfasdfjlas",info)
-
-    if (e.target.matches("input[name='importe']")) {
-      // console.log("ELementeto disparado:",e.target.value,parseFloat(e.target.value))
-      setInfo({ ...info, importe: parseFloat(e.target.value) || 0 })
-    }
   }
   const onclick = (e) => {
     const action = e.target.dataset.action
@@ -188,8 +176,9 @@ export default function NewPrestamo() {
     }
     const handleInputChange = (event) => {
       // setOrigen(event.detail.valor == 'PEDIDOS' ? 1 : ( event.detail.valor == 'SERVICIOS' ? 2 : 0 ))
-      console.log("El valor de origen es:", event.detail.valor)
-      setOrigen(event.detail.valor)
+      console.log("El valor de origen es:", event.detail)
+      // console.log("El valor de origen es:", event.detail.valor)
+      setMoneda(event.detail.valor)
     };
     form.current.addEventListener("salamandra", handleInputChange);
 
@@ -215,10 +204,54 @@ export default function NewPrestamo() {
     }
     openModal(params_modal)
   }
+  const nuevocliente = () => {
+    let params_modal = null
+    params_modal = {
+      open: true,
+      content: <Clientes actions={(item) => {
+        setOpen(false)
+        setInfo(info => ({ ...info, id_cliente_CAB: item.idx, cliente: item.nom }))
+        // setOpenloader(false)
+
+      }} />,
+      controls: true,
+      header: false,
+      action: () => {
+      }
+    }
+    openModal(params_modal)
+  }
   const nuevoregistro = () => {
+
+    let formatDate = (date)=>{
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const currentDate = new Date();
+    const formattedDate = formatDate(currentDate);
+    console.log(formattedDate); // Output: "2025-06-06" (based on current date)
+
     // console.log("Registros actuales :",registros)
     const new_cuota = registros.length > 0 ? registros.length + 1 : 1
-    setRegistros([...registros, { idx: null, nro_cuota: new_cuota, fec_vencimiento: 0, monto_cuota: 0, abono: 0, saldo: 0 }])
+    setRegistros([...registros, { idx: null, nro_cuota: new_cuota, fec_vencimiento: formatDate(new Date()), monto_cuota: 0, abono: 0, saldo: 0 }])
+  }
+  const onkeyup = (e) => {
+    if(['monto_intereses','monto_capital'].includes(e.target.name)){
+      let calculado = 0
+      if(e.target.name == 'monto_capital'){
+        calculado = parseFloat(info.monto_intereses ?? 0) + parseFloat(e.target.value)
+      }else{
+        calculado = parseFloat(info.monto_capital ?? 0) + parseFloat(e.target.value)
+      }
+      setInfo({ ...info, [e.target.name]: parseFloat(e.target.value), monto_prestamo:calculado })
+  
+      if (e.target.matches("input[name='importe']")) {
+        setInfo({ ...info, importe: parseFloat(e.target.value) || 0 })
+      }
+    }
   }
   const editvalue = (e) => {
     const column = e.target.dataset.name
@@ -243,21 +276,26 @@ export default function NewPrestamo() {
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex flex-row gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <InputSelect title={'TipoTasa'} formref={form} name={"tipo_tasa_interes"} data={
+                  
+                  <Input name={'tipo_tasa_interes'} defaults={'fija'} type="hidden" />
+                  {/* <InputSelect title={'TipoTasa'} formref={form} name={"tipo_tasa_interes"} data={
                     [
                       { indice: 'fija', option: 'FIJA', selected: true },
                       { indice: 'variable', option: 'VARIABLE' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.origen : null}
-                  />
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                  /> */}
+                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
+                  <Input name={'proveedor'} title="Acreedor(Prestamista)" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                  <Input name={'id_cliente_CAB'} defaults={Object.keys(info).length > 0 ? info.id_cliente_CAB : null} type="hidden" />
+                  <Input name={'cliente'} title="Deudor(Prestatario)" defaults={Object.keys(info).length > 0 ? info.cliente : null} type="text" action={nuevocliente} mode={'static'} />
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
                       { indice: 'PEN', option: 'SOLES', selected: true },
                       { indice: 'USD', option: 'DOLARES' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.moneda : null}
+                    formref={form}
                   />
                   {/* <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" /> */}
                   <Input name={'tcea'} title="TCEA" defaults={Object.keys(info).length > 0 ? info.tcea : null} type="text" />
@@ -282,7 +320,14 @@ export default function NewPrestamo() {
                   />
                 </div>
                 <div>
-                  <span>Artículos:</span>
+                  {/* <div className="flex justify-start items-center">
+                    <h2 className="font-medium text-[16px]">Prestamos /</h2>
+                    <span className="text-blue-500 font-bold">
+                      Nuevo prestamo
+                    </span>
+                  </div> */}
+                  {/* <span className="font-bold">Artículos:</span> */}
+                  <h2 className="font-medium text-[16px]">Artículos:</h2>
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-yellow-200">
                       <thead className="text-left sticky top-0 bg-white">
@@ -346,7 +391,7 @@ export default function NewPrestamo() {
                             return carry + parseFloat(value.monto_cuota)
                           }, 0).toLocaleString('es-PE', {
                             style: 'currency',
-                            currency: 'PEN',
+                            currency: moneda == 'SOLES' ? 'PEN' : 'USD',
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                           })}</td>
@@ -354,7 +399,7 @@ export default function NewPrestamo() {
                             return carry + parseFloat(value.abono)
                           }, 0).toLocaleString('es-PE', {
                             style: 'currency',
-                            currency: 'PEN',
+                            currency: moneda == 'SOLES' ? 'PEN' : 'USD',
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                           })}</td>
@@ -362,7 +407,7 @@ export default function NewPrestamo() {
                             return carry + parseFloat(value.monto_cuota) - parseFloat(value.abono)
                           }, 0).toLocaleString('es-PE', {
                             style: 'currency',
-                            currency: 'PEN',
+                            currency: moneda == 'SOLES' ? 'PEN' : 'USD',
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                           })}</td>

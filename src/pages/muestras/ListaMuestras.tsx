@@ -384,7 +384,7 @@ export default function ListaMuestras() {
                       ? infoestado.map((row, key) => (
                         <tr key={key} className="">
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
-                          <td><div className={`text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                          <td><div className={`text-white text-center text-[8px] px-3 rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor ? row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor : row.responsable}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>

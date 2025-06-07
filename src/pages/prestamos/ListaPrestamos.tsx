@@ -327,14 +327,14 @@ export default function ListaPrestamos() {
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">Proveedor</th>
+                    <th className="lg:table-cell">Acreedor</th>
+                    <th className="lg:table-cell">Deudor</th>
                     <th className="lg:table-cell">Moneda</th>
-                    <th className="lg:table-cell">TipoTasa</th>
                     <th className="lg:table-cell">TCEA</th>
                     <th className="lg:table-cell">PlazoPago</th>
                     <th className="lg:table-cell">NroCuotas</th>
                     <th className="lg:table-cell">FecSolicitud</th>
-                    <th className="lg:table-cell">FecProxVencimiento</th>
+                    {/* <th className="lg:table-cell">FecProxVencimiento</th> */}
                     <th className="lg:table-cell">MontoPrestamo</th>
                     <th className="lg:table-cell">Abono</th>
                     <th className="lg:table-cell">Saldo</th>
@@ -348,13 +348,13 @@ export default function ListaPrestamos() {
                         <tr key={key} className="">
                           <td>{row.idx}</td>
                           <td>{row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor}</td>
-                          <td>{row.moneda}</td>
-                          <td>{row.tipo_tasa_interes}</td>
+                          <td>{row.cliente}</td>
+                          <td className="font-extrabold">{row.moneda}</td>
                           <td>{row.tcea}</td>
                           <td>{row.plazo_pago}</td>
-                          <td>{row.numero_cuotas}</td>
-                          <td>{row.fec_solicitud}</td>
-                          <td>{''}</td>
+                          <td className="font-bold">{row.numero_cuotas}</td>
+                          <td>{row.fec_solicitud_prestamo}</td>
+                          {/* <td>{''}</td> */}
                           <td className="font-extrabold">{row.monto_prestamo.toLocaleString('es-PE', {
                             style: 'currency',
                             currency: row.moneda,
@@ -391,7 +391,7 @@ export default function ListaPrestamos() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="register" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="register" onClick={()=>{}} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-package-import"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12v9" /><path d="M12 12l-8 -4.5" /><path d="M22 18h-7" /><path d="M18 15l-3 3l3 3" /></svg>
                                 </div>
                               </li>
