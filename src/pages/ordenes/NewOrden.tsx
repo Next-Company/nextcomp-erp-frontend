@@ -308,7 +308,7 @@ export function NewOrden() {
         })
           .then(resp => {
             setOpenloader(false)
-            navigate("/main/ordenes/")
+            // navigate("/main/ordenes/")
             toast.success('Soporte guardado con éxito!!', { theme: "colored" })
           })
           .catch((err)=>{

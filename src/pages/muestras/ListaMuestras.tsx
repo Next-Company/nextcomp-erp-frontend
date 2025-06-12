@@ -9,9 +9,11 @@ import { toast } from "react-toastify";
 
 const colorfase = {
   'MUESTRA_PROTOTIPO': 'bg-purple-500',
-  'ACABADOS': 'bg-gray-500',
+  // 'ACABADOS': 'bg-gray-500',
   'REPARACION': 'bg-red-500',
-  'PRESTAMO': 'bg-green-500'
+  'PRESTAMO': 'bg-green-500',
+  'COMPLEMENTO': 'bg-amber-500',
+  'INTERNO': 'bg-cyan-500'
 }
 // const CuerpoInforme_ = ({ cuerpo }) => {
 //   return (

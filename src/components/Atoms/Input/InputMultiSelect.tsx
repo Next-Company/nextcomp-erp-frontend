@@ -29,7 +29,7 @@ export function InputMultiSelect({ title, name, data, df = null }) {
   }
   useEffect(()=>{
     console.log(JSON.parse(df)?.map(row=>row))
-      // setSelect(df ? JSON.parse(df).map(row => data.findIndex(ele=>ele.option == row)) : [])
+      setSelect(df ? JSON.parse(df).map(row => data.findIndex(ele=>ele.option == row)) : [])
   },[df])
 
   return (

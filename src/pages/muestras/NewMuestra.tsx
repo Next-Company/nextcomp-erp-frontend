@@ -161,9 +161,11 @@ export default function NewMuestra(){
                   <InputSelect title={'Tipo'} name={"tipo"} data={
                     [
                       { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true }, 
-                      { indice: 'ACABADOS', option: 'ACABADOS' },
+                      // { indice: 'ACABADOS', option: 'ACABADOS' },
                       { indice: 'REPARACION', option: 'REPARACION' },
                       { indice: 'PRESTAMO', option: 'PRESTAMO' },
+                      { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },
+                      { indice: 'INTERNO', option: 'INTERNO' }
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
