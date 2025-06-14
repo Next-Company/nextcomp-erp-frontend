@@ -284,6 +284,14 @@ export default function NewPagoServicio(){
         openModal(params_modal)
         break;
       case 'add':
+        const item = registros[position]
+        if(selected.find((row)=>row.idx == item.idx)){
+          setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.importe,0)) - parseFloat(item.importe)})
+          setSelected([...selected.filter(row=>row.idx !== item.idx)])
+        }else{
+          setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.importe,0)) + parseFloat(item.importe)})
+          setSelected([...selected,registros[position]])
+        }
         break;
       case 'discount':
         params_modal = {
@@ -681,7 +689,7 @@ export default function NewPagoServicio(){
                 <div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={() => navigate('/main/pagos/')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={() => navigate('/main/pagos?search=0')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>
               </div>
