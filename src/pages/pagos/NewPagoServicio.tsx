@@ -12,6 +12,7 @@ import { colorfase } from "../../utils/utils"
 import Pagos from "../../components/Common/Pagos"
 import Cuentas from "../../components/Common/Cuentas"
 import { isHtmlElement } from "react-router-dom/dist/dom"
+import ReviewEstampado from "../estampado/ReviewEstampado"
 
 const CuerpoFacturas = ({idguia,penalidades,setregistros,infopenalidades})=>{
   const { openModal } = useContext(ModalWindowContext)
@@ -174,9 +175,12 @@ export default function NewPagoServicio(){
     new Promise((resolve, reject) => {
       Object.keys(data).forEach((item)=>{
         if(['cuenta_corriente','fec_pago','num_operacion','pago',].includes(item) && data[item] == ''){
-          reject(item)
+          reject(`El campo ${item} se encuentra vacio. Por favor verifique.`)
         }
       })
+      console.log("Infomacion del filtros :",registros,registros.filter(row=>parseFloat(row.pago) > 0))
+      if(registros.filter(row=>row.pago > 0).length == 0) reject('No ha registrado ningun importe pago. Por favor verifique.')
+
       resolve(1)
     })
     .then((resp) => {
@@ -190,10 +194,8 @@ export default function NewPagoServicio(){
           const data = new FormData()
           urlparams.id && ( !urlparams.tipo && data.append('id',urlparams.id) )
           data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-          data.append('detalle',urlparams.id ? JSON.stringify(registros) : JSON.stringify(selected))
+          data.append('detalle',urlparams.id ? JSON.stringify(registros.filter(row=>parseFloat(row.pago) > 0)) : JSON.stringify(selected))
 
-          // console.log("Los datos a enviar son los siguientes:",registros)  
-          // console.log("Los datos a enviar son los siguientes:",info)  
           setOpenloader(true)
           await Consulta({url: 'abonos/saveabonoServicio/',params:{
             method:'PUT',
@@ -219,8 +221,8 @@ export default function NewPagoServicio(){
       })
 
     })
-    .catch((item) => {
-      toast.error(`El campo ${item} se encuentra vacio. Por favor verifique,`, { theme: "colored" })
+    .catch((msg) => {
+      toast.error(msg, { theme: "colored" })
     })
     
     // if(Object.fromEntries(new FormData(form.current))){
