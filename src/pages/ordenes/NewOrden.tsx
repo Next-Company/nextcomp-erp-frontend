@@ -190,7 +190,10 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido}) {
           <div className="flex-1 min-w-[300px]">
             <Input name={'acumulado'} defaults={0} title="Total" type="number" style={{pointerEvents:'none'}} />
           </div>
-          <div className="flex-1 min-w-[300px]">
+          <div className="flex-1 min-w-[300px] flex flex-row gap-3">
+            <div className="flex-1 min-w-[400px]">
+              <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={[{ indice: 'CORTE', option: 'CORTE'},{ indice: 'MOLDE', option: 'MOLDE'},{ indice: 'CONFECCION', option: 'CONFECCION' }, { indice: 'OJAL Y BOTON', option: 'OJAL Y BOTON' }, { indice: 'ESTAMPADO', option: 'ESTAMPADO' }, { indice: 'LAVANDERIA', option: 'LAVANDERIA' }, { indice: 'BORDADO', option: 'BORDADO' }, { indice: 'ACABADOS', option: 'ACABADOS' }]} df={info.length > 0 ? info[0].ruta_proceso : null} />
+            </div>
             <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
           </div>
         </div>
@@ -223,9 +226,9 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido}) {
           <div className="flex-1 min-w-[250px]">
             <Input name={'numero_corte'} defaults={info.length > 0 && info[0].numero_corte ? info[0].numero_corte : null} title="#HojaCorte" type="text" />
           </div>
-          <div className="flex-1 min-w-[350px]">
+          {/* <div className="flex-1 min-w-[350px]">
             <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={[{ indice: 'CORTE', option: 'CORTE'},{ indice: 'MOLDE', option: 'MOLDE'},{ indice: 'CONFECCION', option: 'CONFECCION' }, { indice: 'OJAL Y BOTON', option: 'OJAL Y BOTON' }, { indice: 'ESTAMPADO', option: 'ESTAMPADO' }, { indice: 'LAVANDERIA', option: 'LAVANDERIA' }, { indice: 'BORDADO', option: 'BORDADO' }, { indice: 'ACABADOS', option: 'ACABADOS' }]} df={info.length > 0 ? info[0].ruta_proceso : null} />
-          </div>
+          </div> */}
           <div className="flex-1 min-w-[200px]">
             <Input name={'combo1_corte'} defaults={info.length > 0 && info[0].combo1_corte ? info[0].combo1_corte : null} title="Combo1" type="number" />
           </div>
@@ -268,9 +271,12 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido}) {
           <div className="flex-1 min-w-[200px]">
             <Input name={'combo14_corte'} defaults={info.length > 0 && info[0].combo14_corte ? info[0].combo14_corte : null} title="Combo14" type="number" />
           </div>
-          <div className="flex-1 min-w-[200px]">
+          {/* <div className="flex-1 min-w-[200px]">
             <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_corte : null} />
-          </div>
+          </div> */}
+        </div>
+        <div>
+          <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_corte : null} />
         </div>
         <div>
           <TextArea title="Observaciones" name="observaciones_fase_corte" />
@@ -308,7 +314,7 @@ export function NewOrden() {
         })
           .then(resp => {
             setOpenloader(false)
-            // navigate("/main/ordenes/")
+            navigate("/main/ordenes/")
             toast.success('Soporte guardado con éxito!!', { theme: "colored" })
           })
           .catch((err)=>{
