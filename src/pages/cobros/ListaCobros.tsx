@@ -275,7 +275,12 @@ export default function ListaCobros(){
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2  
                               })}</td>
-                              <td className="font-black">S/.0</td>
+                              <td className="font-black">{row.cancelado.toLocaleString('es-PE', {
+                                style: 'currency',
+                                currency: 'PEN',
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2  
+                              })}</td>
                               <td className="font-black text-red-600">{row.tot_vta.toLocaleString('es-PE', {
                                 style: 'currency',
                                 currency: 'PEN',

@@ -50,6 +50,8 @@ import LayoutOrden from './pages/ordenes/LayoutOrden.tsx'
 import LayoutCobros from './pages/cobros/LayoutCobros.tsx'
 import ListaCobros from './pages/cobros/ListaCobros.tsx'
 import NewCobro from './pages/cobros/NewCobro.tsx'
+import LayoutCaja from './pages/caja/LayoutCaja.tsx'
+import InformeCaja from './pages/caja/InformeCaja.tsx'
 
 const routes = [
   {
@@ -169,6 +171,13 @@ const routes = [
         children: [
           { path: "", element: <ListaCobros /> },
           { path: "nuevocobro/:id/:tipo", element: <NewCobro /> },
+        ]
+      },
+      {
+        path: "caja",
+        element: <LayoutCaja />,
+        children: [
+          { path: "", element: <InformeCaja /> },
         ]
       },
       {

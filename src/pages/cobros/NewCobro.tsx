@@ -66,7 +66,7 @@ export default function NewCobro(){
             if(resp.ok){
               console.log('Registro,',resp)
               setOpenloader(false)
-              // navigate('/main/pagos/')
+              navigate('/main/cobros/')
               toast.success('Estampado guardado con éxito!!', { theme: "colored" })
             }else{
               throw Error(resp.message)
