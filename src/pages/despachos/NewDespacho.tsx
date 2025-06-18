@@ -35,11 +35,21 @@ export default function NewDespacho() {
 
   const onsubmit = (e) => {
     e.preventDefault()
-    if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
-      toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
-      return
+    if(registros.length > 0){
+      if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
+        toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
+        return 0
+      }
     }
     console.log("Los datos del formulario son:", registros)
+
+    for (const element of form.current.elements) {
+      if(['responsable','nro_guia'].includes(element.name) && element.value == ''){
+        toast.error(`El campo ${element.name} no ha sido completado. Por favor `, { theme: "colored" })
+        return 0
+      }
+    }
+
     openModal({
       open: true,
       header: false,
@@ -332,14 +342,7 @@ export default function NewDespacho() {
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
               <h2 className="font-medium text-[16px]">Ingresos /</h2>
-              <span className="text-blue-500 font-bold">
-                Nuevo Ingreso
-                {/* {
-                  urlparams.id && orden.length > 0
-                  ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
-                  : "Nueva Orden"
-                } */}
-              </span>
+              <span className="text-blue-500 font-bold">Nuevo Ingreso</span>
             </div>
             <hr />
           </div>
@@ -423,7 +426,7 @@ export default function NewDespacho() {
                                   <th className="lg:table-cell">XXL / 36</th>
                                   <th className="lg:table-cell">Cantidad</th>
                                   <th className="lg:table-cell">Saldo</th>
-                                  <th className="lg:table-cell">Despacho</th>
+                                  <th className="lg:table-cell">Ingreso</th>
                                   <th className="lg:table-cell">Caidos</th>
                                   <th className="lg:table-cell">Acciones</th>
                                 </>
@@ -435,7 +438,7 @@ export default function NewDespacho() {
                                   <th className="lg:table-cell">Cantidad</th>
                                   <th className="lg:table-cell">Unidad</th>
                                   <th className="lg:table-cell">Precio</th>
-                                  <th className="lg:table-cell">Despacho</th>
+                                  <th className="lg:table-cell">Ingreso</th>
                                   <th className="lg:table-cell">Acciones</th>
                                 </>
                             }

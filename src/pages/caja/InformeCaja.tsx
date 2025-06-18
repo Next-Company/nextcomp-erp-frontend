@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
-import { createHashRouter, useNavigate } from "react-router-dom";
+import { createHashRouter, Form, useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
@@ -23,7 +23,11 @@ export default function InformeCaja(){
   const [cajas,setCajas] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
-  // const [refresh,setRefresh] = useState(false)
+  const [ing,setIng] = useState(-1)
+  const [egre,setEgre] = useState(-1)
+  const [apertura,setApertura] = useState(0)
+  const [caja,setCaja] = useState(0)
+  const form = useRef()
 
   const onclick = (e) => {
     const action = e.target.dataset.action
@@ -75,11 +79,14 @@ export default function InformeCaja(){
   useEffect(()=>{
     const data = new FormData()
     setOpenloader(true)
-    Consulta({url: 'caja/' + '2025-06-17'})
+    Consulta({url: 'caja/0/' + (new Date()).toLocaleDateString().split('/').reverse().map((item,key)=>key > 0 ? ('00' + item).slice(-2) : item).join('-')})
     .then(resp => {
       setOpenloader(false)
       setCajas([...cajas,...resp.cajas])
       setMovimientos(resp.movimientos)
+      setApertura(resp.apertura)
+      console.log("Informe de los movimientos :",resp.movimientos)
+      console.log("Informe de los movimientos :",resp.apertura)
     })
     .catch((error) => {
       console.log(error)
@@ -87,12 +94,31 @@ export default function InformeCaja(){
     .finally(()=>{
       console.log("Horror en la consulta de base de datos")
     })
+    form.current.addEventListener('salamandra',(e)=>{
+      // console.log("El dato del evento:",e.detail)
+      setCaja(e.detail.indice)
+    })
   },[])
+
+  useEffect(()=>{
+    setOpenloader(true)
+    Consulta({url: 'caja/' + caja + '/' + (new Date()).toLocaleDateString().split('/').reverse().map((item,key)=>key > 0 ? ('00' + item).slice(-2) : item).join('-')})
+    .then(resp => {
+      setOpenloader(false)
+      setCajas([...cajas,...resp.cajas])
+      setMovimientos(resp.movimientos)
+      setApertura(resp.apertura)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(()=>{
+      console.log("Horror en la consulta de base de datos")
+    })
+  },[caja])
 
   const filtrarestado = (e)=>{
     const estado = e.target.dataset.estado
-
-    // setEstado(estado)
     setOpenloader(true)
     let url = undefined
     switch (parseInt(estado)) {
@@ -165,6 +191,24 @@ export default function InformeCaja(){
       })
   }
 
+  const onchange = (e)=>{
+    console.log("El objecto disparador es:",e.target)
+    setOpenloader(true)
+    Consulta({url: 'caja/' + caja + '/' + e.target.value})
+    .then(resp => {
+      setOpenloader(false)
+      setCajas([...cajas,...resp.cajas])
+      setMovimientos(resp.movimientos)
+      setApertura(resp.apertura)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(()=>{
+      console.log("Horror en la consulta de base de datos")
+    })
+  }
+
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -177,25 +221,98 @@ export default function InformeCaja(){
               </div>
             </div>
           </div>
-          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
+          <div className="mt-2">
             <hr />
-            <div className="flex gap-3 mt-2 mb-2">
+            <div className="mt-2 mb-2">
+              <form ref={form} className="w-full flex gap-2" onChange={onchange}>
               {
                 // cajas.length > 0 ? <InputSelect title={'Tipo Operación'} name={"tipo_operacion"} data={cajas.map((row,key)=>({indice:`${row.idx}`,option:row.nombre,selected:(key == 0 ? true : false)})) } df={Object.keys(info).length > 0 ? info.tipo_operacion : null} /> : <InputSelect title={'Tipo Operación'} name={"tipo_operacion"} data={[{indice:'',option:'',selected:true}]} df={Object.keys(info).length > 0 ? info.tipo_operacion : null} />
-                cajas.length > 0 && <InputSelect title={'Tipo Operación'} name={"tipo_operacion"} data={cajas.map((row,key)=>({indice:`${row.idx}`,option:row.nombre,selected:(key == 0 ? true : false)})) } df={Object.keys(info).length > 0 ? info.tipo_operacion : null} />
+                cajas.length > 0 && <InputSelect title={'Caja'} name={"nom_caja"} data={[{indice:'0',option:'TODOS',selected:true},...cajas.map((row,key)=>({indice:`${row.idx}`,option:row.nombre,selected:false}))] } df={null} formref={form} />
               }
-              <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" />
+              <Input name={'fec_operacion'} defaults={(new Date()).toLocaleDateString().split('/').reverse().map((item,key)=>key > 0 ? ('00' + item).slice(-2) : item).join('-')} title="FechaOperación" type="date" />
+              </form>
             </div>
+          </div>
+          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2 relative">
+            {/* ///////////////////////////////
+            SECCION RESUMEN DE MOVIMIENTOS
+            /////////////////////////////// */}
             <div>
+              {/* /////////////////////////
+              SECCION SALDO INICIAL
+              ///////////////////////////// */}
+              <ul className="list-none [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button]:w-full [&_button.active]:text-green-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-green-50">
+                <button className={`group ${estado == 0 ? 'active' : ''}`} data-estado={0}>
+                  <span className="relative h-[100%] w-full flex items-center pointer-events-none">
+                    Apertura
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-green-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+              </ul>
+              <div className={`flex-1 scrollbar-special overflow-y-scroll`}>
+                <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                  <tbody>
+                    <tr className="">
+                      <td className="font-bold" colSpan={6}></td>
+                      <td className="font-black">TOTAL:</td>
+                      <td className="font-black">0</td>
+                      <td className="font-black">0</td>
+                      <td className="font-black">
+                        {
+                          movimientos.length > 0 ? movimientos[0].saldo_inicial.toLocaleString('es-PE', {
+                            style: 'currency',
+                            currency: 'PEN',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2  
+                          }) : 0
+                        }
+                      </td> 
+                      <td className="w-[250px]">
+                        <ul className="flex flex-row justify-end">
+                          <li>
+                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={0} data-origen={estado ? 'abonos' : 'obligaciones'}>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={0}>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={0}>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={0}>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                            </div>
+                          </li>
+                        </ul>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              {/* /////////////////////////
+              SECCION MOVIMIENTOS INGRESOS
+              ///////////////////////////// */}
+              <hr />
               <ul className="list-none [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button]:w-full [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className={`group ${estado == 0 ? 'active' : ''}`} data-estado={0} onClick={filtrarestado}>
+                <button className={`group ${estado == 0 ? 'active' : ''}`} data-estado={0} onClick={()=>setIng(ing=>ing*-1)}>
                   <span className="relative h-[100%] w-full flex items-center pointer-events-none">
                     Ingresos
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
               </ul>
-              <div className="flex-1 scrollbar-special overflow-y-scroll">
+              <div id="cuerpo_ingresos" className={`flex-1 scrollbar-special overflow-y-scroll ${ing < 0 ? 'h-[0px]' : 'h-[250px]'} transition-all`}>
                 <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                   <thead className="text-left sticky top-0 bg-white">
                     <tr>
@@ -260,79 +377,80 @@ export default function InformeCaja(){
                         </ul>
                       </td>
                     </tr>
-
-
-                    <tr className="">
-                      <td className="font-bold" colSpan={6}></td>
-                      <td className="font-black">TOTAL INGRESOS:</td>
-                      <td className="font-black text-red-600">0</td>
-                      <td className="font-black text-red-600">0</td>
-                      <td className="font-black text-red-600">0</td> 
-                      <td className="w-[250px]">
-                        <ul className="flex flex-row justify-end">
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={0} data-origen={estado ? 'abonos' : 'obligaciones'}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={0}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={0}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={0}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                            </div>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-
+                    
                   </tbody>
-                  {/* <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
-                    <tr>
-                      <td className="h-[45px] border-t border-t-gray-600" colSpan={12}>
-                        <div className="flex flex-row justify-between items-center">
-                          <div>
-                            Showing 1 to 4 of 4 entries (filtered from 57 total entries)
-                          </div>
-                          <div className="flex flex-row justify-end items-center gap-2">
-                            <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">
-                              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-caret-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.883 5.007l.058 -.005h.118l.058 .005l.06 .009l.052 .01l.108 .032l.067 .027l.132 .07l.09 .065l.081 .073l.083 .094l.054 .077l.054 .096l.017 .036l.027 .067l.032 .108l.01 .053l.01 .06l.004 .057l.002 .059v12c0 .852 -.986 1.297 -1.623 .783l-.084 -.076l-6 -6a1 1 0 0 1 -.083 -1.32l.083 -.094l6 -6l.094 -.083l.077 -.054l.096 -.054l.036 -.017l.067 -.027l.108 -.032l.053 -.01l.06 -.01z" /></svg>
-                            </div>
-                            <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">
-                              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-caret-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6c0 -.852 .986 -1.297 1.623 -.783l.084 .076l6 6a1 1 0 0 1 .083 1.32l-.083 .094l-6 6l-.094 .083l-.077 .054l-.096 .054l-.036 .017l-.067 .027l-.108 .032l-.053 .01l-.06 .01l-.057 .004l-.059 .002l-.059 -.002l-.058 -.005l-.06 -.009l-.052 -.01l-.108 -.032l-.067 -.027l-.132 -.07l-.09 -.065l-.081 -.073l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057l-.002 -12.059z" /></svg>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tfoot> */}
                 </table>
               </div>
-
-
+              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                <tbody>
+                  <tr className="">
+                    <td className="font-bold" colSpan={6}></td>
+                    <td className="font-black">TOTAL:</td>
+                    <td className="font-black">
+                      {
+                        movimientos.filter(row=>row.monto > 0).length > 0 ? movimientos.filter(row=>row.monto > 0).reduce((carry,value)=>{return 0},0) : 0
+                      }
+                    </td>
+                    <td className="font-black">
+                      {
+                        movimientos.filter(row=>row.monto > 0).length > 0 ? movimientos.filter(row=>row.monto > 0).reduce((carry,value)=>{return 0},0) : 0
+                      }
+                    </td>
+                    <td className="font-black">
+                      {
+                        movimientos.filter(row=>row.monto > 0).length > 0 ? movimientos.filter(row=>row.monto > 0).reduce((carry,value)=>{carry += value.monto; return carry},0).toLocaleString('es-PE', {
+                          style: 'currency',
+                          currency: 'PEN',
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2  
+                        }) : 0
+                      }
+                    </td>
+                    <td className="w-[250px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={0} data-origen={estado ? 'abonos' : 'obligaciones'}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={0}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={0}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={0}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {/* /////////////////////////
+              SECCION MOVIMIENTOS EGRESOS
+              ///////////////////////////// */}
               <hr />
-              <ul className="list-none [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button]:w-full [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className={`group ${estado == 0 ? 'active' : ''}`} data-estado={0} onClick={filtrarestado}>
+              <ul className="list-none [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button]:w-full [&_button.active]:text-red-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-red-50">
+                <button className={`group ${estado == 0 ? 'active' : ''}`} data-estado={0} onClick={()=>setEgre(egre=>egre*-1)}>
                   <span className="relative h-[100%] w-full flex items-center pointer-events-none">
                     Egresos
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-red-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
               </ul>
-              <div className="flex-1 scrollbar-special overflow-y-scroll">
+              <div id="cuerpo_egresos" className={`flex-1 scrollbar-special overflow-y-scroll ${egre < 0 ? 'h-[0px]' : 'h-[250px]'} transition-all`}>
                 <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                   <thead className="text-left sticky top-0 bg-white">
                     <tr>
@@ -398,7 +516,7 @@ export default function InformeCaja(){
                       </td>
                     </tr>
 
-                    <tr className="">
+                    {/* <tr className="">
                       <td className="font-bold" colSpan={6}></td>
                       <td className="font-black">TOTAL EGRESOS:</td>
                       <td className="font-black text-red-600">0</td>
@@ -434,81 +552,9 @@ export default function InformeCaja(){
                         </ul>
                       </td>
                     </tr>
-                  </tbody>
-                  {/* <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
-                    <tr>
-                      <td className="h-[45px] border-t border-t-gray-600" colSpan={12}>
-                        <div className="flex flex-row justify-between items-center">
-                          <div>
-                            Showing 1 to 4 of 4 entries (filtered from 57 total entries)
-                          </div>
-                          <div className="flex flex-row justify-end items-center gap-2">
-                            <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">
-                              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-caret-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.883 5.007l.058 -.005h.118l.058 .005l.06 .009l.052 .01l.108 .032l.067 .027l.132 .07l.09 .065l.081 .073l.083 .094l.054 .077l.054 .096l.017 .036l.027 .067l.032 .108l.01 .053l.01 .06l.004 .057l.002 .059v12c0 .852 -.986 1.297 -1.623 .783l-.084 -.076l-6 -6a1 1 0 0 1 -.083 -1.32l.083 -.094l6 -6l.094 -.083l.077 -.054l.096 -.054l.036 -.017l.067 -.027l.108 -.032l.053 -.01l.06 -.01z" /></svg>
-                            </div>
-                            <div className="w-[30px] h-[30px] rounded-full bg-transparent hover:bg-gray-300 flex flez-row justify-center items-center cursor-pointer transition-all">
-                              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-caret-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6c0 -.852 .986 -1.297 1.623 -.783l.084 .076l6 6a1 1 0 0 1 .083 1.32l-.083 .094l-6 6l-.094 .083l-.077 .054l-.096 .054l-.036 .017l-.067 .027l-.108 .032l-.053 .01l-.06 .01l-.057 .004l-.059 .002l-.059 -.002l-.058 -.005l-.06 -.009l-.052 -.01l-.108 -.032l-.067 -.027l-.132 -.07l-.09 -.065l-.081 -.073l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057l-.002 -12.059z" /></svg>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tfoot> */}
-                </table>
-              </div>
-
-
-              <hr />
-              {/* <ul className="list-none [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button]:w-full [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className={`group ${estado == 0 ? 'active' : ''}`} data-estado={0} onClick={filtrarestado}>
-                  <span className="relative h-[100%] w-full flex items-center pointer-events-none">
-                    Resumen
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button>
-              </ul> */}
-              <div className="flex-1 scrollbar-special overflow-y-scroll">
-                <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
-                  <tbody>
                     <tr className="">
-                      <td className="font-bold w-[500px]" colSpan={5}></td>
-                      <td className="font-black">Total Ingresos :</td>
-                      <td className="font-black text-red-600">0</td>
-                      <td className="font-black text-red-600">0</td>
-                      <td className="font-black text-red-600">0</td> 
-                      <td className="w-[250px]">
-                        <ul className="flex flex-row justify-end">
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={0} data-origen={estado ? 'abonos' : 'obligaciones'}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={0}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={0}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={0}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                            </div>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-                    {/* <tr className="">
-                      <td className="font-bold" colSpan={5}></td>
-                      <td className="font-black">Total Egresos :</td>
+                      <td className="font-bold" colSpan={6}></td>
+                      <td className="font-black">SALDO FINAL:</td>
                       <td className="font-black text-red-600">0</td>
                       <td className="font-black text-red-600">0</td>
                       <td className="font-black text-red-600">0</td> 
@@ -542,54 +588,129 @@ export default function InformeCaja(){
                         </ul>
                       </td>
                     </tr> */}
-                    <tr className="">
-                      <td className="font-bold" colSpan={5}></td>
-                      <td className="font-black">Saldo_final :</td>
-                      <td className="font-black text-red-600">0</td>
-                      <td className="font-black text-red-600">0</td>
-                      <td className="font-black text-red-600">0</td> 
-                      <td className="w-[250px]">
-                        <ul className="flex flex-row justify-end">
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={0} data-origen={estado ? 'abonos' : 'obligaciones'}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={0}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={0}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={0}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                            </div>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
+              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                <tbody>
+                  <tr className="">
+                    <td className="font-bold" colSpan={6}></td>
+                    <td className="font-black">TOTAL:</td>
+                    <td className="font-black">
+                      {
+                        movimientos.filter(row=>row.monto < 0).length > 0 ? movimientos.filter(row=>row.monto < 0).reduce((carry,value)=>{return 0},0) : 0
+                      }
+                    </td>
+                    <td className="font-black">
+                      {
+                        movimientos.filter(row=>row.monto < 0).length > 0 ? movimientos.filter(row=>row.monto < 0).reduce((carry,value)=>{return 0},0) : 0
+                      }
+                    </td>
+                    <td className="font-black">
+                      {
+                        movimientos.filter(row=>row.monto < 0).length > 0 ? movimientos.filter(row=>row.monto < 0).reduce((carry,value)=>{carry += value.monto; return carry},0).toLocaleString('es-PE', {
+                          style: 'currency',
+                          currency: 'PEN',
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2  
+                        }) : 0
+                      }
+                    </td>
+                    <td className="w-[250px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={0} data-origen={estado ? 'abonos' : 'obligaciones'}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={0}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={0}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={0}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <hr />
-            <div className="flex flex-row justify-end mt-2">
-              <div className="flex gap-2">
-                <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                {/* <Button action={nuevoabono} tipo={'accept'}>Nuevo</Button> */}
-              </div>
-            </div >
+            <div className="h-[50px] bg-blue-300 sticky bottom-0">
+              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                <tbody>
+                  <tr className="">
+                    <td className="font-bold" colSpan={6}></td>
+                    <td className="font-black">SALDO FINAL:</td>
+                    <td className="font-black text-red-600">
+                      {
+                        movimientos.length > 0 ? movimientos.reduce((carry,value)=>{return 0},0) : 0
+                      }
+                    </td>
+                    <td className="font-black text-red-600">
+                      {
+                        movimientos.length > 0 ? movimientos.reduce((carry,value)=>{return 0},0) : 0
+                      }
+                    </td>
+                    <td className="font-black text-red-600">
+                      {
+                        movimientos.length > 0 ? (movimientos[0].saldo_inicial + movimientos.reduce((carry,value)=>{carry += parseFloat(value.monto); return carry},0)).toFixed(2) : 0
+                      }
+                    </td>
+                    <td className="w-[250px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={0} data-origen={estado ? 'abonos' : 'obligaciones'}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={0}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={0}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={0}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
+          <hr />
+          <div className="flex flex-row justify-end mt-2">
+            
+            <div className="flex gap-2">
+              <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
+            </div>
+          </div >
         </div>
       </div>
     </>

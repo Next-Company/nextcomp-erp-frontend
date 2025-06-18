@@ -153,8 +153,8 @@ export default function NewMuestra(){
           </div>
           <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
 
-            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} >
-              <div className={` flex-col gap-3 flex`}>
+            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden h-full">
+              <div className={` flex-col gap-3 flex flex-1 overflow-y-scroll scrollbar-special`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   {/* <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" /> */}

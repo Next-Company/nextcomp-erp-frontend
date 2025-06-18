@@ -313,12 +313,17 @@ export function NewOrden() {
           }
         })
           .then(resp => {
-            setOpenloader(false)
-            navigate("/main/ordenes/")
-            toast.success('Soporte guardado con éxito!!', { theme: "colored" })
+            console.log("Pedro picapiedra :",resp)
+            if(resp.ok){
+              // setOpenloader(false)
+              // navigate("/main/ordenes/")
+              toast.success('Soporte guardado con éxito!!', { theme: "colored" })
+            }else{
+              toast.error(resp.mensaje, { theme: "colored" })
+            }
           })
           .catch((err)=>{
-            setOpenloader(false)
+            // setOpenloader(false)
             toast.error('Se produjo un error!!', { theme: "colored" })
           })
           .finally(()=>{

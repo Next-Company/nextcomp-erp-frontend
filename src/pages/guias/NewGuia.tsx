@@ -140,6 +140,12 @@ export default function NewGuia(){
     e.preventDefault()
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
     console.log("El de talle de fracciones :",registros)
+    for (const element of form.current.elements) {
+      if(element.name == 'id_orden_CAB' && element.value == ''){
+        toast.error('Debe vincular primero la guia a una orden de producción. Por favor verifique.', { theme: "colored" })
+        return 0
+      }
+    }
     openModal({
       open: true,
       header: false,
@@ -279,25 +285,19 @@ export default function NewGuia(){
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
-        <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
+        <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-[500px]">
+
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
               <h2 className="font-medium text-[16px]">Guias /</h2>
-              <span className="text-blue-500 font-bold">
-                Nueva guia
-                {/* {
-                  urlparams.id && orden.length > 0
-                  ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
-                  : "Nueva Orden"
-                } */}
-              </span>
+              <span className="text-blue-500 font-bold">Nueva guia</span>
             </div>
             <hr />
           </div>
-          <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
 
-            <form ref={form} onSubmit={onsubmit}>
-              <div className={` flex-col gap-3 flex`}>
+          <div className="text-left  h-full flex flex-col flex-1 pt-2 overflow-hidden">
+            <form ref={form} onSubmit={onsubmit} className="overflow-y-scroll scrollbar-special">
+              <div className={` flex-col gap-3 h-full flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" />
@@ -349,7 +349,7 @@ export default function NewGuia(){
                 </div>
                 <div>
                   <span>Artículos:</span>
-                  <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
+                  <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
@@ -428,25 +428,34 @@ export default function NewGuia(){
                 <div>
                   <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={4} />
                 </div>
-              </div>
-              <div className="flex justify-between gap-2 mt-2">
-                {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
-                <div>
-                  {
-                    urlparams.id && <>
-                      <Button type={'button'} tipo={'accept'} action={opendescuentos}>{`Configurar penalidades - Total: S/.${penalidades.length > 0 ? penalidades.reduce((carry,row)=>{carry += row.importe; return carry;},0).toFixed(2) : 0.00}`}</Button>
-                    </>                   
-                  }
+                <div className="flex justify-between gap-2 mt-2">
+                  {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
+                  <div>
+                    {
+                      urlparams.id && <>
+                        <Button type={'button'} tipo={'accept'} action={opendescuentos}>{`Configurar penalidades - Total: S/.${penalidades.length > 0 ? penalidades.reduce((carry,row)=>{carry += row.importe; return carry;},0).toFixed(2) : 0.00}`}</Button>
+                      </>                   
+                    }
+                  </div>
+                  <div className="flex flex-row gap-2">
+                    <Button action={() => navigate('/main/guias/')} type={'button'} tipo={'default'}>Cancelar</Button>
+                    <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                  </div>
+                  {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
                 </div>
-                <div className="flex flex-row gap-2">
-                  <Button action={() => navigate('/main/guias/')} type={'button'} tipo={'default'}>Cancelar</Button>
-                  <Button type={'submit'} tipo={'success'}>Guardar</Button>
-                </div>
-                {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
+
               </div>
+
+              
+              
             </form>
           </div>
+
+
+
+
         </div>
+
       </div>
     </>
   )
