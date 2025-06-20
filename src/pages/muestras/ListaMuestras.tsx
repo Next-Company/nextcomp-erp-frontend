@@ -329,7 +329,7 @@ export default function ListaMuestras() {
         <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Muestras</h2>
+              <h2 className="font-medium text-[16px]">Muestras y Complementos</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
               </div>

@@ -270,11 +270,12 @@ export default function ListaOrdenes() {
                   <tr>
                     <th className="lg:table-cell">OC</th>
                     <th className="lg:table-cell">Cliente</th>
-                    <th className="lg:table-cell">Fecha Emision</th>
-                    <th className="lg:table-cell">Fecha Entrega</th>
+                    <th className="lg:table-cell">FecEmision</th>
+                    <th className="lg:table-cell">FecComercial</th>
                     <th className="lg:table-cell">Marca</th>
                     <th className="lg:table-cell">Producto</th>
                     <th className="lg:table-cell">Modelo</th>
+                    <th className="lg:table-cell">Sugerido/Liquidación</th>
                     <th className="lg:table-cell">DiasProducción</th>
                     <th className="lg:table-cell">DiasPendientes</th>
                     <th className="lg:table-cell">FaseActual</th>
@@ -295,8 +296,9 @@ export default function ListaOrdenes() {
                           <td>{row.marca}</td>
                           <td>{row.producto}</td>
                           <td>{row.modelos}</td>
-                          <td className="font-black">{row.dias_produccion}</td>
-                          <td className={`font-black ${row.dias_pendientes < 0 ? 'text-red-500' : 'text-black'}`}>{row.dias_pendientes}</td>
+                          <td className={`font-black ${row.total_corte > 0 ? 'text-green-500' : 'text-red-500'}  text-center`}>{row.total_corte > 0 ? row.total_corte : row.total_orden}</td>
+                          <td className="font-black text-center">{row.dias_produccion}</td>
+                          <td className={`text-center font-black ${row.dias_pendientes < 0 ? 'text-red-500' : 'text-black'}`}>{row.dias_pendientes}</td>
                                             
                           {/* <td onClick={()=>alert("HOla mudno")}>
                             <div className={`px-[5px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.estado_orden == 'FINALIZADO' ? 'FINALIZADO' : (row.nro_guias > 0 ? row.status_servicio : row.status)] ?? 'bg-gray-400'} flex flex-row justify-center`}>
