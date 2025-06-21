@@ -296,7 +296,7 @@ export default function ListaOrdenes() {
                           <td>{row.marca}</td>
                           <td>{row.producto}</td>
                           <td>{row.modelos}</td>
-                          <td className={`font-black ${row.total_corte > 0 ? 'text-green-500' : 'text-red-500'}  text-center`}>{row.total_corte > 0 ? row.total_corte : row.total_orden}</td>
+                          <td className={`font-black ${row.total_corte > 0 ? 'text-blue-500' : 'text-green-500'}  text-center`}>{row.total_corte > 0 ? row.total_corte : row.total_orden}</td>
                           <td className="font-black text-center">{row.dias_produccion}</td>
                           <td className={`text-center font-black ${row.dias_pendientes < 0 ? 'text-red-500' : 'text-black'}`}>{row.dias_pendientes}</td>
                                             
@@ -314,7 +314,7 @@ export default function ListaOrdenes() {
                               {
                                 // row.ruta_proceso && JSON.parse(row.ruta_proceso).map(item=><div className="px-2 flex-1 text-white bg-gray-400">{item}</div>)
                                 // row.ruta_final.map(item=><div className={`px-2 flex-1 text-white ${row.servicio == 'MOLDE' ? 'bg-[#c3c3c3]' : 'bg-gray-500'}`}>{item}</div>)
-                                row.ruta_test.map(item=><div className={`px-2 flex flex-row flex-1 items-center justify-center pointer-events-none ${item.estado ? (item.pendiente ? (item.cadudo ? 'bg-red-500' : 'bg-amber-500') : item.color) + ' text-white' : 'bg-gray-200 text-gray-500'}`}>
+                                row.ruta_test.map(item=><div className={`px-2 flex flex-row flex-1 items-center justify-center pointer-events-none ${item.estado ? (item.pendiente ? (item.cadudo ? 'bg-red-500' : 'bg-amber-500') : item.color) + ' text-white' : 'bg-gray-200 text-gray-500'} text-nowrap`}>
                                   {item.fase}
                                   {/* {item.cadudo &&
                                   <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-exclamation-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 3.34a10 10 0 1 1 -15 8.66l.005 -.324a10 10 0 0 1 14.995 -8.336m-5 11.66a1 1 0 0 0 -1 1v.01a1 1 0 0 0 2 0v-.01a1 1 0 0 0 -1 -1m0 -7a1 1 0 0 0 -1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0 -1 -1" /></svg>

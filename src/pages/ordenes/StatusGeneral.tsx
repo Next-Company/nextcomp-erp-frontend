@@ -19,6 +19,8 @@ export default function StatusGeneral({id}){
   const [openloader,setOpenloader] = useState(false)
   const contenedor = useRef()
   const [tabstate,setTabstate] = useState(true)
+  const [zoom,setZoom] = useState(false)
+  const imagemain = useRef(null)
 
   const onclick = (e) => {
     const action = e.target.dataset.action
@@ -80,23 +82,27 @@ export default function StatusGeneral({id}){
     }
     action()
   },[])
-  const changeimage = (e) => {
-    let target = e.currentTarget
-    let parent = target.parentElement.parentElement.parentElement.parentElement
-    let p_width = parseFloat(getComputedStyle(parent).width)
-    let p_height = parseFloat(getComputedStyle(parent).height)
-
-    console.log("info:",p_width, p_height)
-    // console.log("Parent element:",target.parentElement.parentElement.parentElement.parentElement)
-
-    // target.querySelector('img:nth-child(2)').classList.add(`scale-[2] translate-x-[${p_width/2}px] translate-y-[${-1*p_height/2}px]`)
-    // target.classList.add('scale-[2]',`translate-x-[${p_width/2}px]`,`translate-y-[${-1*p_height/2}px]`)
-    // target.classList.add('scale-[2]','translate-x-['+p_width+'px]')
-    // target.querySelector('img:nth-child(2)').classList.remove('hidden')
+  const zoomimage = (e) => {
+    imagemain.current.focus()
+    setZoom(!zoom)
+  }
+  const imageout = (e) => {
+    console.log("Saliendo de la imagen")
+    setZoom(!zoom)
+  }
+  const onerror = (e) => {
+    e.target.src = 'https://jsjfact.com/facturador/imagenez/op_166.png'
+    // e.target.classList.add('animate-pulse')
+    // setTimeout(() => {
+    //   e.target.classList.remove('animate-pulse')
+    // }, 1000)
   }
   return(
     <>
-      <div className="flex flex-col pb-4">
+      <div className="flex flex-col pb-4 relative">
+        <div ref={imagemain} onBlur={imageout} className={`absolute w-[600px] h-[600px] z-[100] rounded-full bg-slate-400 overflow-hidden flex flex-row items-center] transition-all ${zoom ? 'scale-100' : 'scale-50 opacity-0'}`} style={{left:'calc(50% - 300px)',top:'calc(50% - 300px)'}} tabIndex={-1}>
+          <img src={`https://jsjfact.com/facturador/imagenez/op_${id}.jpg`} onError={onerror}/>
+        </div>
         <div ref={contenedor} className="flex flex-col text-[12px] w-[1200px] pl-2 pr-2 focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black [&_input]:text-center [&_input]:p-[2px]">
           {
             loading
@@ -108,15 +114,9 @@ export default function StatusGeneral({id}){
               <div className="relative">
                 <div className="relative z-0">
                   <div className="flex flex-row justify-center items-center mb-2">
-                    {/* <div className="flex flex-row">
-                      <div className="font-bold">OC:</div>
-                      <div>234234</div>
-                    </div> */}
                     <div className="flex flex-row items-center gap-2 relative w-full">
-                      <div className="w-[100px] h-[100px] rounded-full bg-orange-400 overflow-hidden relative z-10 cursor-pointer hover:border-[2px] hover:border-blue-600 transition-all" onClick={changeimage}>
-                        {/* <img src="https://jsjfact.com/facturador/imagenez/20522094120_pantalon_rubro.png" /> */}
-                        {/* <img src="https://jsjfact.com/facturador/imagenez/20522094120_pantalon_rubro.png" className="absolute top-[10px] left-[10px]"/> */}
-                        <img src="https://jsjfact.com/facturador/imagenez/20522094120_pantalon_rubro.png"/>
+                      <div className="w-[100px] h-[100px] rounded-full bg-[#d1d1d1] overflow-hidden relative z-10 cursor-zoom-in hover:border-[2px] hover:border-blue-600 transition-all flex flex-row items-center" onClick={zoomimage}>
+                        <img src={`https://jsjfact.com/facturador/imagenez/op_${id}.jpg`} onError={onerror}/>
                       </div>
                       <div className="flex flex-row justify-between items-center flex-1">
                         <div className="flex flex-col justify-start relative z-10">
