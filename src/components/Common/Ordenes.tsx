@@ -14,6 +14,7 @@ const colorfase = {
   'OJAL':'bg-blue-500',
   'CORTE':'bg-rose-400',
   'BORDADO':'bg-yellow-500',
+  'TRANSITO':'bg-teal-500',
 }
 
 export default function Ordenes(children){
@@ -106,7 +107,7 @@ export default function Ordenes(children){
                   <td>{row.marca}</td>
                   <td>{row.producto}</td>
                   <td>{row.modelos}</td>
-                  <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status]}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
+                  <td><div className={`min-w-[40px] text-white text-center text-[8px] rounded-l-full text-nowrap px-2 rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status] ?? 'bg-gray-400'}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
                 </tr>
               ))}
             </tbody>

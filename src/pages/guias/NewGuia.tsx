@@ -138,6 +138,7 @@ export default function NewGuia(){
 
   const onsubmit = (e)=>{
     e.preventDefault()
+    console.log("Info guia:",Object.fromEntries(new FormData(form.current)))
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
     console.log("El de talle de fracciones :",registros)
     for (const element of form.current.elements) {
@@ -164,9 +165,14 @@ export default function NewGuia(){
           body:data
         }})
         .then(resp => {
+          console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          navigate('/main/guias/')
-          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          // navigate('/main/guias/')
+          if(resp.ok){
+            toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          }else{
+            toast.error(resp.message, { theme: "colored" })
+          }
         })
         .catch((err)=>{
           setOpenloader(false)
@@ -257,7 +263,7 @@ export default function NewGuia(){
     params_modal = {
       open:true,
       content: <Ordenes actions={(item)=>{
-        setInfo(info=>({...info,id_orden_CAB:item.idx,orden_ref:item.oc}))
+        setInfo(info=>({...info,id_orden_CAB:item.idx,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
         setOpen(false)
       }}/>,
       controls: true,

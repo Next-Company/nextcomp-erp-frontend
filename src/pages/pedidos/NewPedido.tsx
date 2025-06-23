@@ -60,7 +60,18 @@ export default function NewPedido(){
   const onsubmit = (e)=>{
     e.preventDefault()
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
+    
     console.log("El de talle de fracciones :",registros)
+
+    if(registros.length == 0){
+      toast.error('Debe ingresar al menos un artículo!!', { theme: "colored" })
+      return
+    }
+    if(registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0){
+      toast.error('Debe ingresar la cantidad y el precio del articulo.', { theme: "colored" })
+      return
+    }
+
     openModal({
       open: true,
       header: false,
@@ -114,17 +125,17 @@ export default function NewPedido(){
       }
       pp()
     }else{
-      setOpenloader(true)
-      Consulta({url: 'produccion/nuevopedido'})
-        .then(resp => {
-          console.log("Busqueda info pedido:",resp)
-          setInfo({...info,orden_ref: resp[0].correlativo})
-          setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
-          setOpenloader(false)
-        })
-        .catch((err)=>{
-          setOpenloader(false)
-        })
+      // setOpenloader(true)
+      // Consulta({url: 'produccion/nuevopedido'})
+      //   .then(resp => {
+      //     console.log("Busqueda info pedido:",resp)
+      //     setInfo({...info,orden_ref: resp[0].correlativo})
+      //     setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
+      //     setOpenloader(false)
+      //   })
+      //   .catch((err)=>{
+      //     setOpenloader(false)
+      //   })
     }
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
@@ -263,7 +274,7 @@ export default function NewPedido(){
 
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="text" />
+                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="hidden" />
                   <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" />
                   {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />

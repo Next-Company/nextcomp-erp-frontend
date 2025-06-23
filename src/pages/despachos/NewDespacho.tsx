@@ -236,6 +236,7 @@ export default function NewDespacho() {
         setOpen(false)
         Consulta({ url: 'produccion/guia/' + item.idx })
           .then(resp => {
+            // console.log("PPPDPDPDPDPDPDPPD:",resp)
             setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
             console.log("Los registros de la guia son:", resp[1])
             // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
@@ -425,6 +426,10 @@ export default function NewDespacho() {
                                   <th className="lg:table-cell">XL / 34</th>
                                   <th className="lg:table-cell">XXL / 36</th>
                                   <th className="lg:table-cell">Cantidad</th>
+                                  {
+                                    registros.length > 0 && registros[0].despachos.map((row) => <th className="lg:table-cell"><span className="font-extrabold">{row.fec_despacho}</span></th>)
+
+                                  }
                                   <th className="lg:table-cell">Saldo</th>
                                   <th className="lg:table-cell">Ingreso</th>
                                   <th className="lg:table-cell">Caidos</th>
@@ -464,7 +469,13 @@ export default function NewDespacho() {
                                       <td>{row.xl}</td>
                                       <td>{row.xxl}</td>
                                       <td>{row.cantidad}</td>
-                                      <td>{row.cantidad - row.despacho}</td>
+                                      {
+                                        row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho}</td>)
+                                      }
+                                      <td>{row.cantidad - row.despachos.reduce((carry,item)=>{
+                                        carry += parseFloat(item.cantidad_despacho)
+                                        return carry
+                                      },0) - row.despacho}</td>
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" defaultValue={row.caidos ?? 0} /></td>
                                     </>
@@ -524,8 +535,18 @@ export default function NewDespacho() {
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                                   return carry + parseFloat(value.cantidad)
                                 }, 0).toFixed(2)}</td>
+                                {
+                                  registros.length > 0 && registros[0].despachos.map((item,key) => <td className="text-center text-[16px] italic text-blue-600 font-black">{registros.reduce((carry,value)=>{
+                                    carry += parseFloat(value.despachos[key].cantidad_despacho)
+                                    // carry += 22
+                                    return carry
+                                  },0)}</td>)
+                                }
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                                  return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despacho ?? 0)
+                                  return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despachos.reduce((carry,item)=>{
+                                    carry += parseFloat(item.cantidad_despacho)
+                                    return carry
+                                  },0)) - parseFloat(value.despacho ?? 0)
                                 }, 0)}</td>
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                                   return carry + parseFloat(value.despacho  ?? 0)

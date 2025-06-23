@@ -70,12 +70,21 @@ export default function Productos(children){
   // }
   const onclick = (e)=>{
     // actions(lista[e.target.dataset.position])
-    const item = lista[parseInt(e.target.dataset.position)]
-    if(selected.find((row)=>row.idxsub == item.idxsub)){
-      setSelected([...selected.filter(row=>row.idxsub !== item.idxsub)])
-    }else{
-      setSelected([...selected,lista[parseInt(e.target.dataset.position)]])
+    let position = e.target.dataset.position ?? e.currentTarget.dataset.position
+    let action = e.target.dataset.action ?? e.currentTarget.dataset.action
+    switch(action){
+      case 'add':
+        const item = lista[position]
+        if(selected.find((row)=>row.idxsub == item.idxsub)){
+          setSelected([...selected.filter(row=>row.idxsub !== item.idxsub)])
+        }else{
+          setSelected([...selected,lista[position]])
+        }    
+        break;
+      default:
+        break;
     }
+    
   }
   const addproductos = ()=>{
     actions(selected)
@@ -119,7 +128,7 @@ export default function Productos(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr className={`${selected.find((item)=>item.idxsub == row.idxsub) ? 'selected' : ''}`} key={key}>
+                <tr className={`${selected.find((item)=>item.idxsub == row.idxsub) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
                   <td>{row.idxsub}</td>
                   <td>{row.cod_producto}</td>
                   <td>{row.producto}</td>
