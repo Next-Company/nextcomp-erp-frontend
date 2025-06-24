@@ -149,7 +149,7 @@ export default function ListaPedidos() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/pedidos/nuevo/" + id)
+        navigate("/main/pedidos/nuevo/" + id + '?nombre=MIGUEL')
         break;
       case 'review':
         // navigate("/main/estampado/review/"+ id)

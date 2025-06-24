@@ -40,7 +40,7 @@ export default function Guias(children){
   
   const searchproveedor = (input)=>{
     const buscarguia = async ()=>{
-      let url = input.value == '' ? 'produccion/getListaGuias' : 'produccion/searchguia/'+input.value
+      let url = input.value == '' ? 'produccion/getListaGuias/PENDIENTE' : 'produccion/searchguia/'+input.value+' PENDIENTE'
       // await Consulta({url: 'produccion/searchguia/'+ (input.value == '' ? '_' : input.value )})
       setLoading(true)
       await Consulta({url})

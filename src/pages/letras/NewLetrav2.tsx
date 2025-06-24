@@ -30,6 +30,10 @@ export default function NewLetraV2() {
       toast.error(<div>No se han seleccionado facturas para continuar <br/>con el registro de la letra</div>, { theme: "colored" })
       return 0
     }
+    if(form.current.elements.importe.value == '' || form.current.elements.num_letra.value == ''){
+      toast.error(<div>Hay datos como el importe o el numero de letra pendiente de ingreso. <br/>Por favor verifique.</div>, { theme: "colored" })
+      return 0
+    }
     openModal({
       open: true,
       header: false,
@@ -49,7 +53,7 @@ export default function NewLetraV2() {
         })
           .then(resp => {
             setOpenloader(false)
-            // navigate('/main/letras/')
+            navigate('/main/letras/')
             toast.success('Estampado guardado con éxito!!', { theme: "colored" })
           })
           .catch((err) => {

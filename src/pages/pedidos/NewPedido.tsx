@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { Button } from "../../components/Atoms/Button/Button"
 import { useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
@@ -50,12 +50,15 @@ const CuerpoInforme = ({info,tipo})=>{
 
 export default function NewPedido(){
   const [tipo,setTipo] = useState(0)
+  const [searchParams,setSearchParams] = useSearchParams()
   const urlparams = useParams()
   const [info,setInfo] = useState({})
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros,setRegistros] = useState([])
   const navigate = useNavigate()
+
+  console.log("Los search params recibidos:",searchParams.get('nombre'))
 
   const onsubmit = (e)=>{
     e.preventDefault()

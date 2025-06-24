@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 import { colorfase } from "../../utils/utils";
 
 const colordespacho = {
-  'PEDIDOS': 'bg-orange-500',
+  'PEDIDOS_TELAS': 'bg-orange-500',
+  'PEDIDOS_AVIOS': 'bg-blue-500',
   'MUESTRA_PROTOTIPO': 'bg-violet-500'
 }
 const CuerpoInforme = ({ cuerpo }) => {
@@ -245,18 +246,19 @@ export default function ListaDespachos() {
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="MUESTRA_PROTOTIPO" onClick={filtrarestado}>
-                  <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Por Muestras
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button>
                 <button className="group" data-estado="PEDIDOS" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Por Pedidos
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
+                <button className="group" data-estado="MUESTRA_PROTOTIPO" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Por Muestras
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                
               </ul>
             </div>
             <hr />
@@ -285,9 +287,10 @@ export default function ListaDespachos() {
                         <>
                           <th className="lg:table-cell">Id</th>
                           <th className="lg:table-cell">IdPedido</th>
-                          <th className="lg:table-cell">NroGuia</th>
                           <th className="lg:table-cell">Proveedor</th>
-                          <th className="lg:table-cell">FechaEmisionGuia</th>
+                          <th className="lg:table-cell">NroGuiaRef</th>
+                          <th className="lg:table-cell">Tipo</th>
+                          <th className="lg:table-cell text-center">FechaEmision</th>
                           <th className="lg:table-cell">FechaIngreso</th>
                           <th className="lg:table-cell text-center">Accciones</th>
                         </>
@@ -315,7 +318,7 @@ export default function ListaDespachos() {
                               <>
                                 <td>{row.idx}</td>
                                 <td>{row.nro_guia}</td>
-                                <td>{row.proveedor.length >= 45 ? row.proveedor.substr(0, 45) + '...' : row.proveedor}</td>
+                                <td className="font-bold">{row.proveedor.length >= 45 ? row.proveedor.substr(0, 45) + '...' : row.proveedor}</td>
                                 <td>{row.producto}</td>
                                 <td>{row.marca}</td>
                                 <td>{row.modelo}</td>
@@ -327,11 +330,11 @@ export default function ListaDespachos() {
                               ?
                               <>
                                 <td>{row.idx}</td>
-                                <td>{row.idguia_ref}</td>
+                                <td className="font-black text-blue-500">{('00000000' + row.idguia_ref).slice(-8)}</td>
+                                <td className="font-bold">{row.proveedor}</td>
                                 <td>{row.nro_guia}</td>
-                                {/* <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho[row.tipo]}`}>{row.tipo}</div></td> */}
-                                <td>{row.proveedor}</td>
-                                <td>{row.fec_emision_guia}</td>
+                                <td className="w-[100px]"><div className={`text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho['PEDIDOS_'+row.subtipo.toUpperCase()]}`}>{row.subtipo.toUpperCase()}</div></td>
+                                <td className="text-center">{row.fec_emision_guia}</td>
                                 <td>{row.fec_despacho}</td>
                               </>
                               :

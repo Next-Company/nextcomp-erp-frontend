@@ -25,7 +25,7 @@ export default function NewDespacho() {
   // const [estampado,setEstampado] = useState([])
   const [tipo, setTipo] = useState(2)
   const urlparams = useParams()
-  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '' })
+  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '', facturado:'1' })
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros, setRegistros] = useState([])
@@ -45,9 +45,13 @@ export default function NewDespacho() {
 
     for (const element of form.current.elements) {
       if(['responsable','nro_guia'].includes(element.name) && element.value == ''){
-        toast.error(`El campo ${element.name} no ha sido completado. Por favor `, { theme: "colored" })
+        toast.error(`El campo ${element.name} no ha sido completado. Por favor verifique.`, { theme: "colored" })
         return 0
       }
+    }
+    if(form.current.elements.facturado.value == 1 && !facturas.length > 0){
+      toast.error(`No ha ingresado ningun registro referenta a la factura del proveedor. Por favor verifique.`, { theme: "colored" })
+      return 0
     }
 
     openModal({
@@ -298,11 +302,13 @@ export default function NewDespacho() {
     params_modal = {
       open: true,
       content: <Pedidos actions={(item) => {
+        console.log("El pedidos seleccionado matemia es :",item)
         setOpenloader(true)
         setOpen(false)
         Consulta({ url: 'produccion/pedido/' + item.idx })
           .then(resp => {
-            setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
+            // setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
+            setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx }))
             setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
               row = { ...row, id_item: row.idx }
               Reflect.deleteProperty(row, 'idx')
@@ -389,12 +395,18 @@ export default function NewDespacho() {
                 </div>
                 <div className="flex gap-3">
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                  <div className="w-[600px]">
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                  </div>
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" />
                   <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuiaReferencia" type="text" />
-
-                  {/* <Input name={'nro_factura'} defaults={Object.keys(info).length > 0 && info.nro_factura ? info.nro_factura : null} title="NroFactura" type="text"/>
-                  <Input name={'imp_factura'} defaults={Object.keys(info).length > 0 && info.imp_factura ? info.imp_factura : null} title="ImporteFactura" type="number"/> */}
+                  <InputSelect title={'EsFacturado'} name={"facturado"} data={
+                    [
+                      { indice: '1', option: 'SI', selected: true },
+                      { indice: '0', option: 'NO' },
+                    ]}
+                    df={Object.keys(info).length > 0 ? info.facturado : null}
+                  />
                 </div>
                 <div>
                   <div className="flex flex-row justify-center">
@@ -427,7 +439,7 @@ export default function NewDespacho() {
                                   <th className="lg:table-cell">XXL / 36</th>
                                   <th className="lg:table-cell">Cantidad</th>
                                   {
-                                    registros.length > 0 && registros[0].despachos.map((row) => <th className="lg:table-cell"><span className="font-extrabold">{row.fec_despacho}</span></th>)
+                                    !urlparams.id && registros.length > 0 && registros[0].despachos.map((row) => <th className="lg:table-cell"><span className="font-extrabold">{row.fec_despacho}</span></th>)
 
                                   }
                                   <th className="lg:table-cell">Saldo</th>
@@ -470,12 +482,16 @@ export default function NewDespacho() {
                                       <td>{row.xxl}</td>
                                       <td>{row.cantidad}</td>
                                       {
-                                        row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho}</td>)
+                                        !urlparams.id && row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho}</td>)
                                       }
-                                      <td>{row.cantidad - row.despachos.reduce((carry,item)=>{
-                                        carry += parseFloat(item.cantidad_despacho)
-                                        return carry
-                                      },0) - row.despacho}</td>
+                                      {
+                                        !urlparams.id
+                                        ? <td>{row.cantidad - row.despachos.reduce((carry,item)=>{
+                                          carry += parseFloat(item.cantidad_despacho)
+                                          return carry
+                                        },0) - row.despacho}</td>
+                                        : <td>{row.cantidad - row.despacho}</td>
+                                      }
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" defaultValue={row.caidos ?? 0} /></td>
                                     </>
@@ -536,18 +552,24 @@ export default function NewDespacho() {
                                   return carry + parseFloat(value.cantidad)
                                 }, 0).toFixed(2)}</td>
                                 {
-                                  registros.length > 0 && registros[0].despachos.map((item,key) => <td className="text-center text-[16px] italic text-blue-600 font-black">{registros.reduce((carry,value)=>{
+                                  !urlparams.id && registros.length > 0 && registros[0].despachos.map((item,key) => <td className="text-center text-[16px] italic text-blue-600 font-black">{registros.reduce((carry,value)=>{
                                     carry += parseFloat(value.despachos[key].cantidad_despacho)
                                     // carry += 22
                                     return carry
                                   },0)}</td>)
                                 }
-                                <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                                  return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despachos.reduce((carry,item)=>{
-                                    carry += parseFloat(item.cantidad_despacho)
-                                    return carry
-                                  },0)) - parseFloat(value.despacho ?? 0)
-                                }, 0)}</td>
+                                {
+                                  !urlparams.id
+                                  ? <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                    return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despachos.reduce((carry,item)=>{
+                                      carry += parseFloat(item.cantidad_despacho)
+                                      return carry
+                                    },0)) - parseFloat(value.despacho ?? 0)
+                                  }, 0)}</td>
+                                  : <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                    return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despacho ?? 0)
+                                  }, 0)}</td>
+                                }
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                                   return carry + parseFloat(value.despacho  ?? 0)
                                 }, 0)}</td>
