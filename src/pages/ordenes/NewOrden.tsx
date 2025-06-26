@@ -39,6 +39,10 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   const errorimg = (e)=>{
 
   }
+  const eraserImage = ()=>{
+    setdataimg([])
+    image.current.src = ''
+  }
   return(
     <>
       <div className="w-[800px]">
@@ -47,8 +51,12 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
             {/* <img ref={image} className="w-full h-full object-cover"/> */}
             <img ref={image} src={dataimg.length > 0 ? URL.createObjectURL(dataimg[0]) : ''} onError={errorimg} className="w-full h-full object-cover"/>
           </div>
-          <div className="bg-gray-300 w-full h-[50px] flex justify-center items-center rounded-md">
+          <div className="bg-gray-300 w-full h-[50px] flex justify-between items-center rounded-md px-3">
             <input type="file" name="" onChange={showimage} id="" />
+            <Button action={eraserImage} type={'button'} tipo="default">
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eraser"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3" /><path d="M18 13.3l-6.3 -6.3" /></svg>
+            </Button>
+            
             {/* <Button action={()=>inputfile.current.click()} type={'button'} tipo={'default'}>Click Me!!</Button> */}
           </div>
         </div>
@@ -60,8 +68,9 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
     </>
   )
 }
-function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg, setDataimg}) {
+function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg, setDataimg, combosOrden, setcombosOrden, combosCorte, setcombosCorte}) {
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  // const [combosOrden,setCombosOrden] = useState([])
   const inputfile = useRef(null)
   useEffect(()=>{
     console.log("Cargando informacion de detalle orden")
@@ -137,7 +146,7 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg
     params_modal = {
       open: true,
       content: <ImageUpload actions={() => {
-      }} setopen={setopen} setdataimg={setDataimg} dataimg={dataimg} id={info[0].idx} />,
+      }} setopen={setopen} setdataimg={setDataimg} dataimg={dataimg} id={info.length > 0 ? info[0].idx : 0} />,
       controls: false,
       header: false,
       action: () => {
@@ -152,6 +161,33 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg
   // const changeimg = (e) => {
   //   let file = e.target.files[0]
   // }
+  const onclick = (e)=>{
+    let action = e.target.dataset.action
+    let position = e.target.dataset.position
+    switch (action) {
+      case 'delete_combo_orden':
+        console.log('Hola mundo como estamos')
+        setcombosOrden(combosOrden.filter((row,key)=>key !== position))
+        break;
+    
+      default:
+        break;
+    }
+  }
+  const editvalue = (e)=>{
+    let indice = e.target.dataset.position
+    if(position == 0){
+      setcombosOrden(combosOrden.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value} : row))
+    }
+    if(position == 3){
+      setcombosCorte(combosCorte.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value} : row))
+    }
+  }
+  const agregarcombo = ()=>{
+    console.log("Agregando linea a la lista de combos")
+    if(position == 0) setcombosOrden([...combosOrden, { color_combo: '', cantidad_combo: 0 }])
+    if(position == 3) setcombosCorte([...combosCorte, { color_combo: '', cantidad_combo: 0 }])
+  }
   return(
     <div className="flex-1 overflow-y-scroll scrollbar-special">
       <div className={` flex-col gap-3 pt-4 ${position == 0 ? 'flex' : 'hidden'}`}>
@@ -180,6 +216,9 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg
             ]} 
             df={Object.keys(info).length > 0 ? info.modalidad_pedido : null} 
           />
+          
+        </div>
+        <div className="flex gap-3">
           {
             tipopedido
             ?
@@ -192,16 +231,13 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg
               <Input name={'nro_pedido_adi'} title={'DocReferencia'} defaults={info.length > 0 ? info[0].nro_pedido_adi : null} type="text" />
             </>
           }
-        </div>
-        <div className="flex gap-3">
           <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" />
-          <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Producto" type="text" />
-          <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
-          <Input name={'precio'} defaults={info.length > 0 ? info[0].precio : null} title="Precio" type="number" />
           <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" />
+          <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Producto" type="text" />
+          
         </div>
         <div className="flex gap-3 flex-wrap">
-          <div className="flex-1 min-w-[200px]">
+          {/* <div className="flex-1 min-w-[200px]">
             <Input name={'combo1_orden'} defaults={info.length > 0 ? info[0].combo1_orden : null} dataset={[{group:'combo'}]} title="Combo1" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
@@ -245,9 +281,12 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg
           </div>
           <div className="flex-1 min-w-[300px]">
             <Input name={'acumulado'} defaults={0} title="Total" type="number" style={{pointerEvents:'none'}} />
-          </div>
+          </div> */}
+        
           <div className="flex-1 min-w-[300px] flex flex-row gap-3">
-            <div className="flex-1 min-w-[400px]">
+            <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
+            <Input name={'precio'} defaults={info.length > 0 ? info[0].precio : null} title="Precio" type="number" />
+            <div className="flex-1 min-w-[500px]">
               <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={[{ indice: 'AVIOS', option: 'AVIOS'},{ indice: 'CORTE', option: 'CORTE'},{ indice: 'MOLDE', option: 'MOLDE'},{ indice: 'CONFECCION', option: 'CONFECCION' }, { indice: 'OJAL Y BOTON', option: 'OJAL Y BOTON' }, { indice: 'ESTAMPADO', option: 'ESTAMPADO' }, { indice: 'LAVANDERIA', option: 'LAVANDERIA' }, { indice: 'BORDADO', option: 'BORDADO' }, { indice: 'ACABADOS', option: 'ACABADOS' }]} df={info.length > 0 ? info[0].ruta_proceso : null} />
             </div>
             <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
@@ -257,13 +296,74 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg
             {/* <input ref={inputfile} type="file" name="filenext" id="filenext" accept=".jpg" onChange={changeimg} /> */}
             <Button action={loadimage} type={'button'} tipo={'accept'}>
               <div className="flex flex-row items-center gap-2 justify-between">
-                {/* Cargar */}
-                {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 9l5 -5l5 5" /><path d="M12 4l0 12" /></svg> */}
                 <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-photo"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.813 11.612c.457 -.38 .918 -.38 1.386 .011l.108 .098l4.986 4.986l.094 .083a1 1 0 0 0 1.403 -1.403l-.083 -.094l-1.292 -1.293l.292 -.293l.106 -.095c.457 -.38 .918 -.38 1.386 .011l.108 .098l4.674 4.675a4 4 0 0 1 -3.775 3.599l-.206 .005h-12a4 4 0 0 1 -3.98 -3.603l6.687 -6.69l.106 -.095zm9.187 -9.612a4 4 0 0 1 3.995 3.8l.005 .2v9.585l-3.293 -3.292l-.15 -.137c-1.256 -1.095 -2.85 -1.097 -4.096 -.017l-.154 .14l-.307 .306l-2.293 -2.292l-.15 -.137c-1.256 -1.095 -2.85 -1.097 -4.096 -.017l-.154 .14l-5.307 5.306v-9.585a4 4 0 0 1 3.8 -3.995l.2 -.005h12zm-2.99 5l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z" /></svg>
               </div>
             </Button>
           </div>
         </div>
+        {/* <div><span>Info combos</span></div> */}
+        <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+            <thead className="text-left sticky top-0 bg-white">
+              <tr>
+                <th className="lg:table-cell w-[500px]">ColorCombo</th>  
+                <th className="lg:table-cell">CantidadCombo</th>
+                <th className="lg:table-cell">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                combosOrden.length > 0 && combosOrden.map((row,key)=>(
+                  <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                    <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
+                    <td><input data-name="cantidad_combo" type="number" onChange={(editvalue)} data-position={key} value={row.cantidad_combo}/></td>
+                    <td className="w-[250px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" onClick={onclick} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+            <tfoot className="sticky bottom-0">
+              <tr>
+                <td colSpan={10} >
+                  <div className="flex flex-row justify-center">
+                    <div onClick={agregarcombo} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                      +
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
         <div>
           <TextArea title="Observaciones" name="observaciones_fase_ordenes" />
         </div>
@@ -293,10 +393,11 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg
           <div className="flex-1 min-w-[250px]">
             <Input name={'numero_corte'} defaults={info.length > 0 && info[0].numero_corte ? info[0].numero_corte : null} title="#HojaCorte" type="text" />
           </div>
+          <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_corte : null} />
           {/* <div className="flex-1 min-w-[350px]">
             <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={[{ indice: 'CORTE', option: 'CORTE'},{ indice: 'MOLDE', option: 'MOLDE'},{ indice: 'CONFECCION', option: 'CONFECCION' }, { indice: 'OJAL Y BOTON', option: 'OJAL Y BOTON' }, { indice: 'ESTAMPADO', option: 'ESTAMPADO' }, { indice: 'LAVANDERIA', option: 'LAVANDERIA' }, { indice: 'BORDADO', option: 'BORDADO' }, { indice: 'ACABADOS', option: 'ACABADOS' }]} df={info.length > 0 ? info[0].ruta_proceso : null} />
           </div> */}
-          <div className="flex-1 min-w-[200px]">
+          {/* <div className="flex-1 min-w-[200px]">
             <Input name={'combo1_corte'} defaults={info.length > 0 && info[0].combo1_corte ? info[0].combo1_corte : null} title="Combo1" type="number" />
           </div>
           <div className="flex-1 min-w-[200px]">
@@ -337,14 +438,75 @@ function FormFase({ position, info, setorden, setopen, form, tipopedido, dataimg
           </div>
           <div className="flex-1 min-w-[200px]">
             <Input name={'combo14_corte'} defaults={info.length > 0 && info[0].combo14_corte ? info[0].combo14_corte : null} title="Combo14" type="number" />
-          </div>
+          </div> */}
           {/* <div className="flex-1 min-w-[200px]">
             <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_corte : null} />
           </div> */}
         </div>
-        <div>
-          <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_corte : null} />
+        <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+            <thead className="text-left sticky top-0 bg-white">
+              <tr>
+                <th className="lg:table-cell w-[500px]">ColorCombo</th>  
+                <th className="lg:table-cell">CantidadCombo</th>
+                <th className="lg:table-cell">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                combosCorte.length > 0 && combosCorte.map((row,key)=>(
+                  <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                    <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
+                    <td><input data-name="cantidad_combo" type="number" onChange={(editvalue)} data-position={key} value={row.cantidad_combo}/></td>
+                    <td className="w-[250px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" onClick={onclick} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+            <tfoot className="sticky bottom-0">
+              <tr>
+                <td colSpan={10} >
+                  <div className="flex flex-row justify-center">
+                    <div onClick={agregarcombo} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                      +
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
         </div>
+        {/* <div>
+          <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_corte : null} />
+        </div> */}
         <div>
           <TextArea title="Observaciones" name="observaciones_fase_corte" />
         </div>
@@ -361,13 +523,29 @@ export function NewOrden() {
   const [position, setPosition] = useState(0)
   const [tipopedido,setTipopedido] = useState(1)
   const [dataimg, setDataimg] = useState([])
+  const [infoCombosOrden,setInfoCombosOrden] = useState([])
+  const [infoCombosCorte,setInfoCombosCorte] = useState([])
   const navigate = useNavigate()
 
   const onsubmit = async (e) => {
     e.preventDefault()
     const data = new FormData(e.target)
     data.append('table',listTables[position])
+    infoCombosOrden.length > 0 && data.append('combos_orden',JSON.stringify(infoCombosOrden))
+    infoCombosCorte.length > 0 && data.append('combos_corte',JSON.stringify(infoCombosCorte))
     dataimg.length > 0 && data.append('filenext', dataimg[0])
+    
+    let inputs_orden = Array.from(form.current.elements)
+    // console.log("Array from htmlcontrolscollection :",inputs_orden.filter(item=>item.dataset.name == 'color_combo_orden'))
+    if(listTables[position] == 'tbl2_fases_prod_ordenes'){      
+      for (const element of inputs_orden) {
+        if(element.name == 'oc' && element.value == ''){
+          toast.error('Se produjo un error!!', { theme: "colored" })
+          return
+        }
+      }
+    }
+
     openModal({
       open: true,
       header: false,
@@ -382,10 +560,8 @@ export function NewOrden() {
           }
         })
           .then(resp => {
-            console.log("Pedro picapiedra :",resp)
             if(resp.ok){
-              // setOpenloader(false)
-              navigate("/main/ordenes/")
+              // navigate("/main/ordenes/")
               toast.success('Soporte guardado con éxito!!', { theme: "colored" })
             }else{
               toast.error(resp.mensaje, { theme: "colored" })
@@ -416,8 +592,10 @@ export function NewOrden() {
           .then(resp => {
             // console.log(resp)
             // setOpenloader(false)
-            setOrden(resp)
-            setTipopedido(resp[0].modalidad_pedido == 'ORDN' ? 1 : 0)
+            setOrden(resp[0])
+            setTipopedido(resp[0][0].modalidad_pedido == 'ORDN' ? 1 : 0)
+            setInfoCombosOrden(resp[1])
+            setInfoCombosCorte(resp[2])
             console.log("Opportynity never die!!!!",resp)
           })
           .catch((err)=>{
@@ -433,10 +611,10 @@ export function NewOrden() {
   },[])
   const testkey = (e)=>{
     let acumulador = 0
-    for(let element of form.current.querySelectorAll("input[data-group='combo'")){
-      acumulador += element.value == '' ? 0 : parseInt(element.value)
-    }
-    form.current.querySelector("input[name='acumulado']").value = acumulador
+    // for(let element of form.current.querySelectorAll("input[data-group='combo'")){
+    //   acumulador += element.value == '' ? 0 : parseInt(element.value)
+    // }
+    // form.current.querySelector("input[name='acumulado']").value = acumulador
   }
 
   const printpedido = (e)=>{
@@ -526,7 +704,7 @@ export function NewOrden() {
             </ul>
             <hr />
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden">
-              <FormFase position={position} info={orden} setorden={setOrden} setopen={setOpen} form={form} tipopedido={tipopedido} dataimg={dataimg} setDataimg={setDataimg} />
+              <FormFase position={position} info={orden} setorden={setOrden} setopen={setOpen} form={form} tipopedido={tipopedido} dataimg={dataimg} setDataimg={setDataimg} combosOrden={infoCombosOrden} setcombosOrden={setInfoCombosOrden} combosCorte={infoCombosCorte} setcombosCorte={setInfoCombosCorte}/>
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={() => navigate('/main/ordenes/')} type={'button'} tipo={'default'}>Cancelar</Button>
                 {/* <Button action={() => printpedido()} type={'button'} tipo={'default'}>Print</Button> */}

@@ -39,6 +39,9 @@ export function Input({ name, defaults = null, title = "", type, dataset = [], s
         ref.current.dataset[Object.keys(ds)[0]] = Object.values(ds)[0]
       })
     }
+    // if(attradi.length > 0){
+    //   console.log("Lista de atributos :",ref.current.attributes)
+    // }
     
   }, [defaults])
   return (
