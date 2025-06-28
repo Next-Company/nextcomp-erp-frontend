@@ -12,6 +12,7 @@ import { OrdenPedidoAvios } from "../../templates/OrdenPedidoAvios";
 import { OrdenPedidoTelas } from "../../templates/OrdenPedidoTelas";
 import Proveedores from "../../components/Common/Proveedores";
 import Pedidos from "../../components/Common/Pedidos";
+import { InputTest } from "../../components/Atoms/Input/InputTest";
 
 const listTables = [
   'tbl2_fases_prod_ordenes',
@@ -69,46 +70,68 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   )
 }
 
-function CuerpoCorte({info,setcorte}){
+function CuerpoCorte({info,setcorte,position,quitar,form}){
   console.log("El chapuloin colorado 2: ",info)
+  // let [info2,setInfo2] = useState(info)
   let [active,setActive] = useState(-1)
-  const agregarcombo = ()=>{
+  const onclick = (e)=>{
+    let position = e.target.dataset.position
+    let id = e.target.dataset.id
+    setcorte(corte=>corte.reduce((c,v)=>{
+      c.push({...v,combos:v.idx == id ? v.combos.filter((row,key)=>key !== parseInt(position)) : v.combos})
+      return c
+    },[]))
   }
-  const editvalue = ()=>{
+  const editvalue = (e)=>{
+    let indice = e.target.dataset.position
+    let id = info.idx
+    setcorte(corte=>corte.reduce((c,v)=>{
+      c.push({...v,combos:v.idx == id ? v.combos.map((row,key)=>key == parseInt(indice) ? ({...row,[e.target.dataset.name]:e.target.value}) : row ) : v.combos})
+      return c
+    },[]))
   }
-  const onclick = ()=>{
+  const agregarcombo = (e)=>{
+    let id = e.target.dataset.id
+    setcorte(corte=>corte.reduce((c,v)=>{
+      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',cantidad_combo:0}] : v.combos})
+      return c
+    },[]))
+  }
+  const deletecorte = (e)=>{
+    let position = e.target.dataset.position
+    setcorte(corte=>corte.filter((row,key)=>key !== parseInt(position)))
   }
   return <>
-    <div>
+    <div key={position}>
+      {/* <InputTest name={'numero_corte'} defaults={Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : null} title="#HojaCorte" type="text" /> */}
       <ul className="list-none [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button]:w-full [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50 relative">
         <div className="relative">
           <div className="absolute h-full flex flex-row items-center top-0 right-[20px]">
             <ul className="flex flex-row justify-end">
               <li className="cursor-pointer">
-                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" onClick={()=>{}} data-position={0}>
+                <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" onClick={()=>quitar(position)} data-position={position}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                 </div>
               </li>
             </ul>
           </div>
-
           <button type="button" className={`group active`} data-estado={0} onClick={()=>setActive(active*-1)}>
             <span className="relative h-[100%] w-full flex items-center pointer-events-none">
               # HojaCorte 1
               <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
             </span>
           </button>
-
         </div>
       </ul>
       {/* /////////////////// */}
-      <div id="cuerpo_ingresos" className={`flex-1 scrollbar-special overflow-y-scroll ${active == -1 ? 'h-0' : 'h-[300px]'} transition-all`}>
+      <div id="cuerpo_ingresos" data-position={position} className={`flex-1 scrollbar-special overflow-y-scroll ${active == -1 ? 'h-0' : 'h-[300px]'} transition-all`}>
         <div className="p-2">
           <div className="flex gap-3 flex-wrap">
             <div className="flex-1 min-w-[250px]">
-              <Input name={'numero_corte'} defaults={Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : null} title="#HojaCorte" type="text" />
+              <InputTest name={'idx'} defaults={Object.keys(info).length > 0 && info.idx ? info.idx : null} title="#HojaCorte" type="hidden" />
+              <InputTest name={'numero_corte'} defaults={Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : null} title="#HojaCorte" type="text" />
             </div>
-            <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado_corte : null} />
+            <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado_corte : null} formref={form}/>
           </div>
           <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] mt-2">
             <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
@@ -121,30 +144,20 @@ function CuerpoCorte({info,setcorte}){
               </thead>
               <tbody>
                 {
-                  Object.keys(info).length > 0 && info.combos.length > 0 && info.combos.map((row,key)=>(
+                  Object.keys(info).length > 0 && info.combos && info.combos.map((row,key)=>(
                     <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                       <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
                       <td><input data-name="cantidad_combo" type="number" onChange={(editvalue)} data-position={key} value={row.cantidad_combo}/></td>
                       <td className="w-[250px]">
                         <ul className="flex flex-row justify-end">
                           <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" onClick={onclick} data-position={key}>
+                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" onClick={onclick} data-position={key} data-id={info.idx}>
                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                             </div>
                           </li>
                           <li>
                             <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                             </div>
                           </li>
                           <li>
@@ -162,7 +175,7 @@ function CuerpoCorte({info,setcorte}){
                 <tr>
                   <td colSpan={10} >
                     <div className="flex flex-row justify-center">
-                      <div onClick={agregarcombo} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                      <div onClick={agregarcombo} data-id={info.idx} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                         +
                       </div>
                     </div>
@@ -179,7 +192,6 @@ function CuerpoCorte({info,setcorte}){
   </>
 }
 
-
 function SeccionAvios({info}){
   return <>
     <div className={` flex-col gap-3 pt-2`}>
@@ -188,18 +200,43 @@ function SeccionAvios({info}){
   </>
 }
 
-function SeccionCorte({info,setcorte}){
+function Test({info,position}){
+  return(
+    <div key={position} className="w-[100px] h-[80px] bg-red-300">
+      {/* <input type="text" value={Object.keys(info).length > 0 ? info.numero_corte : ''} /> */}
+      <InputTest name={'numero_corte'} defaults={Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : null} title="#HojaCorte" type="text" />
+    </div>
+  )
+}
+
+function SeccionCorte({info,setcorte,form}){
   // console.log("El chapuloin colorado : ",info)
+  // useEffect(()=>{
+  //   form.current.addEve
+  // },[])
   const addcorte = ()=>{
-    // setcorte(info=>([...info,{}))
+    setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',combos:[]}]))
+  }
+  const deletecorte = ()=>{
+    setcorte(corte=>corte.filter((row,key)=>key !== 0))
+  }
+  const deletecorte2 = (indice)=>{
+    setcorte(corte=>corte.filter((row,key)=>key !== indice))
   }
   return <>
     <div className={`flex flex-col gap-3 pt-2`}>
       {
-        info.length > 0 && info.map(row=><CuerpoCorte info={row} setcorte={setcorte} />)
+        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form}/>)
+        // info.length > 0 && info.map((row,key)=><div key={key} className="w-[100px] h-[80px] bg-red-300">
+        //   <input type="text" value={Object.keys(row).length > 0 ? row.numero_corte : ''} />
+        // </div>)
+        // info.length > 0 && info.map((row,key)=><Test info={row} position={key} />)
+
+        // info.length > 0 && info.map((row,key)=><InputTest name={'numero_corte'} defaults={Object.keys(row).length > 0 && row.numero_corte ? row.numero_corte : null} title="#HojaCorte" type="text" />)
       }
       <div className="sticky bottom-0">
         <div className="flex gap-3 flex-wrap justify-end">
+          <Button type="button" tipo="default" action={deletecorte}>Eliminar</Button>
           <Button type="button" tipo="default" action={addcorte}>Agregar nuevo corte</Button>
         </div>
       </div>
@@ -411,43 +448,56 @@ export function NewOrden() {
   const [avios, setAvios] = useState([])
   const [dataimg, setDataimg] = useState([])
   const navigate = useNavigate()
-  // const [tipopedido,setTipopedido] = useState(1)
-  // const [infoCombosOrden,setInfoCombosOrden] = useState([])
-  // const [infoCombosCorte,setInfoCombosCorte] = useState([])
-  let url_save = ''
+  
+  console.log("Info del corte :",corte)
 
   const onsubmit = async (e) => {
     e.preventDefault()
-    const data = new FormData(e.target)
-    // data.append('table',listTables[position])
-    orden.length > 0 && position == 0 && data.append('combos',JSON.stringify(orden[0].combos))
-    // infoCombosCorte.length > 0 && data.append('combos_corte',JSON.stringify(infoCombosCorte))
+    let url_save = ''
+    let data = undefined
+
     // dataimg.length > 0 && data.append('filenext', dataimg[0])
-    
-    let inputs_orden = Array.from(form.current.elements)
-    if(listTables[position] == 'tbl2_fases_prod_ordenes'){      
-      for (const element of inputs_orden) {
-        if(element.name == 'oc' && element.value == ''){
-          toast.error('Se produjo un error!!', { theme: "colored" })
-          return
-        }
-      }
+    // let inputs_orden = Array.from(form.current.elements)
+    // if(listTables[position] == 'tbl2_fases_prod_ordenes'){      
+    //   for (const element of inputs_orden) {
+    //     if(element.name == 'oc' && element.value == ''){
+    //       toast.error('Se produjo un error!!', { theme: "colored" })
+    //       return
+    //     }
+    //   }
+    // }
+    if(position == 0){
+      url_save = 'ordenes/saveFaseOrden'
+      orden.length > 0 && data.append('combos',JSON.stringify(orden[0].combos))
+      data = new FormData(e.target)
     }
-    switch (position) {
-      case 0:
-        url_save = 'ordenes/saveFaseOrden'
-        break;
-      case 2:
-        url_save = 'ordenes/saveFaseMolde'
-        break;
-      case 3:
-        url_save = 'ordenes/saveFaseCorte'
-        break;
-      default:
-        break;
+    if(position == 2){
+      url_save = 'ordenes/saveFaseMolde'
+      corte.length > 0 && data.append('combos',JSON.stringify(corte[0].combos))
+      data = new FormData(e.target)
     }
-    
-    openModal({
+    if(position == 3){
+      console.log("Info del corte :",corte)
+      url_save = 'ordenes/saveFaseCorte'
+      // console.log("Info corte actualizado:",corte)
+      data = new FormData()
+      data.append('info',JSON.stringify(corte))
+      data.append('id',urlparams.id)
+    }
+    // switch (position) {
+    //   case 0:
+    //     url_save = 'ordenes/saveFaseOrden'
+    //     break;
+    //   case 2:
+    //     url_save = 'ordenes/saveFaseMolde'
+    //     break;
+    //   case 3:
+    //     url_save = 'ordenes/saveFaseCorte'
+    //     break;
+    //   default:
+    //     break;
+    // }
+    const PARAMS_MODAL = {
       open: true,
       header: false,
       controls: true,
@@ -476,13 +526,22 @@ export function NewOrden() {
             setOpenloader(false)
           })
       }
-    })
+    }
+    openModal(PARAMS_MODAL)
   }
 
   useEffect(()=>{
     const handleSalamandra = (event) => {
-      // console.log("asdfdsfasfd:",event.detail)
-      setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
+      console.log("INof origen del select:",event.detail,event.detail.target.closest('div#cuerpo_ingresos'))
+      if(event.detail.name == 'estado_corte'){
+        let padre = event.detail.target.closest('div#cuerpo_ingresos')
+        let indice = padre.dataset.position
+        // console.log("La informacion del selecct corte es :",event.detail)
+        setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,['estado_corte']:event.detail.valor} : row))
+      }else{
+        // console.log("asdfdsfasfd:",event.detail)
+        // setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
+      }
     };
     form.current.addEventListener("salamandra", handleSalamandra);
 
@@ -515,7 +574,11 @@ export function NewOrden() {
     }
   },[])
   const testkey = (e)=>{
-    let acumulador = 0
+    if(position == 3 && e.target.name == 'numero_corte'){
+      let padre = e.target.closest('div#cuerpo_ingresos')
+      let indice = parseInt(padre.dataset.position)
+      setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,[e.target.name]:e.target.value} : row))
+    }
     // for(let element of form.current.querySelectorAll("input[data-group='combo'")){
     //   acumulador += element.value == '' ? 0 : parseInt(element.value)
     // }
@@ -651,7 +714,7 @@ export function NewOrden() {
                   position == 2 && <SeccionMolde info={molde} />
                 }
                 {
-                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} />
+                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form}/>
                 }
                 {
                   position == 4 && <SeccionAvios info={avios} />

@@ -382,7 +382,7 @@ export default function ListaOrdenes() {
               </table>
             </div>
             {/* <div className="flex flex-col items-center p-2 gap-2"> */}
-            <div className="flex flex-row justify-end p-2">
+            <div className="flex flex-row justify-end mt-2 gap-2">
               {/* <div className="flex p-2">
               </div> */}
               <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>

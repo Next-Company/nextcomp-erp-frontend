@@ -23,7 +23,7 @@ export function InputSelect({ title, name, data, df, formref=null }) {
       setSelect(parseInt(e.relatedTarget.dataset.index))
       if(formref){
         const event = new CustomEvent('salamandra', {
-          detail:{valor:info[parseInt(e.relatedTarget.dataset.index)].option,target:e.target,indice:info[parseInt(e.relatedTarget.dataset.index)].indice}
+          detail:{valor:info[parseInt(e.relatedTarget.dataset.index)].option,target:e.target,indice:info[parseInt(e.relatedTarget.dataset.index)].indice,name:name}
         })
         formref.current.dispatchEvent(event)
       }
