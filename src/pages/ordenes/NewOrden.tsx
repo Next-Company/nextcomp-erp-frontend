@@ -27,9 +27,9 @@ const listTables = [
   'tbl2_fases_prod_acabados'
 ]
 function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
-  let image = useRef(null)
+  const image = useRef(null)
   const showimage = (e)=>{
-    let file = e.target.files
+    const file = e.target.files
     console.log("El archivo seleccionado es:", file, file.length)
     setdataimg(file ? file : [])
     // let file = inputfile.current.files[0]
@@ -72,33 +72,32 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
 
 function CuerpoCorte({info,setcorte,position,quitar,form}){
   console.log("El chapuloin colorado 2: ",info)
-  // let [info2,setInfo2] = useState(info)
-  let [active,setActive] = useState(-1)
+  const [active,setActive] = useState(-1)
   const onclick = (e)=>{
-    let position = e.target.dataset.position
-    let id = e.target.dataset.id
+    const position = e.target.dataset.position
+    const id = e.target.dataset.id
     setcorte(corte=>corte.reduce((c,v)=>{
       c.push({...v,combos:v.idx == id ? v.combos.filter((row,key)=>key !== parseInt(position)) : v.combos})
       return c
     },[]))
   }
   const editvalue = (e)=>{
-    let indice = e.target.dataset.position
-    let id = info.idx
+    const indice = e.target.dataset.position
+    const id = info.idx
     setcorte(corte=>corte.reduce((c,v)=>{
       c.push({...v,combos:v.idx == id ? v.combos.map((row,key)=>key == parseInt(indice) ? ({...row,[e.target.dataset.name]:e.target.value}) : row ) : v.combos})
       return c
     },[]))
   }
   const agregarcombo = (e)=>{
-    let id = e.target.dataset.id
+    const id = e.target.dataset.id
     setcorte(corte=>corte.reduce((c,v)=>{
       c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',cantidad_combo:0}] : v.combos})
       return c
     },[]))
   }
   const deletecorte = (e)=>{
-    let position = e.target.dataset.position
+    const position = e.target.dataset.position
     setcorte(corte=>corte.filter((row,key)=>key !== parseInt(position)))
   }
   return <>
@@ -117,7 +116,7 @@ function CuerpoCorte({info,setcorte,position,quitar,form}){
           </div>
           <button type="button" className={`group active`} data-estado={0} onClick={()=>setActive(active*-1)}>
             <span className="relative h-[100%] w-full flex items-center pointer-events-none">
-              # HojaCorte 1
+              # HojaCorte {Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : ''}
               <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
             </span>
           </button>
@@ -244,11 +243,12 @@ function SeccionCorte({info,setcorte,form}){
   </>
 }
 
-function SeccionMolde({info}){
+function SeccionMolde({info,orden}){
   return <>
     <div className={`flex flex-col gap-3 pt-4`}>
       <div className="flex gap-3">
         <Input name={'idx'} defaults={info.length > 0 && info[0].idx ? info[0].idx : null}  type="hidden" />
+        <Input name={'id_cab_orden'} defaults={orden ?? null}  type="hidden" />
         <Input name={'responsable'} defaults={info.length > 0 && info[0].responsable ? info[0].responsable : null} title="Responsable" type="text" />
         <Input name={'molde'} defaults={info.length > 0 && info[0].molde ? info[0].molde : null}  title="Molde" type="text" />
         <Input name={'muestra'} defaults={info.length > 0 && info[0].muestra ? info[0].muestra : null} title="Muestra" type="text" />
@@ -268,6 +268,7 @@ function SeccionMolde({info}){
 
 function SeccionOrden({info,form,setorden,setopen,openmodal}){
   const [tipopedido,setTipopedido] = useState(1)
+  const [dataimg,setDataimg] = useState([])
   useEffect(()=>{
     const handleSalamandra = (event) => {
       setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
@@ -276,19 +277,24 @@ function SeccionOrden({info,form,setorden,setopen,openmodal}){
   },[])
 
   const onclick = (e)=>{
-    let position = e.target.dataset.position
+    const position = e.target.dataset.position
     setorden(info => ([{...info[0], combos: info[0].combos.filter((row,key)=>key !== parseInt(position)) }]))
   }
   const editvalue = (e)=>{
-    let indice = e.target.dataset.position
+    const indice = e.target.dataset.position
     setorden(info => ([{...info[0], combos: info[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value} : row) }]))
   }
   const agregarcombo = ()=>{
-    setorden(info => ([{ ...info[0], combos: [...info[0].combos,{id_orden_CAB: null, color_combo: '', cantidad_combo: 0 }] }]))
+    console.log("info combos:",info)
+    // setorden(info => ([{ ...info[0], combos: [...info[0].combos,{id_orden_CAB: null, color_combo: '', cantidad_combo: 0 }] }]))
+    if(!(info.length > 0)){
+      setorden([{combos: [{id_orden_CAB: null, color_combo: '', cantidad_combo: 0 }] }])
+    }else{
+      setorden(info => ([{ ...info[0], combos: [...info[0].combos,{id_orden_CAB: null, color_combo: '', cantidad_combo: 0 }] }]))
+    }
   }
   const searchpedido = () => {
-    let params_modal = null
-    params_modal = {
+    const params_modal = {
       open: true,
       content: <Pedidos actions={(item) => {
         setorden(info => ([{ ...info[0], id_pedido_origen: item.idx, nro_pedido_origen: item.orden_ref }]))
@@ -299,6 +305,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal}){
       action: () => {
       }
     }
+    openmodal(params_modal)
   }
   const nuevoproveedor = ()=>{
     let params_modal = null
@@ -316,8 +323,18 @@ function SeccionOrden({info,form,setorden,setopen,openmodal}){
     }
     openmodal(params_modal)
   }
-  const loadimage = ()=>{
-
+  const loadimage = () => {
+    let params_modal = null
+    params_modal = {
+      open: true,
+      content: <ImageUpload actions={() => {
+      }} setopen={setopen} setdataimg={setDataimg} dataimg={dataimg} id={info.length > 0 ? info[0].idx : 0} />,
+      controls: false,
+      header: false,
+      action: () => {
+      }
+    }
+    openmodal(params_modal)
   }
   return <>
     <div className={`flex flex-col gap-3 pt-4`}>
@@ -379,7 +396,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal}){
           </thead>
           <tbody>
             {
-              info.length > 0 && info[0].combos.length > 0 && info[0].combos.map((row,key)=>(
+              info.length > 0 && info[0].combos && info[0].combos.length > 0 && info[0].combos.map((row,key)=>(
                 <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                   <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
                   <td><input data-name="cantidad_combo" type="number" onChange={(editvalue)} data-position={key} value={row.cantidad_combo}/></td>
@@ -448,6 +465,7 @@ export function NewOrden() {
   const [avios, setAvios] = useState([])
   const [dataimg, setDataimg] = useState([])
   const navigate = useNavigate()
+  const [tipopedido,setTipopedido] = useState(1)
   
   console.log("Info del corte :",corte)
 
@@ -468,13 +486,13 @@ export function NewOrden() {
     // }
     if(position == 0){
       url_save = 'ordenes/saveFaseOrden'
-      orden.length > 0 && data.append('combos',JSON.stringify(orden[0].combos))
       data = new FormData(e.target)
+      orden.length > 0 && data.append('combos',JSON.stringify(orden[0].combos))
     }
     if(position == 2){
       url_save = 'ordenes/saveFaseMolde'
-      corte.length > 0 && data.append('combos',JSON.stringify(corte[0].combos))
       data = new FormData(e.target)
+      data.append('id',urlparams.id)
     }
     if(position == 3){
       console.log("Info del corte :",corte)
@@ -534,13 +552,13 @@ export function NewOrden() {
     const handleSalamandra = (event) => {
       console.log("INof origen del select:",event.detail,event.detail.target.closest('div#cuerpo_ingresos'))
       if(event.detail.name == 'estado_corte'){
-        let padre = event.detail.target.closest('div#cuerpo_ingresos')
-        let indice = padre.dataset.position
+        const padre = event.detail.target.closest('div#cuerpo_ingresos')
+        const indice = padre.dataset.position
         // console.log("La informacion del selecct corte es :",event.detail)
         setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,['estado_corte']:event.detail.valor} : row))
       }else{
         // console.log("asdfdsfasfd:",event.detail)
-        // setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
+        setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
       }
     };
     form.current.addEventListener("salamandra", handleSalamandra);
@@ -575,8 +593,8 @@ export function NewOrden() {
   },[])
   const testkey = (e)=>{
     if(position == 3 && e.target.name == 'numero_corte'){
-      let padre = e.target.closest('div#cuerpo_ingresos')
-      let indice = parseInt(padre.dataset.position)
+      const padre = e.target.closest('div#cuerpo_ingresos')
+      const indice = parseInt(padre.dataset.position)
       setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,[e.target.name]:e.target.value} : row))
     }
     // for(let element of form.current.querySelectorAll("input[data-group='combo'")){
@@ -599,17 +617,17 @@ export function NewOrden() {
         setOpenloader(false)
         // console.log("El verdadero",resp)
 
-        let binaryString = window.atob(resp.data);
+        const binaryString = window.atob(resp.data);
         // console.log(binaryString)
-        let binaryLen = binaryString.length;
-        let bytes = new Uint8Array(binaryLen);
+        const binaryLen = binaryString.length;
+        const bytes = new Uint8Array(binaryLen);
         for (let i = 0; i < binaryLen; i++) {
-            let ascii = binaryString.charCodeAt(i);
+            const ascii = binaryString.charCodeAt(i);
             bytes[i] = ascii;
         }
-        let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+        const file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
 
-        let link = document.createElement('a')
+        const link = document.createElement('a')
         link.href = file
         link.target = 'blank'
         link.click()
@@ -711,7 +729,7 @@ export function NewOrden() {
                   position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal}/>
                 }
                 {
-                  position == 2 && <SeccionMolde info={molde} />
+                  position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
                 }
                 {
                   position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form}/>
@@ -721,7 +739,7 @@ export function NewOrden() {
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
-                <Button action={actualizarcombos} type={'button'} tipo={'warning'}>Actualizar</Button>
+                {/* <Button action={actualizarcombos} type={'button'} tipo={'warning'}>Actualizar</Button> */}
                 <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button>
                 {/* <Button action={() => printpedido()} type={'button'} tipo={'default'}>Print</Button> */}
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>

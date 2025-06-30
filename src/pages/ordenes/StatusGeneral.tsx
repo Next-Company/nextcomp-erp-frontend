@@ -25,7 +25,7 @@ export default function StatusGeneral({id}){
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id
-    let params_modal = null
+    const params_modal = null
     switch (action) {
       case 'delete':
         break;
@@ -125,29 +125,21 @@ export default function StatusGeneral({id}){
                         </div>
                         <div className="flex flex-row relative z-10 gap-6 pr-4">
                           <div className="flex flex-col">
-                            <div className="text-[10px] font-bold">T.COMBOS</div>
-                            <div className="text-[20px] italic font-black">{info[0][0].total_orden}</div>
-                          </div>
-                          <div className="flex flex-col">
-                            <div className="text-[10px] font-bold">C.CORTE</div>
-                            <div className="text-[20px] italic font-black">{info[0][0].total_corte}</div>
+                            <div className="text-[10px] font-bold">PRODUCCION</div>
+                            <div className="text-[20px] italic font-black">{info[0][0].combos.reduce((c,v)=>v.cantidad_combo + c,0) ?? info[2][0].combos.reduce((c,v)=>v.cantidad_combo + c,0)}</div>
                           </div>
                           <div className="flex flex-col">
                             <div className="text-[10px] font-bold">D.PENDIENTES</div>
                             <div className={`text-[20px] italic font-black ${parseInt(info[0][0].dias_pendientes) < 0 ? 'text-red-500' : 'text-black'}`}>{info[0][0].dias_pendientes}</div>
                           </div>
                         </div>
-                        {/* <div className={`relative z-10 text-[20px] italic pr-4 ${parseInt(info[0][0].dias_pendientes) < 0 ? 'text-red-500' : 'text-black'} font-bold`}>-234</div> */}
+
                       </div>
                       <div className="right-0 h-[65px] rounded-md absolute bg-gray-200 z-0 left-[20px]"></div>
                     </div>
-                    {/* <div className="flex flex-row">
-                      <div className="font-bold">#CORTE:</div>
-                      <div>234234</div>
-                    </div> */}
                   </div>
                   <div className="flex flex-row gap-2 mb-4">
-                    <div className="flex flex-row justify-between flex-1 px-4">
+                    {/* <div className="flex flex-row justify-between flex-1 px-4">
                       <div className="text-left">
                         <div className="flex flex-row gap-2">
                           <div className="font-bold">CLIENTE:</div>
@@ -176,7 +168,7 @@ export default function StatusGeneral({id}){
                           <div>{info[0][0].numero_corte}</div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -203,41 +195,19 @@ export default function StatusGeneral({id}){
                 <div className="relative h-[500px] flex flex-col overflow-hidden p-2">
                   <div className={`absolute top-0 left-0 w-full h-full ${tabstate ? 'z-10' : 'z-0 hidden'} flex-1 overflow-y-scroll scrollbar-special`}>
 
-                    <div className={`bg-amber-500 text-white rounded-md p-3 relative z-10 mt-2`}>
+                    <div className={`bg-slate-500 text-white rounded-md p-3 relative z-10 mt-2`}>
                       <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
-                        <div className="text-[14px] w-[100px] text-left">#22</div>
-                        <div className="flex-1">MOLDE</div>
+                        <div className="text-[14px] w-[100px] text-left">--</div>
+                        <div className="flex-1">ORDEN</div>
                         <div className="text-[10px] w-[100px] text-right">PENDIENTE</div>
                       </div>
-                      <div className="flex flex-row justify-between">
-                        <div className="flex flex-col items-center">
-                          <div className="text-[10px] font-bold">Responsable</div>
-                          <div className="text-[14px] font-bold">-</div>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <div className="text-[10px] font-bold">Molde</div>
-                          <div className="text-[14px] font-bold">-</div>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <div className="text-[10px] font-bold">Muestra</div>
-                          <div className="text-[14px] font-bold">-</div>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <div className="text-[10px] font-bold">Lavado</div>
-                          <div className="text-[14px] font-bold">-</div>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <div className="text-[10px] font-bold">Aprobacion</div>
-                          <div className="text-[14px] font-bold">-</div>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <div className="text-[10px] font-bold">Tizado</div>
-                          <div className={`text-[14px] font-bold text-white`}>22</div>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <div className="text-[10px] font-bold">Estado</div>
-                          <div className="text-[14px] font-bold">123</div>
-                        </div>
+                      <div className="flex flex-row justify-center gap-3">
+                        {
+                          info[0][0].combos.map(c=><div className="flex flex-col items-center">
+                          <div className="text-[10px] font-bold">COMBO {c.color_combo}</div>
+                          <div className="text-[14px] font-bold">{c.cantidad_combo}</div>
+                        </div>)
+                        }
                       </div>
                       <div>
                         <ul className="flex flex-row justify-end">
@@ -270,122 +240,137 @@ export default function StatusGeneral({id}){
                       </div>
                     </div>
 
-                    <div className={`bg-cyan-500 text-white rounded-md p-3 relative z-10 mt-2`}>
-                      <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
-                        <div className="text-[14px] w-[100px] text-left">#22</div>
-                        <div className="flex-1">HOJA DE CORTE</div>
-                        <div className="text-[10px] w-[100px] text-right">PENDIENTE</div>
+                    {
+                      info[1].length > 0 && info[1].map(molde=><div className={`bg-amber-500 text-white rounded-md p-3 relative z-10 mt-2`}>
+                        <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
+                          <div className="text-[14px] w-[100px] text-left">--</div>
+                          <div className="flex-1">MOLDE</div>
+                          <div className="text-[10px] w-[100px] text-right">{molde.estado_molde}</div>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                          <div className="flex flex-col items-center">
+                            <div className="text-[10px] font-bold">RESPONSABLE</div>
+                            <div className="text-[14px] font-bold">{molde.responsable}</div>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="text-[10px] font-bold">MOLDE</div>
+                            <div className="text-[14px] font-bold">{molde.molde}</div>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="text-[10px] font-bold">MUESTRA</div>
+                            <div className="text-[14px] font-bold">{molde.muestra}</div>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="text-[10px] font-bold">LAVADO</div>
+                            <div className="text-[14px] font-bold">{molde.lavado}</div>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="text-[10px] font-bold">APROBACION</div>
+                            <div className="text-[14px] font-bold">{molde.cliente_corte}</div>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="text-[10px] font-bold">TIZADO</div>
+                            <div className={`text-[14px] font-bold text-white`}>{molde.tizado}</div>
+                          </div>
+                        </div>
+                        <div>
+                          <ul className="flex flex-row justify-end">
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="show" onClick={()=>{}} >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" onClick={() => { }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                      <div className="flex flex-col justify-between gap-4">
+                      )
+                    }
+                    
 
-                        <div className="flex flex-row justify-between">
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO1</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO2</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO3</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO4</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO5</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO6</div>
-                            <div className={`text-[14px] font-bold text-white`}>22</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO7</div>
-                            <div className="text-[14px] font-bold">123</div>
-                          </div>
+                    {
+                      info[2].length > 0 && info[2].map((corte,key)=><div className={`bg-cyan-500 text-white rounded-md p-3 relative z-10 mt-2`}>
+                        <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
+                          <div className="text-[14px] w-[100px] text-left">#{corte.numero_corte}</div>
+                          <div className="flex-1">CORTE {key + 1}</div>
+                          <div className="text-[10px] w-[100px] text-right">{corte.estado_corte}</div>
                         </div>
-                        <div className="flex flex-row justify-between">
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO8</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO9</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO10</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO11</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO12</div>
-                            <div className="text-[14px] font-bold">-</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO13</div>
-                            <div className={`text-[14px] font-bold text-white`}>22</div>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <div className="text-[10px] font-bold">COMBO14</div>
-                            <div className="text-[14px] font-bold">123</div>
-                          </div>
+                        <div className="flex flex-row justify-center gap-4">
+                          {
+                            corte.combos.map(c=><div className="flex flex-col items-center">
+                            <div className="text-[10px] font-bold">COMBO {c.color_combo}</div>
+                            <div className="text-[14px] font-bold">{c.cantidad_combo}</div>
+                          </div>)
+                          }
+                          
                         </div>
-                        
+                        <div>
+                          <ul className="flex flex-row justify-end">
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="show" onClick={()=>{}} >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" onClick={() => { }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                      <div>
-                        <ul className="flex flex-row justify-end">
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="show" onClick={()=>{}} >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" onClick={() => { }}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
+
+                      )
+                    }
+                    
 
                   </div>
                   <div className={`absolute top-0 left-0 w-full h-full ${tabstate ? 'z-0 hidden' : 'z-10'} flex-1 overflow-y-scroll scrollbar-special`}>
                     <div className="">
                       <div className="p-2">
-                        {/* <h3 className="font-bold">HISTORIAL DE SERVICIOS</h3> */}
                       </div>
                     </div>
                     <div className=" relative z-0">
                       <div className="relative z-[10]">
-                        {
+                        {/* {
                           info.length > 0
                           ?
                           Object.keys(info[1]).map(key=>{
                             return <>
-                              {/* <div className="p-4 text-[12px] font-extrabold relative z-10"><span className="bg-white p-[2px]">{key.split('-').reverse().join('/')}</span></div> */}
                               <div className="p-4 text-[12px] font-extrabold relative z-10"><span className="bg-amber-500 rounded-lg pl-3 pr-3 p-[2px]">{key.split('-').reverse().join('/')}</span></div>
                               <div className="flex flex-col gap-2">
                               {
@@ -394,8 +379,6 @@ export default function StatusGeneral({id}){
                                     <div className="text-[14px] w-[100px] text-left">#{item.idx}</div>
                                     <div className="flex-1">{item.servicio}</div>
                                     <div className="text-[10px] w-[100px] text-right">{item.estado}</div>
-                                    {/* <div className="flex flex-col items-center justify-center">
-                                    </div> */}
                                   </div>
                                   <div className="flex flex-row justify-between">
                                     <div className="flex flex-col items-center">
@@ -430,7 +413,6 @@ export default function StatusGeneral({id}){
                                       <div className="text-[10px] font-bold">Saldo</div>
                                       <div className="text-[14px] font-bold">{item.cantidad_servicio - item.ingresos}</div>
                                     </div>
-                                    {/* {item.servicio} - {item.modelo} */}
                                   </div>
                                   <div>
                                     <ul className="flex flex-row justify-end">
@@ -469,10 +451,8 @@ export default function StatusGeneral({id}){
                           })
                           :
                           <div></div>
-                        }
+                        } */}
                         <div className="w-full top-0 h-[30px] flex flex-col justify-center items-center z-0">
-                          {/* <div className="border-[.5px] border-dashed h-[30px] border-gray-400"></div> */}
-                          {/* <div className="w-[15px] h-[15px] border-[4px] border-gray-500 rounded-full"></div> */}
                         </div>
                         <div className="absolute w-full top-0 bottom-0 flex flex-row justify-center z-0">
                           <div className="border-[.5px] border-dashed border-gray-400"></div>
