@@ -84,15 +84,45 @@ function CuerpoCorte({info,setcorte,position,quitar,form}){
   const editvalue = (e)=>{
     const indice = e.target.dataset.position
     const id = info.idx
-    setcorte(corte=>corte.reduce((c,v)=>{
-      c.push({...v,combos:v.idx == id ? v.combos.map((row,key)=>key == parseInt(indice) ? ({...row,[e.target.dataset.name]:e.target.value}) : row ) : v.combos})
-      return c
-    },[]))
+    const name = e.target.dataset.name
+    console.log("La informacion del corte es:",info)
+
+    let total = 0
+    if(['xs','s','m','l','xl','xxl'].includes(name)){
+      total = ['xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+        if(v !== name){
+          c += parseInt(info.combos[indice][v])
+        }
+        return c
+      },0)
+      total += parseInt(e.target.value)
+
+      setcorte(corte=>corte.reduce((c,v)=>{
+        c.push({...v,combos:v.idx == id ? v.combos.map((row,key)=>key == parseInt(indice) ? ({...row,[e.target.dataset.name]:e.target.value,cantidad_combo:total}) : row ) : v.combos})
+        return c
+      },[]))
+    }else{
+      setcorte(corte=>corte.reduce((c,v)=>{
+        c.push({...v,combos:v.idx == id ? v.combos.map((row,key)=>key == parseInt(indice) ? ({...row,[e.target.dataset.name]:e.target.value}) : row ) : v.combos})
+        return c
+      },[]))
+    }
+
+    // if(['xs','s','m','l','xl','xxl'].includes(name)){
+
+
+    // }else{
+
+    // }
+    // setcorte(corte=>corte.reduce((c,v)=>{
+    //   c.push({...v,combos:v.idx == id ? v.combos.map((row,key)=>key == parseInt(indice) ? ({...row,[e.target.dataset.name]:e.target.value}) : row ) : v.combos})
+    //   return c
+    // },[]))
   }
   const agregarcombo = (e)=>{
     const id = e.target.dataset.id
     setcorte(corte=>corte.reduce((c,v)=>{
-      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',cantidad_combo:0}] : v.combos})
+      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
       return c
     },[]))
   }
@@ -137,6 +167,12 @@ function CuerpoCorte({info,setcorte,position,quitar,form}){
               <thead className="text-left sticky top-0 bg-white">
                 <tr>
                   <th className="lg:table-cell w-[500px]">ColorCombo</th>  
+                  <th className="lg:table-cell">XS / 26</th>
+                  <th className="lg:table-cell">S / 28</th>
+                  <th className="lg:table-cell">M / 30</th>
+                  <th className="lg:table-cell">L / 32</th>
+                  <th className="lg:table-cell">XL / 34</th>
+                  <th className="lg:table-cell">XXL / 36</th>
                   <th className="lg:table-cell">CantidadCombo</th>
                   <th className="lg:table-cell">Acciones</th>
                 </tr>
@@ -145,7 +181,13 @@ function CuerpoCorte({info,setcorte,position,quitar,form}){
                 {
                   Object.keys(info).length > 0 && info.combos && info.combos.map((row,key)=>(
                     <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                      <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
+                      <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
+                      <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
+                      <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
+                      <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
+                      <td><input data-name="l" type="number" onChange={editvalue} data-position={key} value={row.l}/></td>
+                      <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} value={row.xl}/></td>
+                      <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl}/></td>
                       <td><input data-name="cantidad_combo" type="number" onChange={(editvalue)} data-position={key} value={row.cantidad_combo}/></td>
                       <td className="w-[250px]">
                         <ul className="flex flex-row justify-end">
@@ -278,26 +320,49 @@ function SeccionOrden({info,form,setorden,setopen,openmodal}){
 
   const onclick = (e)=>{
     const position = e.target.dataset.position
-    setorden(info => ([{...info[0], combos: info[0].combos.filter((row,key)=>key !== parseInt(position)) }]))
+    setorden(orden => ([{...orden[0], combos: orden[0].combos.filter((row,key)=>key !== parseInt(position)) }]))
   }
   const editvalue = (e)=>{
     const indice = e.target.dataset.position
-    setorden(info => ([{...info[0], combos: info[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value} : row) }]))
+    const name = e.target.dataset.name
+    let total = 0
+    console.log("La info cargada es la siguiente:",info)
+
+    if(['xs','s','m','l','xl','xxl'].includes(name)){
+      total = ['xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+        if(v !== name){
+          c += parseInt(info[0].combos[indice][v])
+        }
+        return c
+      },0)
+      total += parseInt(e.target.value)
+      console.log("El total es el siguiente:",total)
+      setorden(orden => ([{...orden[0], combos: orden[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value,cantidad_combo:total} : row) }]))
+    }else{
+      setorden(orden => ([{...orden[0], combos: orden[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value} : row) }]))
+    }
+
+    // if(['xs','s','m','l','xl','xxl'].includes(name)){
+    //   setorden(info => ([{...info[0], combos: info[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value,cantidad_combo:row.cantidad_combo + row.reduce((c,v)=>v.x + v.m + v.l + v.xl + c)} : row) }]))
+    // }else{
+    // }
+    
+    // setorden(info => ([{...info[0], combos: info[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value,cantidad_combo:total} : row) }]))
   }
   const agregarcombo = ()=>{
     console.log("info combos:",info)
     // setorden(info => ([{ ...info[0], combos: [...info[0].combos,{id_orden_CAB: null, color_combo: '', cantidad_combo: 0 }] }]))
-    if(!(info.length > 0)){
-      setorden([{combos: [{id_orden_CAB: null, color_combo: '', cantidad_combo: 0 }] }])
+    if(!(info.length > 0) || !info[0].combos){
+      setorden([{combos: [{id_orden_CAB: null,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0 }] }])
     }else{
-      setorden(info => ([{ ...info[0], combos: [...info[0].combos,{id_orden_CAB: null, color_combo: '', cantidad_combo: 0 }] }]))
+      setorden(orden => ([{ ...orden[0], combos: [...orden[0].combos,{id_orden_CAB: null, color_combo: '',xs:0,s:0,m:0,l:0,xl:0,xxl:0, cantidad_combo: 0 }] }]))
     }
   }
   const searchpedido = () => {
     const params_modal = {
       open: true,
       content: <Pedidos actions={(item) => {
-        setorden(info => ([{ ...info[0], id_pedido_origen: item.idx, nro_pedido_origen: item.orden_ref }]))
+        setorden(orden => ([{ ...orden[0], id_pedido_origen: item.idx, nro_pedido_origen: item.orden_ref }]))
         setopen(false)
       }} />,
       controls: true,
@@ -313,7 +378,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal}){
       open:true,
       content: <Proveedores actions={(item)=>{  
         console.log("Info del provedor:",item)
-        setorden(info=>([{...info[0],id_cliente_CAB:item.idx ,cliente:item.nom.substr(0,49)}]))
+        setorden(orden=>([{...orden[0],id_cliente_CAB:item.idx ,cliente:item.nom.substr(0,49)}]))
         setopen(false)
       }}/>,
       controls: true,
@@ -389,8 +454,14 @@ function SeccionOrden({info,form,setorden,setopen,openmodal}){
         <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
           <thead className="text-left sticky top-0 bg-white">
             <tr>
-              <th className="lg:table-cell w-[500px]">ColorCombo</th>  
-              <th className="lg:table-cell">CantidadCombo</th>
+              <th className="lg:table-cell w-[500px]">Color</th>
+              <th className="lg:table-cell">XS / 26</th>
+              <th className="lg:table-cell">S / 28</th>
+              <th className="lg:table-cell">M / 30</th>
+              <th className="lg:table-cell">L / 32</th>
+              <th className="lg:table-cell">XL / 34</th>
+              <th className="lg:table-cell">XXL / 36</th>  
+              <th className="lg:table-cell">CantidadTotal</th>
               <th className="lg:table-cell">Acciones</th>
             </tr>
           </thead>
@@ -399,6 +470,12 @@ function SeccionOrden({info,form,setorden,setopen,openmodal}){
               info.length > 0 && info[0].combos && info[0].combos.length > 0 && info[0].combos.map((row,key)=>(
                 <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                   <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
+                  <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
+                  <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
+                  <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
+                  <td><input data-name="l" type="number" onChange={editvalue} data-position={key} value={row.l}/></td>
+                  <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} value={row.xl}/></td>
+                  <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl}/></td>
                   <td><input data-name="cantidad_combo" type="number" onChange={(editvalue)} data-position={key} value={row.cantidad_combo}/></td>
                   <td className="w-[250px]">
                     <ul className="flex flex-row justify-end">
