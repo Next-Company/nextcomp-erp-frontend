@@ -91,7 +91,8 @@ export default function StatusGeneral({id}){
     setZoom(!zoom)
   }
   const onerror = (e) => {
-    e.target.src = 'https://jsjfact.com/facturador/imagenez/op_166.png'
+    // e.target.src = 'https://jsjfact.com/facturador/imagenez/op_166.png'
+    e.target.src = 'https://jsjfact.com/facturador/imagenez/default_clothe_next.jpg'
     // e.target.classList.add('animate-pulse')
     // setTimeout(() => {
     //   e.target.classList.remove('animate-pulse')
@@ -356,8 +357,6 @@ export default function StatusGeneral({id}){
 
                       )
                     }
-                    
-
                   </div>
                   <div className={`absolute top-0 left-0 w-full h-full ${tabstate ? 'z-0 hidden' : 'z-10'} flex-1 overflow-y-scroll scrollbar-special`}>
                     <div className="">
@@ -366,15 +365,15 @@ export default function StatusGeneral({id}){
                     </div>
                     <div className=" relative z-0">
                       <div className="relative z-[10]">
-                        {/* {
+                        {
                           info.length > 0
                           ?
-                          Object.keys(info[1]).map(key=>{
+                          Object.keys(info[3]).map(key=>{
                             return <>
                               <div className="p-4 text-[12px] font-extrabold relative z-10"><span className="bg-amber-500 rounded-lg pl-3 pr-3 p-[2px]">{key.split('-').reverse().join('/')}</span></div>
                               <div className="flex flex-col gap-2">
                               {
-                                info[1][key].map(item=><div className={`${item.estado == 'FINALIZADO' ? 'bg-gray-400' : colorfase[item.servicio]} text-white rounded-md p-3 relative z-10`}>
+                                info[3][key].map(item=><div className={`${item.estado == 'FINALIZADO' ? 'bg-gray-400' : colorfase[item.servicio]} text-white rounded-md p-3 relative z-10`}>
                                   <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
                                     <div className="text-[14px] w-[100px] text-left">#{item.idx}</div>
                                     <div className="flex-1">{item.servicio}</div>
@@ -451,7 +450,7 @@ export default function StatusGeneral({id}){
                           })
                           :
                           <div></div>
-                        } */}
+                        }
                         <div className="w-full top-0 h-[30px] flex flex-col justify-center items-center z-0">
                         </div>
                         <div className="absolute w-full top-0 bottom-0 flex flex-row justify-center z-0">

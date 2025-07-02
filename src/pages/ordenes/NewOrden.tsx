@@ -544,7 +544,7 @@ export function NewOrden() {
   const navigate = useNavigate()
   const [tipopedido,setTipopedido] = useState(1)
   
-  console.log("Info del corte :",corte)
+  console.log("Info del corte :",orden)
 
   const onsubmit = async (e) => {
     e.preventDefault()
@@ -631,10 +631,8 @@ export function NewOrden() {
       if(event.detail.name == 'estado_corte'){
         const padre = event.detail.target.closest('div#cuerpo_ingresos')
         const indice = padre.dataset.position
-        // console.log("La informacion del selecct corte es :",event.detail)
         setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,['estado_corte']:event.detail.valor} : row))
       }else{
-        // console.log("asdfdsfasfd:",event.detail)
         setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
       }
     };
@@ -652,6 +650,7 @@ export function NewOrden() {
             setOrden(resp[0])
             setMolde(resp[1])
             setCorte(resp[2])
+
             // setTipopedido(resp[0][0].modalidad_pedido == 'ORDN' ? 1 : 0)
             // setInfoCombosOrden(resp[1])
             // setInfoCombosCorte(resp[2])
