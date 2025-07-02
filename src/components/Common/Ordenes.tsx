@@ -23,7 +23,7 @@ export default function Ordenes(children){
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'ordenes/getordenes/'})
+      await Consulta({url: 'ordenes/getordenescorte/'})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)

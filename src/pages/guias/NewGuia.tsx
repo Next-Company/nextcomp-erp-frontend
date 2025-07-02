@@ -169,7 +169,7 @@ export default function NewGuia(){
           setOpenloader(false)
           // navigate('/main/guias/')
           if(resp.ok){
-            toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+            toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })
           }
@@ -185,7 +185,7 @@ export default function NewGuia(){
     })
   }
   useEffect(()=>{
-    if(urlparams.id){
+    if(urlparams.id){      
       setOpenloader(true)
       const pp = async () => {
         await Consulta({url: 'produccion/guia/' + urlparams.id,})
@@ -208,6 +208,25 @@ export default function NewGuia(){
       }
       pp()
     }
+    // form.current.addEventListener('salamandra',event=>{
+    //   setOpenloader(true)
+    //   Consulta({url:'ordenes/extraeritemscaja/199'})
+    //   .then((resp)=>{
+    //     if(resp.length > 0){
+    //       setRegistros(resp)
+    //     }else{
+    //       toast.error('Se produjo un error!!', { theme: "colored" })
+    //     }
+    //     console.log("Resultado del proceso de extraccion :",resp)
+    //   })
+    //   .catch((error)=>{
+    //     console.log("Error con la consulta",error)
+    //   })
+    //   .finally(()=>{
+    //     setOpenloader(false)
+    //   })
+    //   console.log("Evento del input select otra vez",event.detail)
+    // })
   },[])
 
   const nuevoregistro = ()=>{
@@ -263,8 +282,30 @@ export default function NewGuia(){
     params_modal = {
       open:true,
       content: <Ordenes actions={(item)=>{
-        setInfo(info=>({...info,id_orden_CAB:item.idx,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
+        
         setOpen(false)
+
+
+        setOpenloader(true)
+        Consulta({url:'ordenes/extraeritemscaja/199'})
+        .then((resp)=>{
+          if(resp.length > 0){
+            setInfo(info=>({...info,id_orden_CAB:item.idx,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
+            setRegistros(resp)
+          }else{
+            toast.error('Se produjo un error!!', { theme: "colored" })
+          }
+          console.log("Resultado del proceso de extraccion :",resp)
+        })
+        .catch((error)=>{
+          console.log("Error con la consulta",error)
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
+        console.log("Evento del input select otra vez",event.detail)
+
+
       }}/>,
       controls: true,
       header: false,
@@ -284,6 +325,17 @@ export default function NewGuia(){
       }
     }
     openModal(params_modal)
+  }
+  const cancelarguia = ()=>{
+    openModal({
+      header:false,
+      open:true,
+      content: <div>Desea cancelar el registro de la guia?.<br/> Cualquier cambio realizado se perderá si da a aceptar.</div>,
+      controls: true,
+      action:()=>{
+        navigate('/main/guias/')
+      }
+    })
   }
   useEffect(()=>{
     console.log("Los valores del nuevo registro son:",registros)
@@ -308,27 +360,27 @@ export default function NewGuia(){
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" />
                   <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} />
-                  <InputSelect title={'Tipo'} name={"tipo"} data={
+                  <Input name={'tipo'} defaults={'SERVICIOS'} type="hidden" />
+                  {/* <InputSelect title={'Tipo'} name={"tipo"} data={
                     [
                       { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 
-                      { indice: 'MUESTRA/PROTOTIPO', option: 'MUESTRA/PROTOTIPO' }, 
-                      { indice: 'ACABADOS', option: 'ACABADOS' },
-                      { indice: 'REPARACION', option: 'REPARACION' },
-                      { indice: 'PRESTAMO', option: 'PRESTAMO' },
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
-                  />
-                  <InputSelect title={'Servicio'} name={"servicio"} data={
-                    [
-                      { indice: 'CONFECCION', option: 'CONFECCION', selected: true }, 
-                      { indice: 'OJAL', option: 'OJAL' }, 
-                      { indice: 'ESTAMPADO', option: 'ESTAMPADO' },
-                      { indice: 'LAVANDERIA', option: 'LAVANDERIA' },
-                      { indice: 'BORDADO', option: 'BORDADO' },
-                      { indice: 'ACABADOS', option: 'ACABADOS' },
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.servicio : null} 
-                  />
+                  /> */}
+                  <div className="w-[500px]">
+                    <InputSelect title={'Servicio'} name={"servicio"} data={
+                      [
+                        // { indice: '', option: '--Seleccione un servicio--', selected: true }, 
+                        { indice: 'CONFECCION', option: 'CONFECCION' }, 
+                        { indice: 'OJAL', option: 'OJAL' }, 
+                        { indice: 'ESTAMPADO', option: 'ESTAMPADO' },
+                        { indice: 'LAVANDERIA', option: 'LAVANDERIA' },
+                        { indice: 'BORDADO', option: 'BORDADO' },
+                        { indice: 'ACABADOS', option: 'ACABADOS' },
+                      ]} 
+                      df={Object.keys(info).length > 0 ? info.servicio : null} 
+                    />
+                  </div>
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" />
                   <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" />                  
@@ -444,7 +496,8 @@ export default function NewGuia(){
                     }
                   </div>
                   <div className="flex flex-row gap-2">
-                    <Button action={() => navigate('/main/guias/')} type={'button'} tipo={'default'}>Cancelar</Button>
+                    {/* <Button action={() => navigate('/main/guias/')} type={'button'} tipo={'default'}>Cancelar</Button> */}
+                    <Button action={cancelarguia} type={'button'} tipo={'default'}>Cancelar</Button>
                     <Button type={'submit'} tipo={'success'}>Guardar</Button>
                   </div>
                   {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}

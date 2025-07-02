@@ -64,6 +64,7 @@ export function InputSelect({ title, name, data, df, formref=null }) {
         {/* <input type='hidden' name={name} value={select >= 0 ? info[select].indice : null} /> */}
         <input type='hidden' onChange={onchange} name={name} value={info[select].indice} />
         {/* <input onClick={e => e.stopPropagation()} readOnly value={select > 0 ? info[select].option : null} type="text" onFocus={onfocus} onBlur={onblur} className="inp cursor-default bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" /> */}
+
         <input onClick={e => e.stopPropagation()} readOnly value={info[select].option} onChange={onchange} type="text" onFocus={onfocus} onBlur={onblur} className="inp cursor-default bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" />
 
         <span className="after:absolute after:bottom-0 after:left-0 after:transition-all after:opacity-1 after:w-full after:border-b-[2px] 
