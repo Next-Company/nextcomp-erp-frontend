@@ -49,7 +49,11 @@ export default function ListaDespachos() {
             })
               .then(resp => {
                 // setOrdenes(resp)
-                toast.success('Despacho eliminado con éxito!', { theme: "colored" })
+                if(resp.ok){
+                  toast.success(resp.message, { theme: "colored" })
+                }else{
+                  toast.error(resp.message, { theme: "colored" })
+                }
                 // setRefresh(true)
                 recargarinfo()
                 setOpenloader(false)

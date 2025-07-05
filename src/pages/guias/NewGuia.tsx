@@ -282,12 +282,12 @@ export default function NewGuia(){
     params_modal = {
       open:true,
       content: <Ordenes actions={(item)=>{
-        
+        console.log("INfor de la orden es:",item)
         setOpen(false)
 
 
         setOpenloader(true)
-        Consulta({url:'ordenes/extraeritemscaja/199'})
+        Consulta({url:'ordenes/extraeritemscaja/' + item.idx})
         .then((resp)=>{
           if(resp.length > 0){
             setInfo(info=>({...info,id_orden_CAB:item.idx,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))

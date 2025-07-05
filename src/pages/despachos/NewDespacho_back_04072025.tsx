@@ -119,18 +119,16 @@ function CuerpoIngresos({registros,setregistros,setopen}){
   useEffect(()=>{
     console.log("Imprimierdo mi primer efecto",registros)
     setCopia(registros.reduce((c,v)=>{
-      if(v.fracciones_despacho.length > 0){
-        v.fracciones_despacho = [
-          v.fracciones_despacho.reduce((cc,vv)=>{
-            cc[vv.talla] = vv.cantidad
-            return cc
-          },{concepto:'INGRESO'}),
-          v.fracciones_despacho.reduce((cc,vv)=>{
-            cc[vv.talla] = vv.caidos
-            return cc
-          },{concepto:'CAIDOS'}),
-        ]
-      }
+      v.fracciones_despacho = [
+        v.fracciones_despacho.reduce((cc,vv)=>{
+          cc[vv.talla] = vv.cantidad
+          return cc
+        },{concepto:'INGRESO'}),
+        v.fracciones_despacho.reduce((cc,vv)=>{
+          cc[vv.talla] = vv.caidos
+          return cc
+        },{concepto:'CAIDOS'}),
+      ]
       c.push(v)
       return c
     },[]))
