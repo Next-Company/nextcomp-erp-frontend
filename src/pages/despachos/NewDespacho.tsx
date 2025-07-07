@@ -30,6 +30,7 @@ const model = {fracciones_despacho:[
 
 function CuerpoDespachoTest({position,data,setregistros,registros}){
   const [ingreso,setIngreso] = useState(data.fracciones_despacho.length > 0 ? data : model)
+  // const [ingreso,setIngreso] = useState([])
   console.log("Nuevo reenderizado del componente CuerpoDespachoTest")
   useEffect(()=>{
     console.log("La info recibida es:",data)
@@ -37,9 +38,9 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
   },[data])
 
   const editvalue = (e)=>{
-    let grupo = parseInt(e.target.dataset.grupo)
-    let name = e.target.dataset.name
-    let value = parseInt(e.target.value)
+    const grupo = parseInt(e.target.dataset.grupo)
+    const name = e.target.dataset.name
+    const value = parseInt(e.target.value)
     // setData([...data.map((row,key)=> key == parseInt(position) ? {...row,[name]:parseInt(e.target.value)} : row)])
     console.log("Dentro de la edicion de cantidades despachos",grupo,name,value)
     
@@ -118,7 +119,7 @@ function CuerpoIngresos({registros,setregistros,setopen}){
   const [copia,setCopia] = useState([])
   useEffect(()=>{
     console.log("Imprimierdo mi primer efecto",registros)
-    setCopia(registros.reduce((c,v)=>{
+    setCopia(JSON.parse(JSON.stringify(registros)).reduce((c,v)=>{
       if(v.fracciones_despacho.length > 0){
         v.fracciones_despacho = [
           v.fracciones_despacho.reduce((cc,vv)=>{
@@ -135,17 +136,35 @@ function CuerpoIngresos({registros,setregistros,setopen}){
       return c
     },[]))
   },[])
-  console.log("La info de la copia es :",copia)
+  // console.log("La info de la copia es :",copia)
   const actualizar = ()=>{
-    setregistros(copia.map(row=>
+    // console.log("Banana:",copia[0].fracciones_despacho)
+    console.log("Banana:",copia)
+    const kk = copia.map(row=>
       ({...row,
         despacho:row.fracciones_despacho.length > 0 
             ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt(row.fracciones_despacho[0][v]),0) 
             : 0,
         caidos:row.fracciones_despacho.length > 0 
             ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt((row.fracciones_despacho[1])[v]),0) 
-            : 0
-      })))
+            : 0,
+        fracciones_despacho: row.fracciones_despacho.length > 0
+        ? ['xs','s','m','l','xl','xxl'].map(item=>({talla:item,cantidad:row.fracciones_despacho[0][item],caidos:row.fracciones_despacho[1][item]}))
+        : []
+      }))
+      console.log("Enoelmaiz :",kk)
+
+    // setregistros(copia.map(row=>
+    //   ({...row,
+    //     despacho:row.fracciones_despacho.length > 0 
+    //         ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt(row.fracciones_despacho[0][v]),0) 
+    //         : 0,
+    //     caidos:row.fracciones_despacho.length > 0 
+    //         ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt((row.fracciones_despacho[1])[v]),0) 
+    //         : 0
+    //   })))
+
+    setregistros(kk)
     setopen(false)
   }
   return(
@@ -316,6 +335,7 @@ export default function NewDespacho() {
 
   const onsubmit = (e) => {
     e.preventDefault()
+    console.log("Los datos del formulario son:", registros)
     if(registros.length > 0){
       // if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
       if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0) {
@@ -323,8 +343,6 @@ export default function NewDespacho() {
         return 0
       }
     }
-    console.log("Los datos del formulario son:", registros)
-
     for (const element of form.current.elements) {
       if(['responsable','nro_guia'].includes(element.name) && element.value == ''){
         toast.error(`El campo ${element.name} no ha sido completado. Por favor verifique.`, { theme: "colored" })
