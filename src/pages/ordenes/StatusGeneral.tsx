@@ -98,6 +98,12 @@ export default function StatusGeneral({id}){
     //   e.target.classList.remove('animate-pulse')
     // }, 1000)
   }
+  const opendetail = (e)=>{
+    // let parent = e.target.closest("div")
+    console.log("asdfasd:",e.currentTarget,e.currentTarget.parentElement.parentElement)
+    let parent = e.currentTarget.parentElement.parentElement
+    parent.classList.toggle("showdata")
+  }
   return(
     <>
       <div className="flex flex-col pb-4 relative">
@@ -373,7 +379,7 @@ export default function StatusGeneral({id}){
                               <div className="p-4 text-[12px] font-extrabold relative z-10"><span className="bg-amber-500 rounded-lg pl-3 pr-3 p-[2px]">{key.split('-').reverse().join('/')}</span></div>
                               <div className="flex flex-col gap-2">
                               {
-                                info[3][key].map(item=><div className={`${item.estado == 'FINALIZADO' ? 'bg-gray-400' : colorfase[item.servicio]} text-white rounded-md p-3 relative z-10`}>
+                                info[3][key].map(item=><div className={`${item.estado == 'FINALIZADO' ? 'bg-gray-400' : colorfase[item.servicio]} text-white rounded-md p-3 relative z-10 group`}>
                                   <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
                                     <div className="text-[14px] w-[100px] text-left">#{item.idx}</div>
                                     <div className="flex-1">{item.servicio}</div>
@@ -442,6 +448,12 @@ export default function StatusGeneral({id}){
                                       </li>
                                     </ul>
 
+                                  </div>
+                                  <div className={`absolute w-full left-0 h-0 group-[.showdata]:h-[200px] bg-red-500 flex flex-row justify-center rounded-b-lg transition-all`}>
+                                    <div className="absolute w-full px-2 h-[20px] bottom-0 flex flex-col items-center justify-center cursor-pointer gap-1" onClick={opendetail}>
+                                      <div className="bg-gray-400 h-[2px] w-full rounded-xl pointer-events-none"></div>
+                                      <div className="bg-gray-400 h-[2px] w-full rounded-xl pointer-events-none"></div>
+                                    </div>
                                   </div>
                                 </div>)
                               }

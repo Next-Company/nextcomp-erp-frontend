@@ -277,7 +277,7 @@ function SeccionCorte({info,setcorte,form}){
       }
       <div className="sticky bottom-0">
         <div className="flex gap-3 flex-wrap justify-end">
-          <Button type="button" tipo="default" action={deletecorte}>Eliminar</Button>
+          {/* <Button type="button" tipo="default" action={deletecorte}>Eliminar</Button> */}
           <Button type="button" tipo="default" action={addcorte}>Agregar nuevo corte</Button>
         </div>
       </div>
@@ -308,7 +308,7 @@ function SeccionMolde({info,orden}){
   </>
 }
 
-function SeccionOrden({info,form,setorden,setopen,openmodal}){
+function SeccionOrden({info,form,setorden,setopen,openmodal,fases}){
   const [tipopedido,setTipopedido] = useState(1)
   const [dataimg,setDataimg] = useState([])
   useEffect(()=>{
@@ -440,7 +440,13 @@ function SeccionOrden({info,form,setorden,setopen,openmodal}){
           <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
           <Input name={'precio'} defaults={info.length > 0 ? info[0].precio : null} title="Precio" type="number" />
           <div className="flex-1 min-w-[500px]">
-            <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={[{ indice: 'AVIOS', option: 'AVIOS'},{ indice: 'CORTE', option: 'CORTE'},{ indice: 'MOLDE', option: 'MOLDE'},{ indice: 'CONFECCION', option: 'CONFECCION' }, { indice: 'OJAL Y BOTON', option: 'OJAL Y BOTON' }, { indice: 'ESTAMPADO', option: 'ESTAMPADO' }, { indice: 'LAVANDERIA', option: 'LAVANDERIA' }, { indice: 'BORDADO', option: 'BORDADO' }, { indice: 'ACABADOS', option: 'ACABADOS' }]} df={info.length > 0 ? info[0].ruta_proceso : null} />
+            {/* <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={[{ indice: 'AVIOS', option: 'AVIOS'},{ indice: 'CORTE', option: 'CORTE'},{ indice: 'MOLDE', option: 'MOLDE'},{ indice: 'CONFECCION', option: 'CONFECCION' }, { indice: 'OJAL Y BOTON', option: 'OJAL Y BOTON' }, { indice: 'ESTAMPADO', option: 'ESTAMPADO' }, { indice: 'LAVANDERIA', option: 'LAVANDERIA' }, { indice: 'BORDADO', option: 'BORDADO' }, { indice: 'ACABADOS', option: 'ACABADOS' }]} df={info.length > 0 ? info[0].ruta_proceso : null} /> */}
+            {
+              fases.length > 0
+              ? <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={info.length > 0 ? info[0].ruta_proceso : null} />
+              : <Input name={''} defaults={null} title="Ruta" type="text" />
+            }
+            {/* <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={info.length > 0 ? info[0].ruta_proceso : null} /> */}
           </div>
           <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
           <Button action={loadimage} type={'button'} tipo={'accept'}>
@@ -543,6 +549,7 @@ export function NewOrden() {
   const [dataimg, setDataimg] = useState([])
   const navigate = useNavigate()
   const [tipopedido,setTipopedido] = useState(1)
+  const [fases,setFases] = useState([])
   
   console.log("Info del corte :",orden)
 
@@ -579,19 +586,6 @@ export function NewOrden() {
       data.append('info',JSON.stringify(corte))
       data.append('id',urlparams.id)
     }
-    // switch (position) {
-    //   case 0:
-    //     url_save = 'ordenes/saveFaseOrden'
-    //     break;
-    //   case 2:
-    //     url_save = 'ordenes/saveFaseMolde'
-    //     break;
-    //   case 3:
-    //     url_save = 'ordenes/saveFaseCorte'
-    //     break;
-    //   default:
-    //     break;
-    // }
     const PARAMS_MODAL = {
       open: true,
       header: false,
@@ -650,6 +644,7 @@ export function NewOrden() {
             setOrden(resp[0])
             setMolde(resp[1])
             setCorte(resp[2])
+            setFases(resp[3])
 
             // setTipopedido(resp[0][0].modalidad_pedido == 'ORDN' ? 1 : 0)
             // setInfoCombosOrden(resp[1])
@@ -665,7 +660,23 @@ export function NewOrden() {
           })
       }
       pp()
+    }else{
+      setOpenloader(true)
+      Consulta({url:'ordenes/getfasesproduccion'})
+      .then(resp=>{
+        console.log("Las fases de produccion son :",resp)
+        setFases(resp)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+      .finally(()=>{
+        setOpenloader(false)
+      })
     }
+
+
+
   },[])
   const testkey = (e)=>{
     if(position == 3 && e.target.name == 'numero_corte'){
@@ -802,7 +813,7 @@ export function NewOrden() {
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
-                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal}/>
+                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases}/>
                 }
                 {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />

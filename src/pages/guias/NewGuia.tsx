@@ -1,4 +1,4 @@
-import { createMemoryRouter, useNavigate, useParams } from "react-router-dom"
+import { createMemoryRouter, useAsyncError, useNavigate, useParams } from "react-router-dom"
 import { Button } from "../../components/Atoms/Button/Button"
 import { useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
@@ -133,6 +133,7 @@ export default function NewGuia(){
   const penalidadestipo = useRef([])
   const [penalidades,setPenalidades] = useState([])
   const infopenalidades = useRef([])
+  const [fases,setFases] = useState([])
   // const [infop,setInfop] = useState([])
   const navigate = useNavigate()
 
@@ -207,6 +208,19 @@ export default function NewGuia(){
           })
       }
       pp()
+    }else{
+      setOpenloader(true)
+      Consulta({url:'ordenes/getfasesproduccion/SERVICIO'})
+      .then(resp=>{
+        console.log("Las fases de produccion son :",resp)
+        setFases(resp)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+      .finally(()=>{
+        setOpenloader(false)
+      })
     }
     // form.current.addEventListener('salamandra',event=>{
     //   setOpenloader(true)
@@ -368,9 +382,14 @@ export default function NewGuia(){
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   /> */}
                   <div className="w-[500px]">
-                    <InputSelect title={'Servicio'} name={"servicio"} data={
+                    {
+                      fases.length > 0
+                      ? <InputSelect title={'Servicio'} name={"servicio"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={Object.keys(info).length > 0 ? info.servicio : null} 
+                      />
+                      : <Input name={''} defaults={null} type="text" title="Servicio" />
+                    }
+                    {/* <InputSelect title={'Servicio'} name={"servicio"} data={
                       [
-                        // { indice: '', option: '--Seleccione un servicio--', selected: true }, 
                         { indice: 'CONFECCION', option: 'CONFECCION' }, 
                         { indice: 'OJAL', option: 'OJAL' }, 
                         { indice: 'ESTAMPADO', option: 'ESTAMPADO' },
@@ -379,7 +398,7 @@ export default function NewGuia(){
                         { indice: 'ACABADOS', option: 'ACABADOS' },
                       ]} 
                       df={Object.keys(info).length > 0 ? info.servicio : null} 
-                    />
+                    /> */}
                   </div>
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" />
