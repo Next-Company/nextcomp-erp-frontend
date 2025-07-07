@@ -75,6 +75,41 @@ export default function ListaGuias() {
     const id = e.target.dataset.id
     let params_modal = null
     switch (action) {
+      case 'anulate':
+        params_modal = {
+          open: true,
+          content: <div>Desea anular el servicio seleccionado?. Tenga en cuenta de que el <br /> proceso no es reversible.</div>,
+          controls: true,
+          header: false,
+          action: () => {
+            setOpenloader(true)
+            Consulta({
+              url: 'produccion/anularguia/' + id, params: {
+                method: 'DELETE'
+              }
+            })
+              .then(resp => {
+                // setOrdenes(resp)
+                setOpenloader(false)
+                if(resp.ok){
+                  toast.success('Guia anulada con éxito!', { theme: "colored" })
+                  // setRefresh(true)
+                  recargarinfo()
+                }else{
+                  toast.error(resp.message, { theme: "colored" })
+                }
+              })
+              .catch(() => {
+                setOpenloader(false)
+                // logout()
+              })
+              .finally(() => {
+                setOpenloader(false)
+              })
+          }
+        }
+        openModal(params_modal)
+        break;
       case 'delete':
         params_modal = {
           open: true,
@@ -387,8 +422,9 @@ export default function ListaGuias() {
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="anulate" onClick={onclick} data-id={row.idx}>
+                                  {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg> */}
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-cancel"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M18.364 5.636l-12.728 12.728" /></svg>
                                 </div>
                               </li>
                               <li>
