@@ -31,7 +31,7 @@ const model = {fracciones_despacho:[
 function CuerpoDespachoTest({position,data,setregistros,registros}){
   const [ingreso,setIngreso] = useState(data.fracciones_despacho.length > 0 ? data : model)
   // const [ingreso,setIngreso] = useState([])
-  console.log("Nuevo reenderizado del componente CuerpoDespachoTest")
+  console.log("Nuevo reenderizado del componente CuerpoDespachoTest", data)
   useEffect(()=>{
     console.log("La info recibida es:",data)
     if(data.fracciones_despacho.length > 0) setIngreso(data)
@@ -53,7 +53,8 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
   }
   return(
     <>
-    <div className="scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] mt-2">
+    <div className="scrollbar-special overflow-y-scroll mt-2 mb-2">
+      <div className="flex flex-row justify-between bg-cyan-100 p-1"><strong>{data.articulo}</strong><strong>{data.cantidad}</strong></div>
       <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
         <thead className="text-left sticky top-0 bg-white">
           <tr>
@@ -64,7 +65,7 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
             <th className="lg:table-cell">L / 32</th>
             <th className="lg:table-cell">XL / 34</th>
             <th className="lg:table-cell">XXL / 36</th>
-            <th className="lg:table-cell">CantidadCombo</th>
+            <th className="lg:table-cell">CantidadIngreso</th>
             <th className="lg:table-cell">Acciones</th>
           </tr>
         </thead>
@@ -79,7 +80,10 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
                 <td><input data-name="l" type="number" onChange={editvalue} data-grupo={key} value={row.l}/></td>
                 <td><input data-name="xl" type="number" onChange={editvalue} data-grupo={key}  value={row.xl}/></td>
                 <td><input data-name="xxl" type="number" onChange={editvalue} data-grupo={key} value={row.xxl}/></td>
-                <td><input data-name="cantidad" type="number" onChange={(editvalue)} data-grupo={key}  value={0}/></td>
+                <td><input data-name="cantidad" type="number" onChange={(editvalue)} data-grupo={key}  value={['xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+                  c += row[v] ?? 0
+                  return c
+                },0)}/></td>
                 <td className="">
                   <ul className="flex flex-row justify-end">
                     <li>

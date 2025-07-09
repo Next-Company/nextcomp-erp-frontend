@@ -225,6 +225,23 @@ export default function ListaOrdenes() {
   //   }
   //   console.log("Hacia adelante : ",position)
   // }
+  const regulalizzet = ()=>{
+    console.log("dentro de lizzet")
+    setOpenloader(true)
+    Consulta({url: 'ordenes/lizzet/22'})
+    .then(resp => {
+      console.log(resp)
+      setOpenloader(false)
+    })
+    .catch(() => {
+      console.log("error")
+      logout()
+      setOpenloader(false)
+    })
+    .finally(()=>{
+      setOpenloader(false)
+    })
+  }
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -383,8 +400,7 @@ export default function ListaOrdenes() {
             </div>
             {/* <div className="flex flex-col items-center p-2 gap-2"> */}
             <div className="flex flex-row justify-end mt-2 gap-2">
-              {/* <div className="flex p-2">
-              </div> */}
+              {/* <Button action={regulalizzet} tipo={'warning'} type="button">Inventario</Button> */}
               <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
               <Button action={() => navigate('/main/ordenes/nuevo')} tipo={'accept'}>Nuevo</Button>
             </div >

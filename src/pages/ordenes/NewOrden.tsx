@@ -161,6 +161,7 @@ function CuerpoCorte({info,setcorte,position,quitar,form}){
               <InputTest name={'numero_corte'} defaults={Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : null} title="#HojaCorte" type="text" />
             </div>
             <InputSelect title={'Estado'} name={"estado_corte"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={Object.keys(info).length > 0 ? info.estado_corte : null} formref={form}/>
+            <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaCreación" type="date" />
           </div>
           <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] mt-2">
             <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
@@ -214,6 +215,12 @@ function CuerpoCorte({info,setcorte,position,quitar,form}){
               </tbody>
               <tfoot className="sticky bottom-0">
                 <tr>
+                  <td colSpan={6} className="text-right"></td>
+                  <td className="text-center font-black">TOTAL</td>
+                  <td className="text-center text-[15px] font-black">{info.combos.reduce((c,v)=>c + (v.cantidad_combo ?? 0),0)}</td>
+                  <td></td>
+                </tr>
+                <tr>
                   <td colSpan={10} >
                     <div className="flex flex-row justify-center">
                       <div onClick={agregarcombo} data-id={info.idx} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
@@ -256,7 +263,7 @@ function SeccionCorte({info,setcorte,form}){
   //   form.current.addEve
   // },[])
   const addcorte = ()=>{
-    setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',combos:[]}]))
+    setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:[]}]))
   }
   const deletecorte = ()=>{
     setcorte(corte=>corte.filter((row,key)=>key !== 0))
@@ -678,8 +685,17 @@ export function NewOrden() {
 
 
   },[])
+  const testkey2 = (e)=>{
+    // console.log("El target de testkey2 es:",e.target)
+    if(position == 3 && ['numero_corte','fec_emision'].includes(e.target.name)){
+      const padre = e.target.closest('div#cuerpo_ingresos')
+      const indice = parseInt(padre.dataset.position)
+      setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,[e.target.name]:e.target.value} : row))
+    }
+  }
   const testkey = (e)=>{
-    if(position == 3 && e.target.name == 'numero_corte'){
+    // console.log("El targe dl evento key es:",e.target.name)
+    if(position == 3 && ['numero_corte','fec_emision'].includes(e.target.name)){
       const padre = e.target.closest('div#cuerpo_ingresos')
       const indice = parseInt(padre.dataset.position)
       setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,[e.target.name]:e.target.value} : row))
@@ -810,7 +826,7 @@ export function NewOrden() {
               </button>
             </ul>
             <hr />
-            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden">
+            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
                   position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases}/>

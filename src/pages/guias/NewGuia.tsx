@@ -196,6 +196,7 @@ export default function NewGuia(){
             setRegistros(resp[1])
             setPenalidades(resp[2])
             penalidadestipo.current = resp[3]
+            setFases(resp[4])
             setOpenloader(false)
             console.log("Opportynity never die!!!!",resp)
           })
@@ -304,7 +305,7 @@ export default function NewGuia(){
         Consulta({url:'ordenes/extraeritemscaja/' + item.idx})
         .then((resp)=>{
           if(resp.length > 0){
-            setInfo(info=>({...info,id_orden_CAB:item.idx,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
+            setInfo(info=>({...info,id_orden_CAB:item.idx,id_corte_CAB:item.id_corte,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
             setRegistros(resp)
           }else{
             toast.error('Se produjo un error!!', { theme: "colored" })
@@ -375,6 +376,7 @@ export default function NewGuia(){
                   <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" />
                   <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} />
                   <Input name={'tipo'} defaults={'SERVICIOS'} type="hidden" />
+                  <Input name={'id_corte_CAB'} defaults={Object.keys(info).length > 0 ? info.id_corte_CAB : null} type="hidden" />
                   {/* <InputSelect title={'Tipo'} name={"tipo"} data={
                     [
                       { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 
