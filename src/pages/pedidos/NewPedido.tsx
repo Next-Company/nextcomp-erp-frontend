@@ -94,7 +94,7 @@ export default function NewPedido(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/pedidos/')
+          // navigate('/main/pedidos/')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -154,21 +154,25 @@ export default function NewPedido(){
   },[])
 
   const nuevoproducto = ()=>{
-    openModal({
-      open:true,
-      content: <Productos actions={(items)=>{  
-        setOpen(false)
-        // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])}
-        // setRegistros([...registros,...items.filter(row=>!registros.map(row2=>row2.id_producto_CAB).includes(row.idxsub)).map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])
-        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
-      }}
-        closemodal={()=>setOpen(false)}
-      />,
-      controls: false,
-      header: false,
-      action:async ()=>{
-      }
-    })
+    if(tipo == 1){
+      setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',modelo:'',corte:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0}])
+    }else{
+      openModal({
+        open:true,
+        content: <Productos actions={(items)=>{  
+          setOpen(false)
+          // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])}
+          // setRegistros([...registros,...items.filter(row=>!registros.map(row2=>row2.id_producto_CAB).includes(row.idxsub)).map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])
+          setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
+        }}
+          closemodal={()=>setOpen(false)}
+        />,
+        controls: false,
+        header: false,
+        action:async ()=>{
+        }
+      })
+    }
     // setRegistros([...registros,{item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
   }
 
@@ -330,6 +334,8 @@ export default function NewPedido(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell w-[500px]">Descripcion</th>  
+                          <th className="lg:table-cell">Modelo</th>
+                          <th className="lg:table-cell">#Corte</th>
                           <th className="lg:table-cell">Color</th>
                           <th className="lg:table-cell">Rollos</th>
                           <th className="lg:table-cell">Cantidad</th>
@@ -345,6 +351,8 @@ export default function NewPedido(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="modelo" value={row.modelo} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="corte" value={row.corte} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="color" value={row.color} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
