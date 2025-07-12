@@ -13,109 +13,6 @@ const colorfase = {
   'BORDADO':'bg-yellow-400',
   'FINALIZADO':'bg-gray-400'
 }
-
-const CuerpoServicio = ({info})=>{
-  return(
-    <>
-      {/* <div className="flex-1 bg-green-300"> */}
-
-        <div className="px-2 py-1">
-          <div className={`bg-slate-500 text-white rounded-xl p-3 relative z-10`}>
-            <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
-              <div className="text-[10px] text-left">{info.proveedor}<br/>#{info.idx}</div>
-              {/* <div className="flex-1">ORDEN</div> */}
-              <div className="text-[10px] w-[100px] text-right">{info.estado}</div>
-            </div>
-            <div>
-              <ul className="flex flex-row justify-end">
-                <li>
-                  <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                  </div>
-                </li>
-                <li>
-                  <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                  </div>
-                </li>
-                <li>
-                  <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="show" onClick={()=>{}} >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                  </div>
-                </li>
-                <li>
-                  <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" onClick={() => { }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                  </div>
-                </li>
-                <li>
-                  <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-        </div>
-        {/* <div className="px-2 py-1">
-          <div className="rounded-xl h-[100px] w-full bg-gray-300">guia</div>
-        </div>
-        <div className="px-2 py-1">
-          <div className="rounded-xl h-[100px] w-full bg-gray-300">guia</div>
-        </div> */}
-      {/* </div> */}
-    </>
-  )
-}
-const CuerpoDespacho = ({info})=>{
-  return(
-    <>
-      {/* <div className="flex-1 bg-green-300"> */}
-
-        <div className="px-2 py-1">
-          <div className={`relative z-10 flex flex-row gap-2`}>
-
-            {
-              info.length > 0 && info.map(row=>
-                <div className={`bg-orange-400 rounded-xl p-3 relative z-10 flex-1`}>
-                  <div><strong>#{row.nro_guia}</strong> / <strong>{row.despacho}</strong> und.</div>
-                  <div className="flex flex-row justify-center">
-                    <ul className="flex flex-row justify-end">
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="show" onClick={()=>{}} >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              )
-            }
-            
-          </div>
-        </div>
-        {/* <div className="px-2 py-1">
-          <div className="rounded-xl h-[100px] w-full bg-gray-300">guia</div>
-        </div>
-        <div className="px-2 py-1">
-          <div className="rounded-xl h-[100px] w-full bg-gray-300">guia</div>
-        </div> */}
-      {/* </div> */}
-    </>
-  )
-}
-
 export default function StatusGeneral({id}){
   const [loading,setLoading] = useState(true)
   const [info,setInfo] = useState([])
@@ -171,7 +68,7 @@ export default function StatusGeneral({id}){
   useEffect(()=>{
     const action = async ()=>{
       setLoading(true)
-      Consulta({url:'ordenes/getstatusgeneral2/' + id,params:{
+      Consulta({url:'ordenes/getstatusgeneral/' + id,params:{
         method:'POST'
       }})
       .then(resp=>{
@@ -213,7 +110,7 @@ export default function StatusGeneral({id}){
         <div ref={imagemain} onBlur={imageout} className={`absolute w-[600px] h-[600px] z-[100] rounded-full bg-slate-400 overflow-hidden flex flex-row items-center] transition-all ${zoom ? 'scale-100' : 'scale-50 opacity-0'}`} style={{left:'calc(50% - 300px)',top:'calc(50% - 300px)'}} tabIndex={-1}>
           <img src={`https://jsjfact.com/facturador/imagenez/op_${id}.jpg`} onError={onerror}/>
         </div>
-        <div ref={contenedor} className="flex flex-col text-[12px] w-[1400px] pl-2 pr-2 focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black [&_input]:text-center [&_input]:p-[2px]">
+        <div ref={contenedor} className="flex flex-col text-[12px] w-[1200px] pl-2 pr-2 focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black [&_input]:text-center [&_input]:p-[2px]">
           {
             loading
             ? 
@@ -302,7 +199,7 @@ export default function StatusGeneral({id}){
                 </div>
                 <hr/>
 
-                <div className="relative h-[550px] flex flex-col overflow-hidden p-2">
+                <div className="relative h-[500px] flex flex-col overflow-hidden p-2">
                   <div className={`absolute top-0 left-0 w-full h-full ${tabstate ? 'z-10' : 'z-0 hidden'} flex-1 overflow-y-scroll scrollbar-special`}>
 
                     <div className={`bg-slate-500 text-white rounded-md p-3 relative z-10 mt-2`}>
@@ -469,62 +366,112 @@ export default function StatusGeneral({id}){
                   </div>
                   <div className={`absolute top-0 left-0 w-full h-full ${tabstate ? 'z-0 hidden' : 'z-10'} flex-1 overflow-y-scroll scrollbar-special`}>
                     <div className="">
-                      {/* <div className="p-2">
-                      </div> */}
+                      <div className="p-2">
+                      </div>
                     </div>
                     <div className=" relative z-0">
                       <div className="relative z-[10]">
-
                         {
-                          Object.keys(info[4]).length > 0 && Object.keys(info[4]).map(item=>
-                            <div className="w-full bg-lime-300 flex flex-row border-b-[1px] border-gray-400">
-                              <div className={`flex-1 bg-orange-100 flex flex-col justify-center`}>
-                                {
-                                  info[4][item].map(row=><CuerpoServicio info={row}/>)
-                                }
+                          info.length > 0
+                          ?
+                          Object.keys(info[3]).map(key=>{
+                            return <>
+                              <div className="p-4 text-[12px] font-extrabold relative z-10"><span className="bg-amber-500 rounded-lg pl-3 pr-3 p-[2px]">{key.split('-').reverse().join('/')}</span></div>
+                              <div className="flex flex-col gap-2">
+                              {
+                                info[3][key].map(item=><div className={`${item.estado == 'FINALIZADO' ? 'bg-gray-400' : colorfase[item.servicio]} text-white rounded-md p-3 relative z-10 group`}>
+                                  <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
+                                    <div className="text-[14px] w-[100px] text-left">#{item.idx}</div>
+                                    <div className="flex-1">{item.servicio}</div>
+                                    <div className="text-[10px] w-[100px] text-right">{item.estado}</div>
+                                  </div>
+                                  <div className="flex flex-row justify-between">
+                                    <div className="flex flex-col items-center">
+                                      <div className="text-[10px] font-bold">Proveedor</div>
+                                      <div className="text-[14px] font-bold">{item.proveedor}</div>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                      <div className="text-[10px] font-bold">FecEmision</div>
+                                      <div className="text-[14px] font-bold">{item.fec_emision_guia}</div>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                      <div className="text-[10px] font-bold">FecRetorno</div>
+                                      <div className="text-[14px] font-bold">{item.fec_retorno_guia}</div>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                      <div className="text-[10px] font-bold">Costo</div>
+                                      <div className="text-[14px] font-bold">{item.costo}</div>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                      <div className="text-[10px] font-bold">Cantidad</div>
+                                      <div className="text-[14px] font-bold">{item.cantidad_servicio}</div>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                      <div className="text-[10px] font-bold">DiasPendiente</div>
+                                      <div className={`text-[14px] font-bold ${parseInt(item.dias_pendientes) < 0 ? 'text-red-500' : 'text-white'}`}>{item.dias_pendientes}</div>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                      <div className="text-[10px] font-bold">Ingresos</div>
+                                      <div className="text-[14px] font-bold">{item.ingresos}</div>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                      <div className="text-[10px] font-bold">Saldo</div>
+                                      <div className="text-[14px] font-bold">{item.cantidad_servicio - item.ingresos}</div>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <ul className="flex flex-row justify-end">
+                                      <li>
+                                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} >
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                        </div>
+                                      </li>
+                                      <li>
+                                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={item.idx}>
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                                        </div>
+                                      </li>
+                                      <li>
+                                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="show" onClick={()=>{}} >
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                        </div>
+                                      </li>
+                                      <li>
+                                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" onClick={() => { }}>
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                        </div>
+                                      </li>
+                                      <li>
+                                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} >
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                        </div>
+                                      </li>
+                                    </ul>
+
+                                  </div>
+                                  <div className={`absolute w-full left-0 h-0 group-[.showdata]:h-[200px] bg-red-500 flex flex-row justify-center rounded-b-lg transition-all`}>
+                                    <div className="absolute w-full px-2 h-[20px] bottom-0 flex flex-col items-center justify-center cursor-pointer gap-1" onClick={opendetail}>
+                                      <div className="bg-gray-400 h-[2px] w-full rounded-xl pointer-events-none"></div>
+                                      <div className="bg-gray-400 h-[2px] w-full rounded-xl pointer-events-none"></div>
+                                    </div>
+                                  </div>
+                                </div>)
+                              }
                               </div>
-                              {/* <div className={`w-[50px] ${colorfase[item].split('-')[0]+'-'+colorfase[item].split('-')[1]+'-500'}`} style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '14px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>{item}</div> */}
-                              <div className={`w-[35px] ${colorfase[item]}`} style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '12px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>{item}</div>
-                              <div className={`flex-1 bg-orange-100 flex flex-col justify-center`}>
-                                {
-                                  info[4][item].length > 0 && info[4][item].map(row=>row.despachos && <CuerpoDespacho info={row.despachos} />)
-                                }
-                              </div>
-                            </div>
-                          )
+                            </>
+                          })
+                          :
+                          <div></div>
                         }
-                        
-
-                        {/* <div className="w-full bg-lime-300 flex flex-row border-b-[1px]">
-                          
-
-                          </div>
-                          <div className="w-[50px] bg-green-500 text-" style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '14px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>CONFECCION</div>
-                          <div className="flex-1 bg-green-300"></div>
+                        <div className="w-full top-0 h-[30px] flex flex-col justify-center items-center z-0">
                         </div>
-
-                        <div className="w-full bg-lime-300 flex flex-row border-b-[1px]">
-                          <div className="flex-1 bg-pink-300"></div>
-                          <div className="w-[50px] bg-pink-500 text-" style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '14px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>LAVANDERIA</div>
-                          <div className="flex-1 bg-pink-300"></div>
-                        </div>
-                        <div className="w-full bg-lime-300 flex flex-row border-b-[1px]">
-                          <div className="flex-1 bg-blue-300"></div>
-                          <div className="w-[50px] bg-blue-500 text-" style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '14px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>BORDADO</div>
-                          <div className="flex-1 bg-blue-300"></div>
-                        </div> */}
-
-
-                        
-                        {/* <div className="w-full top-0 h-[30px] flex flex-col justify-center items-center z-0">
-                        </div>
-                        <div className="absolute w-full top-0 border-[2px] bottom-0 flex flex-row justify-center z-0">
+                        <div className="absolute w-full top-0 bottom-0 flex flex-row justify-center z-0">
                           <div className="border-[.5px] border-dashed border-gray-400"></div>
-                        </div> */}
+                        </div>
                       </div>
-                      {/* <div className="flex flex-row justify-center">
-                        <div className="w-[15px] h-[15px] border-[4px] border-violet-500 rounded-full"></div>
-                      </div> */}
+                      <div className="flex flex-row justify-center">
+                        <div className="w-[15px] h-[15px] border-[4px] border-gray-500 rounded-full"></div>
+                      </div>
                     </div>
 
                   </div>
