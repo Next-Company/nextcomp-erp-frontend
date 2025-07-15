@@ -80,9 +80,8 @@ export default function ListaDespachos() {
               setOpenloader(true)
 
               Consulta({
-                url: "produccion/exportdespacho/" + id + "/" + idguia, params: {
-                  method: 'POST',
-                }
+                /*url: "produccion/exportdespacho/" + id + "/" + idguia + '/-1', params: {*/
+		url: "produccion/verdespacho/" + id + "/" + idguia + '/2' 
               })
                 .then(resp => {
                   setOpenloader(false)
@@ -113,6 +112,16 @@ export default function ListaDespachos() {
         navigate("/main/despachos/nuevo/" + id)
         break;
       case 'review':
+        params_modal = {
+          open: true,
+          content: <div>
+            <iframe src={`http://192.168.18.20:4002/produccion/verdespacho/${id}/${idguia}/1`} width={1100} height={700} />
+          </div>,
+          controls: true,
+          header: false,
+          action: () => {}
+        }
+        openModal(params_modal)
         // navigate("/main/estampado/review/"+ id)
         break;
 
@@ -360,12 +369,12 @@ export default function ListaDespachos() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={onclick} data-id={row.idx} data-idguia={row.id_guia_origen}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx} data-idguia={row.id_guia_origen}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" onClick={onclick} data-action="review" data-id={row.idx} data-idguia={row.id_guia_origen}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>

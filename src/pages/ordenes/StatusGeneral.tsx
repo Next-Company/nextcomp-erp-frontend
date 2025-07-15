@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
 import { toast } from "react-toastify"
+import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext"
 const colorfase = {
   'ORDENES':'bg-green-400',
   'CONFECCION':'bg-purple-400',
@@ -14,13 +15,65 @@ const colorfase = {
   'FINALIZADO':'bg-gray-400'
 }
 
-const CuerpoServicio = ({info})=>{
+const CuerpoServicio = ({info,openloader})=>{
+  const {openModal,setOpen} = useContext(ModalWindowContext)
+  const onclick = (e)=>{
+    const action = e.target.dataset.action
+    const id = e.target.dataset.id
+    // console.log("Los datos recuperados son :",action,id)
+    switch(action){
+      case 'download':
+        openloader(true)
+        Consulta({
+          url: "produccion/exportguia/" + id, params: {
+            method: 'POST'
+          }
+        })
+          .then(resp => {
+            openloader(false)
+            const binaryString = window.atob(resp.data);
+            const binaryLen = binaryString.length;
+            const bytes = new Uint8Array(binaryLen);
+            for (let i = 0; i < binaryLen; i++) {
+              const ascii = binaryString.charCodeAt(i);
+              bytes[i] = ascii;
+            }
+            const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+
+            const link = document.createElement('a')
+            link.href = file
+            link.target = 'blank'
+            link.click()
+          })
+          .catch((err) => {
+            openloader(false)
+            toast.error('Se produjo un error!!', { theme: "colored" })
+          })
+
+        // let params_modal = {
+        //   open: true,
+        //   content: <div>Desea continuar con la descarga de la guia de traslado interno?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+        //   controls: true,
+        //   header: false,
+        //   action: () => {
+        //     const desc = async () => {
+
+        //     }
+        //     desc()
+        //   }
+        // }
+        // openModal(params_modal)
+        break
+      default:
+        break
+    }
+  }
   return(
     <>
       {/* <div className="flex-1 bg-green-300"> */}
 
         <div className="px-2 py-1">
-          <div className={`bg-slate-500 text-white rounded-xl p-3 relative z-10`}>
+          <div className={` ${info.estado == 'FINALIZADO' ? 'bg-slate-500' : colorfase[info.servicio]} text-white rounded-xl p-3 relative z-10 cursor-pointer hover:opacity-80`}>
             <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
               <div className="text-[10px] text-left">{info.proveedor}<br/>#{info.idx}</div>
               {/* <div className="flex-1">ORDEN</div> */}
@@ -34,7 +87,7 @@ const CuerpoServicio = ({info})=>{
                   </div>
                 </li>
                 <li>
-                  <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download">
+                  <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-id={info.idx} data-action="download" onClick={onclick}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                   </div>
                 </li>
@@ -68,50 +121,74 @@ const CuerpoServicio = ({info})=>{
     </>
   )
 }
-const CuerpoDespacho = ({info})=>{
+const CuerpoDespacho = ({info,openloader})=>{
+  const {openModal,setOpen} = useContext(ModalWindowContext)
+  const onclick = (e)=>{
+    const action = e.target.dataset.action
+    const id = e.target.dataset.id
+    const idguia = e.target.dataset.idguia
+    switch(action){
+      case 'download':
+        openloader(true)
+        Consulta({url: `produccion/verdespacho/${id}/${idguia}/2`})
+          .then(resp => {
+            openloader(false)
+            const binaryString = window.atob(resp.data);
+            const binaryLen = binaryString.length;
+            const bytes = new Uint8Array(binaryLen);
+            for (let i = 0; i < binaryLen; i++) {
+              const ascii = binaryString.charCodeAt(i);
+              bytes[i] = ascii;
+            }
+            const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+
+            const link = document.createElement('a')
+            link.href = file
+            link.target = 'blank'
+            link.click()
+          })
+          .catch((err) => {
+            openloader(false)
+            toast.error('Se produjo un error!!', { theme: "colored" })
+          })
+
+      break;
+    }
+  }
   return(
     <>
-      {/* <div className="flex-1 bg-green-300"> */}
-
-        <div className="px-2 py-1">
-          <div className={`relative z-10 flex flex-row gap-2`}>
-
-            {
-              info.length > 0 && info.map(row=>
-                <div className={`bg-orange-400 rounded-xl p-3 relative z-10 flex-1`}>
-                  <div><strong>#{row.nro_guia}</strong> / <strong>{row.despacho}</strong> und.</div>
-                  <div className="flex flex-row justify-center">
-                    <ul className="flex flex-row justify-end">
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="show" onClick={()=>{}} >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              )
-            }
-            
-          </div>
-        </div>
-        {/* <div className="px-2 py-1">
-          <div className="rounded-xl h-[100px] w-full bg-gray-300">guia</div>
-        </div>
-        <div className="px-2 py-1">
-          <div className="rounded-xl h-[100px] w-full bg-gray-300">guia</div>
-        </div> */}
-      {/* </div> */}
+      <div className={`relative z-10 flex flex-row gap-2 flex-1 h-[90px]`}>
+        {
+          info.length > 0 && info.map(row=>
+            <div className={`bg-orange-400 rounded-xl p-3 relative z-10 flex-1 cursor-pointer hover:opacity-90`}>
+              <div className="flex flex-row justify-between">
+	        <div><strong>#{row.nro_guia}</strong></div>
+		<div><strong>{row.despacho}</strong> und.</div>
+	      </div>
+	      <div>_</div>
+              <div className="flex flex-row justify-end">
+                <ul className="flex flex-row justify-end">
+                  <li>
+                    <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download" data-idguia={row.idguia} data-id={row.id} onClick={onclick}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="show" onClick={()=>{}} >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          )
+        }
+      </div>
     </>
   )
 }
@@ -222,6 +299,7 @@ export default function StatusGeneral({id}){
               </div>
             :
               <div className="relative">
+
                 <div className="relative z-0">
                   <div className="flex flex-row justify-center items-center mb-2">
                     <div className="flex flex-row items-center gap-2 relative w-full">
@@ -248,41 +326,9 @@ export default function StatusGeneral({id}){
                       <div className="right-0 h-[65px] rounded-md absolute bg-gray-200 z-0 left-[20px]"></div>
                     </div>
                   </div>
-                  <div className="flex flex-row gap-2 mb-4">
-                    {/* <div className="flex flex-row justify-between flex-1 px-4">
-                      <div className="text-left">
-                        <div className="flex flex-row gap-2">
-                          <div className="font-bold">CLIENTE:</div>
-                          <div>{info[0][0].cliente}</div>
-                        </div>
-                        <div className="flex flex-row gap-2">
-                          <div className="font-bold">MARCA:</div>
-                          <div>{info[0][0].marca}</div>
-                        </div>
-                        <div className="flex flex-row gap-2">
-                          <div className="font-bold">MODELO:</div>
-                          <div>{info[0][0].modelos}</div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex flex-row justify-end gap-2">
-                          <div className="font-bold">FEC.EMISION:</div>
-                          <div>{info[0][0].fec_emitida.split('-').reverse().join('/')}</div>
-                        </div>
-                        <div className="flex flex-row justify-end gap-2">
-                          <div className="font-bold">FEC.COMERCIAL:</div>
-                          <div>{info[0][0].fec_entrega.split('-').reverse().join('/')}</div>
-                        </div>
-                        <div className="flex flex-row justify-end gap-2">
-                          <div className="font-bold">CORTE:</div>
-                          <div>{info[0][0].numero_corte}</div>
-                        </div>
-                      </div>
-                    </div> */}
-                  </div>
                 </div>
 
-                <div className="flex flex-row px-2 border-b-[1.5px] border-b-gray-400">
+                <div className="relative z-1 flex flex-row px-2 border-b-[1.5px] border-b-gray-400">
                   <div className={`flex flex-row relative flex-1 cursor-pointer group ${tabstate ? 'z-10' : 'z-0'}`} onClick={() => setTabstate(true)}>
                     <div className={`h-[40px] rounded-tl-lg w-[500px] flex flex-row items-center justify-start font-black pl-4 flex-1 ${ tabstate ? 'bg-gray-400' : 'group-hover:bg-gray-300 bg-gray-200 opacity-70'} `}>
                       <div className="bg-red-500 h-[8px] w-[8px] rounded-full mr-2"></div>
@@ -302,7 +348,7 @@ export default function StatusGeneral({id}){
                 </div>
                 <hr/>
 
-                <div className="relative h-[550px] flex flex-col overflow-hidden p-2">
+                <div className="relative h-[550px] flex flex-col overflow-hidden p-2 z-1">
                   <div className={`absolute top-0 left-0 w-full h-full ${tabstate ? 'z-10' : 'z-0 hidden'} flex-1 overflow-y-scroll scrollbar-special`}>
 
                     <div className={`bg-slate-500 text-white rounded-md p-3 relative z-10 mt-2`}>
@@ -415,8 +461,6 @@ export default function StatusGeneral({id}){
                       </div>
                       )
                     }
-                    
-
                     {
                       info[2].length > 0 && info[2].map((corte,key)=><div className={`bg-cyan-500 text-white rounded-md p-3 relative z-10 mt-2`}>
                         <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
@@ -468,69 +512,37 @@ export default function StatusGeneral({id}){
                     }
                   </div>
                   <div className={`absolute top-0 left-0 w-full h-full ${tabstate ? 'z-0 hidden' : 'z-10'} flex-1 overflow-y-scroll scrollbar-special`}>
-                    <div className="">
-                      {/* <div className="p-2">
-                      </div> */}
-                    </div>
                     <div className=" relative z-0">
                       <div className="relative z-[10]">
-
                         {
-                          Object.keys(info[4]).length > 0 && Object.keys(info[4]).map(item=>
-                            <div className="w-full bg-lime-300 flex flex-row border-b-[1px] border-gray-400">
-                              <div className={`flex-1 bg-orange-100 flex flex-col justify-center`}>
+                          Object.keys(info[4]).length > 0 && Object.keys(info[4]).map((item,key)=>
+                            <div className="w-full flex flex-row border-b-[2px] border-dashed border-gray-500">
+                              <div className={`flex-1 ${key%2 ? 'bg-orange-100' : 'bg-orange-100'} flex flex-col justify-center`}>
                                 {
-                                  info[4][item].map(row=><CuerpoServicio info={row}/>)
+                                  info[4][item].map(row=><CuerpoServicio info={row} openloader={setOpenloader}/>)
                                 }
                               </div>
-                              {/* <div className={`w-[50px] ${colorfase[item].split('-')[0]+'-'+colorfase[item].split('-')[1]+'-500'}`} style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '14px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>{item}</div> */}
                               <div className={`w-[35px] ${colorfase[item]}`} style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '12px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>{item}</div>
-                              <div className={`flex-1 bg-orange-100 flex flex-col justify-center`}>
+                              <div className={`flex-1 ${key%2 ? 'bg-orange-100' : 'bg-orange-100'} flex flex-col justify-center`}>
                                 {
-                                  info[4][item].length > 0 && info[4][item].map(row=>row.despachos && <CuerpoDespacho info={row.despachos} />)
+                                  info[4][item].length > 0 && info[4][item].map(row=>
+                                    <div className="px-2 py-1 h-[110px] flex flex-row justify-center items-center">
+                                      {
+                                        row.despachos && <CuerpoDespacho info={row.despachos} openloader={setOpenloader}/>
+                                      }
+                                    </div>
+                                  )
                                 }
                               </div>
                             </div>
                           )
                         }
-                        
-
-                        {/* <div className="w-full bg-lime-300 flex flex-row border-b-[1px]">
-                          
-
-                          </div>
-                          <div className="w-[50px] bg-green-500 text-" style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '14px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>CONFECCION</div>
-                          <div className="flex-1 bg-green-300"></div>
-                        </div>
-
-                        <div className="w-full bg-lime-300 flex flex-row border-b-[1px]">
-                          <div className="flex-1 bg-pink-300"></div>
-                          <div className="w-[50px] bg-pink-500 text-" style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '14px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>LAVANDERIA</div>
-                          <div className="flex-1 bg-pink-300"></div>
-                        </div>
-                        <div className="w-full bg-lime-300 flex flex-row border-b-[1px]">
-                          <div className="flex-1 bg-blue-300"></div>
-                          <div className="w-[50px] bg-blue-500 text-" style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '14px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>BORDADO</div>
-                          <div className="flex-1 bg-blue-300"></div>
-                        </div> */}
-
-
-                        
-                        {/* <div className="w-full top-0 h-[30px] flex flex-col justify-center items-center z-0">
-                        </div>
-                        <div className="absolute w-full top-0 border-[2px] bottom-0 flex flex-row justify-center z-0">
-                          <div className="border-[.5px] border-dashed border-gray-400"></div>
-                        </div> */}
                       </div>
-                      {/* <div className="flex flex-row justify-center">
-                        <div className="w-[15px] h-[15px] border-[4px] border-violet-500 rounded-full"></div>
-                      </div> */}
                     </div>
-
                   </div>
                 </div>
                 {
-                  openloader && <div className="absolute top-0 w-full h-full bg-gray-300 z-1000 flex flex-col items-center justify-center opacity-50">
+                  openloader && <div className="absolute top-0 w-full h-full bg-gray-300 z-1000 flex flex-col items-center justify-center opacity-50" style={{zIndex:'100'}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-loader-2 loading"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3a9 9 0 1 0 9 9" /></svg>
                   </div>
                 }
