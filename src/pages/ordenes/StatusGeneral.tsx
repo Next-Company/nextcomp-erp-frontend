@@ -193,7 +193,7 @@ const CuerpoDespacho = ({info,openloader})=>{
   )
 }
 
-export default function StatusGeneral({id}){
+export default function StatusGeneral({id,openmodal}){
   const [loading,setLoading] = useState(true)
   const [info,setInfo] = useState([])
   const [openloader,setOpenloader] = useState(false)
@@ -261,6 +261,15 @@ export default function StatusGeneral({id}){
       })
     }
     action()
+    
+    const KeyHandler = (e)=>{
+      console.log("Imprimiendo nuevo evento de teclado",e.key)
+      if(e.key == 'Escape') openmodal(false)
+    }
+    document.addEventListener('keyup',KeyHandler)
+    return ()=>{
+      document.removeEventListener('keyup',KeyHandler)
+    }
   },[])
   const zoomimage = (e) => {
     imagemain.current.focus()
@@ -284,10 +293,11 @@ export default function StatusGeneral({id}){
     let parent = e.currentTarget.parentElement.parentElement
     parent.classList.toggle("showdata")
   }
+
   return(
     <>
       <div className="flex flex-col pb-4 relative">
-        <div ref={imagemain} onBlur={imageout} className={`absolute w-[600px] h-[600px] z-[100] rounded-full bg-slate-400 overflow-hidden flex flex-row items-center] transition-all ${zoom ? 'scale-100' : 'scale-50 opacity-0'}`} style={{left:'calc(50% - 300px)',top:'calc(50% - 300px)'}} tabIndex={-1}>
+        <div ref={imagemain} onBlur={imageout} className={`absolute w-[600px] h-[600px] ${zoom ? 'z-[100]' : 'z-[-1]'} rounded-full bg-slate-400 overflow-hidden flex flex-row items-center] transition-all ${zoom ? 'scale-100' : 'scale-50 opacity-0'}`} style={{left:'calc(50% - 300px)',top:'calc(50% - 300px)'}} tabIndex={-1}>
           <img src={`https://jsjfact.com/facturador/imagenez/op_${id}.jpg`} onError={onerror}/>
         </div>
         <div ref={contenedor} className="flex flex-col text-[12px] w-[1400px] pl-2 pr-2 focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black [&_input]:text-center [&_input]:p-[2px]">
@@ -332,7 +342,7 @@ export default function StatusGeneral({id}){
                   <div className={`flex flex-row relative flex-1 cursor-pointer group ${tabstate ? 'z-10' : 'z-0'}`} onClick={() => setTabstate(true)}>
                     <div className={`h-[40px] rounded-tl-lg w-[500px] flex flex-row items-center justify-start font-black pl-4 flex-1 ${ tabstate ? 'bg-gray-400' : 'group-hover:bg-gray-300 bg-gray-200 opacity-70'} `}>
                       <div className="bg-red-500 h-[8px] w-[8px] rounded-full mr-2"></div>
-                      PREFASES
+                      STATUS INICIAL
                     </div>
                     <div className="h-[40px] w-[30px] bg-white"></div>
                     <div className={`h-[40px] w-[60px] border-l-[30px] ${ tabstate ? 'border-gray-400' : 'border-gray-200 group-hover:border-l-gray-300 group-hover:border-b-gray-300 opacity-70' } border-b-[20px] border-t-[20px] border-r-[30px] border-t-transparent border-r-transparent absolute right-[-30px] top-0`}></div>
@@ -341,7 +351,7 @@ export default function StatusGeneral({id}){
                     <div className={`h-[40px] w-[60px] border-l-[30px] ${ tabstate ? 'border-gray-200 group-hover:border-r-gray-300 group-hover:border-b-gray-300 opacity-70' : 'border-gray-400' } border-b-[20px] border-t-[20px] border-r-[30px] border-t-transparent border-l-transparent absolute left-[-30px] top-0`}></div>
                     <div className="h-[40px] w-[30px] bg-white"></div>
                     <div className={`h-[40px] rounded-tr-lg w-[500px] flex flex-row items-center justify-end font-black pr-4 flex-1 ${ tabstate ? 'group-hover:bg-gray-300 bg-gray-200 opacity-70' : 'bg-gray-400'}`}>
-                      HISTORICO DE SERVICIOS
+                      STATUS ACTUAL
                       <div className="bg-red-500 h-[8px] w-[8px] rounded-full ml-2"></div>
                     </div>
                   </div>

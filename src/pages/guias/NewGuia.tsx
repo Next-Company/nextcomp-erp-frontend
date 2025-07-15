@@ -170,8 +170,8 @@ const VentanaReprogramacion = ({idguia,reprogramacion,setreprogramacion})=>{
               {
                 registros.length > 0 && registros.map((row,key)=>(
                   <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                    <td><input className="h-[40px]" type="date" onChange={editvalue} data-position={key} data-name="fecha_entrega" defaultValue={row.fecha_entrega ?? 0} /></td>
-                    <td><input className="h-[40px]" type="text" onChange={editvalue} data-position={key} data-name="observacion" defaultValue={row.observacion ?? ''} /></td>
+                    <td><input className="h-[40px]" type="date" onChange={editvalue} data-position={key} data-name="fecha_entrega" value={row.fecha_entrega ?? 0} /></td>
+                    <td><input className="h-[40px]" type="text" onChange={editvalue} data-position={key} data-name="observacion" value={row.observacion ?? ''} /></td>
                     <td className="w-[180px]">
                       <ul className="flex flex-row justify-end">
                         <li>
@@ -293,6 +293,7 @@ export default function NewGuia(){
             setPenalidades(resp[2])
             penalidadestipo.current = resp[3]
             setFases(resp[4])
+	    setReprogramacion(resp[5])
             setOpenloader(false)
             console.log("Opportynity never die!!!!",resp)
           })
@@ -617,7 +618,7 @@ export default function NewGuia(){
                 </div>
                 <div className="flex justify-between gap-2 mt-2">
                   {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
-                  <div>
+                  <div className="flex flex-row gap-1">
                     {
                       urlparams.id && <>
                         <Button type={'button'} tipo={'accept'} action={opendescuentos}>{`Configurar penalidades - Total: S/.${penalidades.length > 0 ? penalidades.reduce((carry,row)=>{carry += row.importe; return carry;},0).toFixed(2) : 0.00}`}</Button>

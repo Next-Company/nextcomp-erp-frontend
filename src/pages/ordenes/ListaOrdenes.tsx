@@ -80,7 +80,7 @@ export default function ListaOrdenes() {
           open: true,
           header: false,
           controls: true,
-          content: <StatusGeneral id={id} />,
+          content: <StatusGeneral id={id} openmodal={openModal}/>,
           action: async () => {
           }
         })
