@@ -86,7 +86,45 @@ export default function ListaOrdenes() {
         })
 
         break;
-    
+      case 'download':
+        params_modal = {
+          open: true,
+          content: <div>Desea continuar con la descarga de la guia de traslado interno?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+          controls: true,
+          header: false,
+          action: () => {
+            const desc = async () => {
+              setOpenloader(true)
+
+              Consulta({
+                url: "ordenes/printsugerido/" + id
+              })
+                .then(resp => {
+                  setOpenloader(false)
+                  const binaryString = window.atob(resp.data);
+                  const binaryLen = binaryString.length;
+                  const bytes = new Uint8Array(binaryLen);
+                  for (let i = 0; i < binaryLen; i++) {
+                    const ascii = binaryString.charCodeAt(i);
+                    bytes[i] = ascii;
+                  }
+                  const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+
+                  const link = document.createElement('a')
+                  link.href = file
+                  link.target = 'blank'
+                  link.click()
+                })
+                .catch((err) => {
+                  setOpenloader(false)
+                  toast.error('Se produjo un error!!', { theme: "colored" })
+                })
+            }
+            desc()
+          }
+        }
+        openModal(params_modal)
+        break;
       default:
         break;
     } 
@@ -355,7 +393,7 @@ export default function ListaOrdenes() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" onClick={() => { }}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                                 </div>
                               </li>

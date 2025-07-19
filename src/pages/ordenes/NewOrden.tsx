@@ -315,7 +315,7 @@ function SeccionMolde({info,orden}){
   </>
 }
 
-function SeccionOrden({info,form,setorden,setopen,openmodal,fases}){
+function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales}){
   const [tipopedido,setTipopedido] = useState(1)
   const [dataimg,setDataimg] = useState([])
   useEffect(()=>{
@@ -453,7 +453,13 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases}){
               ? <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={info.length > 0 ? info[0].ruta_proceso : null} />
               : <Input name={''} defaults={null} title="Ruta" type="text" />
             }
-            {/* <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={info.length > 0 ? info[0].ruta_proceso : null} /> */}
+          </div>
+          <div className="flex-1 min-w-[400px]">
+            {
+              materiales.length > 0
+              ? <InputMultiSelect title={'MaterialesProduccion'} name={"materiales_produccion"} data={materiales.map(fase=>({indice:fase.idx,option:fase.descripcion}))} df={info.length > 0 ? info[0].materiales_produccion : null} />
+              : <Input name={''} defaults={null} title="MaterialesProduccion" type="text" />
+            }
           </div>
           <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
           <Button action={loadimage} type={'button'} tipo={'accept'}>
@@ -557,6 +563,7 @@ export function NewOrden() {
   const navigate = useNavigate()
   const [tipopedido,setTipopedido] = useState(1)
   const [fases,setFases] = useState([])
+  const [materiales,setMateriales] = useState([])
   
   console.log("Info del corte :",orden)
 
@@ -669,10 +676,14 @@ export function NewOrden() {
       pp()
     }else{
       setOpenloader(true)
-      Consulta({url:'ordenes/getfasesproduccion'})
+      Promise.all([
+        Consulta({url:'ordenes/getfasesproduccion'}),
+        Consulta({url:'ordenes/getmaterialesproduccion'})  
+      ])
       .then(resp=>{
-        console.log("Las fases de produccion son :",resp)
-        setFases(resp)
+        console.log("El resultado de la consulta es:",resp)
+        setFases(resp[0])
+        setMateriales(resp[1])
       })
       .catch(err=>{
         console.log(err)
@@ -680,6 +691,18 @@ export function NewOrden() {
       .finally(()=>{
         setOpenloader(false)
       })
+
+      // Consulta({url:'ordenes/getfasesproduccion'})
+      // .then(resp=>{ 
+      //   console.log("Las fases de produccion son :",resp)
+      //   setFases(resp)
+      // })
+      // .catch(err=>{
+      //   console.log(err)
+      // })
+      // .finally(()=>{
+      //   setOpenloader(false)
+      // })
     }
 
 
@@ -829,7 +852,7 @@ export function NewOrden() {
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
-                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases}/>
+                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materiales}/>
                 }
                 {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
