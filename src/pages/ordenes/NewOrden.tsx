@@ -315,9 +315,9 @@ function SeccionMolde({info,orden}){
   </>
 }
 
-function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales}){
+function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dataimg,setDataimg}){
   const [tipopedido,setTipopedido] = useState(1)
-  const [dataimg,setDataimg] = useState([])
+  // const [dataimg,setDataimg] = useState([])
   useEffect(()=>{
     const handleSalamandra = (event) => {
       setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
@@ -441,6 +441,9 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales}){
         <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" />
         <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" />
         <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Producto" type="text" />
+        <div className="w-[250px]">
+          <Input name={'curva'} defaults={info.length > 0 ? info[0].curva : null} title="Curva" type="text" />
+        </div>
       </div>
       <div className="flex gap-3 flex-wrap">
         <div className="flex-1 min-w-[300px] flex flex-row gap-3">
@@ -585,6 +588,7 @@ export function NewOrden() {
     if(position == 0){
       url_save = 'ordenes/saveFaseOrden'
       data = new FormData(e.target)
+      dataimg.length > 0 && data.append('filenext', dataimg[0])
       orden.length > 0 && data.append('combos',JSON.stringify(orden[0].combos))
     }
     if(position == 2){
@@ -616,7 +620,7 @@ export function NewOrden() {
           .then(resp => {
             if(resp.ok){
               // navigate("/main/ordenes/")
-              toast.success('Soporte guardado con éxito!!', { theme: "colored" })
+              toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
             }else{
               toast.error(resp.mensaje, { theme: "colored" })
             }
@@ -659,10 +663,7 @@ export function NewOrden() {
             setMolde(resp[1])
             setCorte(resp[2])
             setFases(resp[3])
-
-            // setTipopedido(resp[0][0].modalidad_pedido == 'ORDN' ? 1 : 0)
-            // setInfoCombosOrden(resp[1])
-            // setInfoCombosCorte(resp[2])
+            setMateriales(resp[4])
 
           })
           .catch((err)=>{
@@ -852,7 +853,7 @@ export function NewOrden() {
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
-                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materiales}/>
+                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materiales} dataimg={dataimg} setDataimg={setDataimg}/>
                 }
                 {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />

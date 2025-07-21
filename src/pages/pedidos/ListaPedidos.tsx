@@ -118,7 +118,8 @@ export default function ListaPedidos() {
 
               setOpenloader(true)
               Consulta({
-                url: `produccion/vistapreviapedido/${tipo == 'TELAS' ? 'telas' : 'avios'}`, params: {
+                //url: `produccion/vistapreviapedido/${tipo == 'TELAS' ? 'telas' : 'avios'}`, params: {
+                url: tipo == 'TELAS' ? 'produccion/vistapreviapedido/telas' : 'produccion/vistapreviapedidoavios/avios', params: {
                   method: 'POST',
                   body: data
                 }

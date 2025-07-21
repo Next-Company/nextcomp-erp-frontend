@@ -16,7 +16,7 @@ const CuerpoInforme = ({info,tipo})=>{
     console.log("El tipo de pedido es:",tipo)
     let crear = async ()=>{
       // await Consulta({url: `${tipo ? 'produccion/vistapreviapedido/avios' : 'produccion/vistapreviapedido/telas'}`,params:{
-      await Consulta({url: `${tipo ? 'produccion/vistapreviapedido/avios' : 'produccion/vistapreviapedido/telas' }`,params:{
+      await Consulta({url: `${tipo ? 'produccion/vistapreviapedidoavios/avios' : 'produccion/vistapreviapedido/telas' }`,params:{
         method:'POST',
         body:info
       }})

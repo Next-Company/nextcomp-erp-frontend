@@ -524,7 +524,7 @@ export default function ListaPagos(){
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.cantidad}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.despacho}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.importe.toFixed(2)}</td>
-                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{(row.importe - row.cancelado).toFixed(2)}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{(row.importe - row.cancelado - row.descuentos).toFixed(2)}</td>
                             </>
                           }
                           {
