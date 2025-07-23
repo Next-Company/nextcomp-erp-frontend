@@ -16,7 +16,8 @@ const colorfase = {
 }
 
 const CuerpoServicio = ({info,openloader})=>{
-  const {openModal,setOpen} = useContext(ModalWindowContext)
+  // const {openModal,setOpen} = useContext(ModalWindowContext)
+  console.log("El cuerpo del servicio es:",info)
   const onclick = (e)=>{
     const action = e.target.dataset.action
     const id = e.target.dataset.id
@@ -75,9 +76,17 @@ const CuerpoServicio = ({info,openloader})=>{
         <div className="px-2 py-1">
           <div className={` ${info.estado == 'FINALIZADO' ? 'bg-slate-500' : colorfase[info.servicio]} text-white rounded-xl p-3 relative z-10 cursor-pointer hover:opacity-80`}>
             <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
-              <div className="text-[10px] text-left">{info.proveedor}<br/>#{info.idx}</div>
-              {/* <div className="flex-1">ORDEN</div> */}
+              {/* <div className="text-[10px] text-left">PROV: {info.proveedor}<br/>GUIA: #{info.idx}</div> */}
+              <div className="text-[10px] text-left">PROV: {info.proveedor}</div>
               <div className="text-[10px] w-[100px] text-right">{info.estado}</div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <div className="text-[10px] text-left"><span className="font-extrabold">GUIA:</span> #{info.idx}</div>
+              <div className="text-[10px] text-left"><span className="font-extrabold">CANT.:</span> {info.cantidad_servicio}</div>
+              <div className="text-[10px] text-left"><span className="font-extrabold">CORTE:</span> -</div>
+              <div className="text-[10px] text-left"><span className="font-extrabold">EMISION:</span> {info.fec_emision}</div>
+              <div className="text-[10px] text-left"><span className="font-extrabold">RETORNO:</span> {info.fec_retorno}</div>
+              <div className="text-[10px] text-left"><span className="font-extrabold">DIAS:</span> {info.dias_pendientes}</div>
             </div>
             <div>
               <ul className="flex flex-row justify-end">

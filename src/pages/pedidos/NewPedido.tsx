@@ -94,8 +94,8 @@ export default function NewPedido(){
         }})
         .then(resp => {
           setOpenloader(false)
-          // navigate('/main/pedidos/')
-          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          navigate('/main/pedidos/')
+          toast.success('Nuevo pedido guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
           setOpenloader(false)
@@ -393,9 +393,23 @@ export default function NewPedido(){
                           ))
                         }
                       </tbody>
-                      <tfoot className="sticky bottom-0">
+                      <tfoot className="sticky bottom-0 bg-white">
                         <tr>
-                          <td colSpan={10} >
+                          <td colSpan={4} className="text-right"></td>
+                          <td className="text-center"><strong className="text-[14px]">TOTAL: </strong></td>
+                          <td className="text-center text-[14px] font-bold">
+                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(2)}
+                          </td>
+                          <td className="text-center">-</td>
+                          <td className="text-center">-</td>
+                          <td className="text-center text-[14px] font-bold">
+                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(2)}
+                          </td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td colSpan={11} >
                             <div className="flex flex-row justify-center">
                               <div onClick={nuevoproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
@@ -406,8 +420,6 @@ export default function NewPedido(){
                       </tfoot>
                     </table>
                   </div>
-
-
                 </div>
                 <div>
                   <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={4} />

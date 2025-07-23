@@ -52,8 +52,13 @@ import ListaCobros from './pages/cobros/ListaCobros.tsx'
 import NewCobro from './pages/cobros/NewCobro.tsx'
 import LayoutCaja from './pages/caja/LayoutCaja.tsx'
 import InformeCaja from './pages/caja/InformeCaja.tsx'
+import Unauthorized from './pages/pedidos/Unauthorized.tsx'
+import PrivateRoute from './pages/pedidos/PrivateRouter.tsx'
 
 const routes = [
+  {
+    path: "unauthorized", element: <Unauthorized />
+  },
   {
     path: "/otro",
     element: <Home2 />
@@ -66,8 +71,14 @@ const routes = [
     path: "/main",
     element: <Dasboard />,
     children: [
+      {
+        path: "unauthorized", element: <Unauthorized />
+      },
       { path: "home", element: <Home /> },
-      { path: "directorio", element: <Directory /> },
+      // { path: "directorio", element: <Directory /> },
+      { 
+        path: "directorio", element: <PrivateRoute><Directory /></PrivateRoute>,
+      },
       { path: "directorio/:directoryId", element: <Directory /> },
       { path: "chatroom", element: <ChatRoom /> },
       { path: "calendario", element: <Agenda /> },
@@ -83,7 +94,7 @@ const routes = [
       },
       {
         path: "guias",
-        element: <LayoutGuia />,
+        element: <PrivateRoute><LayoutGuia /></PrivateRoute>,
         children: [
           { path: "", element: <ListaGuias /> },
           { path: "nuevo", element: <NewGuia /> },
@@ -93,18 +104,18 @@ const routes = [
       },
       {
         path: "muestras",
-        element: <LayoutMuestras />,
+        element: <PrivateRoute><LayoutMuestras /></PrivateRoute>,
         children: [
           { path: "", element: <ListaMuestras /> },
           { path: "nuevo", element: <NewMuestra /> },
           { path: "nuevo/:id", element: <NewMuestra /> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
-        ]
+        ] 
       },
       {
         path: "pedidos",
-        element: <LayoutPedido />,
+        element: <PrivateRoute><LayoutPedido /></PrivateRoute>,
         children: [
           { path: "", element: <ListaPedidos /> },
           { path: "nuevo", element: <NewPedido /> },
@@ -115,7 +126,7 @@ const routes = [
       },
       {
         path: "ordenes",
-        element: <LayoutOrden />,
+        element: <PrivateRoute><LayoutOrden /></PrivateRoute>,
         children: [
           { path: "", element: <ListaOrdenes /> },
           { path: "nuevo", element: <NewOrden /> },
@@ -124,7 +135,7 @@ const routes = [
       },
       {
         path: "despachos",
-        element: <LayoutDespacho />,
+        element: <PrivateRoute><LayoutDespacho /></PrivateRoute>,
         children: [
           { path: "", element: <ListaDespachos /> },
           { path: "nuevo", element: <NewDespacho /> },
@@ -134,7 +145,7 @@ const routes = [
       },
       {
         path: "letras",
-        element: <LayoutLetras />,
+        element: <PrivateRoute><LayoutLetras /></PrivateRoute>,
         children: [
           { path: "", element: <ListaLetras /> },
           { path: "nuevo", element: <NewLetraV2 /> },
@@ -144,7 +155,7 @@ const routes = [
       },
       {
         path: "prestamos",
-        element: <LayoutPrestamo />,
+        element: <PrivateRoute><LayoutPrestamo /></PrivateRoute>,
         children: [
           { path: "", element: <ListaPrestamos /> },
           { path: "nuevo", element: <NewPrestamo /> },
@@ -153,7 +164,7 @@ const routes = [
       },
       {
         path: "pagos",
-        element: <LayoutPagos />,
+        element: <PrivateRoute><LayoutPagos /></PrivateRoute>,
         children: [
           { path: "", element: <ListaPagos /> },
           { path: "nuevopagoservicio/:id", element: <NewPagoServicio /> },
@@ -167,7 +178,7 @@ const routes = [
       },
       {
         path: "cobros",
-        element: <LayoutCobros />,
+        element: <PrivateRoute><LayoutCobros /></PrivateRoute>,
         children: [
           { path: "", element: <ListaCobros /> },
           { path: "nuevocobro/:id/:tipo", element: <NewCobro /> },
@@ -175,7 +186,7 @@ const routes = [
       },
       {
         path: "caja",
-        element: <LayoutCaja />,
+        element: <PrivateRoute><LayoutCaja /></PrivateRoute>,
         children: [
           { path: "", element: <InformeCaja /> },
         ]

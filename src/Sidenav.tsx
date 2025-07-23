@@ -92,26 +92,17 @@ export function Sidenav() {
                 Inicio
               </div>
             </li> */}
-            <NavLink
+            {/* <NavLink
               to="home"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "active" : "default"
               }
-              // style={({ isActive, isPending, isTransitioning }) => {
-              //   return {
-              //     // borderRadius: "8px",
-              //     // backgroundColor: 'red'
-              //     // backgroundColor: isPending ? 'red' : "green",
-              //     // color: isActive ? "black" : ( isTransitioning ? "black" : "gray" ),
-              //     // viewTransitionName: isTransitioning ? "slide" : "",
-              //   };
-              // }}
             >
               <div className="w-full h-[45px] flex flex-row justify-center items-center rounded-lg group/sub relative">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" className="bag oc se ur"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path></svg>
                 <SuggestBox title="Inicio" />
               </div>
-            </NavLink>
+            </NavLink> */}
             {
               JSON.parse(credentials).idx !== 12 && <NavLink
                 to="directorio"
