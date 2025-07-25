@@ -396,16 +396,15 @@ export default function NewGuia(){
       content: <Ordenes actions={(item)=>{
         console.log("INfor de la orden es:",item)
         setOpen(false)
-
-
         setOpenloader(true)
-        Consulta({url:'ordenes/extraeritemscaja/' + item.idx})
+        Consulta({url:'ordenes/extraeritemscaja/' + item.idx + '/' + item.id_corte})
         .then((resp)=>{
+          console.log("Los registros de la orden son :",resp)
           if(resp.length > 0){
             setInfo(info=>({...info,id_orden_CAB:item.idx,id_corte_CAB:item.id_corte,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
             setRegistros(resp)
           }else{
-            toast.error('Se produjo un error!!', { theme: "colored" })
+            toast.warning('No se encontraron datos disponibles.', { theme: "colored" })
           }
           console.log("Resultado del proceso de extraccion :",resp)
         })

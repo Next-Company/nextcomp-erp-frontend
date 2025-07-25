@@ -213,7 +213,7 @@ function CuerpoCorte({info,setcorte,position,quitar,form}){
                   ))
                 }
               </tbody>
-              <tfoot className="sticky bottom-0">
+              <tfoot className="sticky bottom-0 bg-white">
                 <tr>
                   <td colSpan={6} className="text-right"></td>
                   <td className="text-center font-black">TOTAL</td>
@@ -619,7 +619,7 @@ export function NewOrden() {
         })
           .then(resp => {
             if(resp.ok){
-              // navigate("/main/ordenes/")
+              navigate("/main/ordenes/")
               toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
             }else{
               toast.error(resp.mensaje, { theme: "colored" })

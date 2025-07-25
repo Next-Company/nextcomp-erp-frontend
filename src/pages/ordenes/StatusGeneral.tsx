@@ -74,7 +74,8 @@ const CuerpoServicio = ({info,openloader})=>{
       {/* <div className="flex-1 bg-green-300"> */}
 
         <div className="px-2 py-1">
-          <div className={` ${info.estado == 'FINALIZADO' ? 'bg-slate-500' : colorfase[info.servicio]} text-white rounded-xl p-3 relative z-10 cursor-pointer hover:opacity-80`}>
+          {/*<div className={` ${info.estado == 'FINALIZADO' ? 'bg-slate-500' : colorfase[info.servicio]} text-white rounded-xl p-3 relative z-10 cursor-pointer hover:opacity-80`}>*/}
+          <div className={`${colorfase[info.servicio]} text-white rounded-xl p-3 relative z-10 cursor-pointer hover:opacity-80`}>
             <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
               {/* <div className="text-[10px] text-left">PROV: {info.proveedor}<br/>GUIA: #{info.idx}</div> */}
               <div className="text-[10px] text-left">PROV: {info.proveedor}</div>
@@ -170,11 +171,13 @@ const CuerpoDespacho = ({info,openloader})=>{
         {
           info.length > 0 && info.map(row=>
             <div className={`bg-orange-400 rounded-xl p-3 relative z-10 flex-1 cursor-pointer hover:opacity-90`}>
-              <div className="flex flex-row justify-between">
-	        <div><strong>#{row.nro_guia}</strong></div>
-		<div><strong>{row.despacho}</strong> und.</div>
+              <div className="flex flex-row justify-center">
+                <div><strong>#GUIA: {row.nro_guia}</strong></div>
+              </div>
+	      <div className="flex flex-row justify-between text-[11px]">
+	        <div><strong>CANT.:</strong> {row.despacho} und.</div>
+	        <div><strong>FECHA:</strong> {row.fecha_ingreso}</div>
 	      </div>
-	      <div>_</div>
               <div className="flex flex-row justify-end">
                 <ul className="flex flex-row justify-end">
                   <li>
@@ -535,8 +538,8 @@ export default function StatusGeneral({id,openmodal}){
                       <div className="relative z-[10]">
                         {
                           Object.keys(info[4]).length > 0 && Object.keys(info[4]).map((item,key)=>
-                            <div className="w-full flex flex-row border-b-[2px] border-dashed border-gray-500">
-                              <div className={`flex-1 ${key%2 ? 'bg-orange-100' : 'bg-orange-100'} flex flex-col justify-center`}>
+                            <div className={`w-full flex flex-row border-b-[2px] border-dashed border-gray-500 ${info[5][item] ? '' : 'grayscale opacity-[.7]'} hover:grayscale-0 hover:opacity-[1]`} >
+                              <div className={`flex-1 ${key%2 ? 'bg-orange-100' : 'bg-orange-100'} flex flex-col justify-center`} >
                                 {
                                   info[4][item].map(row=><CuerpoServicio info={row} openloader={setOpenloader}/>)
                                 }
