@@ -341,8 +341,8 @@ export default function NewDespacho() {
     e.preventDefault()
     console.log("Los datos del formulario son:", registros)
     if(registros.length > 0){
-      // if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
-      if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0) {
+      if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
+      // if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0) {
         toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
         return 0
       }
@@ -380,7 +380,7 @@ export default function NewDespacho() {
           .then(resp => {
             console.log("Info respues:",resp)
             setOpenloader(false)
-            // navigate('/main/despachos/')
+            navigate('/main/despachos/')
             if(resp.ok){
               toast.success(resp.message, { theme: "colored" })
             }else{
@@ -780,7 +780,7 @@ export default function NewDespacho() {
                                           carry += parseFloat(item.cantidad_despacho)
                                           return carry
                                         },0) - row.despacho}</td>
-                                        : <td>{row.cantidad - row.despacho}</td>
+                                        : <td>{row.cantidad - row.despacho - row.caidos}</td>
                                       }
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho ?? 0} /></td>
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" value={row.caidos ?? 0} /></td>
@@ -857,7 +857,7 @@ export default function NewDespacho() {
                                     },0)) - parseFloat(value.despacho ?? 0)
                                   }, 0)}</td>
                                   : <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                                    return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despacho ?? 0)
+                                    return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despacho ?? 0) - parseFloat(value.caidos ?? 0)
                                   }, 0)}</td>
                                 }
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {

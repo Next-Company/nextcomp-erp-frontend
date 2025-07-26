@@ -7,6 +7,7 @@ import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowCont
 import { toast } from "react-toastify";
 import { colorfase } from "../../utils/utils";
 
+const apiUrl = import.meta.env.VITE_API_URL
 // const colorfase = {
 //   'CONFECCION':'bg-purple-500',
 //   'ESTAMPADO':'bg-gray-500',
@@ -48,13 +49,18 @@ const CuerpoInforme = ({ servicioid }) => {
         .catch((err) => {
         })
     }
-    crear()
+    // crear()
   }, [])
   return (
     <>
       <div>
-        {/* <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe> */}
+        <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
+	{/*
+        <iframe src={`http://192.168.18.20:4002/produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
+	*/}
+	{/*
         <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
+	*/}
         <div className="flex flex-row justify-center gap-2 mt-2">
           <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
           <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
@@ -152,8 +158,8 @@ export default function ListaGuias() {
               setOpenloader(true)
 
               Consulta({
-                url: "produccion/exportguia/" + id, params: {
-                  method: 'POST'
+                url: "produccion/exportguia/" + id + "/1", params: {
+                  method: 'GET'
                 }
               })
                 .then(resp => {

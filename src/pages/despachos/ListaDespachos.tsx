@@ -7,6 +7,7 @@ import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowCont
 import { toast } from "react-toastify";
 import { colorfase } from "../../utils/utils";
 
+const apiUrl = import.meta.env.VITE_API_URL
 const colordespacho = {
   'PEDIDOS_TELAS': 'bg-orange-500',
   'PEDIDOS_AVIOS': 'bg-blue-500',
@@ -114,8 +115,8 @@ export default function ListaDespachos() {
       case 'review':
         params_modal = {
           open: true,
-          content: <div>
-            <iframe src={`http://192.168.18.20:4002/produccion/verdespacho/${id}/${idguia}/1`} width={1100} height={700} />
+          content: <div className="pb-4">
+            <iframe src={`${apiUrl}produccion/verdespacho/${id}/${idguia}/1`} width={1100} height={700} />
           </div>,
           controls: true,
           header: false,

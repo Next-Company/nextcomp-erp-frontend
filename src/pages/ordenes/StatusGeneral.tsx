@@ -26,8 +26,8 @@ const CuerpoServicio = ({info,openloader})=>{
       case 'download':
         openloader(true)
         Consulta({
-          url: "produccion/exportguia/" + id, params: {
-            method: 'POST'
+          url: "produccion/exportguia/" + id + "/1", params: {
+            method: 'GET'
           }
         })
           .then(resp => {
@@ -50,20 +50,9 @@ const CuerpoServicio = ({info,openloader})=>{
             openloader(false)
             toast.error('Se produjo un error!!', { theme: "colored" })
           })
-
-        // let params_modal = {
-        //   open: true,
-        //   content: <div>Desea continuar con la descarga de la guia de traslado interno?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
-        //   controls: true,
-        //   header: false,
-        //   action: () => {
-        //     const desc = async () => {
-
-        //     }
-        //     desc()
-        //   }
-        // }
-        // openModal(params_modal)
+        break
+      case 'show':
+        console.log("Mostrando la vista rapida del reporte")
         break
       default:
         break
@@ -102,7 +91,7 @@ const CuerpoServicio = ({info,openloader})=>{
                   </div>
                 </li>
                 <li>
-                  <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="show" onClick={()=>{}} >
+                  <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-id={info.idx} data-action="show" onClick={onclick} >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                   </div>
                 </li>
@@ -171,7 +160,7 @@ const CuerpoDespacho = ({info,openloader})=>{
         {
           info.length > 0 && info.map(row=>
             <div className={`bg-orange-400 rounded-xl p-3 relative z-10 flex-1 cursor-pointer hover:opacity-90`}>
-              <div className="flex flex-row justify-center">
+              <div className="flex flex-row justify-center text-[11px]">
                 <div><strong>#GUIA: {row.nro_guia}</strong></div>
               </div>
 	      <div className="flex flex-row justify-between text-[11px]">
@@ -305,10 +294,13 @@ export default function StatusGeneral({id,openmodal}){
     let parent = e.currentTarget.parentElement.parentElement
     parent.classList.toggle("showdata")
   }
+  const vistarapida = useRef()
+  const [vistaopen,setVistaopen] = useState(0) 
 
   return(
     <>
       <div className="flex flex-col pb-4 relative">
+      	<div ref={vistarapida} className="{``}absolute w-[100px] hidden h-[100px] bg-orange-300 z-[100] translate-y-[300px] transition-l">vista rapida de guia e ingreso</div>
         <div ref={imagemain} onBlur={imageout} className={`absolute w-[600px] h-[600px] ${zoom ? 'z-[100]' : 'z-[-1]'} rounded-full bg-slate-400 overflow-hidden flex flex-row items-center] transition-all ${zoom ? 'scale-100' : 'scale-50 opacity-0'}`} style={{left:'calc(50% - 300px)',top:'calc(50% - 300px)'}} tabIndex={-1}>
           <img src={`https://jsjfact.com/facturador/imagenez/op_${id}.jpg`} onError={onerror}/>
         </div>
@@ -317,7 +309,7 @@ export default function StatusGeneral({id,openmodal}){
             loading
             ? 
               <div className={`flex justify-center w-full`}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-loader-2 loading"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3a9 9 0 1 0 9 9" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-loader-2 loading"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3a9 9 0 1 0 9 9" /></svg>
               </div>
             :
               <div className="relative">
@@ -544,7 +536,7 @@ export default function StatusGeneral({id,openmodal}){
                                   info[4][item].map(row=><CuerpoServicio info={row} openloader={setOpenloader}/>)
                                 }
                               </div>
-                              <div className={`w-[35px] ${colorfase[item]}`} style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '12px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>{item}</div>
+                              <div className={`w-[35px] min-h-[150px] ${colorfase[item]}`} style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '12px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>{item}</div>
                               <div className={`flex-1 ${key%2 ? 'bg-orange-100' : 'bg-orange-100'} flex flex-col justify-center`}>
                                 {
                                   info[4][item].length > 0 && info[4][item].map(row=>
