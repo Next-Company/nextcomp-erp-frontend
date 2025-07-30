@@ -255,7 +255,7 @@ export default function NewGuia(){
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',JSON.stringify(registros))
         penalidades.length > 0 && data.append('penalidades',JSON.stringify(penalidades))
-	reprogramacion.length > 0 && data.append('reprogramacion',JSON.stringify(reprogramacion))
+	      reprogramacion.length > 0 && data.append('reprogramacion',JSON.stringify(reprogramacion))
 
         await Consulta({url: 'produccion/guardarguia/',params:{
           method:'PUT',

@@ -10,6 +10,7 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import Guias from "../../components/Common/Guias"
 import Pedidos from "../../components/Common/Pedidos"
+import ReviewEstampado from "../estampado/ReviewEstampado"
 
 const colorfase = {
   'CONFECCION': 'bg-purple-500',
@@ -25,6 +26,7 @@ const colorfase = {
 const model = {fracciones_despacho:[
     {concepto:'INGRESO',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0},
     {concepto:'CAIDOS',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0},
+    {concepto:'INCOMPLETOS',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0},
   ]
 }
 
@@ -54,7 +56,9 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
   return(
     <>
     <div className="scrollbar-special overflow-y-scroll mt-2 mb-2">
-      <div className="flex flex-row justify-between bg-cyan-100 p-1"><strong>{data.articulo}</strong><strong>{data.cantidad}</strong></div>
+      <div className="flex flex-row justify-between px-4 rounded-lg bg-cyan-100 p-1 h-[40px] items-center"><strong>{data.articulo}</strong><strong className="italic text-[20px]">{data.cantidad}</strong></div>
+      {/* <div className="flex flex-row justify-center bg-cyan-100 p-1 h-[40px] items-center"><strong>{data.articulo}</strong></div> */}
+      {/* <div className="flex flex-row justify-center bg-cyan-100 p-1"><strong></strong><strong>{data.cantidad}</strong></div> */}
       <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
         <thead className="text-left sticky top-0 bg-white">
           <tr>
@@ -66,13 +70,13 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
             <th className="lg:table-cell">XL / 34</th>
             <th className="lg:table-cell">XXL / 36</th>
             <th className="lg:table-cell">CantidadIngreso</th>
-            <th className="lg:table-cell">Acciones</th>
+            {/* <th className="lg:table-cell">Acciones</th> */}
           </tr>
         </thead>
         <tbody>
           {
             ingreso.fracciones_despacho.map((row,key)=>(
-              <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+              <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent h-[45px]">
                 <td><input type="text" onChange={editvalue} data-name="color_combo" data-grupo={key} value={row.concepto} /></td>
                 <td><input data-name="xs" type="number" onChange={editvalue} data-grupo={key}  value={row.xs}/></td>
                 <td><input data-name="s" type="number" onChange={editvalue} data-grupo={key} value={row.s}/></td>
@@ -84,29 +88,42 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
                   c += row[v] ?? 0
                   return c
                 },0)}/></td>
-                <td className="">
-                  <ul className="flex flex-row justify-end">
-                    <li>
-                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" data-position={key} data-id={0}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                      </div>
-                    </li>
-                  </ul>
-                </td>
               </tr>
             ))
           }
         </tbody>
+        <tfoot>
+          <tr className="h-[45px] font-bold">
+            <td>SUBTOTAL:</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr className="h-[45px] font-bold">
+            <td>SALDO:</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr className="h-[45px] font-bold">
+            <td>DIFERENCIA:</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+        </tfoot>
       </table>
     </div>
 
@@ -114,11 +131,6 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
   )
 }
 
-// const model = {fracciones:[
-//     {concepto:'INGRESO',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0},
-//     {concepto:'CAIDOS',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0},
-//   ]
-// }
 function CuerpoIngresos({registros,setregistros,setopen}){
   const [copia,setCopia] = useState([])
   useEffect(()=>{
@@ -134,6 +146,10 @@ function CuerpoIngresos({registros,setregistros,setopen}){
             cc[vv.talla] = vv.caidos
             return cc
           },{concepto:'CAIDOS'}),
+          v.fracciones_incompletos.reduce((cc,vv)=>{
+            cc[vv.talla] = vv.incompletos
+            return cc
+          },{concepto:'INCOMPLETOS'}),
         ]
       }
       c.push(v)
@@ -142,7 +158,10 @@ function CuerpoIngresos({registros,setregistros,setopen}){
   },[])
   // console.log("La info de la copia es :",copia)
   const actualizar = ()=>{
-    // console.log("Banana:",copia[0].fracciones_despacho)
+    if(1){
+      toast.error('No se han realizado cambios en el despacho. Por favor verifique.', { theme: "colored" })
+      return 0
+    }
     console.log("Banana:",copia)
     const kk = copia.map(row=>
       ({...row,
@@ -152,28 +171,51 @@ function CuerpoIngresos({registros,setregistros,setopen}){
         caidos:row.fracciones_despacho.length > 0 
             ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt((row.fracciones_despacho[1])[v]),0) 
             : 0,
+        incompletos:row.fracciones_despacho.length > 0 
+            ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt((row.fracciones_despacho[2])[v]),0) 
+            : 0,
         fracciones_despacho: row.fracciones_despacho.length > 0
-        ? ['xs','s','m','l','xl','xxl'].map(item=>({talla:item,cantidad:row.fracciones_despacho[0][item],caidos:row.fracciones_despacho[1][item]}))
+        ? ['xs','s','m','l','xl','xxl'].map(item=>({talla:item,cantidad:row.fracciones_despacho[0][item],caidos:row.fracciones_despacho[1][item],incompletos:row.fracciones_despacho[2][item]}))
         : []
       }))
       console.log("Enoelmaiz :",kk)
 
-    // setregistros(copia.map(row=>
-    //   ({...row,
-    //     despacho:row.fracciones_despacho.length > 0 
-    //         ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt(row.fracciones_despacho[0][v]),0) 
-    //         : 0,
-    //     caidos:row.fracciones_despacho.length > 0 
-    //         ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt((row.fracciones_despacho[1])[v]),0) 
-    //         : 0
-    //   })))
-
-    setregistros(kk)
+    // setregistros(reg=>[...reg.filter((row,key)=>row.id_combo !== kk[0].id_combo),kk[0]])
+    setregistros(reg=>reg.map((row,key)=>{
+      // return row.id_combo === kk[0].id_combo ? {...row,fracciones_despacho:kk[0].fracciones_despacho} : row 
+      return row.id_combo == kk[0].id_combo ? kk[0] : row 
+    }))
     setopen(false)
   }
   return(
     <>
-      <div className="flex flex-col w-[1200px] h-[650px]">
+      <div className="flex flex-col w-[1100px] h-[500px]">
+        {/* <div className="flex flex-row justify-center gap-4">
+          <div className="flex flex-col">
+            <div><strong>XS</strong></div>
+            <div>0</div>
+          </div>
+          <div className="flex flex-col">
+            <div><strong>S</strong></div>
+            <div>0</div>
+          </div>
+          <div className="flex flex-col">
+            <div><strong>M</strong></div>
+            <div>0</div>
+          </div>
+          <div className="flex flex-col">
+            <div><strong>L</strong></div>
+            <div>0</div>
+          </div>
+          <div className="flex flex-col">
+            <div><strong>XL</strong></div>
+            <div>0</div>
+          </div>
+          <div className="flex flex-col">
+            <div><strong>XXL</strong></div>
+            <div>0</div>
+          </div>
+        </div> */}
         <div className="flex-1 overflow-y-auto scrollbar-special ">
         {
           copia.length > 0 && copia.map((row,key)=><CuerpoDespachoTest position={key} data={row} setregistros={setCopia} registros={copia}/>)
@@ -187,143 +229,6 @@ function CuerpoIngresos({registros,setregistros,setopen}){
     </>
   )
 }
-
-function CuerpoCorte({info,setcorte,position,quitar,form}){
-  console.log("El chapuloin colorado 2: ",info)
-  const [active,setActive] = useState(1)
-  const [data,setData] = useState([
-    {concepto:'INGRESSOS','xs':0,'s':0,'m':0,'l':0,'xl':0,'xxl':0},
-    {concepto:'CAIDOS','xs':0,'s':0,'m':0,'l':0,'xl':0,'xxl':0},
-  ])
-  const onclick = (e)=>{
-    const position = e.target.dataset.position
-    const id = e.target.dataset.id
-    setcorte(corte=>corte.reduce((c,v)=>{
-      c.push({...v,combos:v.idx == id ? v.combos.filter((row,key)=>key !== parseInt(position)) : v.combos})
-      return c
-    },[]))
-  }
-  const editvalue = (e)=>{
-    const indice = e.target.dataset.position
-    const id = info.idx
-    const name = e.target.dataset.name
-    console.log("La informacion del corte es:",indice,id,name)
-
-    let total = 0
-    if(['xs','s','m','l','xl','xxl'].includes(name)){
-      total = ['xs','s','m','l','xl','xxl'].reduce((c,v)=>{
-        if(v !== name){
-          c += parseInt(info.combos[indice][v])
-        }
-        return c
-      },0)
-      total += parseInt(e.target.value)
-
-      setcorte(corte=>corte.reduce((c,v)=>{
-        c.push({...v,combos:v.idx == id ? v.combos.map((row,key)=>key == parseInt(indice) ? ({...row,[e.target.dataset.name]:e.target.value,cantidad_combo:total}) : row ) : v.combos})
-        return c
-      },[]))
-    }else{
-      setcorte(corte=>corte.reduce((c,v)=>{
-        c.push({...v,combos:v.idx == id ? v.combos.map((row,key)=>key == parseInt(indice) ? ({...row,[e.target.dataset.name]:e.target.value}) : row ) : v.combos})
-        return c
-      },[]))
-    }
-  }
-  const agregarcombo = (e)=>{
-    const id = e.target.dataset.id
-    setcorte(corte=>corte.reduce((c,v)=>{
-      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
-      return c
-    },[]))
-  }
-  const deletecorte = (e)=>{
-    const position = e.target.dataset.position
-    setcorte(corte=>corte.filter((row,key)=>key !== parseInt(position)))
-  }
-  return <>
-    <div key={position} className="w-[1100px]">
-      {/* <InputTest name={'numero_corte'} defaults={Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : null} title="#HojaCorte" type="text" /> */}
-      <ul className="list-none [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button]:w-full [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50 relative">
-        <div className="relative">
-          <button type="button" className={`group active`} data-estado={0} onClick={()=>setActive(active*-1)}>
-            <span className="relative h-[100%] w-full flex items-center justify-between pointer-events-none">
-              <div># LENCERIA ELENEX BALDUR HUMO</div>
-              <div>XS: 33</div>
-              <div>S: 33</div>
-              <div>M: 33</div>
-              <div>L: 33</div>
-              <div>XL: 33</div>
-              <div>XXL: 33</div>
-              
-              {/* # HojaCorte {Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : ''} */}
-              <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-            </span>
-          </button>
-        </div>
-      </ul>
-      {/* /////////////////// */}
-      <div id="cuerpo_ingresos" data-position={position} className={`flex-1 scrollbar-special overflow-y-scroll ${active == -1 ? 'h-0' : 'h-[200px]'} transition-all`}>
-        <div className="p-2">
-          <div className="scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] mt-2">
-            <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
-              <thead className="text-left sticky top-0 bg-white">
-                <tr>
-                  <th className="lg:table-cell">Concepto</th>  
-                  <th className="lg:table-cell">XS / 26</th>
-                  <th className="lg:table-cell">S / 28</th>
-                  <th className="lg:table-cell">M / 30</th>
-                  <th className="lg:table-cell">L / 32</th>
-                  <th className="lg:table-cell">XL / 34</th>
-                  <th className="lg:table-cell">XXL / 36</th>
-                  <th className="lg:table-cell">CantidadCombo</th>
-                  <th className="lg:table-cell">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  data.length > 0 && data.map((row,key)=>(
-                    <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                      <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.concepto} /></td>
-                      <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
-                      <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
-                      <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
-                      <td><input data-name="l" type="number" onChange={editvalue} data-position={key} value={row.l}/></td>
-                      <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} value={row.xl}/></td>
-                      <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl}/></td>
-                      <td><input data-name="cantidad_combo" type="number" onChange={(editvalue)} data-position={key} value={0}/></td>
-                      <td className="">
-                        <ul className="flex flex-row justify-end">
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" onClick={onclick} data-position={key} data-id={info.idx}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                            </div>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-                  ))
-                }
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <hr/>
-    </div>
-  </>
-}
-
 
 export default function NewDespacho() {
   // const [estampado,setEstampado] = useState([])
@@ -341,11 +246,14 @@ export default function NewDespacho() {
     e.preventDefault()
     console.log("Los datos del formulario son:", registros)
     if(registros.length > 0){
-      if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
-      // if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0) {
+      if(registros.filter(row=>row.fracciones_despacho.length > 0).length == 0){
         toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
         return 0
       }
+      // if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
+      //   toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
+      //   return 0
+      // }
     }
     for (const element of form.current.elements) {
       if(['responsable','nro_guia'].includes(element.name) && element.value == ''){
@@ -380,7 +288,7 @@ export default function NewDespacho() {
           .then(resp => {
             console.log("Info respues:",resp)
             setOpenloader(false)
-            navigate('/main/despachos/')
+            // navigate('/main/despachos/')
             if(resp.ok){
               toast.success(resp.message, { theme: "colored" })
             }else{
@@ -474,11 +382,13 @@ export default function NewDespacho() {
         setFacturas(facturas.filter((row, key) => key !== parseInt(position)))
         break;
       case 'edit':
+
+        console.log("Los registros enviados a la modal son lo siguientes:", registros[position])
         openModal({
           open: true,
           header: false,
           controls: false,
-          content: <CuerpoIngresos registros={registros} setregistros={setRegistros} setopen={setOpen}/>,
+          content: <CuerpoIngresos registros={[registros[position]]} setregistros={setRegistros} setopen={setOpen}/>,
           action: async () => {}
         })
         break;
@@ -735,6 +645,7 @@ export default function NewDespacho() {
                                   <th className="lg:table-cell">Saldo</th>
                                   <th className="lg:table-cell">Ingreso</th>
                                   <th className="lg:table-cell">Caidos</th>
+                                  <th className="lg:table-cell">Incompletos</th>
                                   <th className="lg:table-cell">Acciones</th>
                                 </>
                                 :
@@ -784,6 +695,7 @@ export default function NewDespacho() {
                                       }
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho ?? 0} /></td>
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" value={row.caidos ?? 0} /></td>
+                                      <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="incompletos" value={row.incompletos ?? 0} /></td>
                                     </>
                                     :
                                     <>
@@ -796,7 +708,7 @@ export default function NewDespacho() {
                                       <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                     </>
                                 }
-                                <td className="w-[250px]">
+                                <td className="w-[200px]">
                                   <ul className="flex flex-row justify-end">
                                     <li>
                                       <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-position={key}>
@@ -809,17 +721,7 @@ export default function NewDespacho() {
                                       </div>
                                     </li>
                                     <li>
-                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                                      </div>
-                                    </li>
-                                    <li>
-                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={() => { }}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                      </div>
-                                    </li>
-                                    <li>
-                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-position={key}>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-position={key} data-combo={row.id_combo}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                       </div>
                                     </li>
@@ -865,6 +767,9 @@ export default function NewDespacho() {
                                 }, 0)}</td>
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                                   return carry + parseFloat(value.caidos  ?? 0)
+                                }, 0)}</td>
+                                <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                  return carry + parseFloat(value.incompletos ?? 0)
                                 }, 0)}</td>
                                 {/* <td className="text-center text-[16px] italic">0</td> */}
                                 <td className="text-center"></td>
