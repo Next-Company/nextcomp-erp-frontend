@@ -288,7 +288,13 @@ export default function NewPedido(){
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" />
-                  
+                  <InputSelect title={'Emisor'} name={"emisor"} data={
+                    [
+                      { indice: 'NEXT', option: 'NEXT', selected: true }, 
+                      { indice: 'ELENEX', option: 'ELENEXT' }, 
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.tipo : null} 
+                  />
                 </div>
                 <div className="flex gap-3">
                   <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
