@@ -37,7 +37,7 @@ export default function NewLetra(){
         .then(resp => {
           setOpenloader(false)
           navigate('/main/letras/inicio')
-          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          toast.success('Nueva letra guardada con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
           setOpenloader(false)

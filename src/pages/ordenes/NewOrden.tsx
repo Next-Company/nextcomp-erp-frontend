@@ -533,7 +533,18 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             }
           </tbody>
           <tfoot className="sticky bottom-0">
-            <tr>
+            <tr className="h-[45px] bg-white">
+              <td className="font-bold text-center text-[14px]">TOTAL</td>
+              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.xs),0)}</td>
+              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.s),0)}</td>
+              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.m),0)}</td>
+              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.l),0)}</td>
+              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.xl),0)}</td>
+              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.xxl),0)}</td>
+              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0)}</td>
+              <td className="font-bold text-center text-[14px]"></td>
+            </tr>
+            <tr className="bg-white">
               <td colSpan={10} >
                 <div className="flex flex-row justify-center">
                   <div onClick={agregarcombo} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">

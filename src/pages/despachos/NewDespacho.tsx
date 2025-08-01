@@ -52,7 +52,10 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
         : model.fracciones_despacho.map((row2,key2)=>key2 == grupo ? {...row2,[name]:value} : row2)
         } 
       : row))
+    // console.log("INfo del reduce :",ingreso.despachos[0].fracciones.filter(row=>row.talla == 'xs'))
   }
+  console.log("INfo del mango :",data)
+  // console.log("INfo del reduce :",Object.values(data.despachos[0].fracciones.filter(row=>row.talla == 'xs')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0)) 
   return(
     <>
     <div className="scrollbar-special overflow-y-scroll mt-2 mb-2">
@@ -95,33 +98,34 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
         <tfoot>
           <tr className="h-[45px] font-bold">
             <td>SUBTOTAL:</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
+            <td>{ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.xs),0)}</td>
+            <td>{ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.s),0)}</td>
+            <td>{ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.m),0)}</td>
+            <td>{ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.l),0)}</td>
+            <td>{ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.xl),0)}</td>
+            <td>{ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.xxl),0)}</td>
+            <td>{ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0)}</td>
           </tr>
           <tr className="h-[45px] font-bold">
             <td>SALDO:</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
+            {/* <td>{ingreso.despachos.reduce((c,v)=>c+Object.values(v.fracciones.filter(row=>row.talla == 'xs')[0]).reduce((c2,v2)=>c2+v2[1]+v2[2]+v2[3],0),0)}</td> */}
+            <td>{(data.fracciones.filter(row=>row.talla == 'xs')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'xs')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0) ,0) : 0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 's')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 's')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0) ,0) : 0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 'm')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'm')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0) ,0) : 0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 'l')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'l')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0) ,0) : 0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 'xl')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'xl')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0) ,0) : 0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 'xxl')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'xxl')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0) ,0) : 0)}</td>
+            <td>{data.fracciones.reduce((c,v)=>c+v.cantidad,0) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? v1.fracciones.reduce((c,v)=>c + v.caidos + v.despachos + v.incompletos,0) : 0 ),0) : 0)}</td>
           </tr>
           <tr className="h-[45px] font-bold">
             <td>DIFERENCIA:</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 'xs')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'xs')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.xs),0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 's')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 's')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.s),0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 'm')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'm')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.m),0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 'l')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'l')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.l),0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 'xl')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'xl')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.xl),0)}</td>
+            <td>{(data.fracciones.filter(row=>row.talla == 'xxl')[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == 'xxl')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.xxl),0)}</td>
+            <td>{data.fracciones.reduce((c,v)=>c+v.cantidad,0) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? v1.fracciones.reduce((c,v)=>c + v.caidos + v.despachos + v.incompletos,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0)}</td>
           </tr>
         </tfoot>
       </table>
@@ -146,7 +150,7 @@ function CuerpoIngresos({registros,setregistros,setopen}){
             cc[vv.talla] = vv.caidos
             return cc
           },{concepto:'CAIDOS'}),
-          v.fracciones_incompletos.reduce((cc,vv)=>{
+          v.fracciones_despacho.reduce((cc,vv)=>{
             cc[vv.talla] = vv.incompletos
             return cc
           },{concepto:'INCOMPLETOS'}),
@@ -158,10 +162,10 @@ function CuerpoIngresos({registros,setregistros,setopen}){
   },[])
   // console.log("La info de la copia es :",copia)
   const actualizar = ()=>{
-    if(1){
-      toast.error('No se han realizado cambios en el despacho. Por favor verifique.', { theme: "colored" })
-      return 0
-    }
+    // if(1){
+    //   toast.error('No se han realizado cambios en el despacho. Por favor verifique.', { theme: "colored" })
+    //   return 0
+    // }
     console.log("Banana:",copia)
     const kk = copia.map(row=>
       ({...row,
@@ -445,7 +449,7 @@ export default function NewDespacho() {
             console.log("Los registros de la guia son:", resp[1])
             // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
             setRegistros(resp[1].map(row => {
-              row = { ...row, id_item: row.idx, despacho: 0, caidos: 0 }
+              row = { ...row, id_item: row.idx, despacho: 0, caidos: 0, incompletos: 0 }
               Reflect.deleteProperty(row, 'idx')
               return row
             }))
@@ -639,8 +643,7 @@ export default function NewDespacho() {
                                   <th className="lg:table-cell">XXL / 36</th>
                                   <th className="lg:table-cell">Cantidad</th>
                                   {
-                                    !urlparams.id && registros.length > 0 && registros[0].despachos.map((row) => <th className="lg:table-cell"><span className="font-extrabold">{row.fec_despacho}</span></th>)
-
+                                    registros.length > 0 && registros[0].despachos.map((row) => <th className="lg:table-cell"><span className="font-extrabold">{row.fec_despacho}</span></th>)
                                   }
                                   <th className="lg:table-cell">Saldo</th>
                                   <th className="lg:table-cell">Ingreso</th>
@@ -683,15 +686,18 @@ export default function NewDespacho() {
                                       <td>{row.xxl}</td>
                                       <td>{row.cantidad}</td>
                                       {
-                                        !urlparams.id && row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho}</td>)
+                                        row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho + item.cantidad_caidos + item.cantidad_incompletos}</td>)
                                       }
                                       {
                                         !urlparams.id
                                         ? <td>{row.cantidad - row.despachos.reduce((carry,item)=>{
-                                          carry += parseFloat(item.cantidad_despacho)
+                                          carry += parseFloat(item.cantidad_despacho) + parseFloat(item.cantidad_caidos) + parseFloat(item.cantidad_incompletos)
                                           return carry
-                                        },0) - row.despacho}</td>
-                                        : <td>{row.cantidad - row.despacho - row.caidos}</td>
+                                        },0) - row.despacho - row.caidos - row.incompletos}</td>
+                                        : <td>{row.cantidad - row.despachos.reduce((carry,item)=>{
+                                          carry += parseFloat(item.cantidad_despacho) + parseFloat(item.cantidad_caidos) + parseFloat(item.cantidad_incompletos)
+                                          return carry
+                                        },0) - row.despacho - row.caidos - row.incompletos}</td>
                                       }
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho ?? 0} /></td>
                                       <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" value={row.caidos ?? 0} /></td>
@@ -745,7 +751,7 @@ export default function NewDespacho() {
                                 }, 0).toFixed(2)}</td>
                                 {
                                   !urlparams.id && registros.length > 0 && registros[0].despachos.map((item,key) => <td className="text-center text-[16px] italic text-blue-600 font-black">{registros.reduce((carry,value)=>{
-                                    carry += parseFloat(value.despachos[key].cantidad_despacho)
+                                    carry += parseFloat(value.despachos[key].cantidad_despacho) + parseFloat(value.despachos[key].cantidad_caidos) + parseFloat(value.despachos[key].cantidad_incompletos)
                                     // carry += 22
                                     return carry
                                   },0)}</td>)
@@ -754,7 +760,7 @@ export default function NewDespacho() {
                                   !urlparams.id
                                   ? <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                                     return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despachos.reduce((carry,item)=>{
-                                      carry += parseFloat(item.cantidad_despacho)
+                                      carry += parseFloat(item.cantidad_despacho) + parseFloat(item.cantidad_caidos) + parseFloat(item.cantidad_incompletos)
                                       return carry
                                     },0)) - parseFloat(value.despacho ?? 0)
                                   }, 0)}</td>
