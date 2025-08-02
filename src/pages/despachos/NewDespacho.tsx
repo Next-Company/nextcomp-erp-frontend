@@ -249,15 +249,15 @@ export default function NewDespacho() {
   const onsubmit = (e) => {
     e.preventDefault()
     console.log("Los datos del formulario son:", registros)
-    if(registros.length > 0){
+    if(registros.length > 0 && tipo == 2){
       if(registros.filter(row=>row.fracciones_despacho.length > 0).length == 0){
         toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
         return 0
       }
-      // if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
-      //   toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
-      //   return 0
-      // }
+      if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
+        toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
+        return 0
+      }
     }
     for (const element of form.current.elements) {
       if(['responsable','nro_guia'].includes(element.name) && element.value == ''){
@@ -292,7 +292,7 @@ export default function NewDespacho() {
           .then(resp => {
             console.log("Info respues:",resp)
             setOpenloader(false)
-            // navigate('/main/despachos/')
+            navigate('/main/despachos/')
             if(resp.ok){
               toast.success(resp.message, { theme: "colored" })
             }else{

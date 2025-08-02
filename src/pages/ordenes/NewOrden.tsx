@@ -348,13 +348,6 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     }else{
       setorden(orden => ([{...orden[0], combos: orden[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value} : row) }]))
     }
-
-    // if(['xs','s','m','l','xl','xxl'].includes(name)){
-    //   setorden(info => ([{...info[0], combos: info[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value,cantidad_combo:row.cantidad_combo + row.reduce((c,v)=>v.x + v.m + v.l + v.xl + c)} : row) }]))
-    // }else{
-    // }
-    
-    // setorden(info => ([{...info[0], combos: info[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value,cantidad_combo:total} : row) }]))
   }
   const agregarcombo = ()=>{
     console.log("info combos:",info)
@@ -535,13 +528,13 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           <tfoot className="sticky bottom-0">
             <tr className="h-[45px] bg-white">
               <td className="font-bold text-center text-[14px]">TOTAL</td>
-              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.xs),0)}</td>
-              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.s),0)}</td>
-              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.m),0)}</td>
-              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.l),0)}</td>
-              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.xl),0)}</td>
-              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.xxl),0)}</td>
-              <td className="font-bold text-center text-[14px]">{info[0].combos.reduce((c,v)=>c+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0)}</td>
+              <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xs),0) : 0) : 0}</td>
+              <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.s),0) : 0) : 0}</td>
+              <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.m),0) : 0) : 0}</td>
+              <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.l),0) : 0) : 0}</td>
+              <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xl),0) : 0) : 0}</td>
+              <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xxl),0) : 0) : 0}</td>
+              <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0) : 0) : 0}</td>
               <td className="font-bold text-center text-[14px]"></td>
             </tr>
             <tr className="bg-white">
@@ -586,16 +579,21 @@ export function NewOrden() {
     let url_save = ''
     let data = undefined
 
-    // dataimg.length > 0 && data.append('filenext', dataimg[0])
-    // let inputs_orden = Array.from(form.current.elements)
-    // if(listTables[position] == 'tbl2_fases_prod_ordenes'){      
-    //   for (const element of inputs_orden) {
-    //     if(element.name == 'oc' && element.value == ''){
-    //       toast.error('Se produjo un error!!', { theme: "colored" })
-    //       return
-    //     }
-    //   }
-    // }
+    for(let element of form.current.elements){
+      if(element.name && element.value == '' && !['idx','observaciones_fase_ordenes'].includes(element.name)){
+        toast.error(`Debe completar el campo ${element.title} antes de continuar.`, { theme: "colored" })
+        return
+      }
+    }
+    if(form.current.elements['materiales_produccion'].value == '[]' || form.current.elements['materiales_produccion'].value == null){
+      toast.error('Debe seleccionar al menos un material de produccion.', { theme: "colored" })
+      return
+    }
+    if(form.current.elements['ruta_proceso'].value == '[]' || form.current.elements['ruta_proceso'].value == null){
+      toast.error('Debe seleccionar al menos una ruta de proceso.', { theme: "colored" })
+      return
+    }
+
     if(position == 0){
       url_save = 'ordenes/saveFaseOrden'
       data = new FormData(e.target)
