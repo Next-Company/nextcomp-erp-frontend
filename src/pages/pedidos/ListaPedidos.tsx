@@ -11,6 +11,44 @@ const colorfase = {
   'TELAS': 'bg-orange-500',
   'AVIOS': 'bg-violet-500'
 }
+const CuerpoVistaRapida = ({ pedidoid, tipo }) => {
+  // const [ruta, setRuta] = useState("")
+  // useEffect(() => {
+  //   const crear = async () => {
+  //     await Consulta({
+  //       url: `produccion/showinformepedido/${pedidoid}`, params: {
+  //         method: 'GET'
+  //       }
+  //     })
+  //       .then(resp => {
+  //         const binaryString = window.atob(resp.data);
+  //         const binaryLen = binaryString.length;
+  //         const bytes = new Uint8Array(binaryLen);
+  //         for (let i = 0; i < binaryLen; i++) {
+  //           const ascii = binaryString.charCodeAt(i);
+  //           bytes[i] = ascii;
+  //         }
+  //         const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+  //         setRuta(file)
+  //       })
+  //       .catch((err) => {
+  //       })
+  //   }
+  //   crear()
+  // }, [])
+  return (
+    <>
+      <div>
+        <iframe src={`http://192.168.18.20:4002/produccion/${tipo == 'TELAS' ? 'vistarapidapedidotelas' : 'vistarapidapedidoavios'}/${pedidoid}/view`} className="w-[60vw] h-[70vh]"></iframe>
+        {/* <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe> */}
+        <div className="flex flex-row justify-center gap-2 mt-2">
+          <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
+          <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
+        </div>
+      </div>
+    </>
+  )
+}
 const CuerpoCuadrePedido = ({ pedidoid }) => {
   const [ruta, setRuta] = useState("")
   useEffect(() => {
@@ -119,7 +157,8 @@ export default function ListaPedidos() {
               setOpenloader(true)
               Consulta({
                 //url: `produccion/vistapreviapedido/${tipo == 'TELAS' ? 'telas' : 'avios'}`, params: {
-                url: tipo == 'TELAS' ? 'produccion/vistapreviapedido/telas' : 'produccion/vistapreviapedidoavios/avios', params: {
+                //url: tipo == 'TELAS' ? 'produccion/vistapreviapedido/telas' : 'produccion/vistapreviapedidoavios/avios', params: {
+                url: tipo == 'TELAS' ? 'produccion/vistarapidapedidotelas/download' : 'produccion/vistarapidapedidoavios/download', params: {
                   method: 'POST',
                   body: data
                 }
@@ -154,9 +193,11 @@ export default function ListaPedidos() {
         break;
       case 'review':
         // navigate("/main/estampado/review/"+ id)
+        const tipo = info.filter(row => row.idx == id)[0].tipo
         const params = {
           open: true,
-          content: <CuerpoCuadrePedido pedidoid={id} />,
+          //content: <CuerpoCuadrePedido pedidoid={id} tipo={tipo} />,
+          content: <CuerpoVistaRapida pedidoid={id} tipo={tipo}/>,
           controls: false,
           header: false,
           action: async () => {

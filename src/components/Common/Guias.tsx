@@ -47,7 +47,11 @@ export default function Guias(children){
       .then(resp => {
         console.log("Resultado seatch guia:",resp)
         setLoading(false)
-        setLista(resp.filter(row=>row.tipo == tipo))
+	if(tipo == 'SERVICIOS'){
+          setLista(resp.filter(row=>row.tipo == tipo))
+	}else{
+          setLista(resp.filter(row=>row.tipo !== 'SERVICIOS'))
+	}
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
