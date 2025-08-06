@@ -66,7 +66,7 @@ export default function NewPagoLetra(){
               console.log('Registro,',resp)
               setOpenloader(false)
               // navigate('/main/pagos/')
-              toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+              toast.success('Pago de la letra generado con éxito!.', { theme: "colored" })
             }else{
               throw Error(resp.message)
               // return Promise.reject("error") 
@@ -153,8 +153,6 @@ export default function NewPagoLetra(){
     }
   }
   useEffect(()=>{
-    // console.log("Info urlparams:",urlparams)
-    // if(urlparams.id){
     if(urlparams.id && urlparams.tipo){
       // Consulta({url'abonos/getgt'}z
       console.log("Dentro de la primero condicion")
@@ -224,7 +222,7 @@ export default function NewPagoLetra(){
         console.log("El item seleccionado es: ",item)
         setOpen(false)
         setOpenloader(true)
-        Consulta({url: 'abonos/getsaldos/' + item.idx})
+        Consulta({url: 'abonos/getsaldosletra/' + item.idx})
         .then(resp => {
           setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom,ruc:item.ruc}))
           setRegistros(resp)
@@ -407,11 +405,9 @@ export default function NewPagoLetra(){
                               <td className="text-center">{row.idx}</td>
                               <td className="text-center">{row.num_letra}</td>
                               <td className="text-center">{row.idpedido}</td>
-                              {/* <td className="w-[150px]"><div className={`w-full text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td> */}
                               <td className="text-center"><strong>{row.orden_ref}</strong></td>
                               <td className="text-center">{row.fec_emision}</td>
                               <td className="text-center">{row.fec_retorno}</td>
-                              {/* <td className="text-center">{row.tiempo_produccion}</td> */}
                               <td className="text-center">{row.forma_pago}</td>
                               <td className="text-center">{row.cantidad}</td>
                               <td className="text-center">{row.despacho}</td>

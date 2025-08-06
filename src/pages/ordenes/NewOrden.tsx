@@ -407,7 +407,9 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
         <Input name={'oc'} title="OC" defaults={info.length > 0 ? info[0].oc : null} type="text" />
         <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" />
-        <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} />
+	<div className="w-[350px]">
+          <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} />
+	</div>
         <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" />
         <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" />
         <InputSelect title={'TipoPedido'} name={"modalidad_pedido"} formref={form} data={
@@ -416,6 +418,14 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             { indice: 'STK', option: 'STOCK PROPIO' }
           ]} 
           df={Object.keys(info).length > 0 ? info.modalidad_pedido : null} 
+        />
+        <InputSelect title={'TipoProduccion'} name={"tipo_produccion"} formref={form} data={
+          [
+            { indice: 'PUNTO', option: 'PUNTO', selected: true  },
+            { indice: 'PLANO', option: 'PLANO' },
+            { indice: 'FANTASIA', option: 'FANTASIA' }
+          ]} 
+          df={Object.keys(info).length > 0 ? info.tipo_produccion : null} 
         />
       </div>
       <div className="flex gap-3">
@@ -579,23 +589,28 @@ export function NewOrden() {
     let url_save = ''
     let data = undefined
 
-    for(let element of form.current.elements){
-      if(element.name && element.value == '' && !['idx','observaciones_fase_ordenes'].includes(element.name)){
-        toast.error(`Debe completar el campo ${element.title} antes de continuar.`, { theme: "colored" })
-        return
-      }
-    }
-    if(form.current.elements['materiales_produccion'].value == '[]' || form.current.elements['materiales_produccion'].value == null){
-      toast.error('Debe seleccionar al menos un material de produccion.', { theme: "colored" })
-      return
-    }
-    if(form.current.elements['ruta_proceso'].value == '[]' || form.current.elements['ruta_proceso'].value == null){
-      toast.error('Debe seleccionar al menos una ruta de proceso.', { theme: "colored" })
-      return
-    }
-
     if(position == 0){
       url_save = 'ordenes/saveFaseOrden'
+
+      for(let element of form.current.elements){
+        if(element.name && element.value == '' && !['idx','observaciones_fase_ordenes'].includes(element.name)){
+          //console.log("El tipo de pedido es: ",tipopedido)
+          //console.log("El elemento problematico es el siguiente :",element.name)
+          //if(element.name == 'nro_pedido_adi && tipopedido !== 'STK'){
+          //}
+          toast.error(`Debe completar el campo ${element.title} antes de continuar.`, { theme: "colored" })
+          return
+        }
+      }
+      if(form.current.elements['materiales_produccion'].value == '[]' || form.current.elements['materiales_produccion'].value == null){
+        toast.error('Debe seleccionar al menos un material de produccion.', { theme: "colored" })
+        return
+      }
+      if(form.current.elements['ruta_proceso'].value == '[]' || form.current.elements['ruta_proceso'].value == null){
+        toast.error('Debe seleccionar al menos una ruta de proceso.', { theme: "colored" })
+        return
+      }
+
       data = new FormData(e.target)
       dataimg.length > 0 && data.append('filenext', dataimg[0])
       orden.length > 0 && data.append('combos',JSON.stringify(orden[0].combos))

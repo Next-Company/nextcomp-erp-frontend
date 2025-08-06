@@ -32,12 +32,9 @@ const ExportFilters = ({ close, update }) => {
   const form_export = useRef()
   const form_import = useRef()
   const exportletra = () => {
-    // export_letras(new FormData(form_export.current))
-    // close(false)
-    // loader(true)
     setLoading(true)
     Consulta({
-      url: 'reports/letras',
+      url: 'reports/resumenconsolidado',
       params: {
         body: new FormData(form_export.current),
         method: 'POST'
@@ -588,7 +585,7 @@ export default function ListaOrdenes() {
             {/* <div className="flex flex-col items-center p-2 gap-2"> */}
             <div className="flex flex-row justify-end mt-2 gap-2">
               {/* <Button action={regulalizzet} tipo={'warning'} type="button">Inventario</Button> */}
-	      <Button action={exportarexcel} tipo={'success'}>Acciones</Button>
+	            <Button action={exportarexcel} tipo={'success'}>Acciones</Button>
               <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
               <Button action={() => navigate('/main/ordenes/nuevo')} tipo={'accept'}>Nuevo</Button>
             </div >
