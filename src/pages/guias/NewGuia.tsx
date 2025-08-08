@@ -246,6 +246,7 @@ export default function NewGuia(){
     console.log("Los elementos a validar son los siguientes:",form.current.querySelectorAll("input[verify='true']"))
     for (const element of form.current.querySelectorAll("input[verify='true']")) {
       if(element.tagName == 'INPUT' && element.value == ''){
+        console.log("El input problematico es :",element)
         toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
         return 0
       }
@@ -491,7 +492,7 @@ export default function NewGuia(){
                   <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" verify="true" />
                   <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true"/>
                   <Input name={'tipo'} defaults={'SERVICIOS'} type="hidden" />
-                  <Input name={'id_corte_CAB'} defaults={Object.keys(info).length > 0 ? info.id_corte_CAB : null} type="hidden" verify="true"/>
+                  <Input name={'id_corte_CAB'} defaults={Object.keys(info).length > 0 ? info.id_corte_CAB : null} type="hidden"/>
                   {/* <InputSelect title={'Tipo'} name={"tipo"} data={
                     [
                       { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 

@@ -254,7 +254,7 @@ export default function NewDespacho() {
         toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
         return 0
       }
-      if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0) {
+      if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.incompletos ?? 0).reduce((a, b) => a + b) == 0) {
         toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
         return 0
       }

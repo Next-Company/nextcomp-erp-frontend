@@ -405,27 +405,34 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     <div className={`flex flex-col gap-3 pt-4`}>
       <div className="flex gap-3">
         <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
-        <Input name={'oc'} title="OC" defaults={info.length > 0 ? info[0].oc : null} type="text" />
-        <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" />
-	<div className="w-[350px]">
-          <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} />
-	</div>
-        <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" />
-        <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" />
+        <Input name={'oc'} title="OC" defaults={info.length > 0 ? info[0].oc : null} type="text" verify="true"/>
+        <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" verify="true"/>
+        <div className="w-[350px]">
+          <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
+        </div>
+        <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" verify="true"/>
+        <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" verify="true"/>
+        <InputSelect title={'TipoProduccion'} name={"tipo_produccion"} formref={form} data={
+          [
+            { indice: 'PT', option: 'PUNTO', selected: true  },
+            { indice: 'PLN', option: 'PLANO' },
+            { indice: 'FTS', option: 'FANTASIA' }
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].tipo_produccion : null} 
+        />
+        <InputSelect title={'TipoFabricación'} name={"tipo_fabricacion"} data={
+          [
+            { indice: 'NCNL', option: 'NACIONAL', selected: true  },
+            { indice: 'IMPT', option: 'IMPORTADO' },
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].tipo_fabricacion : null} 
+        />
         <InputSelect title={'TipoPedido'} name={"modalidad_pedido"} formref={form} data={
           [
             { indice: 'ORDN', option: 'ORDEN', selected: true  },
             { indice: 'STK', option: 'STOCK PROPIO' }
           ]} 
-          df={Object.keys(info).length > 0 ? info.modalidad_pedido : null} 
-        />
-        <InputSelect title={'TipoProduccion'} name={"tipo_produccion"} formref={form} data={
-          [
-            { indice: 'PUNTO', option: 'PUNTO', selected: true  },
-            { indice: 'PLANO', option: 'PLANO' },
-            { indice: 'FANTASIA', option: 'FANTASIA' }
-          ]} 
-          df={Object.keys(info).length > 0 ? info.tipo_produccion : null} 
+          df={Object.keys(info).length > 0 ? info[0].modalidad_pedido : null} 
         />
       </div>
       <div className="flex gap-3">
@@ -433,8 +440,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           tipopedido
           ?
           <>
-            <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden" />
-            <Input name={'nro_pedido_origen'} title={'NroPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
+            <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden"/>
+            <Input name={'nro_pedido_origen'} title={'NroPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} verify="true" />
           </>
           :
           <>
@@ -453,7 +460,6 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
           <Input name={'precio'} defaults={info.length > 0 ? info[0].precio : null} title="Precio" type="number" />
           <div className="flex-1 min-w-[500px]">
-            {/* <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={[{ indice: 'AVIOS', option: 'AVIOS'},{ indice: 'CORTE', option: 'CORTE'},{ indice: 'MOLDE', option: 'MOLDE'},{ indice: 'CONFECCION', option: 'CONFECCION' }, { indice: 'OJAL Y BOTON', option: 'OJAL Y BOTON' }, { indice: 'ESTAMPADO', option: 'ESTAMPADO' }, { indice: 'LAVANDERIA', option: 'LAVANDERIA' }, { indice: 'BORDADO', option: 'BORDADO' }, { indice: 'ACABADOS', option: 'ACABADOS' }]} df={info.length > 0 ? info[0].ruta_proceso : null} /> */}
             {
               fases.length > 0
               ? <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={info.length > 0 ? info[0].ruta_proceso : null} />
@@ -592,16 +598,20 @@ export function NewOrden() {
     if(position == 0){
       url_save = 'ordenes/saveFaseOrden'
 
-      for(let element of form.current.elements){
-        if(element.name && element.value == '' && !['idx','observaciones_fase_ordenes'].includes(element.name)){
-          //console.log("El tipo de pedido es: ",tipopedido)
-          //console.log("El elemento problematico es el siguiente :",element.name)
-          //if(element.name == 'nro_pedido_adi && tipopedido !== 'STK'){
-          //}
-          toast.error(`Debe completar el campo ${element.title} antes de continuar.`, { theme: "colored" })
-          return
+      for (const element of form.current.querySelectorAll("input[verify='true']")) {
+        if(element.tagName == 'INPUT' && element.value == ''){
+          console.log("El input problematico es :",element)
+          toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
+          return 0
         }
       }
+
+      // for(let element of form.current.elements){
+      //   if(element.name && element.value == '' && !['idx','observaciones_fase_ordenes'].includes(element.name)){
+      //     toast.error(`Debe completar el campo ${element.title} antes de continuar.`, { theme: "colored" })
+      //     return
+      //   }
+      // }
       if(form.current.elements['materiales_produccion'].value == '[]' || form.current.elements['materiales_produccion'].value == null){
         toast.error('Debe seleccionar al menos un material de produccion.', { theme: "colored" })
         return
