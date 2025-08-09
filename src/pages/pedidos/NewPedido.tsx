@@ -64,9 +64,13 @@ export default function NewPedido(){
   const onsubmit = (e)=>{
     e.preventDefault()
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
-    
     console.log("El de talle de fracciones :",registros)
-
+    for(let element of form.current.querySelectorAll("input[verify='true']")){
+      if(element && element.value == ''){
+        toast.error('Alguno de los campos del formulario son obligatorios. Por favor verifique.', { theme: "colored" })
+        return
+      }
+    }
     if(registros.length == 0){
       toast.error('Debe ingresar al menos un artículo!!', { theme: "colored" })
       return
@@ -95,7 +99,7 @@ export default function NewPedido(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/pedidos/')
+          // navigate('/main/pedidos/')
           toast.success('Nuevo pedido guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -154,27 +158,40 @@ export default function NewPedido(){
     };
   },[])
 
+  const searchproducto = ()=>{
+    openModal({
+      open:true,
+      content: <Productos actions={(items)=>{  
+        setOpen(false)
+        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
+      }}
+        closemodal={()=>setOpen(false)}
+      />,
+      controls: false,
+      header: false,
+      action:async ()=>{
+      }
+    })
+  }
   const nuevoproducto = ()=>{
-    if(tipo == 1){
-      setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',modelo:'',corte:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0}])
-    }else{
-      openModal({
-        open:true,
-        content: <Productos actions={(items)=>{  
-          setOpen(false)
-          // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])}
-          // setRegistros([...registros,...items.filter(row=>!registros.map(row2=>row2.id_producto_CAB).includes(row.idxsub)).map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])
-          setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
-        }}
-          closemodal={()=>setOpen(false)}
-        />,
-        controls: false,
-        header: false,
-        action:async ()=>{
-        }
-      })
-    }
-    // setRegistros([...registros,{item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+    setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',modelo:'',corte:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0}])
+    // if(tipo == 1){
+    //   setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',modelo:'',corte:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0}])
+    // }else{
+    //   openModal({
+    //     open:true,
+    //     content: <Productos actions={(items)=>{  
+    //       setOpen(false)
+    //       setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
+    //     }}
+    //       closemodal={()=>setOpen(false)}
+    //     />,
+    //     controls: false,
+    //     header: false,
+    //     action:async ()=>{
+    //     }
+    //   })
+    // }
   }
 
   const onclick = (e)=>{
@@ -283,12 +300,12 @@ export default function NewPedido(){
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="hidden" />
-                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" />
+                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
                   {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
-                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" />
+                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
+                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" verify="true"/>
                   <InputSelect title={'Emisor'} name={"emisor"} data={
                     [
                       { indice: 'NEXT', option: 'NEXT', selected: true }, 
@@ -298,7 +315,7 @@ export default function NewPedido(){
                   />
                 </div>
                 <div className="flex gap-3">
-                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
+                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" verify="true"/>
                   <InputSelect title={'TipoPedido'} formref={form} name={"tipo"} data={
                     [
                       { indice: 'TELAS', option: 'TELAS', selected: true }, 
@@ -306,9 +323,9 @@ export default function NewPedido(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" />
-                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" />
-                  <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text" />
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
+                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" verify="true"/>
+                  <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text"/>
                 </div>
                 <div className="flex gap-3">
                   <InputSelect title={'Moneda'} name={"moneda"} data={
@@ -417,10 +434,15 @@ export default function NewPedido(){
                         </tr>
                         <tr>
                           <td colSpan={11} >
-                            <div className="flex flex-row justify-center">
-                              <div onClick={nuevoproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
-                                +
-                              </div>
+                            <div className="flex flex-row justify-center gap-2">
+                              {
+                                tipo !== 1 && <div onClick={searchproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                                </div>
+                              }
+                                <div onClick={nuevoproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                                </div>
                             </div>
                           </td>
                         </tr>
@@ -454,40 +476,3 @@ export default function NewPedido(){
     </>
   )
 }
-// Componente InputSelect
-// export function InputSelect({ title, name, data, df }) {
-//   // ... (resto del código)
-
-//   const onSelectChange = (key) => {
-//     setSelect(key);
-//     const event = new CustomEvent("inputSelectChange", {
-//       detail: { value: info[key].indice },
-//     });
-//     ref_menu.current.dispatchEvent(event); // Disparamos el evento en un elemento del DOM
-//   };
-
-//   // ... (resto del código)
-// }
-
-// // Componente padre
-// function MiFormulario() {
-//   const handleInputChange = (event) => {
-//     console.log("Valor seleccionado en el formulario:", event.detail.value);
-//   };
-
-//   useEffect(() => {
-//     const menu = ref_menu.current; // Obtén una referencia al elemento donde se dispara el evento
-//     menu.addEventListener("inputSelectChange", handleInputChange); // Escuchamos el evento personalizado
-
-//     return () => {
-//       menu.removeEventListener("inputSelectChange", handleInputChange); // Limpiamos el listener al desmontar el componente
-//     };
-//   }, []);
-
-//   return (
-//     <form ref={ref_form}>
-//       <InputSelect title="Mi InputSelect" name="miInput" data={data} df={df} ref={ref_menu} />
-//       {/* ... otros elementos del formulario */}
-//     </form>
-//   );
-// }
