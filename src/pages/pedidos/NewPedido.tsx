@@ -163,7 +163,7 @@ export default function NewPedido(){
       open:true,
       content: <Productos actions={(items)=>{  
         setOpen(false)
-        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
+        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub}))])
       }}
         closemodal={()=>setOpen(false)}
       />,
@@ -209,21 +209,20 @@ export default function NewPedido(){
   const editvalue = (e)=>{
     let column = e.target.dataset.name
     let position = e.target.dataset.position
+  
+    if(tipo == 0){
+      if(column == 'color'){
+        setRegistros([...registros.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:''}:item)])
+      } else if(column == 'producto'){
+        setRegistros([...registros.map((item,key)=> position == key ? {...item, producto: e.target.value, idx_producto:''}:item)])
+      } else{
+        setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
+      }
+    }else{
+      setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
+    }
     
-    // let info = []
-    // if(column == 'precio'){
-    //   info = [...registros.map((item,key)=> position == key ? {...item,[column]: parseFloat(e.target.value),['importe']:parseFloat(e.target.value)*parseFloat(item.cantidad)}:item)]
-    // }else if(column == 'cantidad'){
-    //   info = [...registros.map((item,key)=> position == key ? {...item,[column]: parseFloat(e.target.value),['importe']:parseFloat(e.target.value)*parseFloat(item.precio)}:item)]
-    // }else{
-    //   info = [...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)]
-
-    // }
-    // console.log("Capturando edicion de campo :",registros,info)
-    // setRegistros(info)
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
   }
-
   const nuevoproveedor = ()=>{
     let params_modal = null
     params_modal = {
@@ -349,7 +348,7 @@ export default function NewPedido(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.igv : null} 
                   />
-                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
+                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'TRANSITO', option: 'TRANSITO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
                 </div>
                 <div>
                   <span>Artículos</span>                  
