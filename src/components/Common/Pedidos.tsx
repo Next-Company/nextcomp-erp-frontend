@@ -71,13 +71,13 @@ export default function Pedidos(children){
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={searchproveedor} />
         </div>
-        <div className="h-[500px] w-[1000px] scrollbar-special rounded-md overflow-y-scroll ">
+        <div className="h-[550px] w-[1100px] scrollbar-special rounded-md overflow-y-scroll ">
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr:nth-child(n):hover]:bg-gray-300">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell">Id</th>
                 <th className="lg:table-cell">NroPedido</th>
-                {/* <th className="lg:table-cell">Tipo</th> */}
+                <th className="lg:table-cell">Tipo</th>
                 <th className="lg:table-cell">Proveedor</th>
                 <th className="lg:table-cell">FechaPedido</th>
                 <th className="lg:table-cell">FechaEntrega</th>
@@ -89,7 +89,7 @@ export default function Pedidos(children){
                 <tr onClick={onclick} data-position={key} data-action="add">
                   <td>{row.idx}</td>
                   <td>{row.orden_ref}</td>
-                  {/* <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td> */}
+                  <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
                   <td>{row.proveedor}</td>
                   <td>{row.fec_emision}</td>
                   <td>{row.fec_retorno}</td>

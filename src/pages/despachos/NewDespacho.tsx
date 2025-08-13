@@ -513,11 +513,18 @@ export default function NewDespacho() {
           .then(resp => {
             // setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
             setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx }))
-            setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+
+            // setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+            //   row = { ...row, id_item: row.idx }
+            //   Reflect.deleteProperty(row, 'idx')
+            //   return row
+            // })])
+            setRegistros([...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
               row = { ...row, id_item: row.idx }
               Reflect.deleteProperty(row, 'idx')
               return row
             })])
+
           })
           .catch((err) => {
             setOpenloader(false)
@@ -659,7 +666,9 @@ export default function NewDespacho() {
                                   <th className="lg:table-cell">Cantidad</th>
                                   <th className="lg:table-cell">Unidad</th>
                                   <th className="lg:table-cell">Precio</th>
-                                  <th className="lg:table-cell">Ingreso</th>
+                                  <th className="lg:table-cell">Entregado</th>
+                                  <th className="lg:table-cell w-[100px]">Pendiente</th>
+                                  <th className="lg:table-cell w-[100px]">Ingreso</th>
                                   <th className="lg:table-cell">Acciones</th>
                                 </>
                             }
@@ -711,6 +720,8 @@ export default function NewDespacho() {
                                       <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
                                       <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
                                       <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
+                                      <td>{row.ingresos}</td>
+                                      <td>{(row.cantidad - row.ingresos).toFixed(2)}</td>
                                       <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                     </>
                                 }
@@ -788,6 +799,8 @@ export default function NewDespacho() {
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                                   return carry + parseFloat(value.cantidad)
                                 }, 0).toFixed(2)}</td>
+                                <td className="text-center text-[16px] italic">-</td>
+                                <td className="text-center text-[16px] italic">-</td>
                                 <td className="text-center text-[16px] italic">-</td>
                                 <td className="text-center text-[16px] italic">-</td>
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
