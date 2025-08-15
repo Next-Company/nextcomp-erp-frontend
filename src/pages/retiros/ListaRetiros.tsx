@@ -96,7 +96,7 @@ const CuerpoInforme = ({ cuerpo }) => {
   )
 }
 
-export default function ListaPedidos() {
+export default function ListaRetiros() {
   const lista = useRef()
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
@@ -261,8 +261,8 @@ export default function ListaPedidos() {
         // setOpenloader(false)
       })
   }
-  const nuevopedido = () => {
-    navigate('/main/pedidos/nuevo')
+  const nuevoretiro = () => {
+    navigate('/main/retiros/nuevo')
   }
   const showinforme = async () => {
     const params_modal = {
@@ -343,7 +343,7 @@ export default function ListaPedidos() {
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Requerimientos</h2>
+              <h2 className="font-medium text-[16px]">Salidas</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={filtrarpedidos} />
               </div>
@@ -496,7 +496,7 @@ export default function ListaPedidos() {
               <div className="flex gap-2">
                 {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevopedido} tipo={'accept'}>Nuevo</Button>
+                <Button action={nuevoretiro} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
 

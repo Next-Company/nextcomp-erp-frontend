@@ -54,6 +54,9 @@ import LayoutCaja from './pages/caja/LayoutCaja.tsx'
 import InformeCaja from './pages/caja/InformeCaja.tsx'
 import Unauthorized from './pages/pedidos/Unauthorized.tsx'
 import PrivateRoute from './pages/pedidos/PrivateRouter.tsx'
+import LayoutRetiro from './pages/retiros/LayoutRetiro.tsx'
+import ListaRetiros from './pages/retiros/ListaRetiros.tsx'
+import NewRetiro from './pages/retiros/NewRetiro.tsx'
 
 const routes = [
   {
@@ -141,6 +144,16 @@ const routes = [
           { path: "nuevo", element: <NewDespacho /> },
           { path: "nuevo/:id", element: <NewDespacho /> },
           { path: "load/:idmuestra", element: <NewDespacho /> },
+        ]
+      },
+      {
+        path: "retiros",
+        element: <PrivateRoute><LayoutRetiro /></PrivateRoute>,
+        children: [
+          { path: "", element: <ListaRetiros /> },
+          { path: "nuevo", element: <NewRetiro /> },
+          { path: "nuevo/:id", element: <NewRetiro /> },
+          { path: "load/:idmuestra", element: <NewRetiro /> },
         ]
       },
       {

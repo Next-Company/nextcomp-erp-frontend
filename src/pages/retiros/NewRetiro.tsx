@@ -9,15 +9,14 @@ import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import Productos from "../../components/Common/Productos"
+import Pedidos from "../../components/Common/Pedidos"
 
 const CuerpoInforme = ({info,tipo})=>{
   let [ruta,setRuta] = useState("")
   useEffect(()=>{
     console.log("El tipo de pedido es:",tipo)
     let crear = async ()=>{
-      // await Consulta({url: `${tipo ? 'produccion/vistapreviapedido/avios' : 'produccion/vistapreviapedido/telas'}`,params:{
-      // await Consulta({url: `${tipo ? 'produccion/vistapreviapedidoavios/avios' : 'produccion/vistapreviapedido/telas' }`,params:{
-      await Consulta({url: `${tipo ? 'produccion/vistarapidapedidoavios/download' : 'produccion/vistapreviapedido/telas' }`,params:{
+      await Consulta({url: 'reports/vistapreviaretiro/telas' ,params:{
         method:'POST',
         body:info
       }})
@@ -31,7 +30,6 @@ const CuerpoInforme = ({info,tipo})=>{
             bytes[i] = ascii;
         }
         let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
-        // console.log("La ruta es:",file)
         setRuta(file)
       })
       .catch((err)=>{
@@ -49,7 +47,7 @@ const CuerpoInforme = ({info,tipo})=>{
   )
 }
 
-export default function NewPedido(){
+export default function NewRetiro(){
   const [tipo,setTipo] = useState(0)
   const [searchParams,setSearchParams] = useSearchParams()
   const urlparams = useParams()
@@ -132,18 +130,6 @@ export default function NewPedido(){
           })
       }
       pp()
-    }else{
-      // setOpenloader(true)
-      // Consulta({url: 'produccion/nuevopedido'})
-      //   .then(resp => {
-      //     console.log("Busqueda info pedido:",resp)
-      //     setInfo({...info,orden_ref: resp[0].correlativo})
-      //     setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
-      //     setOpenloader(false)
-      //   })
-      //   .catch((err)=>{
-      //     setOpenloader(false)
-      //   })
     }
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
@@ -163,7 +149,7 @@ export default function NewPedido(){
       open:true,
       content: <Productos actions={(items)=>{  
         setOpen(false)
-        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub}))])
+        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub}))])
       }}
         closemodal={()=>setOpen(false)}
       />,
@@ -174,24 +160,7 @@ export default function NewPedido(){
     })
   }
   const nuevoproducto = ()=>{
-    setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',modelo:'',corte:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0}])
-    // if(tipo == 1){
-    //   setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',modelo:'',corte:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0}])
-    // }else{
-    //   openModal({
-    //     open:true,
-    //     content: <Productos actions={(items)=>{  
-    //       setOpen(false)
-    //       setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
-    //     }}
-    //       closemodal={()=>setOpen(false)}
-    //     />,
-    //     controls: false,
-    //     header: false,
-    //     action:async ()=>{
-    //     }
-    //   })
-    // }
+    setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0, despacho:0}])
   }
 
   const onclick = (e)=>{
@@ -242,12 +211,9 @@ export default function NewPedido(){
 
   const vistaprevia = async ()=>{
     const data = new FormData()
-
     console.log("INfo form",Object.fromEntries(new FormData(form.current)))
-    // urlparams.id && data.append('id',urlparams.id)
     data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
     data.append('detalle',JSON.stringify(registros))
-    // data.append('tipo',`${tipo}`)
 
     const params_modal = {
       open:true,
@@ -259,34 +225,47 @@ export default function NewPedido(){
     }
     openModal(params_modal)   
   }
-  const listafacturas = async ()=>{
-    const data = new FormData()
-    data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-    data.append('detalle',JSON.stringify(registros))
-    const params_modal = {
-      open:true,
-      content: <CuerpoInforme info={data} tipo={tipo} />,
-      controls: false,
-      header: false,
-      action:async ()=>{
+  const searchpedido = () => {
+      let params_modal = null
+      params_modal = {
+        open: true,
+        content: <Pedidos actions={(item) => {
+          console.log("El pedidos seleccionado matemia es :",item)
+          setOpenloader(true)
+          setOpen(false)
+          Consulta({ url: 'produccion/pedido/' + item.idx })
+            .then(resp => {
+              console.log("La informacion del pedido consultado es:", resp)
+              setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor, orden_ref: item.orden_ref, oc: resp[0].oc, nro_corte: resp[0].nro_corte }))
+              setRegistros([...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+                row = { ...row, id_item: row.idx, despacho: 0 }
+                Reflect.deleteProperty(row, 'idx')
+                return row
+              })])
+            })
+            .catch((err) => {
+              setOpenloader(false)
+            })
+            .finally(() => {
+              setOpenloader(false)
+            })
+        }} />,
+        controls: true,
+        header: false,
+        action: () => {
+        }
       }
+      openModal(params_modal)
     }
-    openModal(params_modal)   
-  }
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Pedidos /</h2>
+              <h2 className="font-medium text-[16px]">Salidas /</h2>
               <span className="text-blue-500 font-bold">
-                Nuevo pedido
-                {/* {
-                  urlparams.id && orden.length > 0
-                  ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
-                  : "Nueva Orden"
-                } */}
+                Nueva salida
               </span>
             </div>
             <hr />
@@ -297,75 +276,53 @@ export default function NewPedido(){
               <div className={` flex-col gap-3 flex`}>
 
                 <div className="flex gap-3">
-                  <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="hidden" />
-                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
-                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
-                  {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
-                  <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" verify="true"/>
-                  <InputSelect title={'Emisor'} name={"emisor"} data={
-                    [
-                      { indice: 'NEXT', option: 'NEXT', selected: true }, 
-                      { indice: 'ELENEX', option: 'ELENEXT' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo : null} 
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" verify="true"/>
-                  <InputSelect title={'TipoPedido'} formref={form} name={"tipo"} data={
+                  <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />                  
+
+                  <InputSelect title={'OrigenRetiro'} formref={form} name={"tipo"} data={
                     [
                       { indice: 'TELAS', option: 'TELAS', selected: true }, 
                       { indice: 'AVIOS', option: 'AVIOS' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
-                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" verify="true"/>
-                  <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text"/>
+                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
+                  <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
+                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaRetorno" type="date" verify="true"/>
+
+                  <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" />
+                  <Input name={'nro_pedido_origen'} title={'Requerimiento'} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
+
                 </div>
                 <div className="flex gap-3">
-                  <InputSelect title={'Moneda'} name={"moneda"} data={
-                    [
-                      { indice: 'S', option: 'SOLES', selected: true }, 
-                      { indice: 'USD', option: 'DOLARES' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.moneda : null} 
-                  />
-                  <InputSelect title={'AfectoRetención'} name={"afec_retencion"} data={
-                    [
-                      { indice: '0', option: 'NO APLICA', selected: true }, 
-                      { indice: '1', option: 'APLICA' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.afec_retencion : null} 
-                  />
-                  <InputSelect title={'IGV'} name={"igv"} data={
-                    [
-                      { indice: '0', option: 'INAFECTO', selected: true }, 
-                      { indice: '1', option: 'AFECTO' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.igv : null} 
-                  />
-                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'TRANSITO', option: 'TRANSITO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
+                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
+                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroRequerimiento" type="text" />
+                  <div className="w-[450px]">
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
+                  </div>
+                  <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
+                  <Input name={'nro_corte'} defaults={Object.keys(info).length > 0 && info.nro_corte ? info.nro_corte : null} title="NroCorte" type="text" />
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
+                </div>
+                <div className="flex gap-3">
+                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
                 </div>
                 <div>
-                  <span>Artículos</span>                  
+                  <span className="flex flex-row items-center gap-2">
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="15"  height="15"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-contract"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 21h-2a3 3 0 0 1 -3 -3v-1h5.5" /><path d="M17 8.5v-3.5a2 2 0 1 1 2 2h-2" /><path d="M19 3h-11a3 3 0 0 0 -3 3v11" /><path d="M9 7h4" /><path d="M9 11h4" /><path d="M18.42 12.61a2.1 2.1 0 0 1 2.97 2.97l-6.39 6.42h-3v-3z" /></svg>
+                    Detalle
+                  </span>                  
                   <div className="h-[370px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell w-[500px]">Descripcion</th>  
-                          <th className="lg:table-cell">Modelo</th>
-                          <th className="lg:table-cell">#Corte</th>
                           <th className="lg:table-cell">Color</th>
                           <th className="lg:table-cell">Rollos</th>
                           <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Unidad</th>
                           <th className="lg:table-cell">Precio</th>
                           <th className="lg:table-cell">Importe</th>
-                          <th className="lg:table-cell">Anulado</th>
+                          <th className="lg:table-cell">Salida</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -374,15 +331,13 @@ export default function NewPedido(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="modelo" value={row.modelo} /></td>
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="corte" value={row.corte} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="color" value={row.color} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} step=".01" data-name="precio" value={row.precio} /></td>
                               <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(2)} /></td>
-                              <td><input type="checkbox" id="anulado" onChange={editvalue} data-position={key} data-name="anulado" checked={row.anulado}  /></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho} /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -418,7 +373,7 @@ export default function NewPedido(){
                       </tbody>
                       <tfoot className="sticky bottom-0 bg-white">
                         <tr>
-                          <td colSpan={4} className="text-right"></td>
+                          <td colSpan={1} className="text-right"></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL: </strong></td>
                           <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(2)}
@@ -426,7 +381,7 @@ export default function NewPedido(){
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
                           <td className="text-center text-[14px] font-bold">
-                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(2)}
+                            {registros.reduce((acc,row)=> acc + parseFloat(row.cantidad) ,0).toFixed(2)}
                           </td>
                           <td></td>
                           <td></td>
@@ -463,10 +418,9 @@ export default function NewPedido(){
                   </div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={() => navigate('/main/pedidos/')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={() => navigate('/main/retiros/')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>  
-                {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
               </div>
             </form>
           </div>

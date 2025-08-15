@@ -58,7 +58,7 @@ export default function Pedidos(children){
     // console.log("La accion es la siguiente:",action)
     switch(action){
       case 'add':
-        // console.log("Agregando al proveedor",lista[e.target.dataset.position])
+        console.log("Agregando al proveedor",lista[position])
         actions(lista[position])
         break;
       default:

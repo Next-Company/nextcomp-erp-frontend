@@ -26,8 +26,8 @@ export default function NewMuestra(){
 
     for(let element of form.current.querySelectorAll("input[verify='true']")){
       if(element.value == ''){
-        toast
-          toast.error('Debe completar los campos obligatorios', { theme: "colored" })
+        console.log("El elmento culpable es el siguiente:",element)
+        toast.error('Debe completar los campos obligatorios', { theme: "colored" })
 	  return 0
       }
     }
@@ -200,7 +200,7 @@ export default function NewMuestra(){
                   <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true"/>                  
                 </div>
                 <div className="flex flex-row gap-3">
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} verify="true" mode={'static'} />
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   
                   <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true" />
                   <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true"/>

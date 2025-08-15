@@ -474,7 +474,7 @@ export default function NewDespacho() {
     params_modal = {
       open: true,
       content: <Guias tipo={tipo == 2 ? 'SERVICIOS' : 'MUESTRA_PROTOTIPO'} actions={(item) => {
-        // console.log("El item seleccionado es: ",item)
+        console.log("La informacion del encabezado es: ",item)
         setOpenloader(true)
         setOpen(false)
         Consulta({ url: 'produccion/guia/' + item.idx })
@@ -512,7 +512,7 @@ export default function NewDespacho() {
         Consulta({ url: 'produccion/pedido/' + item.idx })
           .then(resp => {
             // setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
-            setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx }))
+            setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
 
             // setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
             //   row = { ...row, id_item: row.idx }
