@@ -334,7 +334,7 @@ export default function ListaOrdenes() {
       }
       e.target.classList.add("active")
     }
-    setEstado(estado)
+    setEstado(estado_orden)
     setOpenloader(true)
     Consulta({url: 'ordenes/getordenes/' + ` ${estado_orden}`})
     .then(resp => {

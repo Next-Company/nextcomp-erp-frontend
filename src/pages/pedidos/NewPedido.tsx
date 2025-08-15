@@ -380,8 +380,8 @@ export default function NewPedido(){
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} step=".01" data-name="precio" value={row.precio} /></td>
-                              <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(2)} /></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} step=".001" data-name="precio" value={row.precio} /></td>
+                              <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(3)} /></td>
                               <td><input type="checkbox" id="anulado" onChange={editvalue} data-position={key} data-name="anulado" checked={row.anulado}  /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
@@ -421,12 +421,12 @@ export default function NewPedido(){
                           <td colSpan={4} className="text-right"></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL: </strong></td>
                           <td className="text-center text-[14px] font-bold">
-                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(2)}
+                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(3)}
                           </td>
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
                           <td className="text-center text-[14px] font-bold">
-                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(2)}
+                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(3)}
                           </td>
                           <td></td>
                           <td></td>

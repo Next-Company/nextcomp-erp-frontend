@@ -61,7 +61,6 @@ export default function NewRetiro(){
 
   const onsubmit = (e)=>{
     e.preventDefault()
-    // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
     console.log("El de talle de fracciones :",registros)
     for(let element of form.current.querySelectorAll("input[verify='true']")){
       if(element && element.value == ''){
@@ -91,14 +90,14 @@ export default function NewRetiro(){
 
         console.log("Detalle de la lista de articuos :",registros)
         setOpenloader(true)
-        await Consulta({url: 'produccion/guardarpedido/',params:{
+        await Consulta({url: 'produccion/saveinforetiro/',params:{
           method:'PUT',
           body:data
         }})
         .then(resp => {
           setOpenloader(false)
           // navigate('/main/pedidos/')
-          toast.success('Nuevo pedido guardado con éxito!!', { theme: "colored" })
+          toast.success('Nuevo retiro generado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
           setOpenloader(false)
@@ -114,7 +113,7 @@ export default function NewRetiro(){
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/pedido/' + urlparams.id,})
+        await Consulta({url: 'produccion/retiros/' + urlparams.id,})
           .then(resp => {
             console.log("Busqueda info pedido:",resp)
             setInfo(resp[0])
@@ -373,17 +372,17 @@ export default function NewRetiro(){
                       </tbody>
                       <tfoot className="sticky bottom-0 bg-white">
                         <tr>
-                          <td colSpan={1} className="text-right"></td>
+                          <td colSpan={2} className="text-right"></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL: </strong></td>
                           <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(2)}
                           </td>
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
+                          <td className="text-center">-</td>
                           <td className="text-center text-[14px] font-bold">
-                            {registros.reduce((acc,row)=> acc + parseFloat(row.cantidad) ,0).toFixed(2)}
+                            {registros.reduce((acc,row)=> acc + parseFloat(row.despacho) ,0).toFixed(2)}
                           </td>
-                          <td></td>
                           <td></td>
                         </tr>
                         <tr>

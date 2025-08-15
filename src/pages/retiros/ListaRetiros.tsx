@@ -156,9 +156,7 @@ export default function ListaRetiros() {
 
               setOpenloader(true)
               Consulta({
-                //url: `produccion/vistapreviapedido/${tipo == 'TELAS' ? 'telas' : 'avios'}`, params: {
-                //url: tipo == 'TELAS' ? 'produccion/vistapreviapedido/telas' : 'produccion/vistapreviapedidoavios/avios', params: {
-                url: tipo == 'TELAS' ? 'produccion/vistarapidapedidotelas/download' : 'produccion/vistarapidapedidoavios/download', params: {
+                url: tipo == 'TELAS' ? 'reports/vistapreviaretiro/TELAS' : 'produccion/vistarapidapedidoavios/download', params: {
                   method: 'POST',
                   body: data
                 }
@@ -189,7 +187,7 @@ export default function ListaRetiros() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/pedidos/nuevo/" + id + '?nombre=MIGUEL')
+        navigate("/main/retiros/nuevo/" + id + '?nombre=MIGUEL')
         break;
       case 'review':
         // navigate("/main/estampado/review/"+ id)
@@ -215,7 +213,7 @@ export default function ListaRetiros() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos', params: {
+      url: 'produccion/getListaRetiros', params: {
         method: 'GET'
       }
     })
@@ -343,7 +341,7 @@ export default function ListaRetiros() {
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Salidas</h2>
+              <h2 className="font-medium text-[16px]">Ingresas/Salidas</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={filtrarpedidos} />
               </div>
@@ -357,12 +355,6 @@ export default function ListaRetiros() {
                 <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button>
-                <button className="group" data-estado="TRANSITO" onClick={filtrarestado}>
-                  <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Transito
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
@@ -480,19 +472,6 @@ export default function ListaRetiros() {
               </table>
             </div>
             <div className="flex flex-row justify-end">
-              {/* <div className="flex justify-between items-center p-3 gap-2">
-                <div>
-                  Resultados del {position*rango} al {rango*(position+1)} de 120
-                </div>
-                <div className="flex flex-row">
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveback}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
-                  </div>
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveforward}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-compact-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 4l3 8l-3 8" /></svg>
-                  </div>
-                </div>
-              </div> */}
               <div className="flex gap-2">
                 {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
