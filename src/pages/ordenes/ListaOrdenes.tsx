@@ -232,7 +232,8 @@ export default function ListaOrdenes() {
               setOpenloader(true)
 
               Consulta({
-                url: "ordenes/printsugerido/" + id
+                // url: "ordenes/printsugerido/" + id
+                url: "ordenes/printhojacorte/" + id
               })
                 .then(resp => {
                   setOpenloader(false)
