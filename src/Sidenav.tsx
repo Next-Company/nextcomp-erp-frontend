@@ -256,7 +256,7 @@ export function Sidenav() {
               </div>
             </NavLink>
             <NavLink
-              to="retiros/"
+              to="almacen/movimientos"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "active" : "default"
               }
@@ -269,7 +269,7 @@ export function Sidenav() {
               </div>
             </NavLink>
             <NavLink
-              to="iventario"
+              to="almacen/inventario/"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "active" : "default"
               }

@@ -57,6 +57,11 @@ import PrivateRoute from './pages/pedidos/PrivateRouter.tsx'
 import LayoutRetiro from './pages/retiros/LayoutRetiro.tsx'
 import ListaRetiros from './pages/retiros/ListaRetiros.tsx'
 import NewRetiro from './pages/retiros/NewRetiro.tsx'
+import ListaMovimientosAlmacen from './pages/almacen/ListaMovimientos.tsx'
+import LayoutAlmacen from './pages/almacen/LayoutAlmacen.tsx'
+import LayoutMovimientos from './pages/almacen/LayoutMovimientos.tsx'
+import LayoutInventario from './pages/almacen/LayoutInventario.tsx'
+import NewInOut from './pages/almacen/NewIngresoEgreso.tsx'
 
 const routes = [
   {
@@ -220,6 +225,27 @@ const routes = [
           // { path: "nuevo", element: <><h1>Editando el detalle</h1></> }
           { path: "nuevo", element: <NuevaOrdenProduccion /> },
           { path: "nuevo/:id", element: <NuevaOrdenProduccion /> }
+        ]
+      },
+      {
+        path: "almacen",
+        element: <LayoutAlmacen />,
+        children: [
+          { 
+            path: "movimientos", 
+            element: <LayoutMovimientos />,
+            children: [
+              { path: "", element: <ListaMovimientosAlmacen /> },
+              { path: "nuevo", element: <NewInOut /> },
+            ]
+          },
+          { 
+            path: "inventario", 
+            element: <LayoutInventario />,
+            children: [
+              { path: "", element: <ListaMovimientosAlmacen /> },
+            ]
+          }
         ]
       }
     ]
