@@ -62,6 +62,10 @@ import LayoutAlmacen from './pages/almacen/LayoutAlmacen.tsx'
 import LayoutMovimientos from './pages/almacen/LayoutMovimientos.tsx'
 import LayoutInventario from './pages/almacen/LayoutInventario.tsx'
 import NewInOut from './pages/almacen/NewIngresoEgreso.tsx'
+import ListaInventarioAlmacen from './pages/almacen/ListaInventario.tsx'
+import LayoutSolicitud from './pages/almacen/LayoutSolicitud.tsx'
+import ListaSolicitudes from './pages/almacen/ListaSolicitudes.tsx'
+import RevisionSolicitud from './pages/almacen/RevisionSolicitud.tsx'
 
 const routes = [
   {
@@ -243,7 +247,15 @@ const routes = [
             path: "inventario", 
             element: <LayoutInventario />,
             children: [
-              { path: "", element: <ListaMovimientosAlmacen /> },
+              { path: "", element: <ListaInventarioAlmacen /> },
+            ]
+          },
+          { 
+            path: "solicitudes", 
+            element: <LayoutSolicitud />,
+            children: [
+              { path: "", element: <ListaSolicitudes /> },
+              { path: "nuevo", element: <RevisionSolicitud /> },
             ]
           }
         ]

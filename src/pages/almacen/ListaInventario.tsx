@@ -8,33 +8,10 @@ import { toast } from "react-toastify";
 import { AuthPermitions } from "../../contexts/contexts";
 
 const colorfase = {
-  'INGR': 'bg-orange-500',
-  'RETR': 'bg-violet-500'
+  'TELAS': 'bg-orange-500',
+  'AVIOS': 'bg-violet-500'
 }
-const CuerpoVistaRapida = ({ pedidoid, tipo }) => {
-  return (
-    <>
-      <div>
-        <iframe src={`http://192.168.18.20:4002/produccion/${tipo == 'TELAS' ? 'vistarapidapedidotelas' : 'vistarapidapedidoavios'}/${pedidoid}/view`} className="w-[60vw] h-[70vh]"></iframe>
-        {/* <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe> */}
-        <div className="flex flex-row justify-center gap-2 mt-2">
-          <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
-          <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
-        </div>
-      </div>
-    </>
-  )
-}
-const CuerpoInforme = ({ cuerpo }) => {
-  return (
-    <>
-      <iframe src="http://192.168.18.20:4000/produccion/informe/12" className="w-[60vw] h-[60vh]"></iframe>
-      {/* <div dangerouslySetInnerHTML={{ __html: cuerpo }} /> */}
-    </>
-  )
-}
-
-export default function ListaMovimientosAlmacen() {
+export default function ListaInventarioAlmacen() {
   const lista = useRef()
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
@@ -48,7 +25,7 @@ export default function ListaMovimientosAlmacen() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'almacen/listarmovimientos', params: {
+      url: 'almacen/listarinventario', params: {
         method: 'GET'
       }
     })
@@ -152,21 +129,6 @@ export default function ListaMovimientosAlmacen() {
       case 'edit':
         navigate("/main/retiros/nuevo/" + id + '?nombre=MIGUEL')
         break;
-      case 'review':
-        // navigate("/main/estampado/review/"+ id)
-        const tipo = info.filter(row => row.idx == id)[0].tipo
-        const params = {
-          open: true,
-          //content: <CuerpoCuadrePedido pedidoid={id} tipo={tipo} />,
-          content: <CuerpoVistaRapida pedidoid={id} tipo={tipo}/>,
-          controls: false,
-          header: false,
-          action: async () => {
-          }
-        }
-        openModal(params)
-        break;
-
       default:
         break;
     }
@@ -199,17 +161,6 @@ export default function ListaMovimientosAlmacen() {
   }
   const nuevoretiro = () => {
     navigate('/main/almacen/movimientos/nuevo')
-  }
-  const showinforme = async () => {
-    const params_modal = {
-      open: true,
-      content: <CuerpoInforme cuerpo={""} />,
-      controls: true,
-      header: false,
-      action: async () => {
-      }
-    }
-    openModal(params_modal)
   }
   const filtrarestado = (e) => {
     const estado = e.target.dataset.estado
@@ -279,7 +230,7 @@ export default function ListaMovimientosAlmacen() {
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Movimientos inventario</h2>
+              <h2 className="font-medium text-[16px]">Inventario de materiales</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={filtrarpedidos} />
               </div>
@@ -288,35 +239,36 @@ export default function ListaMovimientosAlmacen() {
           </div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             <hr />
-            <div>
+            {/* <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
                 <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Emitidos
+                    Telas
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
                 <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Anulados
+                    Avios
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
               </ul>
             </div>
-            <hr />
+            <hr /> */}
             <div className="flex-1 scrollbar-special overflow-y-scroll">
               <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">CodComp</th>
-                    <th className="lg:table-cell">Serie</th>
-                    <th className="lg:table-cell">Numero</th>
-                    <th className="lg:table-cell">RucProveedor</th>
-                    <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">Observaciones</th>
-                    <th className="lg:table-cell">FechaSys</th>
+                    <th className="lg:table-cell">Codigo</th>
+                    <th className="lg:table-cell">Producto</th>
+                    <th className="lg:table-cell">Lote</th>
+                    <th className="lg:table-cell">Color</th>
+                    {/* <th className="lg:table-cell">Talla</th> */}
+                    <th className="lg:table-cell">Estado</th>
+                    <th className="lg:table-cell">Tipo</th>
+                    <th className="lg:table-cell">Stock</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -325,15 +277,15 @@ export default function ListaMovimientosAlmacen() {
                     info.length > 0
                       ? info.map((row, key) => (
                         <tr key={key} className="">
-                          <td>{row.id_CAB}</td>
-                          <td className="w-[120px]"><div className={`w-full text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.cod_comprobante]}`}>{row.cod_comprobante}</div></td>
-                          {/* <td>{row.cod_comprobante}</td> */}
-                          <td>{row.serie_DOC}</td>
-                          <td>{row.num_doc_CDP}</td>
-                          <td>{row.Nro_Doc_Prov}</td>
-                          <td>{row.Raz_social_DOC}</td>
-                          <td>{row.observaciones}</td>
-                          <td>{row.fecha_sys}</td>
+                          <td>{row.id_subprod_CAB}</td>
+                          <td>{row.codigo}</td>
+                          <td className="font-bold">{row.producto}</td>
+                          <td>{row.lote}</td>
+                          <td>{row.color}</td>
+                          {/* <td>{row.talla}</td> */}
+                          <td>{row.estado}</td>
+                          <td>{row.tipo}</td>
+                          <td>{row.stock}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -398,6 +350,7 @@ export default function ListaMovimientosAlmacen() {
                 <Button action={nuevoretiro} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
+
           </div>
         </div>
       </div>

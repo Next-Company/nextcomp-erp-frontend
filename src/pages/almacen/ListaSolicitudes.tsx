@@ -34,7 +34,7 @@ const CuerpoInforme = ({ cuerpo }) => {
   )
 }
 
-export default function ListaMovimientosAlmacen() {
+export default function ListaSolicitudes() {
   const lista = useRef()
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
@@ -198,7 +198,7 @@ export default function ListaMovimientosAlmacen() {
       })
   }
   const nuevoretiro = () => {
-    navigate('/main/almacen/movimientos/nuevo')
+    navigate('/main/almacen/solicitudes/nuevo')
   }
   const showinforme = async () => {
     const params_modal = {
