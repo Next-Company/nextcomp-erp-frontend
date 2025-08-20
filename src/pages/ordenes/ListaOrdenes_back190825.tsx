@@ -467,80 +467,7 @@ export default function ListaOrdenes() {
             </div>
             <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll">
-              {
-              ordenes.length > 0
-                ? ordenes.map((row, key) => (
-
-                  <div className={`bg-gray-300 text-white rounded-xl p-3 relative z-10 cursor-pointer hover:opacity-80 mb-3`}>
-                    <div className="font-extrabold pt-1 pb-2 flex flex-row justify-between">
-                      <div className="text-[10px] text-left">PROV: </div>
-                      <div className="text-[10px] w-[100px] text-right"></div>
-                    </div>
-                    {/* <div className="flex flex-row justify-between">
-                      <div className="text-[10px] text-left"><span className="font-extrabold">GUIA:</span> #</div>
-                      <div className="text-[10px] text-left"><span className="font-extrabold">CANT.:</span> </div>
-                      <div className="text-[10px] text-left"><span className="font-extrabold">CORTE:</span> -</div>
-                      <div className="text-[10px] text-left"><span className="font-extrabold">EMISION:</span> </div>
-                      <div className="text-[10px] text-left"><span className="font-extrabold">RETORNO:</span> </div>
-                      <div className="text-[10px] text-left"><span className="font-extrabold">DIAS:</span> </div>
-                    </div> */}
-                    {/* <div className={`text-black w-[800px] text-center text-[10px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages`}>
-                  {
-                         row.ruta_test.map(item=><div className={`px-2 flex flex-row flex-1 items-center justify-center pointer-events-none ${item.estado ? (item.pendiente ? (item.cadudo ? 'bg-red-500' : 'bg-amber-500') : item.color) + ' text-white' : 'bg-gray-200 text-gray-500'} text-nowrap`}>
-                           {item.fase}
-                         </div>)
-                       }
-                     </div> */}
-                    <div>
-                      <ul className="flex flex-row justify-end">
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-id={33} data-action="download" onClick={onclick}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-id={33} data-action="show" onClick={onclick} >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" onClick={() => { }}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-
-                  // <div className="h-[80px] bg-red-400 border border-gray-300 rounded-md mb-3 p-2 flex flex-row justify-end">
-                  //   <div>
-                  //     {row.idx} - {row.producto} - {row.oc} - {row.cliente.substr(0,30)}
-                  //   </div>
-                  //   <div className={`text-black w-[500px] text-center text-[10px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages`}>
-                  //     {
-                  //       row.ruta_test.map(item=><div className={`px-2 flex flex-row flex-1 items-center justify-center pointer-events-none ${item.estado ? (item.pendiente ? (item.cadudo ? 'bg-red-500' : 'bg-amber-500') : item.color) + ' text-white' : 'bg-gray-200 text-gray-500'} text-nowrap`}>
-                  //         {item.fase}
-                  //       </div>)
-                  //     }
-                  //   </div>
-                  //   <div>{}</div>
-                  // </div>  
-                ))
-                : <div></div>
-              }
-
-              {/* <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:nth-child(n):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1s [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr:hover_td_div.stages]:scale-[1.2] [&_tbody_tr:hover_td_div.stages]:translate-x-[-25px]">
+              <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:nth-child(n):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1s [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr:hover_td_div.stages]:scale-[1.2] [&_tbody_tr:hover_td_div.stages]:translate-x-[-25px]">
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">OC</th>
@@ -560,8 +487,10 @@ export default function ListaOrdenes() {
                 <tbody>
                   {
                     ordenes.length > 0
+                      // ? ordenes.filter((row,key)=>key > rango*position && key <= rango*(position+1)).map((row, key) => (
                       ? ordenes.map((row, key) => (
                         <tr key={key} data-action="show" onClick={onclick} data-id={row.idx} className="hover">
+                          {/* <td>{row.idx}</td> */}
                           <td>{row.oc}</td>
                           <td className="font-bold">{row.cliente.substr(0,30)}</td>
                           <td>{row.fec_emitida_orden}</td>
@@ -572,12 +501,28 @@ export default function ListaOrdenes() {
                           <td className={`font-black ${row.total_corte > 0 ? 'text-blue-500' : 'text-green-500'}  text-center`}>{row.total_corte > 0 ? row.total_corte : row.total_orden}</td>
                           <td className="font-black text-center">{row.dias_produccion}</td>
                           <td className={`text-center font-black ${row.dias_pendientes < 0 ? 'text-red-500' : 'text-black'}`}>{row.dias_pendientes}</td>
+                                            
+                          {/* <td onClick={()=>alert("HOla mudno")}>
+                            <div className={`px-[5px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.estado_orden == 'FINALIZADO' ? 'FINALIZADO' : (row.nro_guias > 0 ? row.status_servicio : row.status)] ?? 'bg-gray-400'} flex flex-row justify-center`}>
+                              {
+                                ['CONFECCION','ESTAMPADO','BORDADO','ESTAMPADO','LAVANDERIA','OJAL','ACABADOS'].map(item=><div className="border-[1px] border-black px-1">{item}</div>)
+
+                              }
+                            </div>
+                          </td> */}
                           <td>  
+                            {/* <div className={`text-black text-center text-[8px] flex flex-row [&_div]:border-gray-500 [&_div:nth-child(2n)]:border-x-[1px] [&_div:nth-child(2n)]:border-white border-[1px] border-black rounded-lg overflow-hidden hover:scale-[1.5] transition-all`}> */}
                             <div className={`text-black text-center text-[10px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages`}>
                               {
+                                // row.ruta_proceso && JSON.parse(row.ruta_proceso).map(item=><div className="px-2 flex-1 text-white bg-gray-400">{item}</div>)
+                                // row.ruta_final.map(item=><div className={`px-2 flex-1 text-white ${row.servicio == 'MOLDE' ? 'bg-[#c3c3c3]' : 'bg-gray-500'}`}>{item}</div>)
                                 row.ruta_test.map(item=><div className={`px-2 flex flex-row flex-1 items-center justify-center pointer-events-none ${item.estado ? (item.pendiente ? (item.cadudo ? 'bg-red-500' : 'bg-amber-500') : item.color) + ' text-white' : 'bg-gray-200 text-gray-500'} text-nowrap`}>
                                   {item.fase}
+                                  {/* {item.cadudo &&
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-exclamation-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 3.34a10 10 0 1 1 -15 8.66l.005 -.324a10 10 0 0 1 14.995 -8.336m-5 11.66a1 1 0 0 0 -1 1v.01a1 1 0 0 0 2 0v-.01a1 1 0 0 0 -1 -1m0 -7a1 1 0 0 0 -1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0 -1 -1" /></svg>
+                                  } */}
                                 </div>)
+
                               }
                             </div>
                           </td>
@@ -589,6 +534,11 @@ export default function ListaOrdenes() {
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                 </div>
                               </li>
+                              {/* <li>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="show" onClick={onclick} data-id={row.idx}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                </div>
+                              </li> */}
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}} data-id={row.idx}>
                                   <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-cancel"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M18.364 5.636l-12.728 12.728" /></svg>
@@ -608,6 +558,7 @@ export default function ListaOrdenes() {
                                   </div>
                                 </li>
                               }
+
                             </ul>
                           </td>
                         </tr>
@@ -635,16 +586,21 @@ export default function ListaOrdenes() {
                     </td>
                   </tr>
                 </tfoot>
-              </table> */}
+              </table>
             </div>
+            {/* <div className="flex flex-col items-center p-2 gap-2"> */}
             <div className="flex flex-row justify-end mt-2 gap-2">
-	            <Button action={exportarexcel} tipo={'success'}>Acciones</Button>
+              {/* <Button action={regulalizzet} tipo={'warning'} type="button">Inventario</Button> */}
+              <Button action={exportarexcel} tipo={'success'}>Acciones</Button>
               <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
               <Button action={() => navigate('/main/ordenes/nuevo')} tipo={'accept'}>Nuevo</Button>
             </div >
+
           </div>
         </div>
+        {/* <div className="w-[200x] h-[60px] bg-slate-500 absolute bottom-4 left-4 z-40">Lista de observacione</div> */}
       </div>
+
     </>
   )
 }

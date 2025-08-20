@@ -240,21 +240,22 @@ function CuerpoCorte({info,setcorte,position,quitar,form}){
   </>
 }
 
-function SeccionAvios({info}){
+function SeccionMateriales({info,orden}){
+  console.log("Info materiales:",orden)
   return <>
-    <div className={` flex-col gap-3 pt-2`}>
-      Seguimos en construccion...
+    <div className={`flex flex-col gap-3 pt-4`}>
+      <div className="flex gap-3">
+        <Input name={'idx'} defaults={info.length > 0 && info[0].idx ? info[0].idx : null}  type="hidden" />
+        <Input name={'id_cab_orden'} defaults={orden ?? null}  type="hidden" />
+      </div>
+      <div className="flex gap-3">
+        <InputSelect title={'Estado'} name={"estado_materiales"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }]} df={info.length > 0 ? info[0].estado_materiales : null} />
+      </div>
+      <div>
+        <TextArea title="Observaciones" name="observaciones_fase_materiales" />
+      </div>
     </div>
   </>
-}
-
-function Test({info,position}){
-  return(
-    <div key={position} className="w-[100px] h-[80px] bg-red-300">
-      {/* <input type="text" value={Object.keys(info).length > 0 ? info.numero_corte : ''} /> */}
-      <InputTest name={'numero_corte'} defaults={Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : null} title="#HojaCorte" type="text" />
-    </div>
-  )
 }
 
 function SeccionCorte({info,setcorte,form}){
@@ -293,6 +294,7 @@ function SeccionCorte({info,setcorte,form}){
 }
 
 function SeccionMolde({info,orden}){
+  console.log("Info molde:",orden)
   return <>
     <div className={`flex flex-col gap-3 pt-4`}>
       <div className="flex gap-3">
@@ -582,11 +584,12 @@ export function NewOrden() {
   const [molde, setMolde] = useState([])
   const [corte, setCorte] = useState([])
   const [avios, setAvios] = useState([])
+  const [materiales, setMateriales] = useState([])
   const [dataimg, setDataimg] = useState([])
   const navigate = useNavigate()
   const [tipopedido,setTipopedido] = useState(1)
   const [fases,setFases] = useState([])
-  const [materiales,setMateriales] = useState([])
+  const [materialesref,setMaterialesRef] = useState([])
   
   console.log("Info del corte :",orden)
 
@@ -605,13 +608,6 @@ export function NewOrden() {
           return 0
         }
       }
-
-      // for(let element of form.current.elements){
-      //   if(element.name && element.value == '' && !['idx','observaciones_fase_ordenes'].includes(element.name)){
-      //     toast.error(`Debe completar el campo ${element.title} antes de continuar.`, { theme: "colored" })
-      //     return
-      //   }
-      // }
       if(form.current.elements['materiales_produccion'].value == '[]' || form.current.elements['materiales_produccion'].value == null){
         toast.error('Debe seleccionar al menos un material de produccion.', { theme: "colored" })
         return
@@ -638,6 +634,12 @@ export function NewOrden() {
       data.append('info',JSON.stringify(corte))
       data.append('id',urlparams.id)
     }
+    if(position == 4){
+      console.log("Info de matariales :",materiales)
+      url_save = 'ordenes/saveFaseMateriales'
+      data = new FormData(e.target)
+      data.append('id',urlparams.id)
+    }
     const PARAMS_MODAL = {
       open: true,
       header: false,
@@ -660,7 +662,6 @@ export function NewOrden() {
             }
           })
           .catch((err)=>{
-            // setOpenloader(false)
             toast.error('Se produjo un error!!', { theme: "colored" })
           })
           .finally(()=>{
@@ -696,8 +697,9 @@ export function NewOrden() {
             setOrden(resp[0])
             setMolde(resp[1])
             setCorte(resp[2])
-            setFases(resp[3])
-            setMateriales(resp[4])
+            setMateriales(resp[3])
+            setFases(resp[4])
+            setMaterialesRef(resp[5])
 
           })
           .catch((err)=>{
@@ -718,7 +720,7 @@ export function NewOrden() {
       .then(resp=>{
         console.log("El resultado de la consulta es:",resp)
         setFases(resp[0])
-        setMateriales(resp[1])
+        setMaterialesRef(resp[1])
       })
       .catch(err=>{
         console.log(err)
@@ -878,7 +880,7 @@ export function NewOrden() {
               </button>
               <button className={`group ${position == 4 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(4)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
-                  Avios
+                  Materiales
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
@@ -887,7 +889,7 @@ export function NewOrden() {
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
-                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materiales} dataimg={dataimg} setDataimg={setDataimg}/>
+                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materialesref} dataimg={dataimg} setDataimg={setDataimg}/>
                 }
                 {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
@@ -896,11 +898,10 @@ export function NewOrden() {
                   position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form}/>
                 }
                 {
-                  position == 4 && <SeccionAvios info={avios} />
+                  position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
-                {/* <Button action={actualizarcombos} type={'button'} tipo={'warning'}>Actualizar</Button> */}
                 <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button>
                 {/* <Button action={() => printpedido()} type={'button'} tipo={'default'}>Print</Button> */}
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>

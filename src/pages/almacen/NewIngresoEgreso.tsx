@@ -1,4 +1,4 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { resolvePath, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { Button } from "../../components/Atoms/Button/Button"
 import { useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
@@ -96,8 +96,13 @@ export default function NewInOut(){
         }})
         .then(resp => {
           setOpenloader(false)
-          // navigate('/main/pedidos/')
-          toast.success('Nuevo retiro generado con éxito!!', { theme: "colored" })
+          if(resp.ok){
+            // navigate('/main/pedidos/')
+            toast.success('Nuevo retiro generado con éxito!!', { theme: "colored" })
+          }else{
+            toast.error(resp.message, { theme: "colored" })
+            return
+          }
         })
         .catch((err)=>{
           setOpenloader(false)
@@ -232,12 +237,12 @@ export default function NewInOut(){
           console.log("El pedidos seleccionado matemia es :",item)
           setOpenloader(true)
           setOpen(false)
-          Consulta({ url: 'produccion/pedido/' + item.idx })
+          Consulta({ url: 'almacen/disponibilidadreq/' + item.idx })
             .then(resp => {
-              console.log("La informacion del pedido consultado es:", resp)
+              console.log("La informacion del pedido consultado es:", resp,resp[0].idx)
               setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor, orden_ref: item.orden_ref, oc: resp[0].oc, nro_corte: resp[0].nro_corte, ruc: resp[0].ruc }))
               setRegistros([...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
-                row = { ...row, id_item: row.idx, despacho: 0 }
+                row = { ...row, id_item: row.idx, despacho: 0, stock: row.stock, lote: resp[0].idx }
                 Reflect.deleteProperty(row, 'idx')
                 return row
               })])
@@ -329,6 +334,8 @@ export default function NewInOut(){
                           <th className="lg:table-cell">Unidad</th>
                           <th className="lg:table-cell">Precio</th>
                           <th className="lg:table-cell">Importe</th>
+                          <th className="lg:table-cell">Stock</th>
+                          <th className="lg:table-cell">Saldo</th>
                           <th className="lg:table-cell">Salida</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
@@ -344,6 +351,8 @@ export default function NewInOut(){
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} step=".01" data-name="precio" value={row.precio} /></td>
                               <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(2)} /></td>
+                              <td>{row.stock}</td>
+                              <td className={`font-bold w-[80px] text-center ${row.stock - (row.despacho ?? 0) < 0 ? 'text-red-600' : ''}`}>{row.stock - (row.despacho ?? 0)}</td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho} /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
