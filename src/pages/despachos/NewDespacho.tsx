@@ -283,8 +283,11 @@ export default function NewDespacho() {
         data.append('detalle', JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0)))
         data.append('facturas', JSON.stringify(facturas))
 
+        const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : 'produccion/guardardespachoguia/'
+
         await Consulta({
-          url: 'produccion/guardardespacho/', params: {
+          // url: 'produccion/guardardespacho/', params: {
+          url: ruta, params: {
             method: 'PUT',
             body: data
           }

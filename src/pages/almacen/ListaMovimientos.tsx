@@ -38,7 +38,7 @@ export default function ListaMovimientosAlmacen() {
   const lista = useRef()
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
-  const [estado,setEstado] = useState('PENDIENTE')
+  const [estado,setEstado] = useState('EMITIDO')
   const navigate = useNavigate()
   const { logout } = useContext(AuthPermitions)
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
@@ -48,7 +48,7 @@ export default function ListaMovimientosAlmacen() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'almacen/listarmovimientos', params: {
+      url: 'almacen/listarmovimientos/' + 'EMITIDO', params: {
         method: 'GET'
       }
     })
@@ -83,14 +83,13 @@ export default function ListaMovimientosAlmacen() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarpedido/' + id, params: {
+              url: 'almacen/deleteguiamov/' + id, params: {
                 method: 'DELETE'
               }
             })
               .then(resp => {
                 // setOrdenes(resp)
                 toast.success('Guia eliminado con éxito!', { theme: "colored" })
-                // setRefresh(true)
                 recargarinfo()
                 setOpenloader(false)
               })
@@ -103,7 +102,7 @@ export default function ListaMovimientosAlmacen() {
               })
           }
         }
-        // openModal(params_modal)
+        openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -115,10 +114,11 @@ export default function ListaMovimientosAlmacen() {
             const desc = async () => {
               const data = new FormData()
               data.append('id', id)
-              const tipo = info.filter(row => row.idx == id)[0].tipo
+              // const tipo = info.filter(row => row.idx == id)[0].tipo
               setOpenloader(true)
               Consulta({
-                url: 'reports/vistapreviaretiro/TELAS', params: {
+                // url: 'reports/vistapreviaretiro/TELAS', params: {
+                url: 'almacen/vistapreviaretiro/TELAS', params: {
                   method: 'POST',
                   body: data
                 }
@@ -175,7 +175,7 @@ export default function ListaMovimientosAlmacen() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos', params: {
+      url: 'almacen/listarmovimientos', params: {
         method: 'GET'
       }
     })
@@ -183,8 +183,8 @@ export default function ListaMovimientosAlmacen() {
         console.log("Recargado informacion :", resp)
         setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
-        console.log("Filtro info por estado :", infoestado)
+        // setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
+        // console.log("Filtro info por estado :", infoestado)
       })
       .catch((error) => {
         console.log(error)
@@ -214,29 +214,15 @@ export default function ListaMovimientosAlmacen() {
     const estado = e.target.dataset.estado
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos', params: {
+      url: 'almacen/listarmovimientos/' + estado, params: {
         method: 'GET'
       }
     })
       .then(resp => {
         setOpenloader(false)
-        lista.current.querySelector('button.active').classList.remove('active')
-        e.target.classList.add('active')
+        // lista.current.querySelector('button.active').classList.remove('active')
+        // e.target.classList.add('active')
         setInfo(resp)
-        // switch (estado) {
-        //   case 'PENDIENTE':
-        //     setInfoestado(resp.filter(row=>row.cantidad >= row.ingresos && !['ANULADO','FINALIZADO'].includes(row.estado)))
-        //     break;
-        //   case 'FINALIZADO':
-        //     setInfoestado(resp.filter(row=>row.cantidad <= row.ingresos || row.estado == 'FINALIZADO'))
-        //     break;
-        //   case 'ANULADO':
-        //     setInfoestado(resp.filter(row=>row.estado == 'ANULADO'))
-        //     break;
-        //   default:
-        //     break;
-        // }
-        setInfoestado(resp.filter(row => row.estado == estado))
         setEstado(estado)
       })
       .catch((error) => {
@@ -289,13 +275,13 @@ export default function ListaMovimientosAlmacen() {
             <hr />
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
+                <button className={`group ${estado == 'EMITIDO' ? 'active' : ''}`} data-estado="EMITIDO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Emitidos
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
+                <button className={`group ${estado == 'ANULADO' ? 'active' : ''}`} data-estado="ANULADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -336,22 +322,22 @@ export default function ListaMovimientosAlmacen() {
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.id_CAB}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.id_CAB}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" onClick={onclick} data-id={row.id_CAB}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.id_CAB}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                 </div>
                               </li>
