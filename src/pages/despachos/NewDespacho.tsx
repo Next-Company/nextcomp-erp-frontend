@@ -238,7 +238,7 @@ export default function NewDespacho() {
   // const [estampado,setEstampado] = useState([])
   const [tipo, setTipo] = useState(2)
   const urlparams = useParams()
-  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '', facturado:'1' })
+  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '', facturado:'1', fase:'1' })
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros, setRegistros] = useState([])
@@ -248,8 +248,22 @@ export default function NewDespacho() {
 
   const onsubmit = (e) => {
     e.preventDefault()
+    const fase = parseInt(form.current.elements.fase.value)
     console.log("Los datos del formulario son:", registros)
-    if(registros.length > 0 && tipo == 2){
+    // console.log("El estado de la fase es:",form.current.elements.fase.value)
+
+    if(registros.length > 0 && tipo == 2 && fase == 0){
+      if(registros.filter(row=>row.fracciones_despacho.length > 0).length > 0){
+        toast.error('Si piensa registrar algún despacho seleccione primero la fase de despacho.', { theme: "colored" })
+        return 0
+      }
+      if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) > 0 || registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) > 0 || registros.map(row => row.incompletos ?? 0).reduce((a, b) => a + b) > 0) {
+        toast.error('Si piensa registrar algún despacho seleccione primero la fase de despacho.', { theme: "colored" })
+        return 0
+      }
+    }
+
+    if(registros.length > 0 && tipo == 2 && fase == 1){
       if(registros.filter(row=>row.fracciones_despacho.length > 0).length == 0){
         toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
         return 0
@@ -269,7 +283,7 @@ export default function NewDespacho() {
       toast.error(`No ha ingresado ningun registro referenta a la factura del proveedor. Por favor verifique.`, { theme: "colored" })
       return 0
     }
-
+    
     openModal({
       open: true,
       header: false,
@@ -280,11 +294,10 @@ export default function NewDespacho() {
         const data = new FormData()
         urlparams.id && data.append('id', urlparams.id)
         data.append('info', JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle', JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0)))
+        data.append('detalle', fase ? JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0)) : JSON.stringify(registros))
         data.append('facturas', JSON.stringify(facturas))
 
         const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : 'produccion/guardardespachoguia/'
-
         await Consulta({
           // url: 'produccion/guardardespacho/', params: {
           url: ruta, params: {
@@ -609,7 +622,7 @@ export default function NewDespacho() {
                 </div>
                 <div className="flex gap-3">
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <div className="w-[600px]">
+                  <div className="w-[500px]">
                     <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   </div>
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" />
@@ -620,6 +633,13 @@ export default function NewDespacho() {
                       { indice: '0', option: 'NO' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.facturado : null}
+                  />
+                  <InputSelect title={'Fase'} name={"fase"} data={
+                    [
+                      { indice: '1', option: 'DESPACHO', selected: true },
+                      { indice: '0', option: 'CONTEO' },
+                    ]}
+                    df={Object.keys(info).length > 0 ? info.fase : null}
                   />
                 </div>
                 <div>

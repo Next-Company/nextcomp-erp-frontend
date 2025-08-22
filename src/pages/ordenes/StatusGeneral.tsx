@@ -159,14 +159,14 @@ const CuerpoDespacho = ({info,openloader})=>{
       <div className={`relative z-10 flex flex-row gap-2 flex-1 h-[90px]`}>
         {
           info.length > 0 && info.map(row=>
-            <div className={`bg-orange-400 rounded-xl p-3 relative z-10 flex-1 cursor-pointer hover:opacity-90`}>
+            <div className={`${row.fase ? 'bg-orange-400' : 'bg-gray-400' } rounded-xl p-3 relative z-10 flex-1 cursor-pointer hover:opacity-90`}>
               <div className="flex flex-row justify-center text-[11px]">
                 <div><strong>#GUIA: {row.nro_guia}</strong></div>
               </div>
-	      <div className="flex flex-row justify-between text-[11px]">
-	        <div><strong>CANT.:</strong> {row.despacho} und.</div>
-	        <div><strong>FECHA:</strong> {row.fecha_ingreso}</div>
-	      </div>
+              <div className="flex flex-row justify-between text-[11px]">
+                <div><strong>CANT.:</strong> {row.despacho} und.</div>
+                <div><strong>FECHA:</strong> {row.fecha_ingreso}</div>
+              </div>
               <div className="flex flex-row justify-end">
                 <ul className="flex flex-row justify-end">
                   <li>

@@ -578,7 +578,7 @@ export default function ListaDespachos() {
               </div> */}
               <div className="flex gap-2 mt-2">
                 {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
-                <Button action={exportarexcel} tipo={'success'}>Acciones</Button>
+                {/* <Button action={exportarexcel} tipo={'success'}>Acciones</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevodespacho} tipo={'accept'}>Nuevo</Button>
               </div>
