@@ -566,13 +566,17 @@ export default function ListaOrdenes() {
                 </tfoot>
               </table>
               :
+              <div className="grid grid-cols-2 lg:grid-cols-2 gap-2">
+                {
               ordenes.length > 0
                 ? ordenes.map((row, key) => (
 
-                  <div className={`bg-gray-300 text-white rounded-t-xl rounded-bl-xl rounded-br-xl p-3 relative z-10 cursor-pointer hover:opacity-80 mb-[50px] mt-2`}>
+                  <div className={`bg-gray-300 text-white rounded-t-xl rounded-bl-xl rounded-br-xl p-3 relative z-10 cursor-pointer hover:opacity-80 mb-[34px] mt-2 hover:bg-red-400`}>
                     <div className="flex flex-row items-center gap-2">
-                      <div className="bg-purple-300 rounded-full h-[50px] w-[50px]"></div>
-                      <div className="text-black text-[16px] font-bold flex-1">{row.marca} {row.producto} {row.modelo}</div>
+                      <div className="bg-amber-300 rounded-full h-[40px] w-[40px] flex flex-row justify-center items-center">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" /></svg>
+                      </div>
+                      <div className="text-black text-[14px] font-bold flex-1">{row.marca} {row.producto} {row.modelo}</div>
                       <div className="text-black text-[20px] italic font-extrabold">0%</div>
                     </div>
                     <div className="hidden">
@@ -604,49 +608,24 @@ export default function ListaOrdenes() {
                         </li>
                       </ul>
                     </div>
-                    <div className="absolute bottom-[-31px] h-[30px] bg-gray-300 ml-4 mr-4 rounded-b-xl p-2 left-0 right-0 flex flex-row">
-                      <div className={`text-black text-center text-[10px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages flex-1`}>
+                    {/* <div className="absolute bottom-[-31px] h-[30px] bg-gray-300 ml-4 mr-4 rounded-b-xl p-2 left-0 right-0 flex flex-row items-center gap-2"> */}
+                    <div className="absolute bottom-[-26px] h-[25px] bg-gray-300 ml-4 mr-4 rounded-b-xl p-2 left-0 right-0 flex flex-row items-center gap-2">
+                      <div className={`text-black text-center text-[10px] h-[12px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages flex-1`}>
                         {
                          row.ruta_test.map(item=><div className={`px-2 flex flex-row flex-1 items-center justify-center pointer-events-none ${item.estado ? (item.pendiente ? (item.cadudo ? 'bg-red-500' : 'bg-amber-500') : item.color) + ' text-white' : 'bg-gray-200 text-gray-500'} text-nowrap border-r border-r-gray-400`}>
                            {item.fase}
                          </div>)
                         }
                       </div>
-                      {/* <div className={`text-black text-center text-[10px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages flex-1`}>
-                        {
-                         row.ruta_test.map(item=><div className={`px-2 flex flex-row flex-1 items-center justify-center pointer-events-none ${item.estado ? (item.pendiente ? (item.cadudo ? 'bg-red-500' : 'bg-amber-500') : item.color) + ' text-white' : 'bg-gray-200 text-gray-500'} text-nowrap`}>
-                           {item.fase}
-                         </div>)
-                        }
-                      </div> */}
+                      <div className="w-[10px] h-[10px] rounded-full bg-amber-400 border border-gray-500"></div>
+                      <div className="w-[10px] h-[10px] rounded-full bg-gray-300 border border-gray-500"></div>
+                      <div className="w-[10px] h-[10px] rounded-full bg-gray-300 border border-gray-500"></div>
                     </div>
-                    {/* <div className="absolute bottom-[-31px] h-[30px] bg-gray-300 ml-4 rounded-b-xl p-2 w-[30%] left-0">
-                      <div className={`text-black w-full text-center text-[10px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages`}>
-                        {
-                         row.ruta_test.map(item=><div className={`px-2 flex flex-row flex-1 items-center justify-center pointer-events-none ${item.estado ? (item.pendiente ? (item.cadudo ? 'bg-red-500' : 'bg-amber-500') : item.color) + ' text-white' : 'bg-gray-200 text-gray-500'} text-nowrap`}>
-                           {item.fase}
-                         </div>)
-                        }
-                     </div>
-                    </div> */}
                   </div>
-
-
-                  // <div className="h-[80px] bg-red-400 border border-gray-300 rounded-md mb-3 p-2 flex flex-row justify-end">
-                  //   <div>
-                  //     {row.idx} - {row.producto} - {row.oc} - {row.cliente.substr(0,30)}
-                  //   </div>
-                  //   <div className={`text-black w-[500px] text-center text-[10px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages`}>
-                  //     {
-                  //       row.ruta_test.map(item=><div className={`px-2 flex flex-row flex-1 items-center justify-center pointer-events-none ${item.estado ? (item.pendiente ? (item.cadudo ? 'bg-red-500' : 'bg-amber-500') : item.color) + ' text-white' : 'bg-gray-200 text-gray-500'} text-nowrap`}>
-                  //         {item.fase}
-                  //       </div>)
-                  //     }
-                  //   </div>
-                  //   <div>{}</div>
-                  // </div>  
                 ))
                 : <div></div>
+                }
+              </div>
               }
             </div>
             <div className="flex flex-row justify-end mt-2 gap-2">

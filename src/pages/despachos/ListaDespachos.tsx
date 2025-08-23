@@ -215,7 +215,7 @@ export default function ListaDespachos() {
 
               Consulta({
                 /*url: "produccion/exportdespacho/" + id + "/" + idguia + '/-1', params: {*/
-		url: "produccion/verdespacho/" + id + "/" + idguia + '/2' 
+		            url: "produccion/verdespacho/" + id + "/" + idguia + '/2' 
               })
                 .then(resp => {
                   setOpenloader(false)

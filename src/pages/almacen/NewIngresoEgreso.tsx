@@ -282,7 +282,7 @@ export default function NewInOut(){
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />                  
 
-                  <InputSelect title={'Operacion'} name={"tipo_operacion"} data={
+                  <InputSelect title={'TipoMov'} name={"tipo_operacion"} data={
                     [
                       { indice: '9', option: 'INGRESOS', selected: true }, 
                       { indice: '10', option: 'RETIROS' }, 
@@ -351,8 +351,8 @@ export default function NewInOut(){
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} step=".01" data-name="precio" value={row.precio} /></td>
                               <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(2)} /></td>
-                              <td>{row.stock}</td>
-                              <td className={`font-bold w-[80px] text-center ${row.stock - (row.despacho ?? 0) < 0 ? 'text-red-600' : ''}`}>{row.stock - (row.despacho ?? 0)}</td>
+                              <td>{row.stock.toFixed(2)}</td>
+                              <td className={`font-bold w-[80px] text-center ${row.stock - (row.despacho ?? 0) < 0 ? 'text-red-600' : ''}`}>{row.stock.toFixed(2) - (row.despacho ?? 0)}</td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho} /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
@@ -394,6 +394,8 @@ export default function NewInOut(){
                           <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(2)}
                           </td>
+                          <td className="text-center">-</td>
+                          <td className="text-center">-</td>
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>

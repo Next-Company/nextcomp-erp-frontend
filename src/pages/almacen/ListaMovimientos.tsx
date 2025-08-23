@@ -9,7 +9,8 @@ import { AuthPermitions } from "../../contexts/contexts";
 
 const colorfase = {
   'INGR': 'bg-orange-500',
-  'RETR': 'bg-violet-500'
+  'RETR': 'bg-violet-500',
+  'OTRO': 'bg-gray-500',
 }
 const CuerpoVistaRapida = ({ pedidoid, tipo }) => {
   return (
@@ -370,7 +371,7 @@ export default function ListaMovimientosAlmacen() {
                 </tfoot>
               </table>
             </div>
-            <div className="flex flex-row justify-end">
+            <div className="flex flex-row justify-end mt-2">
               <div className="flex gap-2">
                 {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
