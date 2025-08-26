@@ -138,7 +138,7 @@ export default function ListaInventarioAlmacen() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos', params: {
+      url: 'almacen/listarinventario', params: {
         method: 'GET'
       }
     })
@@ -166,7 +166,7 @@ export default function ListaInventarioAlmacen() {
     const estado = e.target.dataset.estado
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaPedidos', params: {
+      url: 'almacen/listarinventario', params: {
         method: 'GET'
       }
     })
@@ -285,7 +285,7 @@ export default function ListaInventarioAlmacen() {
                           {/* <td>{row.talla}</td> */}
                           <td>{row.estado}</td>
                           <td>{row.tipo}</td>
-                          <td>{row.stock}</td>
+                          <td>{row.stock.toFixed(2)}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>

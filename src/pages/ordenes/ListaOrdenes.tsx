@@ -165,6 +165,7 @@ export default function ListaOrdenes() {
   const { openModal, config, setOpenloader, openloader, setOpen} = useContext(ModalWindowContext)
   const [ refresh, setRefresh ] = useState(false)
   const [ estado, setEstado ] = useState('EN PROCESO')
+  const [ gridcol, setGridCol ] = useState(1)
   const navigate = useNavigate()
 
   const onclick = (e) => {
@@ -443,7 +444,7 @@ export default function ListaOrdenes() {
             <hr />
           </div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll">
-            <div>
+            <div className="flex flex-row justify-between items-center">
               <ul ref={menu} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
                 <button className={`group ${estado == 'EN PROCESO' && 'active'}`} data-estado="EN PROCESO" onClick={calculo}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
@@ -464,6 +465,20 @@ export default function ListaOrdenes() {
                   </span>
                 </button>
               </ul>
+              <div className="flex flex-row gap-2">
+                <div className="cursor-pointer" onClick={()=>setGridCol(gridcol==1?2:1)}>
+                  {
+                    gridcol == 1
+                    ?
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="pointer-events-none icon icon-tabler icons-tabler-outline icon-tabler-layout-grid"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M14 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M14 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /></svg>
+                    :
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-layout-grid"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 3a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /><path d="M19 3a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /><path d="M9 13a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /><path d="M19 13a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /></svg>
+                  }
+                </div>
+                <div className="cursor-pointer">
+                  <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="pointer-events-none icon icon-tabler icons-tabler-outline icon-tabler-table-dashed"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M3 10h18" /><path d="M10 3v18" /></svg>
+                </div>
+              </div>
             </div>
             <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll">
@@ -566,7 +581,7 @@ export default function ListaOrdenes() {
                 </tfoot>
               </table>
               :
-              <div className="grid grid-cols-2 lg:grid-cols-2 gap-2">
+              <div className={`grid grid-cols-${gridcol} lg:grid-cols-${gridcol} gap-2`}>
                 {
               ordenes.length > 0
                 ? ordenes.map((row, key) => (

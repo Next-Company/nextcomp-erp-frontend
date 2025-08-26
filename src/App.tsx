@@ -215,7 +215,7 @@ const routes = [
       },
       {
         path: "informes",
-        element: <LayoutInforme />,
+        element: <PrivateRoute><LayoutInforme /></PrivateRoute>,
         children: [
           { path: "", element: <Informe /> },
         ]
@@ -233,7 +233,7 @@ const routes = [
       },
       {
         path: "almacen",
-        element: <LayoutAlmacen />,
+        element: <PrivateRoute><LayoutAlmacen /></PrivateRoute>,
         children: [
           { 
             path: "movimientos", 
