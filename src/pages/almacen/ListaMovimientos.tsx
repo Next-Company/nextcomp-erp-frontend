@@ -176,7 +176,7 @@ export default function ListaMovimientosAlmacen() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'almacen/listarmovimientos', params: {
+      url: 'almacen/listarmovimientos/' + 'EMITIDO', params: {
         method: 'GET'
       }
     })

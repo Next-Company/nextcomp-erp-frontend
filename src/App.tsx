@@ -66,6 +66,7 @@ import ListaInventarioAlmacen from './pages/almacen/ListaInventario.tsx'
 import LayoutSolicitud from './pages/almacen/LayoutSolicitud.tsx'
 import ListaSolicitudes from './pages/almacen/ListaSolicitudes.tsx'
 import RevisionSolicitud from './pages/almacen/RevisionSolicitud.tsx'
+import ErrorController from './pages/error/ErrorBoundary.tsx'
 
 const routes = [
   {
@@ -109,9 +110,9 @@ const routes = [
         element: <PrivateRoute><LayoutGuia /></PrivateRoute>,
         children: [
           { path: "", element: <ListaGuias /> },
-          { path: "nuevo", element: <NewGuia /> },
-          { path: "nuevo/:id", element: <NewGuia /> },
-          { path: "seguimiento/:id", element: <SeguimientoGuia /> },
+          { path: "nuevo", element: <NewGuia />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewGuia />, error: <ErrorController/> },
+          { path: "seguimiento/:id", element: <SeguimientoGuia />, error: <ErrorController/> },
         ]
       },
       {
@@ -119,8 +120,8 @@ const routes = [
         element: <PrivateRoute><LayoutMuestras /></PrivateRoute>,
         children: [
           { path: "", element: <ListaMuestras /> },
-          { path: "nuevo", element: <NewMuestra /> },
-          { path: "nuevo/:id", element: <NewMuestra /> },
+          { path: "nuevo", element: <NewMuestra />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewMuestra />, error: <ErrorController/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ] 
@@ -130,8 +131,8 @@ const routes = [
         element: <PrivateRoute><LayoutPedido /></PrivateRoute>,
         children: [
           { path: "", element: <ListaPedidos /> },
-          { path: "nuevo", element: <NewPedido /> },
-          { path: "nuevo/:id", element: <NewPedido /> },
+          { path: "nuevo", element: <NewPedido />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewPedido />, error: <ErrorController/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ]
@@ -141,8 +142,8 @@ const routes = [
         element: <PrivateRoute><LayoutOrden /></PrivateRoute>,
         children: [
           { path: "", element: <ListaOrdenes /> },
-          { path: "nuevo", element: <NewOrden /> },
-          { path: "nuevo/:id", element: <NewOrden /> },
+          { path: "nuevo", element: <NewOrden />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewOrden />, error: <ErrorController/> },
         ]
       },
       {
@@ -150,9 +151,9 @@ const routes = [
         element: <PrivateRoute><LayoutDespacho /></PrivateRoute>,
         children: [
           { path: "", element: <ListaDespachos /> },
-          { path: "nuevo", element: <NewDespacho /> },
-          { path: "nuevo/:id", element: <NewDespacho /> },
-          { path: "load/:idmuestra", element: <NewDespacho /> },
+          { path: "nuevo", element: <NewDespacho />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewDespacho />, error: <ErrorController/> },
+          { path: "load/:idmuestra", element: <NewDespacho />, error: <ErrorController/> },
         ]
       },
       {
@@ -160,9 +161,9 @@ const routes = [
         element: <PrivateRoute><LayoutRetiro /></PrivateRoute>,
         children: [
           { path: "", element: <ListaRetiros /> },
-          { path: "nuevo", element: <NewRetiro /> },
-          { path: "nuevo/:id", element: <NewRetiro /> },
-          { path: "load/:idmuestra", element: <NewRetiro /> },
+          { path: "nuevo", element: <NewRetiro />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewRetiro />, error: <ErrorController/> },
+          { path: "load/:idmuestra", element: <NewRetiro />, error: <ErrorController/> },
         ]
       },
       {
@@ -239,15 +240,15 @@ const routes = [
             path: "movimientos", 
             element: <LayoutMovimientos />,
             children: [
-              { path: "", element: <ListaMovimientosAlmacen /> },
-              { path: "nuevo", element: <NewInOut /> },
+              { path: "", element: <ListaMovimientosAlmacen />, error: <ErrorController/> },
+              { path: "nuevo", element: <NewInOut />, error: <ErrorController/> },
             ]
           },
           { 
             path: "inventario", 
             element: <LayoutInventario />,
             children: [
-              { path: "", element: <ListaInventarioAlmacen /> },
+              { path: "", element: <ListaInventarioAlmacen />, error: <ErrorController/> },
             ]
           },
           { 

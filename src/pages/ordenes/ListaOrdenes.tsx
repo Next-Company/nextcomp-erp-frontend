@@ -10,6 +10,7 @@ import StatusGeneral from "./StatusGeneral";
 import { Input } from "../../components/Atoms/Input/Input";
 import { InputSelect } from "../../components/Atoms/Input/InputSelect";
 import { ButtonLoader } from "../../components/Atoms/Button/ButtonLoader";
+import { ContextualMenuContext } from "../../components/ContextMenu/ContextualMenuContext";
 
 const colorfase = {
   'ORDENES':'bg-green-500',
@@ -25,6 +26,120 @@ const colorfase = {
   'TRANSITO':'bg-black'
 }
 
+const contextual_content = {
+  context1:
+    <>
+      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center'>
+        <li>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Descargar</div>
+          </div>
+        </li>
+        <li>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-pencil-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 19h6" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Cambiar nombre</div>
+          </div>
+        </li>
+      </ul>
+      <hr />
+      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center'>
+        <li>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-share"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h3" /><path d="M16 22l5 -5" /><path d="M21 21.5v-4.5h-4.5" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Compartir</div>
+          </div>
+        </li>
+        <li>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folder-open"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 19l2.757 -7.351a1 1 0 0 1 .936 -.649h12.307a1 1 0 0 1 .986 1.164l-.996 5.211a2 2 0 0 1 -1.964 1.625h-14.026a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v2" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Organizar</div>
+          </div>
+        </li>
+        <li>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-pencil-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 19h6" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Información carpeta</div>
+          </div>
+        </li>
+      </ul>
+      <hr />
+      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center'>
+        <li>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              {/* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg> */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye-off"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Ocultar</div>
+          </div>
+        </li>
+      </ul>
+    </>,
+  context2:
+    <>
+      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer [&_div]:pointer-events-none'>
+        <li data-action='edit'>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              {/* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folder-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 19h-7a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v3.5" /><path d="M16 19h6" /><path d="M19 16v6" /></svg> */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-pencil-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 19h6" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Editar orden</div>
+          </div>
+        </li>
+      </ul>
+      <hr />
+      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer [&_div]:pointer-events-none'>
+        <li data-action='subir'>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-file-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M12 11v6" /><path d="M9.5 13.5l2.5 -2.5l2.5 2.5" /></svg>
+            </div>
+            <div className='flex items-center text-left flex-1'>Subir archivo</div>
+          </div>
+        </li>
+        <li>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-folder-up"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 19h-7a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v3.5" /><path d="M19 22v-6" /><path d="M22 19l-3 -3l-3 3" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Subir carpeta</div>
+          </div>
+        </li>
+        <li>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-pencil-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 19h6" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Información carpeta</div>
+          </div>
+        </li>
+      </ul>
+      <hr />
+      <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center'>
+        <li>
+          <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
+            <div className="pl-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye-off"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" /></svg>
+            </div>
+            <div className='flex flex-col items-center text-left'>Ocultar</div>
+          </div>
+        </li>
+      </ul>
+    </>
+}
 
 const ExportFilters = ({ close, update }) => {
   const [stage, setStage] = useState(1)
@@ -162,10 +277,11 @@ export default function ListaOrdenes() {
   const [ position, setPosition ] = useState(0)
   const [ rango, setRango ] = useState(30)
   const { logout, credentials } = useContext(AuthPermitions)
+  const { open } = useContext(ContextualMenuContext)
   const { openModal, config, setOpenloader, openloader, setOpen} = useContext(ModalWindowContext)
   const [ refresh, setRefresh ] = useState(false)
   const [ estado, setEstado ] = useState('EN PROCESO')
-  const [ gridcol, setGridCol ] = useState(1)
+  const [ gridcol, setGridCol ] = useState(2)
   const navigate = useNavigate()
 
   const onclick = (e) => {
@@ -427,7 +543,28 @@ export default function ListaOrdenes() {
       // content: <div>Ventana de exportado de informcaion de orden</div>,
       action: async () => {}
     })
-  } 
+  }
+
+  const onrightclick = (e) => {
+    e.preventDefault()
+    const id = e.target.dataset.id
+    const content = e.target.matches('div') ? contextual_content.context2 : contextual_content.context1
+    const actions =
+      e.target.matches('div')
+        ? (e) => {
+          if (e.target.matches("li[data-action='edit'")) {
+            navigate("/main/ordenes/nuevo/"+ id)
+          }
+        }
+        : (e) => {
+          console.log(e.target)
+        }
+    open({
+      position: { x: e.clientX, y: e.clientY },
+      content: content,
+      actions: actions
+    })
+  }
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -472,7 +609,7 @@ export default function ListaOrdenes() {
                     ?
                     <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="pointer-events-none icon icon-tabler icons-tabler-outline icon-tabler-layout-grid"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M14 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M14 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /></svg>
                     :
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-layout-grid"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 3a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /><path d="M19 3a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /><path d="M9 13a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /><path d="M19 13a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /></svg>
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="pointer-events-none icon icon-tabler icons-tabler-filled icon-tabler-layout-grid"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 3a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /><path d="M19 3a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /><path d="M9 13a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /><path d="M19 13a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z" /></svg>
                   }
                 </div>
                 <div className="cursor-pointer">
@@ -525,7 +662,6 @@ export default function ListaOrdenes() {
                               }
                             </div>
                           </td>
-
                           <td className="">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -585,14 +721,69 @@ export default function ListaOrdenes() {
                 {
               ordenes.length > 0
                 ? ordenes.map((row, key) => (
-
-                  <div className={`bg-gray-300 text-white rounded-t-xl rounded-bl-xl rounded-br-xl p-3 relative z-10 cursor-pointer hover:opacity-80 mb-[34px] mt-2 hover:bg-red-400`}>
+                  <div className={`${row.despachos_conteo > 0 ? 'bg-amber-300' : (row.status_servicio == 'TRANSITO' ? 'bg-red-400' : 'bg-green-200')} rounded-t-xl rounded-bl-xl rounded-br-xl p-3 relative cursor-pointer hover:opacity-80 mb-[34px] mt-2 hover:bg-red-400 z-0`} data-action="show" onClick={onclick} data-id={row.idx} onContextMenu={onrightclick}>
                     <div className="flex flex-row items-center gap-2">
-                      <div className="bg-amber-300 rounded-full h-[40px] w-[40px] flex flex-row justify-center items-center">
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" /></svg>
+                      <div className={`bg-white ${row.despachos_conteo > 0 ? 'text-amber-400' : (row.status_servicio == 'TRANSITO' ? 'text-red-500' : 'text-green-700')}  rounded-full h-[40px] w-[40px] flex flex-row justify-center items-center`}>
+                        {
+                          row.despachos_conteo > 0
+                          ?
+                          <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-player-pause"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" /><path d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" /></svg>
+                          :
+                          
+                          row.status_servicio == 'TRANSITO'
+                          ?
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-stop"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" /></svg>
+                          :
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" /></svg>
+                            
+                        }
                       </div>
-                      <div className="text-black text-[14px] font-bold flex-1">{row.marca} {row.producto} {row.modelo}</div>
-                      <div className="text-black text-[20px] italic font-extrabold">0%</div>
+                      <div className="text-black text-[14px] font-bold flex-1">{row.marca} {row.producto} {row.modelo} DSF{row.despachos_conteo}</div>
+                      <div className="text-black text-[20px] flex flex-row gap-4">
+                        <div className="flex flex-col justify-center items-center">
+                          <div className="text-[8px]">SUGERIDO</div>
+                          <div className="italic font-extrabold">{row.total_orden}</div>
+                        </div>
+                        <div className="flex flex-col justify-center items-center">
+                          <div className="text-[8px]">LIQUIDACION</div>
+                          <div className={`italic font-extrabold ${row.total_corte > 0 ? 'text-blue-500' : 'text-black'}  text-center`}>{row.total_corte}</div>
+                        </div>
+                        <div className="flex flex-col justify-center items-center">
+                          <div className="text-[8px]">DIAS PROD.</div>
+                          <div className="italic font-extrabold">{row.dias_produccion}</div>
+                        </div>
+                        <div className="flex flex-col justify-center items-center">
+                          <div className="text-[8px]">DIAS FALT.</div>
+                          <div className={`text-center italic font-extrabold ${row.dias_pendientes < 0 ? 'text-red-500' : 'text-black'}`}>{row.dias_pendientes}</div>
+                        </div>
+                        <div className="flex flex-col justify-center items-center">
+                          <div className="text-[8px]">PORCENTAJE</div>
+                          <div className="italic font-extrabold">2%</div>
+                        </div>
+                        <div className="flex flex-row items-center">
+                          <ul className="flex flex-row justify-end">
+                            <li>
+                              <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                              </div>
+                            </li>
+                            {
+                              ![429].includes(JSON.parse(credentials)) && <li>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                </div>
+                              </li>
+                            }
+                            {
+                              ![429].includes(JSON.parse(credentials)) && <li>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                </div>
+                              </li>
+                            }
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                     <div className="hidden">
                       <ul className="flex flex-row justify-end">
@@ -623,7 +814,6 @@ export default function ListaOrdenes() {
                         </li>
                       </ul>
                     </div>
-                    {/* <div className="absolute bottom-[-31px] h-[30px] bg-gray-300 ml-4 mr-4 rounded-b-xl p-2 left-0 right-0 flex flex-row items-center gap-2"> */}
                     <div className="absolute bottom-[-26px] h-[25px] bg-gray-300 ml-4 mr-4 rounded-b-xl p-2 left-0 right-0 flex flex-row items-center gap-2">
                       <div className={`text-black text-center text-[10px] h-[12px] flex flex-row border-[.2px] border-gray-500 rounded-lg overflow-hidden transition-all stages flex-1`}>
                         {

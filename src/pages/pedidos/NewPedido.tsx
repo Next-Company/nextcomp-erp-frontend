@@ -75,7 +75,7 @@ export default function NewPedido(){
       toast.error('Debe ingresar al menos un artículo!!', { theme: "colored" })
       return
     }
-    if(registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0){
+    if(tipo == 1 && (registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0)){
       toast.error('Debe ingresar la cantidad y el precio del articulo.', { theme: "colored" })
       return
     }
@@ -202,10 +202,14 @@ export default function NewPedido(){
     const action = e.target.dataset.action
     const position = e.target.dataset.position
     switch(action){
-
       case 'delete':
         setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
         console.log("Eliminado registros de la fila ",position)
+        break;
+      case 'clone':
+        let copia = registros.filter((row,key)=>key == parseInt(position))[0]
+        // setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+        setRegistros([...registros,copia])
         break;
       default :
     }
@@ -216,7 +220,7 @@ export default function NewPedido(){
   
     if(tipo == 0){
       if(column == 'color'){
-        setRegistros([...registros.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:''}:item)])
+        setRegistros([...registros.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:'', id_producto_CAB:''}:item)])
       } else if(column == 'producto'){
         setRegistros([...registros.map((item,key)=> position == key ? {...item, producto: e.target.value, idx_producto:''}:item)])
       } else{
@@ -400,13 +404,10 @@ export default function NewPedido(){
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="clone" onClick={onclick} data-position={key}>
+                                      {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-square-toggle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2l0 20" /><path d="M14 20h-8a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h8" /><path d="M20 6a2 2 0 0 0 -2 -2" /><path d="M18 20a2 2 0 0 0 2 -2" /><path d="M20 10l0 4" /></svg> */}
+                                      {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-flip-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l0 18" /><path d="M16 7l0 10l5 0l-5 -10" /><path d="M8 7l0 10l-5 0l5 -10" /></svg> */}
+                                      <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-copy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>
                                     </div>
                                   </li>
                                   <li>
