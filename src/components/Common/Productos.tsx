@@ -69,15 +69,15 @@ export default function Productos(children){
   //   }
   // }
   const onclick = (e)=>{
-    console.log("La informacion es:",lista)
     // actions(lista[e.target.dataset.position])
     let position = e.target.dataset.position ?? e.currentTarget.dataset.position
     let action = e.target.dataset.action ?? e.currentTarget.dataset.action
+    // console.log("La informacion es:",lista,lista[position])
     switch(action){
       case 'add':
         const item = lista[position]
-        if(selected.find((row)=>row.idxsub == item.idxsub && row.id_producto_CAB !== item.id_producto_CAB)){
-          setSelected([...selected.filter(row=>row.idxsub !== item.idxsub && row.id_producto_CAB !== item.id_producto_CAB)])
+        if(selected.find((row)=>parseInt(row.idxsub) == parseInt(item.idxsub) && parseInt(row.id_producto_CAB) == parseInt(item.id_producto_CAB))){
+          setSelected([...selected.filter(row=>parseInt(row.idxsub) !== parseInt(item.idxsub) && parseInt(row.id_producto_CAB) !== parseInt(item.id_producto_CAB))])
         }else{
           setSelected([...selected,lista[position]])
         }    

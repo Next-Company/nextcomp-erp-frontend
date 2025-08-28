@@ -717,25 +717,24 @@ export default function ListaOrdenes() {
                 </tfoot>
               </table>
               :
-              <div className={`grid grid-cols-${gridcol} lg:grid-cols-${gridcol} gap-2`}>
+              <div className={`grid grid-cols-1 lg:grid-cols-2 gap-2`}>
                 {
               ordenes.length > 0
                 ? ordenes.map((row, key) => (
-                  <div className={`${row.despachos_conteo > 0 ? 'bg-amber-300' : (row.status_servicio == 'TRANSITO' ? 'bg-red-400' : 'bg-green-200')} rounded-t-xl rounded-bl-xl rounded-br-xl p-3 relative cursor-pointer hover:opacity-80 mb-[34px] mt-2 hover:bg-red-400 z-0`} data-action="show" onClick={onclick} data-id={row.idx} onContextMenu={onrightclick}>
+                  <div className={`${row.running_state == 'OFF' && 'bg-gray-300'} ${row.running_state == 'PAUSE' && 'bg-amber-300'} ${row.running_state == 'STOP' && 'bg-red-400'} ${row.running_state == 'PLAY' && 'bg-green-200'} rounded-t-xl rounded-bl-xl rounded-br-xl p-3 relative cursor-pointer hover:opacity-80 mb-[34px] mt-2 hover:bg-gray-500 z-0`} data-action="show" onClick={onclick} data-id={row.idx} onContextMenu={onrightclick}>
                     <div className="flex flex-row items-center gap-2">
-                      <div className={`bg-white ${row.despachos_conteo > 0 ? 'text-amber-400' : (row.status_servicio == 'TRANSITO' ? 'text-red-500' : 'text-green-700')}  rounded-full h-[40px] w-[40px] flex flex-row justify-center items-center`}>
+                      <div className={`bg-white ${row.running_state == 'OFF' && 'text-gray-500'} ${row.running_state == 'PAUSE' && 'text-amber-500'} ${row.running_state == 'STOP' && 'text-red-500'} ${row.running_state == 'PLAY' && 'text-green-500'}  rounded-full h-[40px] w-[40px] flex flex-row justify-center items-center`}>
                         {
-                          row.despachos_conteo > 0
-                          ?
-                          <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-player-pause"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" /><path d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" /></svg>
-                          :
-                          
-                          row.status_servicio == 'TRANSITO'
-                          ?
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-stop"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" /></svg>
-                          :
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" /></svg>
-                            
+                          row.running_state == 'OFF' && <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-dots"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+                        }
+                        {
+                          row.running_state == 'PAUSE' && <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-pause"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" /><path d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" /></svg>
+                        }
+                        {
+                          row.running_state == 'STOP' && <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-stop"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" /></svg>
+                        }
+                        {
+                          row.running_state == 'PLAY' && <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" /></svg>
                         }
                       </div>
                       <div className="text-black text-[14px] font-bold flex-1">{row.marca} {row.producto} {row.modelo} DSF{row.despachos_conteo}</div>
