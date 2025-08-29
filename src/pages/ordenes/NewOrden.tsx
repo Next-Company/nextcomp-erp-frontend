@@ -845,12 +845,12 @@ export function NewOrden() {
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
 
           <div className="flex flex-col gap-2">
-            <div className="flex justify-start items-center">
+            <div className="flex justify-start items-center gap-2">
               <h2 className="font-medium text-[16px]">Operaciones /</h2>
               <span className="text-blue-500 font-bold">
                 {
                   urlparams.id && orden.length > 0
-                  ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
+                  ? `${orden[0].oc + '-' + orden[0].producto + '-' + (orden[0].base ?? '') + '-' + orden[0].modelos}`
                   : "Nueva Orden"
                 }
               </span>

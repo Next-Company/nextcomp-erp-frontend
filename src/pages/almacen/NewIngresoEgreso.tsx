@@ -1,4 +1,4 @@
-import { resolvePath, useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { Button } from "../../components/Atoms/Button/Button"
 import { useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
@@ -10,6 +10,7 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import Productos from "../../components/Common/Productos"
 import Pedidos from "../../components/Common/Pedidos"
+import Modelos from "../../components/Common/Modelos"
 
 const CuerpoInforme = ({info,tipo})=>{
   const [ruta,setRuta] = useState("")
@@ -86,7 +87,7 @@ export default function NewInOut(){
         const data = new FormData()
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',JSON.stringify(registros))
+        data.append('detalle',JSON.stringify(registros.filter(row=>row.despacho > 0)))
 
         console.log("Detalle de la lista de articuos :",registros)
         setOpenloader(true)
@@ -231,43 +232,81 @@ export default function NewInOut(){
     openModal(params_modal)   
   }
   const searchpedido = () => {
-      let params_modal = null
-      params_modal = {
-        open: true,
-        content: <Pedidos actions={(item) => {
-          console.log("El pedidos seleccionado matemia es :",item)
-          setOpenloader(true)
-          setOpen(false)
-          Consulta({ url: 'almacen/disponibilidadreq/' + item.idx })
-            .then(resp => {
-              if(resp.ok){
-                // console.log("La informacion del pedido consultado es:", resp,resp[0].idx)
-                let cabecera = resp.info[0]
-                let detalle = resp.info[1]
-                setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor, orden_ref: item.orden_ref, oc: cabecera.oc, nro_corte: cabecera.nro_corte, ruc: cabecera.ruc }))
-                setRegistros([...detalle.filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
-                  row = { ...row, id_item: row.idx, despacho: 0, stock: row.stock, lote: cabecera.idx }
-                  Reflect.deleteProperty(row, 'idx')
-                  return row
-                })])
-              }else{
-                toast.error(resp.message, { theme: "colored" })
-              }
-            })
-            .catch((err) => {
-              setOpenloader(false)
-            })
-            .finally(() => {
-              setOpenloader(false)
-            })
-        }} />,
-        controls: true,
-        header: false,
-        action: () => {
-        }
+    let params_modal = null
+    params_modal = {
+      open: true,
+      content: <Pedidos actions={(item) => {
+        console.log("El pedidos seleccionado matemia es :",item)
+        setOpenloader(true)
+        setOpen(false)
+        Consulta({ url: 'almacen/disponibilidadreq/' + item.idx })
+          .then(resp => {
+            if(resp.ok){
+              // console.log("La informacion del pedido consultado es:", resp,resp[0].idx)
+              let cabecera = resp.info[0]
+              let detalle = resp.info[1]
+              setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor, orden_ref: item.orden_ref, oc: cabecera.oc, nro_corte: cabecera.nro_corte, ruc: cabecera.ruc }))
+              setRegistros([...detalle.filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+                row = { ...row, id_item: row.idx, despacho: 0, stock: row.stock, lote: cabecera.idx }
+                Reflect.deleteProperty(row, 'idx')
+                return row
+              })])
+            }else{
+              toast.error(resp.message, { theme: "colored" })
+            }
+          })
+          .catch((err) => {
+            setOpenloader(false)
+          })
+          .finally(() => {
+            setOpenloader(false)
+          })
+      }} />,
+      controls: true,
+      header: false,
+      action: () => {
       }
-      openModal(params_modal)
     }
+    openModal(params_modal)
+  }
+  const searchmodelo = () => {
+    let params_modal = null
+    params_modal = {
+      open: true,
+      content: <Modelos actions={(item) => {
+        // console.log("El pedidos seleccionado matemia es :",item)
+        setOpenloader(true)
+        setOpen(false)
+        Consulta({ url: 'almacen/disponibilidadmod/' + item.idx })
+          .then(resp => {
+            console.log("La disponibilidad es la siguiente:",resp)
+            if(resp.ok){
+              let cabecera = resp.info[0]
+              let detalle = resp.info[1]
+              setInfo(info => ({ ...info, id_pedido_origen: cabecera.idx, nro_pedido_origen: cabecera.idx, id_proveedor_CAB: cabecera.id_proveedor_CAB, proveedor: cabecera.proveedor, orden_ref: cabecera.orden_ref, oc: cabecera.oc, nro_corte: cabecera.nro_corte, ruc: cabecera.ruc, modelos:cabecera.modelos, id_modelo: cabecera.idorden }))
+              setRegistros([...detalle.filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+                row = { ...row, id_item: row.idx, despacho: 0, stock: row.stock, lote: cabecera.idx }
+                Reflect.deleteProperty(row, 'idx')
+                return row
+              })])
+            }else{
+              toast.error(resp.message, { theme: "colored" })
+            }
+          })
+          .catch((err) => {
+            setOpenloader(false)
+          })
+          .finally(() => {
+            setOpenloader(false)
+          })
+      }} />,
+      controls: true,
+      header: false,
+      action: () => {
+      }
+    }
+    openModal(params_modal)
+  }
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -307,12 +346,13 @@ export default function NewInOut(){
                   <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaRetorno" type="date" verify="true"/>
-
-                  <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" />
-                  <Input name={'nro_pedido_origen'} title={'Requerimiento'} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
+                  <Input name={'id_modelo'} defaults={Object.keys(info).length > 0 ? info.id_modelo : null} type="hidden" />
+                  <Input name={'modelos'} title={'Modelo'} defaults={Object.keys(info).length > 0 ? info.modelos : null} type="text" action={searchmodelo} mode={'static'} />
 
                 </div>
                 <div className="flex gap-3">
+                  <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" />
+                  <Input name={'nro_pedido_origen'} title={'Requerimiento'} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
                   <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroRequerimiento" type="text" />
                   <div className="w-[450px]">

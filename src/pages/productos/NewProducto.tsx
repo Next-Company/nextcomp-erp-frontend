@@ -11,6 +11,8 @@ import { TextArea } from "../../components/Atoms/Input/TextArea";
 import Proveedores from "../../components/Common/Proveedores";
 import Pedidos from "../../components/Common/Pedidos";
 import { InputTest } from "../../components/Atoms/Input/InputTest";
+import Rubros from "../../components/Common/Rubros";
+import UnidadesMedida from "../../components/Common/Unidades";
 
 function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   const image = useRef(null)
@@ -361,6 +363,36 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     }
     openmodal(params_modal)
   }
+  const nuevorubro = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Rubros actions={(item)=>{  
+        setorden(orden=>([{...orden[0],id_cliente_CAB:item.idx ,cliente:item.nom.substr(0,49)}]))
+        setopen(false)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openmodal(params_modal)
+  }
+  const nuevaunidad = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <UnidadesMedida actions={(item)=>{
+        // setorden(orden=>([{...orden[0],id_cliente_CAB:item.idx ,cliente:item.nom.substr(0,49)}]))
+        setopen(false)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openmodal(params_modal)
+  }
   const loadimage = () => {
     let params_modal = null
     params_modal = {
@@ -378,97 +410,70 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     <div className={`flex flex-col gap-3 pt-4`}>
       <div className="flex gap-3">
         <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
-        <div className="w-[200px]">
+        <div className="w-[500px]">
           <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nombre : null} type="text" verify="true"/>
         </div>
-        <div className="w-[200px]">
+        <div className="w-[500px]">
           <Input name={'detalle'} title="Detalle" defaults={info.length > 0 ? info[0].detalle : null} type="text" verify="true"/>
         </div>
-        <Input name={'medida'} title="Medida" defaults={info.length > 0 ? info[0].medida : null} type="text" verify="true"/>
-        <Input name={'rubro'} title="Rubro" defaults={info.length > 0 ? info[0].rubro : null} type="text" verify="true"/>
-
-
-
-
+        <Input name={'codUnidadMedida'} title="Medida" defaults={info.length > 0 ? info[0].codUnidadMedida : null} type="text" action={nuevaunidad} mode={'static'} verify="true"/>
+        <Input name={'rubro'} title="Rubro" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} verify="true"/>
+        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" verify="true"/>
       </div>
       <div className="flex gap-3">
-        
-        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="text" verify="true"/>
-        <Input name={'plan'} title="Plan" defaults={info.length > 0 ? info[0].plan : null} type="text" verify="true"/>
-        <Input name={'genero'} title="Genero" defaults={info.length > 0 ? info[0].genero : null} type="text" verify="true"/>
-        <Input name={'fabricacion'} title="Fabricacion" defaults={info.length > 0 ? info[0].fabricacion : null} type="text" verify="true"/>
-        <Input name={'temporada'} title="Temporada" defaults={info.length > 0 ? info[0].temporada : null} type="text" verify="true"/>
+        <InputSelect title={'Plan'} name={"plan"} formref={form} data={
+          [
+            { indice: 'CLA', option: 'CLASICO', selected: true  },
+            { indice: 'MOD', option: 'MODA' },
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].plan : null} 
+        />
+        <InputSelect title={'Genero'} name={"genero"} formref={form} data={
+          [
+            { indice: 'CAB', option: 'CABALLERO', selected: true  },
+            { indice: 'DAM', option: 'DAMA' },
+            { indice: 'NIO', option: 'NIÑO' },
+            { indice: 'NIA', option: 'NIÑA' },
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].genero : null} 
+        />
+        <InputSelect title={'Fabricacion'} name={"fabricacion"} formref={form} data={
+          [
+            { indice: 'PT', option: 'PUNTO', selected: true  },
+            { indice: 'PL', option: 'PLANO' },
+            { indice: 'FT', option: 'FANTASIA' }
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].fabricacion : null} 
+        />
+        <InputSelect title={'Temporada'} name={"temporada"} formref={form} data={
+          [
+            { indice: 'PV', option: 'PRIMAVERA-VERANO', selected: true  },
+            { indice: 'OI', option: 'OTOÑO-INVIERNO' },
+            { indice: 'TT', option: 'TERMINO TEMPORADA' }
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].temporada : null} 
+        />
+      </div>
+      <div className="flex flex-row gap-3">
         <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" verify="true"/>
         <Input name={'modelo'} title="Modelo" defaults={info.length > 0 ? info[0].modelo : null} type="text" verify="true"/>
         <Input name={'presentacion'} title="Presentacion" defaults={info.length > 0 ? info[0].presentacion : null} type="text" verify="true"/>
-        <Input name={'fraccionable'} title="Fraccionable" defaults={info.length > 0 ? info[0].fraccionable : null} type="text" verify="true"/>
+        <Input name={'estilo'} title="Estilo" defaults={info.length > 0 ? info[0].estilo : null} type="text" verify="true"/>
+        <InputSelect title={'Es Fraccionable'} name={"fraccionable"} formref={form} data={
+          [
+            { indice: '1', option: 'SI', selected: true  },
+            { indice: '0', option: 'NO' },
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].fraccionable : null} 
+        />
       </div>
-      <div>
+      <div className="flex flex-row gap-3">
         <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" verify="true"/>
-        <div className="w-[350px]">
+        <div className="w-[550px]">
           <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
         </div>
-        <InputSelect title={'TipoProduccion'} name={"tipo_produccion"} formref={form} data={
-          [
-            { indice: 'PT', option: 'PUNTO', selected: true  },
-            { indice: 'PLN', option: 'PLANO' },
-            { indice: 'FTS', option: 'FANTASIA' }
-          ]} 
-          df={Object.keys(info).length > 0 ? info[0].tipo_produccion : null} 
-        />
-        <InputSelect title={'TipoFabricación'} name={"tipo_fabricacion"} data={
-          [
-            { indice: 'NCNL', option: 'NACIONAL', selected: true  },
-            { indice: 'IMPT', option: 'IMPORTADO' },
-          ]} 
-          df={Object.keys(info).length > 0 ? info[0].tipo_fabricacion : null} 
-        />
-        <InputSelect title={'TipoPedido'} name={"modalidad_pedido"} formref={form} data={
-          [
-            { indice: 'ORDN', option: 'ORDEN', selected: true  },
-            { indice: 'STK', option: 'STOCK PROPIO' }
-          ]} 
-          df={Object.keys(info).length > 0 ? info[0].modalidad_pedido : null} 
-        />
-      </div>
-      <div className="flex gap-3">
-        {
-          tipopedido
-          ?
-          <>
-            <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden"/>
-            <Input name={'nro_pedido_origen'} title={'NroPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} verify="true" />
-          </>
-          :
-          <>
-            <Input name={'nro_pedido_adi'} title={'DocReferencia'} defaults={info.length > 0 ? info[0].nro_pedido_adi : null} type="text" />
-          </>
-        }
-        <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" />
-        <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" />
-        <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Producto" type="text" />
-        <div className="w-[250px]">
-          <Input name={'curva'} defaults={info.length > 0 ? info[0].curva : null} title="Curva" type="text" />
-        </div>
-      </div>
-      <div className="flex gap-3 flex-wrap">
         <div className="flex-1 min-w-[300px] flex flex-row gap-3">
-          <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
-          <Input name={'precio'} defaults={info.length > 0 ? info[0].precio : null} title="Precio" type="number" />
-          <div className="flex-1 min-w-[500px]">
-            {
-              fases.length > 0
-              ? <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={info.length > 0 ? info[0].ruta_proceso : null} />
-              : <Input name={''} defaults={null} title="Ruta" type="text" />
-            }
-          </div>
-          <div className="flex-1 min-w-[400px]">
-            {
-              materiales.length > 0
-              ? <InputMultiSelect title={'MaterialesProduccion'} name={"materiales_produccion"} data={materiales.map(fase=>({indice:fase.idx,option:fase.descripcion}))} df={info.length > 0 ? info[0].materiales_produccion : null} />
-              : <Input name={''} defaults={null} title="MaterialesProduccion" type="text" />
-            }
-          </div>
+          <Input name={'precio'} title="Precio" defaults={info.length > 0 ? info[0].precio : null} type="number" verify="true"/>
           <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
           <Button action={loadimage} type={'button'} tipo={'accept'}>
             <div className="flex flex-row items-center gap-2 justify-between">
@@ -477,6 +482,69 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           </Button>
         </div>
       </div>
+
+      <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
+        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+          <thead className="text-left sticky top-0 bg-white">
+            <tr>
+              <th className="lg:table-cell w-[500px]">Color</th>
+              <th className="lg:table-cell">Talla</th>
+              <th className="lg:table-cell">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              info.length > 0 && info[0].combos && info[0].combos.length > 0 && info[0].combos.map((row,key)=>(
+                <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                  <td><input type="text" onChange={(editvalue)} data-name="color" data-position={key} value={row.color} /></td>
+                  <td><input type="text" onChange={(editvalue)} data-name="talla" data-position={key} value={row.talla} /></td>
+                  <td className="w-[250px]">
+                    <ul className="flex flex-row justify-end">
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                        </div>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+          <tfoot className="sticky bottom-0">
+            <tr className="bg-white">
+              <td colSpan={10} >
+                <div className="flex flex-row justify-center">
+                  <div onClick={()=>{}} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                    +
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
       <div>
         <TextArea title="Observaciones" name="observaciones_fase_ordenes" />
       </div>
@@ -499,8 +567,6 @@ export function NewProducto() {
   const [tipopedido,setTipopedido] = useState(1)
   const [fases,setFases] = useState([])
   const [materialesref,setMaterialesRef] = useState([])
-  
-  console.log("Info del corte :",orden)
 
   const onsubmit = async (e) => {
     e.preventDefault()
@@ -508,27 +574,27 @@ export function NewProducto() {
     let data = undefined
 
     if(position == 0){
-      url_save = 'ordenes/saveFaseOrden'
+      url_save = 'productos/generateProducto'
 
-      for (const element of form.current.querySelectorAll("input[verify='true']")) {
-        if(element.tagName == 'INPUT' && element.value == ''){
-          console.log("El input problematico es :",element)
-          toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
-          return 0
-        }
-      }
-      if(form.current.elements['materiales_produccion'].value == '[]' || form.current.elements['materiales_produccion'].value == null){
-        toast.error('Debe seleccionar al menos un material de produccion.', { theme: "colored" })
-        return
-      }
-      if(form.current.elements['ruta_proceso'].value == '[]' || form.current.elements['ruta_proceso'].value == null){
-        toast.error('Debe seleccionar al menos una ruta de proceso.', { theme: "colored" })
-        return
-      }
+      // for (const element of form.current.querySelectorAll("input[verify='true']")) {
+      //   if(element.tagName == 'INPUT' && element.value == ''){
+      //     console.log("El input problematico es :",element)
+      //     toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
+      //     return 0
+      //   }
+      // }
+      // if(form.current.elements['materiales_produccion'].value == '[]' || form.current.elements['materiales_produccion'].value == null){
+      //   toast.error('Debe seleccionar al menos un material de produccion.', { theme: "colored" })
+      //   return
+      // }
+      // if(form.current.elements['ruta_proceso'].value == '[]' || form.current.elements['ruta_proceso'].value == null){
+      //   toast.error('Debe seleccionar al menos una ruta de proceso.', { theme: "colored" })
+      //   return
+      // }
 
       data = new FormData(e.target)
-      dataimg.length > 0 && data.append('filenext', dataimg[0])
-      orden.length > 0 && data.append('combos',JSON.stringify(orden[0].combos))
+      // dataimg.length > 0 && data.append('filenext', dataimg[0])
+      // orden.length > 0 && data.append('combos',JSON.stringify(orden[0].combos))
     }
     if(position == 2){
       url_save = 'ordenes/saveFaseMolde'
@@ -538,7 +604,6 @@ export function NewProducto() {
     if(position == 3){
       console.log("Info del corte :",corte)
       url_save = 'ordenes/saveFaseCorte'
-      // console.log("Info corte actualizado:",corte)
       data = new FormData()
       data.append('info',JSON.stringify(corte))
       data.append('id',urlparams.id)
@@ -553,7 +618,7 @@ export function NewProducto() {
       open: true,
       header: false,
       controls: true,
-      content: <div>Desea continuar con el registro de la orden registrada?</div>,
+      content: <div>Desea continuar con el registro de los datos ingresados?</div>,
       action: async () => {
         setOpenloader(true)
         await Consulta({
@@ -562,20 +627,20 @@ export function NewProducto() {
             method: 'POST', body: data
           }
         })
-          .then(resp => {
-            if(resp.ok){
-              // navigate("/main/ordenes/")
-              toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
-            }else{
-              toast.error(resp.mensaje, { theme: "colored" })
-            }
-          })
-          .catch((err)=>{
-            toast.error('Se produjo un error!!', { theme: "colored" })
-          })
-          .finally(()=>{
-            setOpenloader(false)
-          })
+        .then(resp => {
+          if(resp.ok){
+            // navigate("/main/ordenes/")
+            toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
+          }else{
+            toast.error(resp.mensaje, { theme: "colored" })
+          }
+        })
+        .catch((err)=>{
+          toast.error('Se produjo un error!!', { theme: "colored" })
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
       }
     }
     openModal(PARAMS_MODAL)
@@ -599,8 +664,6 @@ export function NewProducto() {
       const pp = async () => {
         await Consulta({url: 'produccion/getordenesbyid/' + urlparams.id,})
           .then(resp => {
-            // console.log(resp)
-            // setOpenloader(false)
             console.log("Mostrando informacion :",resp)
 
             setOrden(resp[0])
@@ -637,22 +700,7 @@ export function NewProducto() {
       .finally(()=>{
         setOpenloader(false)
       })
-
-      // Consulta({url:'ordenes/getfasesproduccion'})
-      // .then(resp=>{ 
-      //   console.log("Las fases de produccion son :",resp)
-      //   setFases(resp)
-      // })
-      // .catch(err=>{
-      //   console.log(err)
-      // })
-      // .finally(()=>{
-      //   setOpenloader(false)
-      // })
     }
-
-
-
   },[])
   const testkey2 = (e)=>{
     // console.log("El target de testkey2 es:",e.target)
@@ -669,19 +717,15 @@ export function NewProducto() {
       const indice = parseInt(padre.dataset.position)
       setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,[e.target.name]:e.target.value} : row))
     }
-    // for(let element of form.current.querySelectorAll("input[data-group='combo'")){
-    //   acumulador += element.value == '' ? 0 : parseInt(element.value)
-    // }
-    // form.current.querySelector("input[name='acumulado']").value = acumulador
   }
-  const cancelarorden = ()=>{
+  const cancelarcreacion = ()=>{
     openModal({
       open: true,
       header: false,
       controls: true,
       content: <div>Desea descartar los cambios realizados?.<br/> Cualquier modificacion realizada se perderá.</div>,
       action: ()=>{
-        navigate('/main/ordenes/')
+        navigate('/main/productos/')
       }
     })
   }
@@ -716,7 +760,7 @@ export function NewProducto() {
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px] pr-1">Operaciones /</h2>
+              <h2 className="font-medium text-[16px] pr-1">Productos /</h2>
               <span className="text-blue-500 font-bold">
                 {
                   urlparams.id && orden.length > 0
@@ -738,16 +782,10 @@ export function NewProducto() {
               </button>
               <button className={`group flex-row items-center gap-1 ${position == 2 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(2)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
-                  Materiales
+                  Datos adicionales
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              {/* <button className={`group ${position == 3 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(3)} data-estado="FNLZ">
-                <span className="relative h-[100%] flex items-center pointer-events-none">
-                  Hoja de corte
-                  <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                </span>
-              </button> */}
             </ul>
             <hr />
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
@@ -758,15 +796,9 @@ export function NewProducto() {
                 {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
                 }
-                {
-                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form}/>
-                }
-                {
-                  position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
-                }
               </div>
               <div className="flex justify-end gap-2 mt-2">
-                <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button>
+                <Button action={cancelarcreacion} type={'button'} tipo={'default'}>Cancelar</Button>
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>
             </form>

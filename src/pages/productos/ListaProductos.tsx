@@ -230,7 +230,7 @@ export default function ListaProductos() {
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Listado de productos</h2>
+              <h2 className="font-medium text-[16px]">Lista de productos</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={filtrarpedidos} />
               </div>
