@@ -26,6 +26,60 @@ const colorfase = {
   'TRANSITO':'bg-black'
 }
 
+const SkeletonScreen = ()=>{
+  const lista = ['','','','','','','','','','','','','','','']
+  return(
+    <>
+      {
+        lista.map(row=>(
+          <div className={`bg-gray-200 rounded-t-xl rounded-bl-xl rounded-br-xl p-3 relative cursor-pointer hover:opacity-80 mb-[34px] mt-2 z-0`} data-action="show" onClick={()=>{}}>
+            <div className="flex flex-row items-center gap-2">
+              <div className={`bg-gray-300 rounded-full h-[40px] w-[40px] flex flex-row justify-center items-center`}></div>
+              <div className="text-black text-[14px] font-bold flex-1"><div className="w-[120px] h-[30px] bg-gray-300 rounded-sm"></div></div>
+              <div className="text-black text-[20px] flex flex-row gap-4">
+                <div className="flex flex-col justify-center items-center gap-2">
+                  <div className="text-[8px]"><div className="w-[60px] h-[10px] rounded-xl bg-gray-300"></div></div>
+                  <div className="italic font-extrabold"><div className="w-[40px] h-[20px] bg-gray-300 rounded-sm"></div></div>
+                </div> 
+                <div className="flex flex-col justify-center items-center gap-2">
+                  <div className="text-[8px]"><div className="w-[60px] h-[10px] rounded-xl bg-gray-300"></div></div>
+                  <div className="italic font-extrabold"><div className="w-[40px] h-[20px] bg-gray-300 rounded-sm"></div></div>
+                </div> 
+                <div className="flex flex-col justify-center items-center gap-2">
+                  <div className="text-[8px]"><div className="w-[60px] h-[10px] rounded-xl bg-gray-300"></div></div>
+                  <div className="italic font-extrabold"><div className="w-[40px] h-[20px] bg-gray-300 rounded-sm"></div></div>
+                </div> 
+                <div className="flex flex-col justify-center items-center gap-2">
+                  <div className="text-[8px]"><div className="w-[60px] h-[10px] rounded-xl bg-gray-300"></div></div>
+                  <div className="italic font-extrabold"><div className="w-[40px] h-[20px] bg-gray-300 rounded-sm"></div></div>
+                </div> 
+                <div className="flex flex-col justify-center items-center gap-2">
+                  <div className="text-[8px]"><div className="w-[60px] h-[10px] rounded-xl bg-gray-300"></div></div>
+                  <div className="italic font-extrabold"><div className="w-[40px] h-[20px] bg-gray-300 rounded-sm"></div></div>
+                </div>
+                <div className="flex flex-row items-center">
+                  <ul className="flex flex-row justify-end gap-2">
+                    <li><div className="rounded-full w-9 h-9 bg-gray-300 transition-colors flex justify-center items-center" data-action="download" onClick={()=>{}}></div></li>
+                    <li><div className="rounded-full w-9 h-9 bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}}></div></li>
+                    <li><div className="rounded-full w-9 h-9 bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}></div></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="absolute bottom-[-26px] h-[25px] bg-gray-200 ml-4 mr-4 rounded-b-xl p-2 left-0 right-0 flex flex-row items-center gap-2">
+              <div className={`text-black text-center text-[10px] h-[12px] flex flex-row bg-gray-300 rounded-lg overflow-hidden transition-all stages flex-1`}>
+              </div>
+              <div className="w-[10px] h-[10px] rounded-full bg-gray-300 border"></div>
+              <div className="w-[10px] h-[10px] rounded-full bg-gray-300 border"></div>
+              <div className="w-[10px] h-[10px] rounded-full bg-gray-300 border"></div>
+            </div>
+          </div>
+        ))
+      }
+    </>
+  )
+}
+
 const contextual_content = {
   context1:
     <>
@@ -827,7 +881,9 @@ export default function ListaOrdenes() {
                     </div>
                   </div>
                 ))
-                : <div></div>
+                : 
+                openloader && ordenes.length == 0 && <SkeletonScreen/>
+                // <SkeletonScreen/>
                 }
               </div>
               }

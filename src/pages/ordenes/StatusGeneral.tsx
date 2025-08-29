@@ -304,7 +304,7 @@ export default function StatusGeneral({id,openmodal}){
         <div ref={imagemain} onBlur={imageout} className={`absolute w-[600px] h-[600px] ${zoom ? 'z-[100]' : 'z-[-1]'} rounded-full bg-slate-400 overflow-hidden flex flex-row items-center] transition-all ${zoom ? 'scale-100' : 'scale-50 opacity-0'}`} style={{left:'calc(50% - 300px)',top:'calc(50% - 300px)'}} tabIndex={-1}>
           <img src={`https://jsjfact.com/facturador/imagenez/op_${id}.jpg`} onError={onerror}/>
         </div>
-        <div ref={contenedor} className="flex flex-col text-[12px] w-[1400px] pl-2 pr-2 focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black [&_input]:text-center [&_input]:p-[2px]">
+        <div ref={contenedor} className="flex flex-col text-[12px] w-[90vw] pl-2 pr-2 focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black [&_input]:text-center [&_input]:p-[2px]">
           {
             loading
             ? 

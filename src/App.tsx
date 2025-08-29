@@ -67,6 +67,9 @@ import LayoutSolicitud from './pages/almacen/LayoutSolicitud.tsx'
 import ListaSolicitudes from './pages/almacen/ListaSolicitudes.tsx'
 import RevisionSolicitud from './pages/almacen/RevisionSolicitud.tsx'
 import ErrorController from './pages/error/ErrorBoundary.tsx'
+import LayoutProductos from './pages/productos/LayoutProductos.tsx'
+import ListaProductos from './pages/productos/ListaProductos.tsx'
+import { NewProducto } from './pages/productos/NewProducto.tsx'
 
 const routes = [
   {
@@ -259,6 +262,14 @@ const routes = [
               { path: "nuevo", element: <RevisionSolicitud /> },
             ]
           }
+        ]
+      },
+      {
+        path: "productos",
+        element: <PrivateRoute><LayoutProductos/></PrivateRoute>,
+        children: [
+          { path: "",element: <ListaProductos />, error: <ErrorController/> },
+          { path: "nuevo",element: <NewProducto />, error: <ErrorController/> }
         ]
       }
     ]
