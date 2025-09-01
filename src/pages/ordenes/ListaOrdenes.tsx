@@ -387,6 +387,7 @@ export default function ListaOrdenes() {
           header: false,
           controls: true,
           content: <StatusGeneral id={id} openmodal={openModal}/>,
+          // content: <div>hola</div>,
           action: async () => {
           }
         })

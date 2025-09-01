@@ -70,6 +70,7 @@ import ErrorController from './pages/error/ErrorBoundary.tsx'
 import LayoutProductos from './pages/productos/LayoutProductos.tsx'
 import ListaProductos from './pages/productos/ListaProductos.tsx'
 import { NewProducto } from './pages/productos/NewProducto.tsx'
+import CuadreCorte from './pages/almacen/NewCuadre.tsx'
 
 const routes = [
   {
@@ -245,6 +246,7 @@ const routes = [
             children: [
               { path: "", element: <ListaMovimientosAlmacen />, error: <ErrorController/> },
               { path: "nuevo", element: <NewInOut />, error: <ErrorController/> },
+              { path: "cuadre/:id", element: <CuadreCorte /> }
             ]
           },
           { 
@@ -260,6 +262,7 @@ const routes = [
             children: [
               { path: "", element: <ListaSolicitudes /> },
               { path: "nuevo", element: <RevisionSolicitud /> },
+              { path: "cuadre", element: <CuadreCorte /> },
             ]
           }
         ]

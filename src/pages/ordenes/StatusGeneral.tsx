@@ -15,7 +15,7 @@ const colorfase = {
   'FINALIZADO':'bg-gray-400'
 }
 
-const CuerpoServicio = ({info,openloader})=>{
+const CuerpoServicio = ({info,openloader,myfase,fase})=>{
   // const {openModal,setOpen} = useContext(ModalWindowContext)
   console.log("El cuerpo del servicio es:",info)
   const onclick = (e)=>{
@@ -61,7 +61,6 @@ const CuerpoServicio = ({info,openloader})=>{
   return(
     <>
       {/* <div className="flex-1 bg-green-300"> */}
-
         <div className="px-2 py-1">
           {/*<div className={` ${info.estado == 'FINALIZADO' ? 'bg-slate-500' : colorfase[info.servicio]} text-white rounded-xl p-3 relative z-10 cursor-pointer hover:opacity-80`}>*/}
           <div className={`${colorfase[info.servicio]} text-white rounded-xl p-3 relative z-10 cursor-pointer hover:opacity-80`}>
@@ -295,16 +294,19 @@ export default function StatusGeneral({id,openmodal}){
     parent.classList.toggle("showdata")
   }
   const vistarapida = useRef()
-  const [vistaopen,setVistaopen] = useState(0) 
-
+  const [vistaopen,setVistaopen] = useState(0)
+  const [faseactive,setFaseActive] = useState('')
+  const mostrarsaldo = (fase)=>{
+    setFaseActive(fase)
+  }
   return(
     <>
       <div className="flex flex-col pb-4 relative">
-      	<div ref={vistarapida} className="{``}absolute w-[100px] hidden h-[100px] bg-orange-300 z-[100] translate-y-[300px] transition-l">vista rapida de guia e ingreso</div>
+      	<div ref={vistarapida} className="absolute w-[100px] hidden h-[100px] bg-orange-300 z-[100] translate-y-[300px] transition-l">vista rapida de guia e ingreso</div>
         <div ref={imagemain} onBlur={imageout} className={`absolute w-[600px] h-[600px] ${zoom ? 'z-[100]' : 'z-[-1]'} rounded-full bg-slate-400 overflow-hidden flex flex-row items-center] transition-all ${zoom ? 'scale-100' : 'scale-50 opacity-0'}`} style={{left:'calc(50% - 300px)',top:'calc(50% - 300px)'}} tabIndex={-1}>
           <img src={`https://jsjfact.com/facturador/imagenez/op_${id}.jpg`} onError={onerror}/>
         </div>
-        <div ref={contenedor} className="flex flex-col text-[12px] w-[90vw] pl-2 pr-2 focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black [&_input]:text-center [&_input]:p-[2px]">
+        <div ref={contenedor} className="flex flex-col text-[12px] w-[100vw] pl-2 pr-2 focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black [&_input]:text-center [&_input]:p-[2px]">
           {
             loading
             ? 
@@ -531,12 +533,26 @@ export default function StatusGeneral({id,openmodal}){
                         {
                           Object.keys(info[4]).length > 0 && Object.keys(info[4]).map((item,key)=>
                             <div className={`w-full flex flex-row border-b-[2px] border-dashed border-gray-500 ${info[5][item] ? '' : 'grayscale opacity-[.7]'} hover:grayscale-0 hover:opacity-[1]`} >
-                              <div className={`flex-1 ${key%2 ? 'bg-orange-100' : 'bg-orange-100'} flex flex-col justify-center`} >
-                                {
-                                  info[4][item].map(row=><CuerpoServicio info={row} openloader={setOpenloader}/>)
-                                }
+                              <div className="flex-1 flex flex-col">
+                                {/* <div className="px-4 border-[1px] w-full">
+                                  <div className="h-[20px] bg-yellow-300">
+                                    {item == faseactive ? 'dentro' : 'fuera'}
+                                    DISPONIBLE: 23324
+                                    SALDO: 23423
+                                  </div>
+                                </div> */}
+                                <div className={`flex-1 ${key%2 ? 'bg-orange-100' : 'bg-orange-100'} flex flex-col justify-center relative`} >
+                                  {
+                                    info[4][item].map(row=><CuerpoServicio info={row} openloader={setOpenloader} myfase={item} fase={faseactive}/>)
+                                  }
+                                </div>
                               </div>
-                              <div className={`w-[35px] min-h-[150px] ${colorfase[item]}`} style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '12px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>{item}</div>
+                              <div className={`w-[35px] min-h-[150px] ${colorfase[item]}`} style={{display: 'flex',justifyContent: 'center',writingMode: 'vertical-lr',alignItems: 'center',padding: '10px',fontSize: '12px',textOrientation: 'upright',fontWeight: '900',zIndex: '20'}}>
+                                {item}
+                                {/* <div className="cursor-pointer" onClick={()=>mostrarsaldo(item)}>
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                </div> */}
+                              </div>
                               <div className={`flex-1 ${key%2 ? 'bg-orange-100' : 'bg-orange-100'} flex flex-col justify-center`}>
                                 {
                                   info[4][item].length > 0 && info[4][item].map(row=>

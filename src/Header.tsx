@@ -22,7 +22,7 @@ const Menu = ({info})=>{
                     </ul>
                   ))
                 }
-                {row.division && <hr/>}
+                {row.division && <hr className='border-gray-300'/>}
               </>
             )
           })
