@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { Consulta } from "../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
-import { InputMultiSelect } from "../../components/Atoms/Input/InputMultiSelect";
 import { TextArea } from "../../components/Atoms/Input/TextArea";
 import Proveedores from "../../components/Common/Proveedores";
 import Pedidos from "../../components/Common/Pedidos";
@@ -368,7 +367,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     params_modal = {
       open:true,
       content: <Rubros actions={(item)=>{  
-        setorden(orden=>([{...orden[0],id_cliente_CAB:item.idx ,cliente:item.nom.substr(0,49)}]))
+        setorden(orden=>([{...orden[0],RUBROS:item.idx,rubro:item.nom}]))
         setopen(false)
       }}/>,
       controls: true,
@@ -383,7 +382,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     params_modal = {
       open:true,
       content: <UnidadesMedida actions={(item)=>{
-        // setorden(orden=>([{...orden[0],id_cliente_CAB:item.idx ,cliente:item.nom.substr(0,49)}]))
+        setorden(orden=>([{...orden[0],codUnidadMedida:item.codigo}]))
         setopen(false)
       }}/>,
       controls: true,
@@ -410,23 +409,32 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     <div className={`flex flex-col gap-3 pt-4`}>
       <div className="flex gap-3">
         <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
+        <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
+          [
+            { indice: 'P', option: 'PRODUCTO', selected: true  },
+            { indice: 'I', option: 'INSUMO' },
+            { indice: 'A', option: 'AVIO' }
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].temporada : null} 
+        />
         <div className="w-[500px]">
           <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nombre : null} type="text" verify="true"/>
         </div>
         <div className="w-[500px]">
-          <Input name={'detalle'} title="Detalle" defaults={info.length > 0 ? info[0].detalle : null} type="text" verify="true"/>
+          <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" verify="true"/>
         </div>
         <Input name={'codUnidadMedida'} title="Medida" defaults={info.length > 0 ? info[0].codUnidadMedida : null} type="text" action={nuevaunidad} mode={'static'} verify="true"/>
+        <Input name={'RUBROS'} defaults={info.length > 0 ? info[0].RUBROS : null} type="hidden" verify="true"/>
         <Input name={'rubro'} title="Rubro" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} verify="true"/>
         <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" verify="true"/>
       </div>
       <div className="flex gap-3">
-        <InputSelect title={'Plan'} name={"plan"} formref={form} data={
+        <InputSelect title={'Plan'} name={"tipoPlan"} formref={form} data={
           [
             { indice: 'CLA', option: 'CLASICO', selected: true  },
             { indice: 'MOD', option: 'MODA' },
           ]} 
-          df={Object.keys(info).length > 0 ? info[0].plan : null} 
+          df={Object.keys(info).length > 0 ? info[0].tipoPlan : null} 
         />
         <InputSelect title={'Genero'} name={"genero"} formref={form} data={
           [
@@ -437,13 +445,13 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           ]} 
           df={Object.keys(info).length > 0 ? info[0].genero : null} 
         />
-        <InputSelect title={'Fabricacion'} name={"fabricacion"} formref={form} data={
+        <InputSelect title={'Fabricacion'} name={"tipoFabricacion"} formref={form} data={
           [
             { indice: 'PT', option: 'PUNTO', selected: true  },
             { indice: 'PL', option: 'PLANO' },
             { indice: 'FT', option: 'FANTASIA' }
           ]} 
-          df={Object.keys(info).length > 0 ? info[0].fabricacion : null} 
+          df={Object.keys(info).length > 0 ? info[0].tipoFabricacion : null} 
         />
         <InputSelect title={'Temporada'} name={"temporada"} formref={form} data={
           [
@@ -628,11 +636,12 @@ export function NewProducto() {
           }
         })
         .then(resp => {
+          console.log("La informacion recibida es:",resp)
           if(resp.ok){
             // navigate("/main/ordenes/")
-            toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
+            toast.success('Los datos ingresados fueron registrados con éxito!!', { theme: "colored" })
           }else{
-            toast.error(resp.mensaje, { theme: "colored" })
+            toast.error(resp.message, { theme: "colored" })
           }
         })
         .catch((err)=>{

@@ -25,7 +25,7 @@ export default function ListaProductos() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'almacen/listarinventario', params: {
+      url: 'productos/productoslist/70', params: {
         method: 'GET'
       }
     })
@@ -138,7 +138,7 @@ export default function ListaProductos() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'almacen/listarinventario', params: {
+      url: 'productos/productoslist/70', params: {
         method: 'GET'
       }
     })
@@ -263,12 +263,12 @@ export default function ListaProductos() {
                     <th className="lg:table-cell">Id</th>
                     <th className="lg:table-cell">Codigo</th>
                     <th className="lg:table-cell">Producto</th>
-                    <th className="lg:table-cell">Lote</th>
-                    <th className="lg:table-cell">Color</th>
-                    {/* <th className="lg:table-cell">Talla</th> */}
-                    <th className="lg:table-cell">Unidad</th>
-                    <th className="lg:table-cell">Tipo</th>
-                    <th className="lg:table-cell">Stock</th>
+                    <th className="lg:table-cell">Costo</th>
+                    <th className="lg:table-cell">Marca</th>
+                    <th className="lg:table-cell">Modelo</th>
+                    <th className="lg:table-cell">Temporada</th>
+                    <th className="lg:table-cell">Estilo</th>
+                    <th className="lg:table-cell">Presentacion</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -277,15 +277,15 @@ export default function ListaProductos() {
                     info.length > 0
                       ? info.map((row, key) => (
                         <tr key={key} className="">
-                          <td>{row.id_subprod_CAB}</td>
-                          <td>{row.codigo}</td>
+                          <td>{row.id_producto_CAB}</td>
+                          <td>{row.cod_producto}</td>
                           <td className="font-bold">{row.producto}</td>
-                          <td className="text-green-600 font-bold">{row.lote}</td>
-                          <td className="text-blue-600 font-bold">{row.color}</td>
-                          {/* <td>{row.talla}</td> */}
-                          <td>{row.unidad}</td>
-                          <td>{row.tipo}</td>
-                          <td className="font-bold">{row.stock.toFixed(2)}</td>
+                          <td className="">{row.costo}</td>
+                          <td className="">{row.marca}</td>
+                          <td className="">{row.modelo}</td>
+                          <td className="">{row.temporada}</td>
+                          <td className="">{row.estilo}</td>
+                          <td className="">{row.presentacion}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>

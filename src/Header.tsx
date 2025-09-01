@@ -5,7 +5,7 @@ import { SideNavMobile } from './components/SideNavMobile/SideNavMobileContext'
 const Menu = ({info})=>{
   return(
     <>
-      <section className='absolute min-w-[200px] invisible group-hover:visible top-[50px] left-[0px] bg-white shadow-xl flex flex-col z-[100] rounded-md py-2'>
+      <section className='absolute min-w-[200px] invisible group-hover:visible top-[50px] left-[0px] bg-[#ede8e4] shadow-xl flex flex-col z-[100] rounded-md py-2'>
         {
           info.map(row=>{
             return(
