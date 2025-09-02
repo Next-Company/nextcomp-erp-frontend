@@ -246,6 +246,7 @@ const routes = [
             children: [
               { path: "", element: <ListaMovimientosAlmacen />, error: <ErrorController/> },
               { path: "nuevo", element: <NewInOut />, error: <ErrorController/> },
+              { path: "nuevo/:id", element: <NewInOut />, error: <ErrorController/> },
               { path: "cuadre/:id", element: <CuadreCorte /> }
             ]
           },

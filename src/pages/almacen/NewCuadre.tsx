@@ -87,11 +87,10 @@ export default function CuadreCorte(){
         const data = new FormData()
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',JSON.stringify(registros.filter(row=>row.despacho > 0)))
-
-        console.log("Detalle de la lista de articuos :",registros)
+        data.append('detalle',JSON.stringify(registros))
+        
         setOpenloader(true)
-        await Consulta({url: 'almacen/saveguiamovimiento/',params:{
+        await Consulta({url: 'almacen/updateinfocuadretelas/' + urlparams.id,params:{
           method:'PUT',
           body:data
         }})
@@ -122,8 +121,8 @@ export default function CuadreCorte(){
         await Consulta({url: 'almacen/infocuadretelas/' + urlparams.id,})
           .then(resp => {
             console.log("Busqueda info pedido:",resp)
-            // setInfo(resp[0])
-            // setRegistros(resp[1])
+            setInfo({...info,tipo_operacion:resp[0].tipomov,fec_emision:resp[0].fec_emision,fec_retorno:resp[0].fec_emision,modelos:resp[0].modelos,orden_ref:resp[0].nro_pedido_origen,proveedor:resp[0].Raz_social_DOC,oc:resp[0].oc,nro_corte:resp[0].nro_corte,responsable:'MIGUEL'})
+            setRegistros(resp)
             // setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
             setOpenloader(false)
           })
@@ -322,7 +321,7 @@ export default function CuadreCorte(){
           </div>
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
 
-            <form ref={form} onSubmit={onsubmit} onChange={()=>{}} onInputCapture={onchange}>
+            <form ref={form} onSubmit={onsubmit} onChange={()=>{}} onInputCapture={onchange} className="flex-1">
               <div className={` flex-col gap-3 flex`}>
 
                 <div className="flex gap-3">
@@ -335,30 +334,18 @@ export default function CuadreCorte(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo_operacion : null} 
                   />
-
-                  <InputSelect title={'OrigenMovimiento'} formref={form} name={"tipo"} data={
-                    [
-                      { indice: 'TELAS', option: 'TELAS', selected: true }, 
-                      { indice: 'AVIOS', option: 'AVIOS' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo : null} 
-                  />
                   <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
-                  <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaRetorno" type="date" verify="true"/>
-                  <Input name={'id_modelo'} defaults={Object.keys(info).length > 0 ? info.id_modelo : null} type="hidden" />
-                  <Input name={'modelos'} title={'Modelo'} defaults={Object.keys(info).length > 0 ? info.modelos : null} type="text" action={searchmodelo} mode={'static'} />
+                  <Input name={'modelos'} title={'Modelo'} defaults={Object.keys(info).length > 0 ? info.modelos : null} type="text" />
 
                 </div>
                 <div className="flex gap-3">
-                  <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" />
-                  <Input name={'nro_pedido_origen'} title={'Requerimiento'} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
-                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
-                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroRequerimiento" type="text" />
+                  {/* <Input name={'nro_pedido_origen'} title={'Requerimiento'} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" /> */}
+                  <Input name={'orden_ref'} title="NroRequerimiento" defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} type="text" />
                   <div className="w-[450px]">
-                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" verify="true"/>
                   </div>
-                  <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
+                  <Input name={'oc'} title="NroOrden" defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} type="text" />
                   <Input name={'nro_corte'} defaults={Object.keys(info).length > 0 && info.nro_corte ? info.nro_corte : null} title="NroCorte" type="text" />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Responble" type="text" verify="true"/>
                 </div>
@@ -382,7 +369,6 @@ export default function CuadreCorte(){
                           <th className="lg:table-cell">Liquidacion</th>
                           <th className="lg:table-cell">Merma</th>
                           <th className="lg:table-cell">TotalMetros</th>
-                          <th className="lg:table-cell">Total</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -395,14 +381,14 @@ export default function CuadreCorte(){
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
-                              <td>{row.tizado.toFixed(2)}</td>
-                              <td>{row.peso.toFixed(2)}</td>
-                              <td>{row.panios.toFixed(2)}</td>
-                              <td>{row.subtotal.toFixed(2)}</td>
-                              <td>{row.liquidacion.toFixed(2)}</td>
-                              <td>{row.merma.toFixed(2)}</td>
-                              <td>{row.totmetros.toFixed(2)}</td>
-                              <td>{row.total.toFixed(2)}</td>
+
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="tizado" value={row.tizado ?? 0} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="peso" value={row.peso ?? 0} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="panios" value={row.panios ?? 0} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="subtotal" value={(row.tizado ?? 0)*(row.panios ?? 0)} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="liquidacion" value={row.liquidacion ?? 0} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="merma" value={row.merma ?? 0} /></td>
+                              <td><input type="text" onChange={editvalue} data-position={key} data-name="totmetros" value={(parseFloat((row.tizado ?? 0)*(row.panios ?? 0)) + parseFloat(row.liquidacion ?? 0) + parseFloat(row.merma ?? 0)).toFixed(2)} /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -445,7 +431,6 @@ export default function CuadreCorte(){
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
-                          <td className="text-center">-</td>
                           <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + parseFloat(row.despacho) ,0).toFixed(2)}
                           </td>
@@ -466,6 +451,7 @@ export default function CuadreCorte(){
                 </div>  
               </div>
             </form>
+
           </div>
         </div>
       </div>

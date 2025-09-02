@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
@@ -150,7 +150,8 @@ export default function ListaMovimientosAlmacen() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/retiros/nuevo/" + id + '?nombre=MIGUEL')
+        // navigate("/main/retiros/nuevo/" + id + '?nombre=MIGUEL')
+        navigate('/main/almacen/movimientos/nuevo/' + id)
         break;
       case 'review':
         // navigate("/main/estampado/review/"+ id)

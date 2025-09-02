@@ -119,12 +119,14 @@ export default function NewInOut(){
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/retiros/' + urlparams.id,})
+        // await Consulta({url: 'produccion/retiros/' + urlparams.id,})
+        // await Consulta({url: 'almacen/getmovimientobyid/' + urlparams.id,})
+        await Consulta({url: 'almacen/getguiamovimiento/' + urlparams.id,})
           .then(resp => {
             console.log("Busqueda info pedido:",resp)
-            setInfo(resp[0])
-            setRegistros(resp[1])
-            setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
+            setInfo({...info,tipo_operacion:resp.cab.tipomov,fec_emision:resp.cab.fec_emision,fec_retorno:resp.cab.fec_emision,id_modelo:resp.cab.id_modelo,modelos:resp.cab.modelos,id_pedido_origen:resp.cab.id_pedido_origen,nro_pedido_origen:resp.cab.id_pedido_origen,id_proveedor_CAB:resp.cab.id_proveedor_CAB,proveedor:resp.cab.proveedor,orden_ref:resp.cab.nro_requerimiento,oc:resp.cab.oc,nro_corte:resp.cab.nro_corte,responsable:'CARLOS'})
+            setRegistros(resp.det)
+            // setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
             setOpenloader(false)
           })
           .catch((err)=>{
