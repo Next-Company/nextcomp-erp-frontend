@@ -319,6 +319,7 @@ function SeccionMolde({info,orden}){
 
 function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dataimg,setDataimg}){
   const [tipopedido,setTipopedido] = useState(1)
+  const [panelactive,setPanelActive] = useState(0)
   // const [dataimg,setDataimg] = useState([])
   useEffect(()=>{
     const handleSalamandra = (event) => {
@@ -403,9 +404,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     }
     openmodal(params_modal)
   }
-  const panelactive = 1
-  const changepanel = ()=>{
-
+  const changepanel = (position)=>{
+    setPanelActive(position)
   }
   return <>
     <div className={`flex flex-col gap-3 pt-4`}>
@@ -489,13 +489,20 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       </div>
       <div className="flex flex-row justify-center">
         <div className="flex flex-row justify-between p-1 bg-gray-200 rounded-l-full rounded-r-full relative">
-          <div className={`w-[120px] h-[14px] text-center text-[9px] rounded-l-full rounded-r-full ${!panelactive ? 'bg-green-600' : 'bg-red-600 translate-x-full'} transition-all cursor-pointer absolute`}></div>
-          <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full cursor-pointer z-10 ${!panelactive && 'text-white'} transition-all`} onClick={changepanel} data-position="0">Combos</div>
-          <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full  cursor-pointer z-10 ${panelactive && 'text-white'} transition-all`} onClick={changepanel} data-position="1">Fases</div>
-          <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full cursor-pointer z-10 ${!panelactive && 'text-white'} transition-all`} onClick={changepanel} data-position="0">Materiales</div>
+          <div className={`w-[120px] h-[14px] text-center text-[9px] rounded-l-full rounded-r-full bg-red-600 ${panelactive == 0 ? '' : ( panelactive == 1 ? ' translate-x-[100%]' : 'translate-x-[200%]')} transition-all cursor-pointer absolute`}></div>
+          <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full cursor-pointer z-10 ${panelactive == 0 && 'text-white'} transition-all`} onClick={()=>changepanel(0)} data-position="0">Materiales</div>
+          <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full cursor-pointer z-10 ${panelactive == 1 && 'text-white'} transition-all`} onClick={()=>changepanel(1)} data-position="1">Combos</div>
+          <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full  cursor-pointer z-10 ${panelactive == 2 && 'text-white'} transition-all`} onClick={()=>changepanel(2)} data-position="2">Fases</div>
         </div>
       </div>
-      <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
+      <div className="overflow-hidden">
+        <div className="flex flex-row w-[300%]">
+          <div className="h-[300px] bg-green-300 scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">sfd</div>
+          <div className="h-[300px] bg-orange-300 scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">sdf</div>
+          <div className="h-[300px] bg-purple-300 scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">sdf</div>
+        </div>
+      </div>
+      {/* <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
         <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
           <thead className="text-left sticky top-0 bg-white">
             <tr>
@@ -578,7 +585,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             </tr>
           </tfoot>
         </table>
-      </div>
+      </div> */}
 
       <div>
         <TextArea title="Observaciones" name="observaciones_fase_ordenes" />
