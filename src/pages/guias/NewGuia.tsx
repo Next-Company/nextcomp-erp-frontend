@@ -224,11 +224,13 @@ export default function NewGuia(){
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros,setRegistros] = useState([])
+  const [paquetes,setPaquetes] = useState([])
   const penalidadestipo = useRef([])
   const [penalidades,setPenalidades] = useState([])
   const [reprogramacion,setReprogramacion] = useState([])
   const infopenalidades = useRef([])
   const [fases,setFases] = useState([])
+  const [distribucion,setDistribucion] = useState('TLL')
   // const [infop,setInfop] = useState([])
   const navigate = useNavigate()
 
@@ -261,18 +263,18 @@ export default function NewGuia(){
         const data = new FormData()
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',JSON.stringify(registros))
+        data.append('detalle', (distribucion == 'TLL' ? JSON.stringify(registros) : JSON.stringify(paquetes)))
         penalidades.length > 0 && data.append('penalidades',JSON.stringify(penalidades))
 	      reprogramacion.length > 0 && data.append('reprogramacion',JSON.stringify(reprogramacion))
 
-        await Consulta({url: 'produccion/guardarguia/',params:{
+        await Consulta({url: ( distribucion == 'TLL' ? 'produccion/guardarguia/' : 'produccion/guardarguiaxpq/' ),params:{
           method:'PUT',
           body:data
         }})
         .then(resp => {
           console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          navigate('/main/guias/')
+          // navigate('/main/guias/')
           if(resp.ok){
             toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{
@@ -297,13 +299,15 @@ export default function NewGuia(){
           .then(resp => {
             console.log("info guia :",resp)
             setInfo(resp[0])
-            setRegistros(resp[1])
+            resp[0].distribucion == 'TLL' ? setRegistros(resp[1]) : setPaquetes(resp[1])
+
+            setDistribucion(resp[0].distribucion)
             setPenalidades(resp[2])
             penalidadestipo.current = resp[3]
             setFases(resp[4])
-	    setReprogramacion(resp[5])
+	          setReprogramacion(resp[5])
             setOpenloader(false)
-            console.log("Opportynity never die!!!!",resp)
+
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -328,30 +332,23 @@ export default function NewGuia(){
         setOpenloader(false)
       })
     }
-    // form.current.addEventListener('salamandra',event=>{
-    //   setOpenloader(true)
-    //   Consulta({url:'ordenes/extraeritemscaja/199'})
-    //   .then((resp)=>{
-    //     if(resp.length > 0){
-    //       setRegistros(resp)
-    //     }else{
-    //       toast.error('Se produjo un error!!', { theme: "colored" })
-    //     }
-    //     console.log("Resultado del proceso de extraccion :",resp)
-    //   })
-    //   .catch((error)=>{
-    //     console.log("Error con la consulta",error)
-    //   })
-    //   .finally(()=>{
-    //     setOpenloader(false)
-    //   })
-    //   console.log("Evento del input select otra vez",event.detail)
-    // })
+    const handleInputChange = (event) => {
+      console.log("Hola Ivon",event.detail.valor)
+      setDistribucion(event.detail.valor == 'PAQUETES' ? 'PQT' : 'TLL')
+    };
+    form.current.addEventListener("salamandra", handleInputChange);
+    return () => {
+      if (form.current) form.current.removeEventListener("salamandra", handleInputChange);
+    };
   },[])
 
+  
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
     setRegistros([...registros,{item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
+  }
+  const nuevopaquete= ()=>{
+    setPaquetes([...paquetes,{item:0,articulo: (info.producto ?? '') + ' ' + (info.modelo ?? '') + ` PAQUETE ${paquetes.length + 1}`,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
   }
 
   const onclick = (e)=>{
@@ -360,8 +357,12 @@ export default function NewGuia(){
     switch(action){
 
       case 'delete':
-        setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
-        console.log("Eliminado registros de la fila ",position)
+        if(distribucion == 'TLL'){
+          setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+          console.log("Eliminado registros de la fila ",position)
+        } else {
+          setPaquetes(paquetes.filter((row,key)=>key !== parseInt(position) ))
+        }
         break;
       default :
     }
@@ -379,6 +380,16 @@ export default function NewGuia(){
       return carry;
     },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
+  }
+  const editpaquete = (e)=>{
+    let column = e.target.dataset.name
+    let position = e.target.dataset.position
+    let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+    let total = Object.entries(paquetes[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
+      carry+=parseInt(row[1]);
+      return carry;
+    },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
+    setPaquetes([...paquetes.map((item,key)=> position == key ? {...item,[column]: e.target.value,cantidad:total}:item)])
   }
 
   const nuevoproveedor = ()=>{
@@ -468,9 +479,9 @@ export default function NewGuia(){
       }
     })
   }
-  useEffect(()=>{
-    console.log("Los valores del nuevo registro son:",registros)
-  },[registros])
+  // useEffect(()=>{
+  //   console.log("Los valores del nuevo registro son:",registros)
+  // },[registros])
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -493,12 +504,6 @@ export default function NewGuia(){
                   <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true"/>
                   <Input name={'tipo'} defaults={'SERVICIOS'} type="hidden" />
                   <Input name={'id_corte_CAB'} defaults={Object.keys(info).length > 0 ? info.id_corte_CAB : null} type="hidden"/>
-                  {/* <InputSelect title={'Tipo'} name={"tipo"} data={
-                    [
-                      { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo : null} 
-                  /> */}
                   <div className="w-[500px]">
                     {
                       fases.length > 0
@@ -506,17 +511,6 @@ export default function NewGuia(){
                       />
                       : <Input name={''} defaults={null} type="text" title="Servicio" />
                     }
-                    {/* <InputSelect title={'Servicio'} name={"servicio"} data={
-                      [
-                        { indice: 'CONFECCION', option: 'CONFECCION' }, 
-                        { indice: 'OJAL', option: 'OJAL' }, 
-                        { indice: 'ESTAMPADO', option: 'ESTAMPADO' },
-                        { indice: 'LAVANDERIA', option: 'LAVANDERIA' },
-                        { indice: 'BORDADO', option: 'BORDADO' },
-                        { indice: 'ACABADOS', option: 'ACABADOS' },
-                      ]} 
-                      df={Object.keys(info).length > 0 ? info.servicio : null} 
-                    /> */}
                   </div>
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" verify="true"/>
                   <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true"/>
@@ -541,8 +535,15 @@ export default function NewGuia(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.estado : null} 
                   />
+                  <InputSelect title={'TipoDistribucion'} formref={form} name={"distribucion"} data={
+                    [
+                      { indice: 'TLL', option: 'TALLAS', selected: true }, 
+                      { indice: 'PQT', option: 'PAQUETES' }, 
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.distribucion : null} 
+                  />
                 </div>
-                <div>
+                <div className={`${distribucion !== 'TLL' && 'hidden'}`}>
                   <span>Artículos:</span>
                   <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
@@ -611,6 +612,82 @@ export default function NewGuia(){
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center">
                               <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                                +
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+                <div className={`${distribucion !== 'PQT' && 'hidden'}`}>
+                  <span>Paquetes:</span>
+                  <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
+                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                      <thead className="text-left sticky top-0 bg-white">
+                        <tr>
+                          <th className="lg:table-cell w-[500px]">Paquete</th>  
+                          <th className="lg:table-cell">XS / 26</th>
+                          <th className="lg:table-cell">S / 28</th>
+                          <th className="lg:table-cell">M / 30</th>
+                          <th className="lg:table-cell">L / 32</th>
+                          <th className="lg:table-cell">XL / 34</th>
+                          <th className="lg:table-cell">XXL / 36</th>
+                          <th className="lg:table-cell">Cantidad</th>
+                          <th className="lg:table-cell">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          paquetes.length > 0 && paquetes.map((row,key)=>(
+                            <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                              <td><input type="text" onChange={editpaquete} data-name="articulo" data-position={key} value={row.articulo} /></td>
+                              <td><input data-name="xs" type="number" onChange={editpaquete} data-position={key} value={row.xs} className="fracciones"/></td>
+                              <td><input data-name="s" type="number" onChange={editpaquete} data-position={key} value={row.s} className="fracciones"/></td>
+                              <td><input data-name="m" type="number" onChange={editpaquete} data-position={key} value={row.m} className="fracciones"/></td>
+                              <td><input data-name="l" type="number" onChange={editpaquete} data-position={key} value={row.l} className="fracciones"/></td>
+                              <td><input data-name="xl" type="number" onChange={editpaquete} data-position={key} value={row.xl} className="fracciones"/></td>
+                              <td><input data-name="xxl" type="number" onChange={editpaquete} data-position={key} value={row.xxl} className="fracciones"/></td>
+                              <td><input type="number" onChange={editpaquete} data-position={key} data-name="cantidad" value={row.cantidad} className="fracciones"/></td>
+                              <td className="w-[250px]">
+                                <ul className="flex flex-row justify-end">
+                                  <li>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                      <tfoot className="sticky bottom-0">
+                        <tr>
+                          <td colSpan={10} >
+                            <div className="flex flex-row justify-center">
+                              <div onClick={nuevopaquete} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
                                 +
                               </div>
                             </div>

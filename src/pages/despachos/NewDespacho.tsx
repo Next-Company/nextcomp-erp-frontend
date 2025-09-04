@@ -233,12 +233,78 @@ function CuerpoIngresos({registros,setregistros,setopen}){
     </>
   )
 }
+function CuerpoIngresosXPQ({registros,setregistros,setopen}){
+  const [copia,setCopia] = useState([])
+  useEffect(()=>{
+    console.log("Imprimierdo mi primer efecto",registros)
+    setCopia(JSON.parse(JSON.stringify(registros)).reduce((c,v)=>{
+      if(v.fracciones_despacho.length > 0){
+        v.fracciones_despacho = [
+          v.fracciones_despacho.reduce((cc,vv)=>{
+            cc[vv.talla] = vv.cantidad
+            return cc
+          },{concepto:'INGRESO'}),
+          v.fracciones_despacho.reduce((cc,vv)=>{
+            cc[vv.talla] = vv.caidos
+            return cc
+          },{concepto:'CAIDOS'}),
+          v.fracciones_despacho.reduce((cc,vv)=>{
+            cc[vv.talla] = vv.incompletos
+            return cc
+          },{concepto:'INCOMPLETOS'}),
+        ]
+      }
+      c.push(v)
+      return c
+    },[]))
+  },[])
+  // console.log("La info de la copia es :",copia)
+  const actualizar = ()=>{
+    console.log("Banana:",copia)
+    const kk = copia.map(row=>
+      ({...row,
+        despacho:row.fracciones_despacho.length > 0 
+            ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt(row.fracciones_despacho[0][v]),0) 
+            : 0,
+        caidos:row.fracciones_despacho.length > 0 
+            ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt((row.fracciones_despacho[1])[v]),0) 
+            : 0,
+        incompletos:row.fracciones_despacho.length > 0 
+            ? ['xs','s','m','l','xl','xxl'].reduce((c,v)=>c+parseInt((row.fracciones_despacho[2])[v]),0) 
+            : 0,
+        fracciones_despacho: row.fracciones_despacho.length > 0
+        ? ['xs','s','m','l','xl','xxl'].map(item=>({talla:item,cantidad:row.fracciones_despacho[0][item],caidos:row.fracciones_despacho[1][item],incompletos:row.fracciones_despacho[2][item]}))
+        : []
+      }))
+      console.log("Enoelmaiz :",kk)
+
+    setregistros(reg=>reg.map((row,key)=>{
+      return row.id_item == kk[0].id_item ? kk[0] : row 
+    }))
+    setopen(false)
+  }
+  return(
+    <>
+      <div className="flex flex-col w-[1100px] h-[500px]">
+        <div className="flex-1 overflow-y-auto scrollbar-special ">
+        {
+          copia.length > 0 && copia.map((row,key)=><CuerpoDespachoTest position={key} data={row} setregistros={setCopia} registros={copia}/>)
+        }
+        </div>
+        <div className="p-2 flex flex-row justify-end gap-2">
+          <Button tipo={'default'} type={'button'} action={()=>setopen(false)}>Cancelar</Button>
+          <Button tipo={'default'} type={'button'} action={actualizar}>Aceptar</Button>
+        </div>
+      </div>
+    </>
+  )
+}
 
 export default function NewDespacho() {
   // const [estampado,setEstampado] = useState([])
   const [tipo, setTipo] = useState(2)
   const urlparams = useParams()
-  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '', facturado:'1', fase:'1' })
+  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '', facturado:'1', fase:'1', distribucion: 'TLL' })
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros, setRegistros] = useState([])
@@ -249,6 +315,7 @@ export default function NewDespacho() {
   const onsubmit = (e) => {
     e.preventDefault()
     const fase = parseInt(form.current.elements.fase.value)
+    console.log("La otra info del formulario es:",info)
     console.log("Los datos del formulario son:", registros)
     // console.log("El estado de la fase es:",form.current.elements.fase.value)
 
@@ -297,7 +364,7 @@ export default function NewDespacho() {
         data.append('detalle', fase ? JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0)) : JSON.stringify(registros))
         data.append('facturas', JSON.stringify(facturas))
 
-        const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : 'produccion/guardardespachoguia/'
+        const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : (info.distribucion !== 'PQT' ? 'produccion/guardardespachoguia/' : 'produccion/guardardespachoguiaxpq/')
         await Consulta({
           // url: 'produccion/guardardespacho/', params: {
           url: ruta, params: {
@@ -408,7 +475,7 @@ export default function NewDespacho() {
           open: true,
           header: false,
           controls: false,
-          content: <CuerpoIngresos registros={[registros[position]]} setregistros={setRegistros} setopen={setOpen}/>,
+          content: <CuerpoIngresosXPQ registros={[registros[position]]} setregistros={setRegistros} setopen={setOpen}/>,
           action: async () => {}
         })
         break;
@@ -461,7 +528,7 @@ export default function NewDespacho() {
         Consulta({ url: 'produccion/guia/' + item.idx })
           .then(resp => {
             // console.log("PPPDPDPDPDPDPDPPD:",resp)
-            setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
+            setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor, distribucion: item.distribucion }))
             console.log("Los registros de la guia son:", resp[1])
             // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
             setRegistros(resp[1].map(row => {
@@ -585,6 +652,7 @@ export default function NewDespacho() {
               <div className={` flex-col gap-3 flex`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
+                  <Input name={'distribucion'} defaults={Object.keys(info).length > 0 ? info.distribucion : null} type="hidden" />
                   <InputSelect title={'OrigenDespacho'} formref={form} name={"tipo"} data={
                     [
                       { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true },
