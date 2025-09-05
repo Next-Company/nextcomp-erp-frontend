@@ -128,7 +128,7 @@ const CuerpoDespacho = ({info,openloader})=>{
     switch(action){
       case 'download':
         openloader(true)
-        Consulta({url: `produccion/verdespacho/${id}/${idguia}/2`})
+        Consulta({url: `produccion/verdespachoguia/${id}/${idguia}/2`})
           .then(resp => {
             openloader(false)
             const binaryString = window.atob(resp.data);

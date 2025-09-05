@@ -14,6 +14,7 @@ import Proveedores from "../../components/Common/Proveedores";
 import Pedidos from "../../components/Common/Pedidos";
 import { InputTest } from "../../components/Atoms/Input/InputTest";
 import Productos from "../../components/Common/Productos";
+import Recetas from "../../components/Common/Recetas";
 
 const listTables = [
   'tbl2_fases_prod_ordenes',
@@ -379,7 +380,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         setopen(false)
         setinsumos([...insumos,...items.map(row=>({id_producto:row.id_producto_CAB,id_subprod:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0}))])
       }}
-        // closemodal={()=>setOpen(false)}
+        // closemodal={()=>setopen(false)}
       />,
       controls: false,
       header: false,
@@ -434,20 +435,21 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     setPanelActive(position)
   }
   const searchproducto = ()=>{
-    let params_modal = null
-    params_modal = {
+    openmodal({
       open:true,
-      content: <Proveedores actions={(item)=>{  
-        // console.log("Info del provedor:",item)
-        // setorden(orden=>([{...orden[0],id_cliente_CAB:item.idx ,cliente:item.nom.substr(0,49)}]))
-        // setopen(false)
-      }}/>,
-      controls: true,
+      content: <Recetas actions={(items)=>{  
+        console.log("Informacion de los insumos:",items)
+        setopen(false)
+        setorden([{...info[0],producto:items[0].producto}])
+        // setinsumos([...insumos,...items.map(row=>({id_producto:row.id_producto_CAB,id_subprod:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0}))])
+      }}
+        closemodal={()=>setopen(false)}
+      />,
+      controls: false,
       header: false,
-      action:()=>{
+      action:async ()=>{
       }
-    }
-    openmodal(params_modal)
+    })
   }
   return <>
     <div className={`flex flex-col gap-3 pt-4`}>

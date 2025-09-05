@@ -415,7 +415,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             { indice: 'I', option: 'INSUMO' },
             { indice: 'A', option: 'AVIO' }
           ]} 
-          df={Object.keys(info).length > 0 ? info[0].temporada : null} 
+          df={Object.keys(info).length > 0 ? info[0].tipo : null} 
         />
         <div className="w-[500px]">
           <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nombre : null} type="text" verify="true"/>
@@ -424,9 +424,6 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" verify="true"/>
         </div>
         <Input name={'codUnidadMedida'} title="Medida" defaults={info.length > 0 ? info[0].codUnidadMedida : null} type="text" action={nuevaunidad} mode={'static'} verify="true"/>
-        <Input name={'RUBROS'} defaults={info.length > 0 ? info[0].RUBROS : null} type="hidden" verify="true"/>
-        <Input name={'rubro'} title="Rubro" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} verify="true"/>
-        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" verify="true"/>
       </div>
       <div className="flex gap-3">
         <InputSelect title={'Plan'} name={"tipoPlan"} formref={form} data={
@@ -476,18 +473,16 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         />
       </div>
       <div className="flex flex-row gap-3">
+        <Input name={'RUBROS'} defaults={info.length > 0 ? info[0].RUBROS : null} type="hidden" verify="true"/>
+        <Input name={'rubro'} title="Rubro" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} verify="true"/>
+        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" verify="true"/>
         <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" verify="true"/>
-        <div className="w-[550px]">
           <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
-        </div>
-        <div className="flex-1 min-w-[300px] flex flex-row gap-3">
-          <Input name={'precio'} title="Precio" defaults={info.length > 0 ? info[0].precio : null} type="number" verify="true"/>
+        {/* <div className="w-[550px]">
+        </div> */}
+        <Input name={'precio'} title="Precio" defaults={info.length > 0 ? info[0].precio : null} type="number" verify="true"/>
+        <div className="flex-1 min-w-[500px] flex flex-row gap-3">
           <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
-          <Button action={loadimage} type={'button'} tipo={'accept'}>
-            <div className="flex flex-row items-center gap-2 justify-between">
-              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-photo"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.813 11.612c.457 -.38 .918 -.38 1.386 .011l.108 .098l4.986 4.986l.094 .083a1 1 0 0 0 1.403 -1.403l-.083 -.094l-1.292 -1.293l.292 -.293l.106 -.095c.457 -.38 .918 -.38 1.386 .011l.108 .098l4.674 4.675a4 4 0 0 1 -3.775 3.599l-.206 .005h-12a4 4 0 0 1 -3.98 -3.603l6.687 -6.69l.106 -.095zm9.187 -9.612a4 4 0 0 1 3.995 3.8l.005 .2v9.585l-3.293 -3.292l-.15 -.137c-1.256 -1.095 -2.85 -1.097 -4.096 -.017l-.154 .14l-.307 .306l-2.293 -2.292l-.15 -.137c-1.256 -1.095 -2.85 -1.097 -4.096 -.017l-.154 .14l-5.307 5.306v-9.585a4 4 0 0 1 3.8 -3.995l.2 -.005h12zm-2.99 5l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z" /></svg>
-            </div>
-          </Button>
         </div>
       </div>
 
@@ -662,8 +657,9 @@ export function NewProducto() {
         const padre = event.detail.target.closest('div#cuerpo_ingresos')
         const indice = padre.dataset.position
         setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,['estado_corte']:event.detail.valor} : row))
-      }else{
-        setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
+      }
+      if(event.detail.name == 'tipo'){
+        setOrden(orden => ([{ ...orden[0], tipo: event.detail.indice}]))
       }
     };
     form.current.addEventListener("salamandra", handleSalamandra);
@@ -713,6 +709,7 @@ export function NewProducto() {
   },[])
   const testkey2 = (e)=>{
     // console.log("El target de testkey2 es:",e.target)
+    console.log("Dentro del evento keychange")
     if(position == 3 && ['numero_corte','fec_emision'].includes(e.target.name)){
       const padre = e.target.closest('div#cuerpo_ingresos')
       const indice = parseInt(padre.dataset.position)
@@ -720,6 +717,7 @@ export function NewProducto() {
     }
   }
   const testkey = (e)=>{
+    console.log("Dentro de otro evento")
     // console.log("El targe dl evento key es:",e.target.name)
     if(position == 3 && ['numero_corte','fec_emision'].includes(e.target.name)){
       const padre = e.target.closest('div#cuerpo_ingresos')

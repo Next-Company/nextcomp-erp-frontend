@@ -213,10 +213,10 @@ export default function ListaDespachos() {
           action: () => {
             const desc = async () => {
               setOpenloader(true)
-
+              const ruta = (estado == 'SERVICIOS' ? 'produccion/verdespachoguia/' : 'produccion/verdespachomuestra/')
               Consulta({
                 /*url: "produccion/exportdespacho/" + id + "/" + idguia + '/-1', params: {*/
-		            url: "produccion/verdespacho/" + id + "/" + idguia + '/2' 
+		            url: ruta + id + "/" + idguia + '/2' 
               })
                 .then(resp => {
                   setOpenloader(false)
@@ -250,7 +250,7 @@ export default function ListaDespachos() {
         params_modal = {
           open: true,
           content: <div className="pb-4">
-            <iframe src={`${apiUrl}produccion/verdespacho/${id}/${idguia}/1`} width={1100} height={700} />
+            <iframe src={`${apiUrl}produccion/verdespachoguia/${id}/${idguia}/1`} width={1100} height={700} />
           </div>,
           controls: true,
           header: false,
@@ -499,11 +499,11 @@ export default function ListaDespachos() {
                               :
                               <>
                               <td>{row.idx}</td>
-                                <td>{row.idguia_ref}</td>
+                                <td className="font-bold">{row.idguia_ref}</td>
                                 <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho[row.tipo]}`}>{row.tipo}</div></td>
                                 <td>{row.proveedor}</td>
-                                <td>{row.fec_emision_guia}</td>
-                                <td>{row.fec_despacho}</td>
+                                <td className="font-bold">{row.fec_emision_guia}</td>
+                                <td className="font-bold">{row.fec_despacho}</td>
                               </>
                               
                           }
@@ -522,11 +522,6 @@ export default function ListaDespachos() {
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" onClick={onclick} data-action="review" data-id={row.idx} data-idguia={row.id_guia_origen}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                                </div>
-                              </li>
-                              <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={() => { }}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                                 </div>
                               </li>
                               <li>
@@ -564,22 +559,7 @@ export default function ListaDespachos() {
               </table>
             </div>
             <div className="flex flex-row justify-end">
-              {/* <div className="flex justify-between items-center p-3 gap-2">
-                <div>
-                  Resultados del {position*rango} al {rango*(position+1)} de 120
-                </div>
-                <div className="flex flex-row">
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveback}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
-                  </div>
-                  <div className="bg-blue-500 text-white p-1 pl-2 pr-2 rounded-full cursor-pointer hover:bg-blue-400" onClick={moveforward}>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-compact-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 4l3 8l-3 8" /></svg>
-                  </div>
-                </div>
-              </div> */}
               <div className="flex gap-2 mt-2">
-                {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
-                {/* <Button action={exportarexcel} tipo={'success'}>Acciones</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevodespacho} tipo={'accept'}>Nuevo</Button>
               </div>
