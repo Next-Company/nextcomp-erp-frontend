@@ -461,10 +461,19 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         />
       </div>
       <div className="flex flex-row gap-3">
+        <InputSelect title={'TipoProduccion'} name={"tipoProduccion"} formref={form} data={
+          [
+            { indice: 'NCNL', option: 'NACIONAL', selected: true  },
+            { indice: 'IMPT', option: 'IMPORTADO' },
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].tipoProduccion : null} 
+        />
         <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" verify="true"/>
         <Input name={'modelo'} title="Modelo" defaults={info.length > 0 ? info[0].modelo : null} type="text" verify="true"/>
         <Input name={'presentacion'} title="Presentacion" defaults={info.length > 0 ? info[0].presentacion : null} type="text" verify="true"/>
         <Input name={'estilo'} title="Estilo" defaults={info.length > 0 ? info[0].estilo : null} type="text" verify="true"/>
+      </div>
+      <div className="flex flex-row gap-3">
         <InputSelect title={'Es Fraccionable'} name={"fraccionable"} formref={form} data={
           [
             { indice: '1', option: 'SI', selected: true  },
@@ -472,19 +481,15 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           ]} 
           df={Object.keys(info).length > 0 ? info[0].fraccionable : null} 
         />
-      </div>
-      <div className="flex flex-row gap-3">
-        
-        
         <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" verify="true"/>
         <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" verify="true"/>
           <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
         {/* <div className="w-[550px]">
         </div> */}
         <Input name={'precio'} title="Precio" defaults={info.length > 0 ? info[0].precio : null} type="number" verify="true"/>
-        <div className="flex-1 min-w-[500px] flex flex-row gap-3">
+        {/* <div className="flex-1 min-w-[500px] flex flex-row gap-3">
           <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
-        </div>
+        </div> */}
       </div>
 
       <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
