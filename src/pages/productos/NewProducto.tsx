@@ -409,23 +409,24 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     <div className={`flex flex-col gap-3 pt-4`}>
       <div className="flex gap-3">
         <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
-        <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
-          [
-            { indice: 'P', option: 'PRODUCTO', selected: true  },
-            { indice: 'I', option: 'INSUMO' },
-            { indice: 'A', option: 'AVIO' }
-          ]} 
-          df={Object.keys(info).length > 0 ? info[0].tipo : null} 
-        />
-        <div className="w-[500px]">
-          <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nombre : null} type="text" verify="true"/>
+        <div className="w-[400px]">
+          <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
+            [
+              { indice: 'P', option: 'PRODUCTO', selected: true  },
+              { indice: 'I', option: 'INSUMO' },
+              { indice: 'A', option: 'AVIO' }
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].tipo : null} 
+          />
         </div>
-        <div className="w-[500px]">
-          <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" verify="true"/>
-        </div>
-        <Input name={'codUnidadMedida'} title="Medida" defaults={info.length > 0 ? info[0].codUnidadMedida : null} type="text" action={nuevaunidad} mode={'static'} verify="true"/>
+        <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nombre : null} type="text" verify="true"/>
+        <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" verify="true"/>
       </div>
+      {/* <div className="h-[20px]"></div> */}
       <div className="flex gap-3">
+        <Input name={'rubro'} title="Rubro" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} verify="true"/>
+        <Input name={'RUBROS'} defaults={info.length > 0 ? info[0].RUBROS : null} type="hidden" verify="true"/>
+        <Input name={'codUnidadMedida'} title="Medida" defaults={info.length > 0 ? info[0].codUnidadMedida : null} type="text" action={nuevaunidad} mode={'static'} verify="true"/>
         <InputSelect title={'Plan'} name={"tipoPlan"} formref={form} data={
           [
             { indice: 'CLA', option: 'CLASICO', selected: true  },
@@ -473,8 +474,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         />
       </div>
       <div className="flex flex-row gap-3">
-        <Input name={'RUBROS'} defaults={info.length > 0 ? info[0].RUBROS : null} type="hidden" verify="true"/>
-        <Input name={'rubro'} title="Rubro" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} verify="true"/>
+        
+        
         <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" verify="true"/>
         <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" verify="true"/>
           <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>

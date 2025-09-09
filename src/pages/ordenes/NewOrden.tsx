@@ -467,12 +467,12 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         </div>
       </div>
       <div className="flex gap-3">
-        <InputSelect title={'TipoFabricación'} name={"tipo_fabricacion"} data={
+        <InputSelect title={'TipoProduccion'} name={"tipo_produccion"} data={
           [
             { indice: 'NCNL', option: 'NACIONAL', selected: true  },
             { indice: 'IMPT', option: 'IMPORTADO' },
           ]} 
-          df={Object.keys(info).length > 0 ? info[0].tipo_fabricacion : null} 
+          df={Object.keys(info).length > 0 ? info[0].tipo_produccion : null} 
         />
         <InputSelect title={'TipoPedido'} name={"modalidad_pedido"} formref={form} data={
           [
@@ -493,11 +493,11 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             <Input name={'nro_pedido_adi'} title={'DocReferencia'} defaults={info.length > 0 ? info[0].nro_pedido_adi : null} type="text" />
           </>
         }
-        <InputSelect title={'TipoProduccion'} name={"tipo_produccion"} formref={form} data={
+        <InputSelect title={'TipoFabricacion'} name={"tipo_fabricacion"} formref={form} data={
           [
             { indice: 'PT', option: 'PUNTO', selected: true  },
-            { indice: 'PLN', option: 'PLANO' },
-            { indice: 'FTS', option: 'FANTASIA' }
+            { indice: 'PL', option: 'PLANO' },
+            { indice: 'FT', option: 'FANTASIA' }
           ]} 
           df={Object.keys(info).length > 0 ? info[0].tipo_produccion : null} 
         />
