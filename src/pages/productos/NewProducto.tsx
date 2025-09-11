@@ -12,6 +12,9 @@ import Pedidos from "../../components/Common/Pedidos";
 import { InputTest } from "../../components/Atoms/Input/InputTest";
 import Rubros from "../../components/Common/Rubros";
 import UnidadesMedida from "../../components/Common/Unidades";
+import Estilos from "../../components/Common/Estilos";
+import Presentacion from "../../components/Common/Presentacion";
+import Marca from "../../components/Common/Marca";
 
 function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   const image = useRef(null)
@@ -392,6 +395,51 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     }
     openmodal(params_modal)
   }
+  const nuevoestilo = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Estilos actions={(item)=>{
+        setorden(orden=>([{...orden[0],estilo:item.nom}]))
+        setopen(false)
+      }}/>,
+      controls: false,
+      header: false,
+      action:()=>{
+      }
+    }
+    openmodal(params_modal)
+  }
+  const nuevapresentacion = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Presentacion actions={(item)=>{
+        setorden(orden=>([{...orden[0],presentacion:item.nom}]))
+        setopen(false)
+      }}/>,
+      controls: false,
+      header: false,
+      action:()=>{
+      }
+    }
+    openmodal(params_modal)
+  }
+  const nuevamarca = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Marca actions={(item)=>{
+        setorden(orden=>([{...orden[0],marca:item.nom}]))
+        setopen(false)
+      }}/>,
+      controls: false,
+      header: false,
+      action:()=>{
+      }
+    }
+    openmodal(params_modal)
+  }
   const loadimage = () => {
     let params_modal = null
     params_modal = {
@@ -468,10 +516,10 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           ]} 
           df={Object.keys(info).length > 0 ? info[0].tipoProduccion : null} 
         />
-        <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" verify="true"/>
+        <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" action={nuevamarca} mode={'static'} verify="true"/>
         <Input name={'modelo'} title="Modelo" defaults={info.length > 0 ? info[0].modelo : null} type="text" verify="true"/>
-        <Input name={'presentacion'} title="Presentacion" defaults={info.length > 0 ? info[0].presentacion : null} type="text" verify="true"/>
-        <Input name={'estilo'} title="Estilo" defaults={info.length > 0 ? info[0].estilo : null} type="text" verify="true"/>
+        <Input name={'presentacion'} title="Presentacion" defaults={info.length > 0 ? info[0].presentacion : null} type="text" action={nuevapresentacion} mode={'static'} verify="true"/>
+        <Input name={'estilo'} title="Estilo" defaults={info.length > 0 ? info[0].estilo : null} type="text" action={nuevoestilo} mode={'static'} verify="true"/>
       </div>
       <div className="flex flex-row gap-3">
         <InputSelect title={'Es Fraccionable'} name={"fraccionable"} formref={form} data={

@@ -25,7 +25,7 @@ export default function ListaProductos() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'productos/productoslist/70', params: {
+      url: 'productos/productosTotal', params: {
         method: 'GET'
       }
     })
@@ -127,7 +127,7 @@ export default function ListaProductos() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/retiros/nuevo/" + id + '?nombre=MIGUEL')
+        navigate("/main/productos/nuevo/" + id)
         break;
       default:
         break;
@@ -138,7 +138,7 @@ export default function ListaProductos() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'productos/productoslist/70', params: {
+      url: 'productos/productosTotal', params: {
         method: 'GET'
       }
     })
@@ -175,19 +175,6 @@ export default function ListaProductos() {
         lista.current.querySelector('button.active').classList.remove('active')
         e.target.classList.add('active')
         setInfo(resp)
-        // switch (estado) {
-        //   case 'PENDIENTE':
-        //     setInfoestado(resp.filter(row=>row.cantidad >= row.ingresos && !['ANULADO','FINALIZADO'].includes(row.estado)))
-        //     break;
-        //   case 'FINALIZADO':
-        //     setInfoestado(resp.filter(row=>row.cantidad <= row.ingresos || row.estado == 'FINALIZADO'))
-        //     break;
-        //   case 'ANULADO':
-        //     setInfoestado(resp.filter(row=>row.estado == 'ANULADO'))
-        //     break;
-        //   default:
-        //     break;
-        // }
         setInfoestado(resp.filter(row => row.estado == estado))
         setEstado(estado)
       })
@@ -199,11 +186,11 @@ export default function ListaProductos() {
       })
 
   }
-  const filtrarpedidos = (input)=>{
+  const busquedaproducto = (input)=>{
     // console.log(input.value)
     setOpenloader(true)
     Consulta({
-      url: 'almacen/listarinventario/' + input.value, params: {
+      url: 'productos/productosTotal/' + input.value, params: {
         method: 'GET'
       }
     })
@@ -232,7 +219,7 @@ export default function ListaProductos() {
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Lista de productos</h2>
               <div className="w-[500px]">
-                <Search config={{ width: '200px' }} action={filtrarpedidos} />
+                <Search config={{ width: '200px' }} action={busquedaproducto} />
               </div>
             </div>
             {/* <hr /> */}

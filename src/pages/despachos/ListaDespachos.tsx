@@ -438,6 +438,7 @@ export default function ListaDespachos() {
                           <th className="lg:table-cell">Marca</th>
                           <th className="lg:table-cell">Modelo</th>
                           <th className="lg:table-cell">Servicio</th>
+                          <th className="lg:table-cell text-center">GuiaRef</th>
                           <th className="lg:table-cell">FechaEmisionGuia</th>
                           <th className="lg:table-cell">FechaDespacho</th>
                           <th className="lg:table-cell text-center">Accciones</th>
@@ -483,6 +484,7 @@ export default function ListaDespachos() {
                                 <td>{row.marca}</td>
                                 <td>{row.modelo}</td>
                                 <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                                <td className="w-[100px] text-center">{row.id_guia_origen}</td>
                                 <td>{row.fec_emision_guia}</td>
                                 <td>{row.fec_despacho}</td>
                               </>
