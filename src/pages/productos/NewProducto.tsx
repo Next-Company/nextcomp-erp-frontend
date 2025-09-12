@@ -355,7 +355,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       open:true,
       content: <Proveedores actions={(item)=>{  
         console.log("Info del provedor:",item)
-        setorden(orden=>([{...orden[0],id_cliente_CAB:item.idx ,cliente:item.nom.substr(0,49)}]))
+        setorden(orden=>([{...orden[0],PROVEEDORES:item.idx ,proveedor:item.nom.substr(0,49)}]))
         setopen(false)
       }}/>,
       controls: true,
@@ -467,13 +467,14 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             df={Object.keys(info).length > 0 ? info[0].tipo : null} 
           />
         </div>
-        <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nombre : null} type="text" verify="true"/>
+        <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nom : null} type="text" verify="true"/>
         <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" verify="true"/>
       </div>
       {/* <div className="h-[20px]"></div> */}
       <div className="flex gap-3">
-        <Input name={'rubro'} title="Rubro" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} verify="true"/>
         <Input name={'RUBROS'} defaults={info.length > 0 ? info[0].RUBROS : null} type="hidden" verify="true"/>
+        <Input name={'rubro'} title="Rubro" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} verify="true"/>
+
         <Input name={'codUnidadMedida'} title="Medida" defaults={info.length > 0 ? info[0].codUnidadMedida : null} type="text" action={nuevaunidad} mode={'static'} verify="true"/>
         <InputSelect title={'Plan'} name={"tipoPlan"} formref={form} data={
           [
@@ -530,10 +531,9 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           df={Object.keys(info).length > 0 ? info[0].fraccionable : null} 
         />
         <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" verify="true"/>
-        <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" verify="true"/>
-          <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
-        {/* <div className="w-[550px]">
-        </div> */}
+        <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" verify="true"/>
+        <Input name={'proveedor'} title="Proveedor" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
+
         <Input name={'precio'} title="Precio" defaults={info.length > 0 ? info[0].precio : null} type="number" verify="true"/>
         {/* <div className="flex-1 min-w-[500px] flex flex-row gap-3">
           <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
@@ -627,11 +627,12 @@ export function NewProducto() {
 
   const onsubmit = async (e) => {
     e.preventDefault()
-    let url_save = ''
+    let url_save = '', method = 'GET'
     let data = undefined
 
     if(position == 0){
-      url_save = 'productos/generateProducto'
+      url_save = urlparams.id ? 'productos/updateProducto' : 'productos/generateProducto'
+      method = urlparams.id ? 'PUT' : 'POST'
 
       // for (const element of form.current.querySelectorAll("input[verify='true']")) {
       //   if(element.tagName == 'INPUT' && element.value == ''){
@@ -681,7 +682,7 @@ export function NewProducto() {
         await Consulta({
           url: url_save,
           params: {
-            method: 'POST', body: data
+            method: method, body: data
           }
         })
         .then(resp => {
@@ -721,17 +722,16 @@ export function NewProducto() {
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/getordenesbyid/' + urlparams.id,})
+        await Consulta({url: 'productos/searchproductobyid/' + urlparams.id,})
           .then(resp => {
             console.log("Mostrando informacion :",resp)
 
-            setOrden(resp[0])
-            setMolde(resp[1])
-            setCorte(resp[2])
-            setMateriales(resp[3])
-            setFases(resp[4])
-            setMaterialesRef(resp[5])
-
+            setOrden(resp)
+            // setMolde(resp[1])
+            // setCorte(resp[2])
+            // setMateriales(resp[3])
+            // setFases(resp[4])
+            // setMaterialesRef(resp[5])
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -825,7 +825,7 @@ export function NewProducto() {
               <span className="text-blue-500 font-bold">
                 {
                   urlparams.id && orden.length > 0
-                  ? `${orden[0].oc + '-' + orden[0].producto + '-' + orden[0].base + '-' + orden[0].modelos}`
+                  ? `${orden[0].nom + ' ' + orden[0].marca}`
                   : "Nuevo producto"
                 }
               </span>

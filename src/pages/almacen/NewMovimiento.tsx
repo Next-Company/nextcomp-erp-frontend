@@ -48,7 +48,7 @@ const CuerpoInforme = ({info,tipo})=>{
   )
 }
 
-export default function NewInOut(){
+export default function NewMovimiento(){
   const [tipo,setTipo] = useState(0)
   const [searchParams,setSearchParams] = useSearchParams()
   const urlparams = useParams()
@@ -73,10 +73,10 @@ export default function NewInOut(){
       toast.error('Debe ingresar al menos un artículo!!', { theme: "colored" })
       return
     }
-    if(registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0){
-      toast.error('Debe ingresar la cantidad y el precio del articulo.', { theme: "colored" })
-      return
-    }
+    // if(registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0){
+    //   toast.error('Debe ingresar la cantidad y el precio del articulo.', { theme: "colored" })
+    //   return
+    // }
 
     openModal({
       open: true,
@@ -155,8 +155,9 @@ export default function NewInOut(){
     openModal({
       open:true,
       content: <Productos actions={(items)=>{  
+        console.log("La informacion del producto seleccionado es:",items)
         setOpen(false)
-        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub}))])
+        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
       }}
         closemodal={()=>setOpen(false)}
       />,
@@ -315,9 +316,9 @@ export default function NewInOut(){
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Salidas /</h2>
+              <h2 className="font-medium text-[16px]">Movimientos /</h2>
               <span className="text-blue-500 font-bold">
-                Nueva salida
+                Nuevo movimiento
               </span>
             </div>
             <hr />
@@ -329,7 +330,6 @@ export default function NewInOut(){
 
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />                  
-
                   <InputSelect title={'TipoMov'} name={"tipo_operacion"} data={
                     [
                       { indice: '9', option: 'INGRESOS', selected: true }, 
@@ -337,39 +337,27 @@ export default function NewInOut(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo_operacion : null} 
                   />
-
-                  <InputSelect title={'OrigenMovimiento'} formref={form} name={"tipo"} data={
-                    [
-                      { indice: 'TELAS', option: 'TELAS', selected: true }, 
-                      { indice: 'AVIOS', option: 'AVIOS' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo : null} 
-                  />
                   <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaRetorno" type="date" verify="true"/>
-                  <Input name={'id_modelo'} defaults={Object.keys(info).length > 0 ? info.id_modelo : null} type="hidden" />
-                  <Input name={'modelos'} title={'Modelo'} defaults={Object.keys(info).length > 0 ? info.modelos : null} type="text" action={searchmodelo} mode={'static'} />
-
-                </div>
-                <div className="flex gap-3">
-                  <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" />
-                  <Input name={'nro_pedido_origen'} title={'Requerimiento'} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
-                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroRequerimiento" type="text" />
-                  <div className="w-[450px]">
+                  <div className="w-[500px]">
                     <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
                   </div>
                   <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
-                  <Input name={'nro_corte'} defaults={Object.keys(info).length > 0 && info.nro_corte ? info.nro_corte : null} title="NroCorte" type="text" />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
                 </div>
                 <div className="flex gap-3">
-                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
+                  <InputSelect title={'Motivo'} name={"motivo"} data={
+                    [
+                      { indice: 'mst', option: 'MUESTRA', selected: true }, 
+                      { indice: 'ajt', option: 'AJUSTE' }, 
+                      { indice: 'acb', option: 'ACABADOS' }
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.motivo : null} 
+                  />
                 </div>
                 <div>
                   <span className="flex flex-row items-center gap-2">
-                    {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="15"  height="15"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-contract"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 21h-2a3 3 0 0 1 -3 -3v-1h5.5" /><path d="M17 8.5v-3.5a2 2 0 1 1 2 2h-2" /><path d="M19 3h-11a3 3 0 0 0 -3 3v11" /><path d="M9 7h4" /><path d="M9 11h4" /><path d="M18.42 12.61a2.1 2.1 0 0 1 2.97 2.97l-6.39 6.42h-3v-3z" /></svg> */}
                     Detalle
                   </span>                  
                   <div className="h-[370px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
@@ -377,15 +365,10 @@ export default function NewInOut(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell w-[500px]">Descripcion</th>  
-                          <th className="lg:table-cell">Color</th>
-                          <th className="lg:table-cell">Rollos</th>
-                          <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Unidad</th>
-                          <th className="lg:table-cell">Precio</th>
-                          <th className="lg:table-cell">Importe</th>
-                          <th className="lg:table-cell">Stock</th>
-                          <th className="lg:table-cell">Saldo</th>
-                          <th className="lg:table-cell">Salida</th>
+                          <th className="lg:table-cell">Color</th>
+                          <th className="lg:table-cell">Talla</th>
+                          <th className="lg:table-cell">Ingreso</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -393,15 +376,10 @@ export default function NewInOut(){
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="color" value={row.color} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} step=".01" data-name="precio" value={row.precio} /></td>
-                              <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(2)} /></td>
-                              <td>{row.stock.toFixed(2)}</td>
-                              <td className={`font-bold w-[80px] text-center ${row.stock.toFixed(2) - (row.despacho ?? 0) < 0 ? 'text-red-600' : ''}`}>{row.stock.toFixed(2) - (row.despacho ?? 0)}</td>
+                              <td className="text-center">{row.producto}</td>
+                              <td className="text-center">{row.unidad}</td>
+                              <td className="text-center">{row.color}</td>
+                              <td className="text-center">{row.talla}</td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho} /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
@@ -440,22 +418,18 @@ export default function NewInOut(){
                         <tr>
                           <td colSpan={2} className="text-right"></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL: </strong></td>
-                          <td className="text-center text-[14px] font-bold">
+                          {/* <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(2)}
-                          </td>
+                          </td> */}
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
-                          <td className="text-center">-</td>
-                          <td className="text-center">-</td>
-                          <td className="text-center">-</td>
-                          <td className="text-center text-[14px] font-bold">
+                          {/* <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + parseFloat(row.despacho) ,0).toFixed(2)}
-                          </td>
+                          </td> */}
                           <td></td>
                         </tr>
-
                         <tr>
-                          <td colSpan={11} >
+                          <td colSpan={6} >
                             <div className="flex flex-row justify-center gap-2">
                               <div onClick={searchproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
@@ -463,16 +437,6 @@ export default function NewInOut(){
                             </div>
                           </td>
                         </tr>
-
-                        {/* <tr>
-                          <td colSpan={11} >
-                            <div className="flex flex-row justify-center gap-2">
-                              <div onClick={searchproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
-                                <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
-                              </div>
-                            </div>
-                          </td>
-                        </tr> */}
                       </tfoot>
                     </table>
                   </div>
@@ -482,13 +446,6 @@ export default function NewInOut(){
                 </div>
               </div>
               <div className="flex justify-end gap-2 mt-2 p-1">
-                {/* <div className="flex flex-row gap-2">
-                  <div>
-                    <Button action={vistaprevia} type={'button'} tipo={'accept'}>
-                      <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
-                    </Button>
-                  </div>
-                </div> */}
                 <div className="flex justify-end gap-2">
                   <Button action={() => navigate('/main/almacen/movimientos')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>

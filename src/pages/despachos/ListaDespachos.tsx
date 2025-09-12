@@ -219,25 +219,26 @@ export default function ListaDespachos() {
                 /*url: "produccion/exportdespacho/" + id + "/" + idguia + '/-1', params: {*/
 		            url: ruta + id + "/" + idguia + '/2' 
               })
-                .then(resp => {
-                  setOpenloader(false)
-                  const binaryString = window.atob(resp.data);
-                  const binaryLen = binaryString.length;
-                  const bytes = new Uint8Array(binaryLen);
-                  for (let i = 0; i < binaryLen; i++) {
-                    const ascii = binaryString.charCodeAt(i);
-                    bytes[i] = ascii;
-                  }
-                  const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-                  const link = document.createElement('a')
-                  link.href = file
-                  link.target = 'blank'
-                  link.click()
-                })
-                .catch((err) => {
-                  setOpenloader(false)
-                  toast.error('Se produjo un error!!', { theme: "colored" })
-                })
+              .then(resp => {
+                setOpenloader(false)
+                const binaryString = window.atob(resp.data);
+                const binaryLen = binaryString.length;
+                const bytes = new Uint8Array(binaryLen);
+                for (let i = 0; i < binaryLen; i++) {
+                  const ascii = binaryString.charCodeAt(i);
+                  bytes[i] = ascii;
+                }
+                const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+                const link = document.createElement('a')
+                link.href = file
+                link.target = 'blank'
+                link.click()
+              })
+              .catch((err) => {
+                setOpenloader(false)
+                console.log("Palta con piña:",err)
+                toast.error('Se produjo un error!!', { theme: "colored" })
+              })
             }
             desc()
           }

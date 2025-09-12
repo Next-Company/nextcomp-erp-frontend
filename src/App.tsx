@@ -71,6 +71,7 @@ import LayoutProductos from './pages/productos/LayoutProductos.tsx'
 import ListaProductos from './pages/productos/ListaProductos.tsx'
 import { NewProducto } from './pages/productos/NewProducto.tsx'
 import CuadreCorte from './pages/almacen/NewCuadre.tsx'
+import NewMovimiento from './pages/almacen/NewMovimiento.tsx'
 
 const routes = [
   {
@@ -245,7 +246,8 @@ const routes = [
             element: <LayoutMovimientos />,
             children: [
               { path: "", element: <ListaMovimientosAlmacen />, error: <ErrorController/> },
-              { path: "nuevo", element: <NewInOut />, error: <ErrorController/> },
+              // { path: "nuevo", element: <NewInOut />, error: <ErrorController/> },
+              { path: "nuevo", element: <NewMovimiento />, error: <ErrorController/> },
               { path: "nuevo/:id", element: <NewInOut />, error: <ErrorController/> },
               { path: "cuadre/:id", element: <CuadreCorte /> }
             ]
@@ -273,7 +275,8 @@ const routes = [
         element: <PrivateRoute><LayoutProductos/></PrivateRoute>,
         children: [
           { path: "",element: <ListaProductos />, error: <ErrorController/> },
-          { path: "nuevo",element: <NewProducto />, error: <ErrorController/> }
+          { path: "nuevo",element: <NewProducto />, error: <ErrorController/> },
+          { path: "nuevo/:id",element: <NewProducto />, error: <ErrorController/> }
         ]
       }
     ]
