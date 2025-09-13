@@ -178,7 +178,7 @@ export default function ListaDespachos() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: (estado == 'PEDIDOS' ? 'produccion/borrardespachopedido' : (distribucion == 'TLL' ? 'produccion/borrardespachoguia/' : 'produccion/borrardespachoguiaxpq/')) + id, params: {
+              url: (estado == 'PEDIDOS' ? 'produccion/borrardespachopedido/' : (distribucion == 'TLL' ? 'produccion/borrardespachoguia/' : 'produccion/borrardespachoguiaxpq/')) + id, params: {
                 method: 'DELETE'
               }
             })
@@ -203,7 +203,7 @@ export default function ListaDespachos() {
           }
         }
         console.log("Los params son:",params_modal)
-        // openModal(params_modal)
+        openModal(params_modal)
         break;
       case 'download':
         params_modal = {

@@ -158,6 +158,12 @@ export default function NewMovimiento(){
         console.log("La informacion del producto seleccionado es:",items)
         setOpen(false)
         setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
+
+        // /////////////////////////////////////////////////////////
+        // lo siguiente debe tener los campos de la tabla tbl_kard_compras_DET
+        // /////////////////////////////////////////////////////////
+        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
+        // /////////////////////////////////////////////////////////
       }}
         closemodal={()=>setOpen(false)}
       />,
@@ -368,6 +374,8 @@ export default function NewMovimiento(){
                           <th className="lg:table-cell">Unidad</th>
                           <th className="lg:table-cell">Color</th>
                           <th className="lg:table-cell">Talla</th>
+                          <th className="lg:table-cell">Lote</th>
+                          <th className="lg:table-cell">SN/Lote</th>
                           <th className="lg:table-cell">Ingreso</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
@@ -380,7 +388,11 @@ export default function NewMovimiento(){
                               <td className="text-center">{row.unidad}</td>
                               <td className="text-center">{row.color}</td>
                               <td className="text-center">{row.talla}</td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho} /></td>
+                              <td className="text-center">{row.lote}</td>
+                              <td className="text-center">
+                                <input type="checkbox" name='snlote' />
+                              </td>
+                              <td className="w-[200px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho} /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -429,10 +441,13 @@ export default function NewMovimiento(){
                           <td></td>
                         </tr>
                         <tr>
-                          <td colSpan={6} >
+                          <td colSpan={8} >
                             <div className="flex flex-row justify-center gap-2">
                               <div onClick={searchproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                              </div>
+                              <div onClick={searchproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
                               </div>
                             </div>
                           </td>
