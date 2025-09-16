@@ -841,12 +841,15 @@ export function NewOrden() {
       setOpenloader(true)
       Promise.all([
         Consulta({url:'ordenes/getfasesproduccion'}),
-        Consulta({url:'ordenes/getmaterialesproduccion'})  
+        Consulta({url:'ordenes/getmaterialesproduccion'}),
+        Consulta({url:'ordenes/getCorrelativoProduccionPreview/ORDEN'})
       ])
       .then(resp=>{
         console.log("El resultado de la consulta es:",resp)
         setFases(resp[0])
         setMaterialesRef(resp[1])
+        setOrden([{oc:resp[2].resp}])
+        // console.log("El correlativo actual es:",resp[2])
       })
       .catch(err=>{
         console.log(err)
