@@ -73,10 +73,6 @@ export default function NewMovimiento(){
       toast.error('Debe ingresar al menos un artículo!!', { theme: "colored" })
       return
     }
-    // if(registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0){
-    //   toast.error('Debe ingresar la cantidad y el precio del articulo.', { theme: "colored" })
-    //   return
-    // }
 
     openModal({
       open: true,
@@ -157,12 +153,48 @@ export default function NewMovimiento(){
       content: <Productos actions={(items)=>{  
         console.log("La informacion del producto seleccionado es:",items)
         setOpen(false)
-        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
+        // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
 
-        // /////////////////////////////////////////////////////////
-        // lo siguiente debe tener los campos de la tabla tbl_kard_compras_DET
-        // /////////////////////////////////////////////////////////
-        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
+        // [
+        //   {
+        //       "id_producto_CAB": 316319,
+        //       "cod_producto": "0900019104570",
+        //       "tipo": "I",
+        //       "det": "BULL DENIM RIGIDO PPT",
+        //       "producto": "BULL DENIM RIGIDO PPT",
+        //       "rubro": "TELA",
+        //       "temporada": "",
+        //       "estilo": "",
+        //       "precio": 10,
+        //       "presentacion": "",
+        //       "marca": "",
+        //       "modelo": "",
+        //       "idx_color": "408",
+        //       "color": "PPT",
+        //       "idx_talla": "26",
+        //       "talla": "S/T",
+        //       "condicion": "primera",
+        //       "idxsub": "15494",
+        //       "sku2": null,
+        //       "selected": false
+        //   }
+        // ]
+
+        setRegistros([...registros,...items.map(row=>(
+          {
+            id_subprod:row.idxsub,
+            id_producto_DET:row.id_producto_CAB,
+            producto:row.producto,
+            color:row.color,
+            cantidad:0,
+            despacho:0,
+            precio:0,
+            idx_color:row.idx_color,
+            idx_producto:row.id_producto_CAB,
+            idxsub:row.idxsub,
+            talla:row.talla
+          }))
+        ])
         // /////////////////////////////////////////////////////////
       }}
         closemodal={()=>setOpen(false)}

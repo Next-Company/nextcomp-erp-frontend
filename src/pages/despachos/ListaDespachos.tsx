@@ -214,7 +214,7 @@ export default function ListaDespachos() {
           action: () => {
             const desc = async () => {
               setOpenloader(true)
-              const ruta = (estado == 'SERVICIOS' ? 'produccion/verdespachoguia/' : 'produccion/verdespachomuestra/')
+              const ruta = (estado == 'SERVICIOS' ? 'produccion/verdespachoguia/' : (estado == 'PEDIDOS' ? 'produccion/verdespachopedido/' : 'produccion/verdespachomuestra/'))
               Consulta({
                 /*url: "produccion/exportdespacho/" + id + "/" + idguia + '/-1', params: {*/
 		            url: ruta + id + "/" + idguia + '/2' 
@@ -451,7 +451,8 @@ export default function ListaDespachos() {
                           <th className="lg:table-cell">IdPedido</th>
                           <th className="lg:table-cell">Proveedor</th>
                           <th className="lg:table-cell">NroGuiaRef</th>
-                          <th className="lg:table-cell">Tipo</th>
+                          <th className="lg:table-cell text-center">Tipo</th>
+                          <th className="lg:table-cell text-center">TotalDespacho</th>
                           <th className="lg:table-cell text-center">FechaEmision</th>
                           <th className="lg:table-cell">FechaIngreso</th>
                           <th className="lg:table-cell text-center">Accciones</th>
@@ -497,6 +498,7 @@ export default function ListaDespachos() {
                                 <td className="font-bold">{row.proveedor}</td>
                                 <td>{row.nro_guia}</td>
                                 <td className="w-[100px]"><div className={`text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho['PEDIDOS_'+row.subtipo.toUpperCase()]}`}>{row.subtipo.toUpperCase()}</div></td>
+                                <td className="text-center">{row.total_despacho}</td>
                                 <td className="text-center">{row.fec_emision_guia}</td>
                                 <td>{row.fec_despacho}</td>
                               </>
@@ -509,7 +511,6 @@ export default function ListaDespachos() {
                                 <td className="font-bold">{row.fec_emision_guia}</td>
                                 <td className="font-bold">{row.fec_despacho}</td>
                               </>
-                              
                           }
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
@@ -519,7 +520,7 @@ export default function ListaDespachos() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx} data-idguia={row.id_guia_origen}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx} data-idguia={row.id_guia_origen ?? row.id_pedido_origen}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                 </div>
                               </li>
