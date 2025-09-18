@@ -150,7 +150,7 @@ export function Header({ logout, credentials }) {
                     {
                       items: [
                         { title:'Lista de productos', action:()=>navigate("/main/productos"), submenu:[] },
-                        { title:'Lista de servicios', action:()=>{}, submenu:[] },
+                        { title:'Lista de proveedores', action:()=>{}, submenu:[] },
                         { title:'Lista de colores', action:()=>{}, submenu:[] },
                         { title:'Nueva receta', action:()=>{}, submenu:[] }
                       ],

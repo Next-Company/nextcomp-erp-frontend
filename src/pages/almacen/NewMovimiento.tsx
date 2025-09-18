@@ -11,42 +11,7 @@ import Proveedores from "../../components/Common/Proveedores"
 import Productos from "../../components/Common/Productos"
 import Pedidos from "../../components/Common/Pedidos"
 import Modelos from "../../components/Common/Modelos"
-
-const CuerpoInforme = ({info,tipo})=>{
-  const [ruta,setRuta] = useState("")
-  useEffect(()=>{
-    console.log("El tipo de pedido es:",tipo)
-    const crear = async ()=>{
-      await Consulta({url: 'reports/vistapreviaretiro/telas' ,params:{
-        method:'POST',
-        body:info
-      }})
-      .then(resp => {
-        console.log("La info del reporte es:",resp)
-        const binaryString = window.atob(resp.data);
-        const binaryLen = binaryString.length;
-        const bytes = new Uint8Array(binaryLen);
-        for (let i = 0; i < binaryLen; i++) {
-            const ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
-        }
-        const file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
-        setRuta(file)
-      })
-      .catch((err)=>{
-        // setOpenloader(false)
-        // toast.error('Se produjo un error!!', { theme: "colored" })
-      })
-    }
-    crear()
-  },[])
-  return(
-    <>
-      {/* <iframe src="http://192.168.18.20:4000/produccion/vistapreviapedido/telas" className="w-[21.5cm] h-[60vh]"></iframe> */}
-      <iframe src={ruta} className="w-[60vw] h-[80vh]"></iframe>
-    </>
-  )
-}
+import ProductosLote from "../../components/Common/ProductosLote"
 
 export default function NewMovimiento(){
   const [tipo,setTipo] = useState(0)
@@ -87,11 +52,12 @@ export default function NewMovimiento(){
 
         console.log("Detalle de la lista de articuos :",registros)
         setOpenloader(true)
-        await Consulta({url: 'almacen/saveguiamovimiento/',params:{
-          method:'PUT',
+        await Consulta({url: 'almacen/savedespacho/',params:{
+          method:'POST',
           body:data
         }})
         .then(resp => {
+          console.log("Habner por donde esta yendo:",resp)
           setOpenloader(false)
           if(resp.ok){
             // navigate('/main/pedidos/')
@@ -101,8 +67,10 @@ export default function NewMovimiento(){
             return
           }
         })
-        .catch((err)=>{
-          setOpenloader(false)
+        .catch(async (err)=>{
+          console.log("Recibiendo el error del servidor:",err)
+          // let pepe = await err.json()
+          // console.log("El error recibido es:",pepe)
           toast.error('Se produjo un error!!', { theme: "colored" })
         })
         .finally(()=>{
@@ -137,7 +105,7 @@ export default function NewMovimiento(){
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
       console.log("Hola Ivon",event.detail.valor)
-      setTipo(event.detail.valor == 'TELAS' ? 0 : 1)
+      setTipo(event.detail.valor == 'INGRESOS' ? 0 : 1)
       // setRegistros([])
     };
     form.current.addEventListener("salamandra", handleInputChange);
@@ -147,10 +115,10 @@ export default function NewMovimiento(){
     };
   },[])
 
-  const searchproducto = ()=>{
+  const searchproductoIngreso = ()=>{
     openModal({
       open:true,
-      content: <Productos actions={(items)=>{  
+      content: <ProductosLote actions={(items)=>{  
         console.log("La informacion del producto seleccionado es:",items)
         setOpen(false)
         // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
@@ -180,22 +148,89 @@ export default function NewMovimiento(){
         //   }
         // ]
 
+    // [
+        //   {
+      //       "idx_prod": 311863,
+      //       "codigo": "0900019103440",
+      //       "idx_subprod": 14590,
+      //       "producto": "JERSEY 2 CABOS 28/1 ANCHO 1.61",
+      //       "idx_CAB_COLOR": 34,
+      //       "color": "NEGRO",
+      //       "idx_talla": 26,
+      //       "talla": "S/T",
+      //       "lote": "116",
+      //       "stock": 73.52999877929688,
+      //       "selected": false
+        //   }
+        // ]
+
         setRegistros([...registros,...items.map(row=>(
           {
-            id_subprod:row.idxsub,
-            id_producto_DET:row.id_producto_CAB,
+            id_subprod:row.idx_subprod,
+            id_producto_DET:row.idx_prod,
             producto:row.producto,
+            idx_color:row.idx_CAB_COLOR,
             color:row.color,
             cantidad:0,
             despacho:0,
             precio:0,
-            idx_color:row.idx_color,
-            idx_producto:row.id_producto_CAB,
-            idxsub:row.idxsub,
-            talla:row.talla
+            idx_talla:row.idx_talla,
+            talla:row.talla,
+            lote:row.lote,
+            unidad:row.unidad,
+            metros:0,
+            rollos:0
           }))
         ])
+        // setRegistros([...registros,...items.map(row=>(
+        //   {
+        //     id_subprod:row.idx_subprod,
+        //     id_producto_DET:row.idx_prod,
+        //     producto:row.producto,
+        //     color:row.color,
+        //     cantidad:0,
+        //     despacho:0,
+        //     precio:0,
+        //     idx_color:row.idx_CAB_COLOR,
+        //     idx_producto:row.id_producto_CAB,
+        //     idxsub:row.idxsub,
+        //     talla:row.talla
+        //   }))
+        // ])
         // /////////////////////////////////////////////////////////
+      }}
+        closemodal={()=>setOpen(false)}
+      />,
+      controls: false,
+      header: false,
+      action:async ()=>{
+      }
+    })
+  }
+  const searchproductoEgreso = ()=>{
+    openModal({
+      open:true,
+      content: <ProductosLote actions={(items)=>{  
+        console.log("La informacion del producto seleccionado es:",items)
+        setOpen(false)
+        setRegistros([...registros,...items.map(row=>(
+          {
+            id_subprod:row.idx_subprod,
+            id_producto_DET:row.idx_prod,
+            producto:row.producto,
+            idx_color:row.idx_CAB_COLOR,
+            color:row.color,
+            cantidad:0,
+            despacho:0,
+            precio:0,
+            idx_talla:row.idx_talla,
+            talla:row.talla,
+            lote:row.lote,
+            unidad:row.unidad,
+            metros:0,
+            rollos:0
+          }))
+        ])
       }}
         closemodal={()=>setOpen(false)}
       />,
@@ -224,18 +259,22 @@ export default function NewMovimiento(){
   const editvalue = (e)=>{
     const column = e.target.dataset.name
     const position = e.target.dataset.position
-  
-    // console.log("informacion")
-    if(tipo == 0){
-      if(column == 'color'){
-        setRegistros([...registros.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:''}:item)])
-      } else if(column == 'producto'){
-        setRegistros([...registros.map((item,key)=> position == key ? {...item, producto: e.target.value, idx_producto:''}:item)])
-      } else{
-        setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
-      }
+
+    // if(tipo == 0){
+    //   if(column == 'color'){
+    //     setRegistros([...registros.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:''}:item)])
+    //   } else if(column == 'producto'){
+    //     setRegistros([...registros.map((item,key)=> position == key ? {...item, producto: e.target.value, idx_producto:''}:item)])
+    //   } else{
+    //     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
+    //   }
+    // }else{
+    //   setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
+    // }
+    if(column == 'color'){
+      setRegistros([...registros.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:'',id_subprod: ''}:item)])
     }else{
-      setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
+      setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'sinlote' ? e.target.checked : e.target.value)}:item)])
     }
     
   }
@@ -256,22 +295,6 @@ export default function NewMovimiento(){
     openModal(params_modal)
   }
 
-  const vistaprevia = async ()=>{
-    const data = new FormData()
-    console.log("INfo form",Object.fromEntries(new FormData(form.current)))
-    data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-    data.append('detalle',JSON.stringify(registros))
-
-    const params_modal = {
-      open:true,
-      content: <CuerpoInforme info={data} tipo={tipo} />,
-      controls: false,
-      header: false,
-      action:async ()=>{
-      }
-    }
-    openModal(params_modal)   
-  }
   const searchpedido = () => {
     let params_modal = null
     params_modal = {
@@ -373,7 +396,7 @@ export default function NewMovimiento(){
                       { indice: '9', option: 'INGRESOS', selected: true }, 
                       { indice: '10', option: 'RETIROS' }, 
                     ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo_operacion : null} 
+                    df={Object.keys(info).length > 0 ? info.tipo_operacion : null} formref={form} 
                   />
                   <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
@@ -408,7 +431,9 @@ export default function NewMovimiento(){
                           <th className="lg:table-cell">Talla</th>
                           <th className="lg:table-cell">Lote</th>
                           <th className="lg:table-cell">SN/Lote</th>
-                          <th className="lg:table-cell">Ingreso</th>
+                          <th className="lg:table-cell">Rollos</th>
+                          <th className="lg:table-cell">Metros</th>
+                          <th className="lg:table-cell">Despacho</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
                       </thead>
@@ -418,13 +443,21 @@ export default function NewMovimiento(){
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td className="text-center">{row.producto}</td>
                               <td className="text-center">{row.unidad}</td>
-                              <td className="text-center">{row.color}</td>
+                              <td className="text-center w-[100px]">
+                                {
+                                  tipo 
+                                  ? row.color
+                                  : <input type="text" onChange={editvalue} data-position={key} data-name="color" value={row.color} />
+                                }
+                              </td>
+                              {/* <td className="text-center">{row.color}</td> */}
                               <td className="text-center">{row.talla}</td>
                               <td className="text-center">{row.lote}</td>
-                              <td className="text-center">
-                                <input type="checkbox" name='snlote' />
-                              </td>
-                              <td className="w-[200px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho} /></td>
+                              {/* <td className="w-[120px]"><input type="number" onChange={editvalue} data-position={key} data-name="lote" value={row.lote} /></td> */}
+                              <td className="text-center"><input type="checkbox" id="sinlote" onChange={editvalue} data-position={key} data-name="sinlote" checked={row.sinlote} /></td>
+                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} step={'0.01'} /></td>
+                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="metros" value={row.metros} step={'0.01'} /></td>
+                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho} step={'0.01'} /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -460,27 +493,31 @@ export default function NewMovimiento(){
                       </tbody>
                       <tfoot className="sticky bottom-0 bg-white">
                         <tr>
-                          <td colSpan={2} className="text-right"></td>
+                          <td colSpan={3} className="text-right"></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL: </strong></td>
                           {/* <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(2)}
                           </td> */}
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
+                          <td className="text-center">0</td>
+                          <td className="text-center">0</td>
+                          <td className="text-center">0</td>
+                          {/* <td className="text-center"></td> */}
                           {/* <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + parseFloat(row.despacho) ,0).toFixed(2)}
                           </td> */}
                           <td></td>
                         </tr>
                         <tr>
-                          <td colSpan={8} >
+                          <td colSpan={10} >
                             <div className="flex flex-row justify-center gap-2">
-                              <div onClick={searchproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                              <div onClick={tipo ? searchproductoEgreso : searchproductoIngreso} className={`${tipo ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} w-[150px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer `}>
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                               </div>
-                              <div onClick={searchproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                              {/* <div onClick={searchproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                              </div>
+                              </div> */}
                             </div>
                           </td>
                         </tr>

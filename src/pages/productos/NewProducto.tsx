@@ -433,7 +433,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         setorden(orden=>([{...orden[0],marca:item.nom}]))
         setopen(false)
       }}/>,
-      controls: false,
+      controls: true,
       header: false,
       action:()=>{
       }
