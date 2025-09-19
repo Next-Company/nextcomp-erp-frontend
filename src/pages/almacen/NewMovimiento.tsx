@@ -12,6 +12,7 @@ import Productos from "../../components/Common/Productos"
 import Pedidos from "../../components/Common/Pedidos"
 import Modelos from "../../components/Common/Modelos"
 import ProductosLote from "../../components/Common/ProductosLote"
+import Almacenes from "../../components/Common/Almacenes"
 
 export default function NewMovimiento(){
   const [tipo,setTipo] = useState(0)
@@ -118,7 +119,7 @@ export default function NewMovimiento(){
   const searchproductoIngreso = ()=>{
     openModal({
       open:true,
-      content: <ProductosLote actions={(items)=>{  
+      content: <ProductosLote almacen={588} actions={(items)=>{  
         console.log("La informacion del producto seleccionado es:",items)
         setOpen(false)
         // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
@@ -179,7 +180,8 @@ export default function NewMovimiento(){
             lote:row.lote,
             unidad:row.unidad,
             metros:0,
-            rollos:0
+            rollos:0,
+            tipo:row.tipo
           }))
         ])
         // setRegistros([...registros,...items.map(row=>(
@@ -228,7 +230,8 @@ export default function NewMovimiento(){
             lote:row.lote,
             unidad:row.unidad,
             metros:0,
-            rollos:0
+            rollos:0,
+            tipo:row.tipo
           }))
         ])
       }}
@@ -259,24 +262,11 @@ export default function NewMovimiento(){
   const editvalue = (e)=>{
     const column = e.target.dataset.name
     const position = e.target.dataset.position
-
-    // if(tipo == 0){
-    //   if(column == 'color'){
-    //     setRegistros([...registros.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:''}:item)])
-    //   } else if(column == 'producto'){
-    //     setRegistros([...registros.map((item,key)=> position == key ? {...item, producto: e.target.value, idx_producto:''}:item)])
-    //   } else{
-    //     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
-    //   }
-    // }else{
-    //   setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
-    // }
     if(column == 'color'){
       setRegistros([...registros.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:'',id_subprod: ''}:item)])
     }else{
       setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'sinlote' ? e.target.checked : e.target.value)}:item)])
     }
-    
   }
   const nuevoproveedor = ()=>{
     let params_modal = null
@@ -291,6 +281,21 @@ export default function NewMovimiento(){
       header: false,
       action:()=>{
       }
+    }
+    openModal(params_modal)
+  }
+  const nuevatienda = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Almacenes actions={(item)=>{  
+        console.log("El item seleccionado es: ",item)
+        setInfo(info=>({...info,Suc_Tienda:item.idx,almacen:item.nom}))
+        setOpen(false)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{}
     }
     openModal(params_modal)
   }
@@ -404,8 +409,10 @@ export default function NewMovimiento(){
                   <div className="w-[500px]">
                     <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
                   </div>
-                  <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
+                  <Input name={'Suc_Tienda'} defaults={Object.keys(info).length > 0 ? info.Suc_Tienda : null} type="hidden" />                  
+                    <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true"/>
+                  {/* <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/> */}
                 </div>
                 <div className="flex gap-3">
                   <InputSelect title={'Motivo'} name={"motivo"} data={
@@ -416,6 +423,14 @@ export default function NewMovimiento(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.motivo : null} 
                   />
+                  {/* <div className="w-[500px]">
+                  </div> */}
+                  <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
+                  {/* <div className="w-[500px]">
+                    <Input name={'Suc_Tienda'} defaults={Object.keys(info).length > 0 ? info.Suc_Tienda : null} type="hidden" />                  
+                    <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true"/>
+                  </div> */}
                 </div>
                 <div>
                   <span className="flex flex-row items-center gap-2">

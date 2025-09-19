@@ -248,7 +248,7 @@ const routes = [
               { path: "", element: <ListaMovimientosAlmacen />, error: <ErrorController/> },
               // { path: "nuevo", element: <NewInOut />, error: <ErrorController/> },
               { path: "nuevo", element: <NewMovimiento />, error: <ErrorController/> },
-              { path: "nuevo/:id", element: <NewInOut />, error: <ErrorController/> },
+              { path: "nuevo/:id", element: <NewMovimiento />, error: <ErrorController/> },
               { path: "cuadre/:id", element: <CuadreCorte /> }
             ]
           },

@@ -309,7 +309,15 @@ function SeccionMolde({info,orden}){
       </div>
       <div className="flex gap-3">
         <Input name={'cliente_corte'} defaults={info.length > 0 && info[0].cliente_corte ? info[0].cliente_corte : null} title="Aprobación Cliente" type="text" />
-        <Input name={'tizado'} defaults={info.length > 0 && info[0].tizado ? info[0].tizado : null} title="Tizado" type="text" />
+        {/* <Input name={'tizado'} defaults={info.length > 0 && info[0].tizado ? info[0].tizado : null} title="Tizado" type="text" /> */}
+        <InputSelect title={'Tizado'} name={"tizado"} data={
+          [
+            { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true  },
+            { indice: 'OBSERVADO', option: 'OBSERVADO' },
+            { indice: 'FINALIZADO', option: 'FINALIZADO' },
+          ]} 
+          df={Object.keys(info).length > 0 ? info[0].tizado : null} 
+        />
         <InputSelect title={'Estado'} name={"estado_molde"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_molde : null} />
       </div>
       <div>
