@@ -372,7 +372,6 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
   }
   const onclickinsumos = (e)=>{
     const position = e.target.dataset.position
-    console.log("Eliminando registros",position,insumos)
     setinsumos([...insumos.filter((row,key)=>key !== parseInt(position))])
   } 
   const editvalueinsumos = (e)=>{
@@ -395,6 +394,10 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       }
     })
   }
+  const onclickpedidos = (e)=>{
+    const position = e.target.dataset.position
+    setrequerimientos([...requerimientos.filter((row,key)=>key !== parseInt(position))])
+  } 
   const agregarpedido = ()=>{
     openmodal({
       open:true,
@@ -768,23 +771,13 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                     <td className="w-[250px]">
                       <ul className="flex flex-row justify-end">
                         <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclickpedidos} data-position={key}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                           </div>
                         </li>
                         <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download" onClick={()=>{}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                           </div>
                         </li>
                         <li>
@@ -845,7 +838,8 @@ export function NewOrden() {
     let data = undefined
 
     if(position == 0){
-      url_save = 'ordenes/saveFaseOrden'
+      
+      url_save = urlparams.id ? 'ordenes/updateFaseOrden' : 'ordenes/saveFaseOrden'
 
       for (const element of form.current.querySelectorAll("input[verify='true']")) {
         if(element.tagName == 'INPUT' && element.value == ''){
