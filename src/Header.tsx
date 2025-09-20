@@ -70,7 +70,7 @@ export function Header({ logout, credentials }) {
             <ul className="list-none min-w-[300px] flex [&_div.button:hover]:bg-gray-100 [&_div.button]:cursor-pointer [&_div.button]:text-nowrap [&_div.button]:pl-5 [&_div.button]:pr-5 [&_div.button]:flex [&_div.button]:justify-center [&_div.button]:items-center [&_div.button]:h-[50px] [&_div.button.active]:text-blue-500 [&_div.button]:text-gray-600 [&_div.button]:rounded-none [&_div.button:hover]:outline-none [&_div.button]:font-[inherit] [&_div.button]:font-semibold [&_div.button.active:hover]:bg-blue-50">
               <div className={`button group relative`} onClick={()=>{}}>
                 <span className="relative h-[100%] flex items-center pointer-events-none">
-                  Órdenes en proceso
+                  Producción
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
                 <Menu info={
@@ -100,7 +100,7 @@ export function Header({ logout, credentials }) {
               </div>
               <div className={`button group relative`} onClick={()=>{}}>
                 <span className="relative h-[100%] flex items-center pointer-events-none">
-                  Guias
+                  Solicitudes
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
                 <Menu info={
@@ -130,7 +130,7 @@ export function Header({ logout, credentials }) {
               </div>
               <div className={`button group`} onClick={()=>{}}>
                 <span className="relative h-[100%] flex items-center pointer-events-none">
-                  Almacen
+                  Logística
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </div>
@@ -149,10 +149,10 @@ export function Header({ logout, credentials }) {
                     },
                     {
                       items: [
-                        { title:'Lista de productos', action:()=>navigate("/main/productos"), submenu:[] },
-                        { title:'Lista de proveedores', action:()=>{}, submenu:[] },
-                        { title:'Lista de colores', action:()=>{}, submenu:[] },
-                        { title:'Nueva receta', action:()=>{}, submenu:[] }
+                        { title:'Recetas', action:()=>navigate("/main/productos"), submenu:[] },
+                        { title:'Avios e Insumos', action:()=>navigate("/main/productos"), submenu:[] },
+                        { title:'Proveedores', action:()=>{}, submenu:[] },
+                        { title:'Tallas y Colores', action:()=>{}, submenu:[] },
                       ],
                       division:false
                     }
@@ -164,7 +164,7 @@ export function Header({ logout, credentials }) {
                   Reportes
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
-                <Menu info={
+                {/* <Menu info={
                   [
                     {
                       items: [
@@ -187,7 +187,7 @@ export function Header({ logout, credentials }) {
                       division:false
                     }
                   ]
-                }/>
+                }/> */}
               </div>
             </ul>
           </div>
