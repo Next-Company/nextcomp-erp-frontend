@@ -647,7 +647,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
   </>
 }
 
-export function NewProducto() {
+export function NewReceta() {
   const form = useRef()
   const urlparams = useParams()
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)

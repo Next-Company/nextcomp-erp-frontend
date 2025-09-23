@@ -16,6 +16,7 @@ import Almacenes from "../../components/Common/Almacenes"
 
 export default function NewMovimiento(){
   const [tipo,setTipo] = useState(0)
+  const [motivo,setMotivo] = useState('mst')
   const [searchParams,setSearchParams] = useSearchParams()
   const urlparams = useParams()
   const [info,setInfo] = useState({tipo_operacion:'9'})
@@ -86,10 +87,10 @@ export default function NewMovimiento(){
       const pp = async () => {
         // await Consulta({url: 'produccion/retiros/' + urlparams.id,})
         // await Consulta({url: 'almacen/getmovimientobyid/' + urlparams.id,})
-        await Consulta({url: 'almacen/getguiamovimiento/' + urlparams.id,})
+        await Consulta({url: 'almacen/getdespacho/' + urlparams.id,})
           .then(resp => {
             console.log("Busqueda info pedido:",resp)
-            setInfo({...info,tipo_operacion:resp.cab.tipomov,fec_emision:resp.cab.fec_emision,fec_retorno:resp.cab.fec_emision,id_modelo:resp.cab.id_modelo,modelos:resp.cab.modelos,id_pedido_origen:resp.cab.id_pedido_origen,nro_pedido_origen:resp.cab.id_pedido_origen,id_proveedor_CAB:resp.cab.id_proveedor_CAB,proveedor:resp.cab.proveedor,orden_ref:resp.cab.nro_requerimiento,oc:resp.cab.oc,nro_corte:resp.cab.nro_corte,responsable:'CARLOS'})
+            setInfo({...info,tipo_operacion:resp.cab.tipomov,fec_emision:resp.cab.fec_emision,fec_retorno:resp.cab.fec_emision,id_modelo:resp.cab.id_modelo,modelos:resp.cab.modelos,id_pedido_origen:resp.cab.id_pedido_origen,nro_pedido_origen:resp.cab.id_pedido_origen,id_proveedor_CAB:resp.cab.id_proveedor_CAB,proveedor:resp.cab.Raz_social_DOC,ruc:resp.cab.Nro_Doc_Prov,orden_ref:resp.cab.nro_requerimiento,oc:resp.cab.oc,nro_corte:resp.cab.nro_corte,responsable:'CARLOS',Suc_Tienda:resp.cab.Suc_Tienda,almacen:resp.cab.almacen})
             setRegistros(resp.det)
             // setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
             setOpenloader(false)
@@ -105,8 +106,13 @@ export default function NewMovimiento(){
     }
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
-      console.log("Hola Ivon",event.detail.valor)
-      setTipo(event.detail.valor == 'INGRESOS' ? 0 : 1)
+      console.log("Hola Ivon",event.detail.valor,event.detail)
+      if(event.detail.name == 'motivo'){
+        setMotivo(event.detail.indice)
+      }
+      if(event.detail.name == 'tipo_operacion'){
+        setTipo(event.detail.valor == 'INGRESOS' ? 0 : 1)
+      }
       // setRegistros([])
     };
     form.current.addEventListener("salamandra", handleInputChange);
@@ -352,7 +358,7 @@ export default function NewMovimiento(){
             if(resp.ok){
               let cabecera = resp.info[0]
               let detalle = resp.info[1]
-              setInfo(info => ({ ...info, id_pedido_origen: cabecera.idx, nro_pedido_origen: cabecera.idx, id_proveedor_CAB: cabecera.id_proveedor_CAB, proveedor: cabecera.proveedor, orden_ref: cabecera.orden_ref, oc: cabecera.oc, nro_corte: cabecera.nro_corte, ruc: cabecera.ruc, modelos:cabecera.modelos, id_modelo: cabecera.idorden }))
+              setInfo(info => ({ ...info, id_pedido_origen: cabecera.idx, nro_pedido_origen: cabecera.idx, id_proveedor_CAB: cabecera.id_proveedor_CAB, proveedor: cabecera.Raz_social_DOC, orden_ref: cabecera.orden_ref, oc: cabecera.oc, nro_corte: cabecera.nro_corte, ruc: cabecera.Nro_Doc_Prov, modelos:cabecera.modelos, id_modelo: cabecera.idorden }))
               setRegistros([...detalle.filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
                 row = { ...row, id_item: row.idx, despacho: 0, stock: row.stock, lote: cabecera.idx }
                 Reflect.deleteProperty(row, 'idx')
@@ -410,7 +416,7 @@ export default function NewMovimiento(){
                     <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
                   </div>
                   <Input name={'Suc_Tienda'} defaults={Object.keys(info).length > 0 ? info.Suc_Tienda : null} type="hidden" />                  
-                    <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true"/>
+                  <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true"/>
                   {/* <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/> */}
                 </div>
@@ -419,13 +425,16 @@ export default function NewMovimiento(){
                     [
                       { indice: 'mst', option: 'MUESTRA', selected: true }, 
                       { indice: 'ajt', option: 'AJUSTE' }, 
-                      { indice: 'acb', option: 'ACABADOS' }
+                      { indice: 'acb', option: 'ACABADOS' },
+                      { indice: 'crt', option: 'CORTE' }
                     ]} 
-                    df={Object.keys(info).length > 0 ? info.motivo : null} 
+                    df={Object.keys(info).length > 0 ? info.motivo : null} formref={form} 
                   />
-                  {/* <div className="w-[500px]">
-                  </div> */}
-                  <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
+                  {/* {
+                    motivo == 'crt' &&
+                  } */}
+                  <Input name={'id_orden'} defaults={Object.keys(info).length > 0 && info.id_orden ? info.id_orden : null} type="hidden" />
+                  <Input name={'modelo'} defaults={Object.keys(info).length > 0 && info.modelo ? info.modelo : null} title="Modelo" type="text" />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
                   {/* <div className="w-[500px]">
                     <Input name={'Suc_Tienda'} defaults={Object.keys(info).length > 0 ? info.Suc_Tienda : null} type="hidden" />                  

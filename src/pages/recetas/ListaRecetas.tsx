@@ -11,7 +11,7 @@ const colorfase = {
   'TELAS': 'bg-orange-500',
   'AVIOS': 'bg-violet-500'
 }
-export default function ListaProductos() {
+export default function ListaRecetas() {
   const lista = useRef()
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
