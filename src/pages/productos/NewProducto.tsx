@@ -486,78 +486,18 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         <div className="w-[20%]">
           <Input name={'codUnidadMedida'} title="Medida" defaults={info.length > 0 ? info[0].codUnidadMedida : null} type="text" action={nuevaunidad} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
-        <div className="flex gap-3">
-          <div className="w-[24%]">
-            <InputSelect title={'Plan'} name={"tipoPlan"} formref={form} data={
-              [
-                { indice: 'CLA', option: 'CLASICO', selected: true  },
-                { indice: 'MOD', option: 'MODA' },
-              ]} 
-              df={Object.keys(info).length > 0 ? info[0].tipoPlan : null} placeholder={'Seleccione el rubro correpondiente al producto.'} 
-            />
-          </div>
-          <div className="w-[30%]">
-            <InputSelect title={'Genero'} name={"genero"} formref={form} data={
-              [
-                { indice: 'CAB', option: 'CABALLERO', selected: true  },
-                { indice: 'DAM', option: 'DAMA' },
-                { indice: 'NIO', option: 'NIÑO' },
-                { indice: 'NIA', option: 'NIÑA' },
-              ]} 
-              df={Object.keys(info).length > 0 ? info[0].genero : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-            />
-          </div>
-          <div className="w-[30%]">
-            <InputSelect title={'Fabricacion'} name={"tipoFabricacion"} formref={form} data={
-              [
-                { indice: 'PT', option: 'PUNTO', selected: true  },
-                { indice: 'PL', option: 'PLANO' },
-                { indice: 'FT', option: 'FANTASIA' },
-                { indice: 'PC', option: 'PLANO COMPLEMENTO' }
-              ]} 
-              df={Object.keys(info).length > 0 ? info[0].tipoFabricacion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-            />
-          </div>
-
-        </div>
-        <div className="w-[30%]">
-          <InputSelect title={'Temporada'} name={"temporada"} formref={form} data={
-            [
-              { indice: 'PV', option: 'PRIMAVERA-VERANO', selected: true  },
-              { indice: 'OI', option: 'OTOÑO-INVIERNO' },
-              { indice: 'TT', option: 'TERMINO TEMPORADA' }
-            ]} 
-            df={Object.keys(info).length > 0 ? info[0].temporada : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-          />
-        </div>
-        <div className="w-[35%]">
-          <InputSelect title={'TipoProduccion'} name={"tipoProduccion"} formref={form} data={
-            [
-              { indice: 'NCNL', option: 'NACIONAL', selected: true  },
-              { indice: 'IMPT', option: 'IMPORTADO' },
-            ]} 
-            df={Object.keys(info).length > 0 ? info[0].tipoProduccion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-          />
-        </div>
+      </div>
+      <div className="w-[30%]">
+        <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" action={nuevamarca} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+      </div>
+      <div className="w-[20%]">
+        <Input name={'precio'} title="Densidad" defaults={info.length > 0 ? info[0].densidad : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+      </div>
+      <div className="w-[30%]">
+        <Input name={'marca'} title="Composicion" defaults={info.length > 0 ? info[0].composicion : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
       </div>
       <hr/>
       <div className="flex flex-col gap-3">
-        <div className="flex gap-3">
-          <div className="w-[30%]">
-            <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" action={nuevamarca} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-          </div>
-        </div>
-        <div className="w-[35%]">
-          <Input name={'presentacion'} title="Presentacion" defaults={info.length > 0 ? info[0].presentacion : null} type="text" action={nuevapresentacion} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        </div>
-      </div>
-      <div className="w-[24%]">
-        <Input name={'modelo'} title="Modelo" defaults={info.length > 0 ? info[0].modelo : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-      </div>
-      <div className="flex flex-col gap-3">
-        <div className="w-[20%]">
-          <Input name={'estilo'} title="Estilo" defaults={info.length > 0 ? info[0].estilo : null} type="text" action={nuevoestilo} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        </div>
         <div className="w-[18%]">
           <InputSelect title={'Es Fraccionable'} name={"fraccionable"} formref={form} data={
             [
@@ -859,12 +799,12 @@ export function NewProducto() {
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px] pr-1">Recetas /</h2>
+              <h2 className="font-medium text-[16px] pr-1">Productos /</h2>
               <span className="text-blue-500 font-bold">
                 {
                   urlparams.id && orden.length > 0
                   ? `${orden[0].nom + ' ' + orden[0].marca}`
-                  : "Nueva Receta"
+                  : "Nuevo Producto"
                 }
               </span>
             </div>

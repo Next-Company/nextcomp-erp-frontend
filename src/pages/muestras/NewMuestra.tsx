@@ -172,17 +172,20 @@ export default function NewMuestra(){
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   {/* <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" /> */}
-                  <InputSelect title={'Tipo'} name={"tipo"} data={
-                    [
-                      { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true }, 
-                      // { indice: 'ACABADOS', option: 'ACABADOS' },
-                      { indice: 'REPARACION', option: 'REPARACION' },
-                      { indice: 'PRESTAMO', option: 'PRESTAMO' },
-                      { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },
-                      { indice: 'INTERNO', option: 'INTERNO' }
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo : null} 
-                  />
+                  <div className="w-[320px]">
+                    <InputSelect title={'Tipo'} name={"tipo"} data={
+                      [
+                        { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true }, 
+                        // { indice: 'ACABADOS', option: 'ACABADOS' },
+                        { indice: 'REPARACION', option: 'REPARACION' },
+                        { indice: 'PRESTAMO', option: 'PRESTAMO' },
+                        { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },
+                        { indice: 'INTERNO', option: 'INTERNO' }
+                      ]} 
+                      df={Object.keys(info).length > 0 ? info.tipo : null} 
+                    />
+                    
+                  </div>
                   {/* <InputSelect title={'Servicio'} name={"servicio"} data={
                     [
                       { indice: 'CONFECCION', option: 'CONFECCION', selected: true }, 

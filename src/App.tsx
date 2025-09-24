@@ -72,6 +72,10 @@ import ListaProductos from './pages/productos/ListaProductos.tsx'
 import { NewProducto } from './pages/productos/NewProducto.tsx'
 import CuadreCorte from './pages/almacen/NewCuadre.tsx'
 import NewMovimiento from './pages/almacen/NewMovimiento.tsx'
+import LayoutRecetas from './pages/recetas/LayoutRecetas.tsx'
+import ListaRecetas from './pages/recetas/ListaRecetas.tsx'
+import { NewReceta } from './pages/recetas/NewReceta.tsx'
+import ListaProveedores from './pages/proveedores/ListaProveedores.tsx'
 
 const routes = [
   {
@@ -271,10 +275,28 @@ const routes = [
         ]
       },
       {
+        path: "recetas",
+        element: <PrivateRoute><LayoutRecetas/></PrivateRoute>,
+        children: [
+          { path: "",element: <ListaRecetas />, error: <ErrorController/> },
+          { path: "nuevo",element: <NewReceta />, error: <ErrorController/> },
+          { path: "nuevo/:id",element: <NewReceta />, error: <ErrorController/> }
+        ]
+      },
+      {
         path: "productos",
         element: <PrivateRoute><LayoutProductos/></PrivateRoute>,
         children: [
           { path: "",element: <ListaProductos />, error: <ErrorController/> },
+          { path: "nuevo",element: <NewProducto />, error: <ErrorController/> },
+          { path: "nuevo/:id",element: <NewProducto />, error: <ErrorController/> }
+        ]
+      },
+      {
+        path: "proveedores",
+        element: <PrivateRoute><LayoutProductos/></PrivateRoute>,
+        children: [
+          { path: "",element: <ListaProveedores />, error: <ErrorController/> },
           { path: "nuevo",element: <NewProducto />, error: <ErrorController/> },
           { path: "nuevo/:id",element: <NewProducto />, error: <ErrorController/> }
         ]

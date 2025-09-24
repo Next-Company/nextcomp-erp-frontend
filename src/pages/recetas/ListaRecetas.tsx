@@ -127,7 +127,7 @@ export default function ListaRecetas() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/productos/nuevo/" + id)
+        navigate("/main/recetas/nuevo/" + id)
         break;
       default:
         break;
@@ -160,7 +160,7 @@ export default function ListaRecetas() {
       })
   }
   const nuevoretiro = () => {
-    navigate('/main/productos/nuevo')
+    navigate('/main/recetas/nuevo')
   }
   const filtrarestado = (e) => {
     const estado = e.target.dataset.estado

@@ -15,18 +15,21 @@ export default function ListaProductos() {
   const lista = useRef()
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
-  const [estado,setEstado] = useState('PENDIENTE')
+  const [estado,setEstado] = useState('INSUMO')
   const navigate = useNavigate()
   const { logout } = useContext(AuthPermitions)
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   // const [refresh,setRefresh] = useState(false)
 
   useEffect(() => {
-    const data = new FormData()
     setOpenloader(true)
     Consulta({
       url: 'productos/productosTotal', params: {
-        method: 'GET'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({filters:{tipo:estado == 'INSUMO' ? 'I' : 'A'}})
       }
     })
       .then(resp => {
@@ -163,28 +166,31 @@ export default function ListaProductos() {
     navigate('/main/productos/nuevo')
   }
   const filtrarestado = (e) => {
-    const estado = e.target.dataset.estado
+    const estado = e.target.dataset.tipo
     setOpenloader(true)
     Consulta({
-      url: 'almacen/listarinventario', params: {
-        method: 'GET'
+      url: 'productos/productosTotal', params: {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({filters:{tipo:estado == 'INSUMO' ? 'I' : 'A'}})
       }
     })
-      .then(resp => {
-        setOpenloader(false)
-        lista.current.querySelector('button.active').classList.remove('active')
-        e.target.classList.add('active')
-        setInfo(resp)
-        setInfoestado(resp.filter(row => row.estado == estado))
-        setEstado(estado)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-      .finally(() => {
-        setOpenloader(false)
-      })
-
+    .then(resp => {
+      setOpenloader(false)
+      lista.current.querySelector('button.active').classList.remove('active')
+      e.target.classList.add('active')
+      setInfo(resp)
+      // setInfoestado(resp.filter(row => row.estado == estado))
+      setEstado(estado)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(() => {
+      setOpenloader(false)
+    })
   }
   const busquedaproducto = (input)=>{
     // console.log(input.value)
@@ -217,7 +223,7 @@ export default function ListaProductos() {
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Listado de recetas</h2>
+              <h2 className="font-medium text-[16px]">Listado de productos</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={busquedaproducto} />
               </div>
@@ -226,15 +232,15 @@ export default function ListaProductos() {
           </div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             <hr />
-            {/* <div>
+            <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
+                <button className={`group ${estado == 'INSUMO' && 'active'}`} data-tipo="INSUMO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Insumos
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
+                <button className={`group ${estado == 'AVIO' && 'active'}`} data-tipo="AVIO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Avios
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -242,7 +248,7 @@ export default function ListaProductos() {
                 </button>
               </ul>
             </div>
-            <hr /> */}
+            <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll">
               <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
@@ -251,11 +257,9 @@ export default function ListaProductos() {
                     <th className="lg:table-cell">Codigo</th>
                     <th className="lg:table-cell">Producto</th>
                     <th className="lg:table-cell">Costo</th>
+                    <th className="lg:table-cell">Rubro</th>
                     <th className="lg:table-cell">Marca</th>
-                    <th className="lg:table-cell">Modelo</th>
-                    <th className="lg:table-cell">Temporada</th>
-                    <th className="lg:table-cell">Estilo</th>
-                    <th className="lg:table-cell">Presentacion</th>
+                    <th className="lg:table-cell">Unidad</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -268,11 +272,9 @@ export default function ListaProductos() {
                           <td>{row.cod_producto}</td>
                           <td className="font-bold">{row.producto}</td>
                           <td className="">{row.costo}</td>
+                          <td className="">{row.rubro}</td>
                           <td className="">{row.marca}</td>
-                          <td className="">{row.modelo}</td>
-                          <td className="">{row.temporada}</td>
-                          <td className="">{row.estilo}</td>
-                          <td className="">{row.presentacion}</td>
+                          <td className="">{row.codUnidadMedida}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>

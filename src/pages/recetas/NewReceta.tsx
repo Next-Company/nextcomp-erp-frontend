@@ -496,29 +496,28 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
               df={Object.keys(info).length > 0 ? info[0].tipoPlan : null} placeholder={'Seleccione el rubro correpondiente al producto.'} 
             />
           </div>
-          <div className="w-[30%]">
-            <InputSelect title={'Genero'} name={"genero"} formref={form} data={
-              [
-                { indice: 'CAB', option: 'CABALLERO', selected: true  },
-                { indice: 'DAM', option: 'DAMA' },
-                { indice: 'NIO', option: 'NIÑO' },
-                { indice: 'NIA', option: 'NIÑA' },
-              ]} 
-              df={Object.keys(info).length > 0 ? info[0].genero : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-            />
-          </div>
-          <div className="w-[30%]">
-            <InputSelect title={'Fabricacion'} name={"tipoFabricacion"} formref={form} data={
-              [
-                { indice: 'PT', option: 'PUNTO', selected: true  },
-                { indice: 'PL', option: 'PLANO' },
-                { indice: 'FT', option: 'FANTASIA' },
-                { indice: 'PC', option: 'PLANO COMPLEMENTO' }
-              ]} 
-              df={Object.keys(info).length > 0 ? info[0].tipoFabricacion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-            />
-          </div>
-
+        </div>
+        <div className="w-[25%]">
+          <InputSelect title={'Genero'} name={"genero"} formref={form} data={
+            [
+              { indice: 'CAB', option: 'CABALLERO', selected: true  },
+              { indice: 'DAM', option: 'DAMA' },
+              { indice: 'NIO', option: 'NIÑO' },
+              { indice: 'NIA', option: 'NIÑA' },
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].genero : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
+          />
+        </div>
+        <div className="w-[35%]">
+          <InputSelect title={'Fabricacion'} name={"tipoFabricacion"} formref={form} data={
+            [
+              { indice: 'PT', option: 'PUNTO', selected: true  },
+              { indice: 'PL', option: 'PLANO' },
+              { indice: 'FT', option: 'FANTASIA' },
+              { indice: 'PC', option: 'PLANO COMPLEMENTO' }
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].tipoFabricacion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
+          />
         </div>
         <div className="w-[30%]">
           <InputSelect title={'Temporada'} name={"temporada"} formref={form} data={
@@ -824,7 +823,7 @@ export function NewReceta() {
       controls: true,
       content: <div>Desea descartar los cambios realizados?.<br/> Cualquier modificacion realizada se perderá.</div>,
       action: ()=>{
-        navigate('/main/productos/')
+        navigate('/main/recetas/')
       }
     })
   }

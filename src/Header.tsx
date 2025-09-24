@@ -149,9 +149,9 @@ export function Header({ logout, credentials }) {
                     },
                     {
                       items: [
-                        { title:'Recetas', action:()=>navigate("/main/productos"), submenu:[] },
+                        { title:'Recetas', action:()=>navigate("/main/recetas"), submenu:[] },
                         { title:'Avios e Insumos', action:()=>navigate("/main/productos"), submenu:[] },
-                        { title:'Proveedores', action:()=>{}, submenu:[] },
+                        { title:'Proveedores', action:()=>navigate("/main/proveedores"), submenu:[] },
                         { title:'Tallas y Colores', action:()=>{}, submenu:[] },
                       ],
                       division:false

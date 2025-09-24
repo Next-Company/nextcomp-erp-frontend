@@ -401,14 +401,16 @@ export default function NewMovimiento(){
               <div className={` flex-col gap-3 flex`}>
 
                 <div className="flex gap-3">
-                  <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />                  
-                  <InputSelect title={'TipoMov'} name={"tipo_operacion"} data={
-                    [
-                      { indice: '9', option: 'INGRESOS', selected: true }, 
-                      { indice: '10', option: 'RETIROS' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo_operacion : null} formref={form} 
-                  />
+                  <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
+                  <div className="w-[340px]">
+                    <InputSelect title={'TipoMov'} name={"tipo_operacion"} data={
+                      [
+                        { indice: '9', option: 'INGRESOS', selected: true }, 
+                        { indice: '10', option: 'RETIROS' }, 
+                      ]} 
+                      df={Object.keys(info).length > 0 ? info.tipo_operacion : null} formref={form} 
+                    />
+                  </div>
                   <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
