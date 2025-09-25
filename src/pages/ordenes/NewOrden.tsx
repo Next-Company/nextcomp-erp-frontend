@@ -8,13 +8,12 @@ import { Consulta } from "../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import { InputMultiSelect } from "../../components/Atoms/Input/InputMultiSelect";
 import { TextArea } from "../../components/Atoms/Input/TextArea";
-import { OrdenPedidoAvios } from "../../templates/OrdenPedidoAvios";
-import { OrdenPedidoTelas } from "../../templates/OrdenPedidoTelas";
 import Proveedores from "../../components/Common/Proveedores";
 import Pedidos from "../../components/Common/Pedidos";
 import { InputTest } from "../../components/Atoms/Input/InputTest";
 import Productos from "../../components/Common/Productos";
 import Recetas from "../../components/Common/Recetas";
+import Colores from "../../components/Common/Colores";
 
 const listTables = [
   'tbl2_fases_prod_ordenes',
@@ -72,7 +71,7 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   )
 }
 
-function CuerpoCorte({info,setcorte,position,quitar,form}){
+function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
   console.log("El chapuloin colorado 2: ",info)
   const [active,setActive] = useState(-1)
   const onclick = (e)=>{
@@ -122,11 +121,30 @@ function CuerpoCorte({info,setcorte,position,quitar,form}){
     // },[]))
   }
   const agregarcombo = (e)=>{
-    const id = e.target.dataset.id
-    setcorte(corte=>corte.reduce((c,v)=>{
-      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
-      return c
-    },[]))
+    openmodal({
+      open:true,
+      content: <Colores actions={(items)=>{  
+        console.log("Informacion de los insumos:",items)
+        const id = e.target.dataset.id
+        setcorte(corte=>corte.reduce((c,v)=>{
+          c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
+          return c
+        },[]))
+      }}
+        closemodal={()=>setopen(false)}
+      />,
+      controls: false,
+      header: false,
+      action:async ()=>{
+      }
+    })
+
+    // const id = e.target.dataset.id
+    // setcorte(corte=>corte.reduce((c,v)=>{
+    //   c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
+    //   return c
+    // },[]))
+
   }
   const deletecorte = (e)=>{
     const position = e.target.dataset.position
@@ -260,7 +278,7 @@ function SeccionMateriales({info,orden}){
   </>
 }
 
-function SeccionCorte({info,setcorte,form}){
+function SeccionCorte({info,setcorte,form,setopen,openmodal}){
   // console.log("El chapuloin colorado : ",info)
   // useEffect(()=>{
   //   form.current.addEve
@@ -277,7 +295,7 @@ function SeccionCorte({info,setcorte,form}){
   return <>
     <div className={`flex flex-col gap-3 pt-2`}>
       {
-        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form}/>)
+        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form} setopen={setopen} openmodal={openmodal} />)
         // info.length > 0 && info.map((row,key)=><div key={key} className="w-[100px] h-[80px] bg-red-300">
         //   <input type="text" value={Object.keys(row).length > 0 ? row.numero_corte : ''} />
         // </div>)
@@ -900,23 +918,25 @@ export function NewOrden() {
         await Consulta({
           url: url_save,
           params: {
-            method: urlparams.id ? 'PUT' : 'POST', body: data
+            method: urlparams.id ? 'PUT' : 'POST', 
+            // method: 'POST', 
+            body: data
           }
         })
-          .then(resp => {
-            if(resp.ok){
-              // navigate("/main/ordenes/")
-              toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
-            }else{
-              toast.error(resp.mensaje, { theme: "colored" })
-            }
-          })
-          .catch((err)=>{
-            toast.error('Se produjo un error!!', { theme: "colored" })
-          })
-          .finally(()=>{
-            setOpenloader(false)
-          })
+        .then(resp => {
+          if(resp.ok){
+            // navigate("/main/ordenes/")
+            toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
+          }else{
+            toast.error(resp.mensaje, { theme: "colored" })
+          }
+        })
+        .catch((err)=>{
+          toast.error('Se produjo un error!!', { theme: "colored" })
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
       }
     }
     openModal(PARAMS_MODAL)
@@ -1150,7 +1170,7 @@ export function NewOrden() {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
                 }
                 {
-                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form}/>
+                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form} setopen={setOpen} openmodal={openModal}/>
                 }
                 {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
