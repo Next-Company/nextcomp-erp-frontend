@@ -12,9 +12,9 @@ export default function Colores(children){
   // let [selected,setSelected] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'productos/productoslist/50'})
+      await Consulta({url: 'mantenimiento/getlistacolores'})
       .then(resp => {
-        console.log("La respuesta de la consulta de es de a cco:",resp)
+        console.log("Obtenienendo la lista de colores:",resp)
         setLista(resp.map((row)=>({...row,selected:false})))
         // setLista(resp[0])
         // setOpenloader(false)
@@ -39,7 +39,7 @@ export default function Colores(children){
   const searchproveedor = (input)=>{
     const buscarproveedor = async ()=>{
       // await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
-      await Consulta({url: 'productos/searchproducto/'+ input.value})
+      await Consulta({url: 'mantenimiento/getlistacolores/'+ input.value})
       .then(resp => {
         setLista(resp.map((row)=>({...row,selected:false})))
         // setLista(resp)
@@ -63,11 +63,12 @@ export default function Colores(children){
     switch(action){
       case 'add':
         const item = lista[position]
-        if(selected.find((row)=>parseInt(row.idxsub) == parseInt(item.idxsub) && parseInt(row.id_producto_CAB) == parseInt(item.id_producto_CAB))){
-          setSelected([...selected.filter(row=>parseInt(row.idxsub) !== parseInt(item.idxsub) && parseInt(row.id_producto_CAB) !== parseInt(item.id_producto_CAB))])
+
+        if(selected.find((row)=>parseInt(row.idx) == parseInt(item.idx))){
+          setSelected([...selected.filter(row=>parseInt(row.idx) !== parseInt(item.idx))])
         }else{
           setSelected([...selected,lista[position]])
-        }    
+        }
         break;
       default:
         break;
@@ -93,17 +94,18 @@ export default function Colores(children){
                 <th className="lg:table-cell">Codigo</th>
                 <th className="lg:table-cell">Color</th>
                 <th className="lg:table-cell">Descripcion</th>
+                <th className="lg:table-cell">Pantone</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr className={`${selected.find((item)=>item.idxsub == row.idxsub && item.id_producto_CAB == row.id_producto_CAB) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
-                  <td>{row.idxsub}</td>
-                  <td>{row.cod_producto}</td>
-                  <td>{row.producto}</td>
-                  <td>{row.color}</td>
-                  <td>{row.talla}</td>
+                <tr className={`${selected.find((item)=>item.idx == row.idx) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
+                  <td>{row.idx}</td>
+                  <td>{row.codigo}</td>
+                  <td>{row.nom}</td>
+                  <td>{row.detalle}</td>
+                  <td>{row.code_pantone}</td>
                   <td className="w-[250px]">
                     <ul className="flex flex-row justify-end">
                       <li>
