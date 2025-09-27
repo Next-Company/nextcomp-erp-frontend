@@ -228,10 +228,10 @@ export default function NewGuia(){
   const penalidadestipo = useRef([])
   const [penalidades,setPenalidades] = useState([])
   const [reprogramacion,setReprogramacion] = useState([])
-  const infopenalidades = useRef([])
   const [fases,setFases] = useState([])
   const [distribucion,setDistribucion] = useState('TLL')
   // const [infop,setInfop] = useState([])
+  const [servicio,setServicio] = useState('CONFECCION')
   const navigate = useNavigate()
 
   const onsubmit = (e)=>{
@@ -306,6 +306,7 @@ export default function NewGuia(){
             penalidadestipo.current = resp[3]
             setFases(resp[4])
 	          setReprogramacion(resp[5])
+            setServicio(resp[0].servicio ?? 'CONFECCION')
             setOpenloader(false)
 
           })
@@ -333,8 +334,13 @@ export default function NewGuia(){
       })
     }
     const handleInputChange = (event) => {
-      console.log("Hola Ivon",event.detail.valor)
-      setDistribucion(event.detail.valor == 'PAQUETES' ? 'PQT' : 'TLL')
+      console.log("Hola Ivon",event.detail.valor,event.detail)
+      if(event.detail.name == 'servicio'){
+        setServicio(event.detail.valor)
+      }
+      if(event.detail.name == 'distribucion'){
+        setDistribucion(event.detail.valor == 'PAQUETES' ? 'PQT' : 'TLL')
+      }
     };
     form.current.addEventListener("salamandra", handleInputChange);
     return () => {
@@ -501,17 +507,17 @@ export default function NewGuia(){
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" verify="true" />
-                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true"/>
                   <Input name={'tipo'} defaults={'SERVICIOS'} type="hidden" />
                   <Input name={'id_corte_CAB'} defaults={Object.keys(info).length > 0 ? info.id_corte_CAB : null} type="hidden"/>
-                  <div className="w-[500px]">
+                  <div className="w-[300px]">
                     {
                       fases.length > 0
-                      ? <InputSelect title={'Servicio'} name={"servicio"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={Object.keys(info).length > 0 ? info.servicio : null} 
+                      ? <InputSelect title={'Servicio'} name={"servicio"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} formref={form} df={Object.keys(info).length > 0 ? info.servicio : null} 
                       />
                       : <Input name={''} defaults={null} type="text" title="Servicio" />
                     }
                   </div>
+                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true"/>
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" verify="true"/>
                   <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true"/>
                   <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true"/>                  
@@ -537,7 +543,8 @@ export default function NewGuia(){
                   />
                   <InputSelect title={'TipoDistribucion'} formref={form} name={"distribucion"} data={
                     [
-                      { indice: 'TLL', option: 'TALLAS', selected: true }, 
+                      { indice: 'GLB', option: 'GLOBALES', selected: true }, 
+                      { indice: 'TLL', option: 'TALLAS', }, 
                       { indice: 'PQT', option: 'PAQUETES' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.distribucion : null} 
@@ -550,6 +557,7 @@ export default function NewGuia(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell w-[500px]">Descripcion</th>  
+                          <th className="lg:table-cell">Disponible</th>
                           <th className="lg:table-cell">XS / 26</th>
                           <th className="lg:table-cell">S / 28</th>
                           <th className="lg:table-cell">M / 30</th>
@@ -566,6 +574,7 @@ export default function NewGuia(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
+                              <td className="text-center w-[150px]">{row.disponible_total}</td>
                               <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs} className="fracciones"/></td>
                               <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s} className="fracciones"/></td>
                               <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m} className="fracciones"/></td>
@@ -627,7 +636,7 @@ export default function NewGuia(){
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          <th className="lg:table-cell w-[500px]">Paquete</th>  
+                          <th className="lg:table-cell w-[500px]">Paquete</th>
                           <th className="lg:table-cell">XS / 26</th>
                           <th className="lg:table-cell">S / 28</th>
                           <th className="lg:table-cell">M / 30</th>

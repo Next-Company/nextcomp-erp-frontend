@@ -49,7 +49,7 @@ export default function NewMuestra(){
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',JSON.stringify(registros))
 
-        await Consulta({url: 'produccion/guardarguia/',params:{
+        await Consulta({url: 'produccion/guardarmuestra/',params:{
           method:'PUT',
           body:data
         }})
@@ -75,7 +75,7 @@ export default function NewMuestra(){
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/guia/' + urlparams.id,})
+        await Consulta({url: 'produccion/muestra/' + urlparams.id,})
           .then(resp => {
             console.log("info guia :",resp)
             setInfo(resp[0])

@@ -93,7 +93,7 @@ export default function ListaMuestras() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarguia/' + id, params: {
+              url: 'produccion/borrarmuestra/' + id, params: {
                 method: 'DELETE'
               }
             })
