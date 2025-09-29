@@ -229,7 +229,7 @@ export default function NewGuia(){
   const [penalidades,setPenalidades] = useState([])
   const [reprogramacion,setReprogramacion] = useState([])
   const [fases,setFases] = useState([])
-  const [distribucion,setDistribucion] = useState('TLL')
+  const [distribucion,setDistribucion] = useState('GLB')
   // const [infop,setInfop] = useState([])
   const [servicio,setServicio] = useState('CONFECCION')
   const navigate = useNavigate()
@@ -261,13 +261,18 @@ export default function NewGuia(){
       action: async () => {
         setOpenloader(true)
         const data = new FormData()
+        const rutas = {
+          'GLB':'produccion/guardarguiaglb/',
+          'TLL':'produccion/guardarguia/',
+          'PQT':'produccion/guardarguiaxpq/',
+        }
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle', (distribucion == 'TLL' ? JSON.stringify(registros) : JSON.stringify(paquetes)))
+        data.append('detalle', (distribucion !== 'PQT' ? JSON.stringify(registros) : JSON.stringify(paquetes)))
         penalidades.length > 0 && data.append('penalidades',JSON.stringify(penalidades))
-	      reprogramacion.length > 0 && data.append('reprogramacion',JSON.stringify(reprogramacion))
+        reprogramacion.length > 0 && data.append('reprogramacion',JSON.stringify(reprogramacion))
 
-        await Consulta({url: ( distribucion == 'TLL' ? 'produccion/guardarguia/' : 'produccion/guardarguiaxpq/' ),params:{
+        await Consulta({url: rutas[distribucion],params:{
           method:'PUT',
           body:data
         }})
@@ -339,7 +344,8 @@ export default function NewGuia(){
         setServicio(event.detail.valor)
       }
       if(event.detail.name == 'distribucion'){
-        setDistribucion(event.detail.valor == 'PAQUETES' ? 'PQT' : 'TLL')
+        // setDistribucion(event.detail.valor == 'PAQUETES' ? 'PQT' : 'TLL')
+        setDistribucion({GLOBALES:'GLB',TALLAS:'TLL',PAQUETES:'PQT'}[event.detail.valor])
       }
     };
     form.current.addEventListener("salamandra", handleInputChange);
@@ -363,7 +369,7 @@ export default function NewGuia(){
     switch(action){
 
       case 'delete':
-        if(distribucion == 'TLL'){
+        if(distribucion !== 'PQT'){
           setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
           console.log("Eliminado registros de la fila ",position)
         } else {
@@ -377,21 +383,21 @@ export default function NewGuia(){
 
   }
   const editvalue = (e)=>{
-    let column = e.target.dataset.name
+    const column = e.target.dataset.name
     console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
-    let position = e.target.dataset.position
-    let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
-    let total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
+    const position = e.target.dataset.position
+    const tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+    const total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
       carry+=parseInt(row[1]);
       return carry;
     },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
   }
   const editpaquete = (e)=>{
-    let column = e.target.dataset.name
-    let position = e.target.dataset.position
-    let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
-    let total = Object.entries(paquetes[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
+    const column = e.target.dataset.name
+    const position = e.target.dataset.position
+    const tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+    const total = Object.entries(paquetes[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
       carry+=parseInt(row[1]);
       return carry;
     },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
@@ -550,7 +556,7 @@ export default function NewGuia(){
                     df={Object.keys(info).length > 0 ? info.distribucion : null} 
                   />
                 </div>
-                <div className={`${distribucion !== 'TLL' && 'hidden'}`}>
+                <div className={`${distribucion == 'PQT' && 'hidden'}`}>
                   <span>Artículos:</span>
                   <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
@@ -618,7 +624,7 @@ export default function NewGuia(){
                       </tbody>
                       <tfoot className="sticky bottom-0">
                         <tr>
-                          <td colSpan={10} >
+                          <td colSpan={11} >
                             <div className="flex flex-row justify-center">
                               <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
