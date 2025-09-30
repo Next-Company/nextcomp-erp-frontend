@@ -91,6 +91,7 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
                   c += row[v] ?? 0
                   return c
                 },0)}/></td>
+                {/* <td><input data-name="cantidad" type="number" onChange={(editvalue)} data-grupo={key}  value={row.cantidad}/></td> */}
               </tr>
             ))
           }
@@ -194,32 +195,6 @@ function CuerpoIngresos({registros,setregistros,setopen}){
   return(
     <>
       <div className="flex flex-col w-[1100px] h-[500px]">
-        {/* <div className="flex flex-row justify-center gap-4">
-          <div className="flex flex-col">
-            <div><strong>XS</strong></div>
-            <div>0</div>
-          </div>
-          <div className="flex flex-col">
-            <div><strong>S</strong></div>
-            <div>0</div>
-          </div>
-          <div className="flex flex-col">
-            <div><strong>M</strong></div>
-            <div>0</div>
-          </div>
-          <div className="flex flex-col">
-            <div><strong>L</strong></div>
-            <div>0</div>
-          </div>
-          <div className="flex flex-col">
-            <div><strong>XL</strong></div>
-            <div>0</div>
-          </div>
-          <div className="flex flex-col">
-            <div><strong>XXL</strong></div>
-            <div>0</div>
-          </div>
-        </div> */}
         <div className="flex-1 overflow-y-auto scrollbar-special ">
         {
           copia.length > 0 && copia.map((row,key)=><CuerpoDespachoTest position={key} data={row} setregistros={setCopia} registros={copia}/>)
@@ -332,12 +307,12 @@ export default function NewDespacho() {
 
     if(registros.length > 0 && tipo == 2 && fase == 1){
       if(registros.filter(row=>row.fracciones_despacho.length > 0).length == 0){
-        toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
-        return 0
+        // toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
+        // return 0
       }
       if (registros.map(row => row.despacho ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.caidos ?? 0).reduce((a, b) => a + b) == 0 && registros.map(row => row.incompletos ?? 0).reduce((a, b) => a + b) == 0) {
-        toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
-        return 0
+        // toast.error('No se puede guardar un despacho sin despachar ninguna cantidad!!', { theme: "colored" })
+        // return 0
       }
     }
     for (const element of form.current.elements) {
@@ -364,7 +339,8 @@ export default function NewDespacho() {
         data.append('detalle', fase ? JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0)) : JSON.stringify(registros))
         data.append('facturas', JSON.stringify(facturas))
 
-        const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : (info.distribucion !== 'PQT' ? 'produccion/guardardespachoguia/' : 'produccion/guardardespachoguiaxpq/')
+        // const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : (info.distribucion !== 'PQT' ? 'produccion/guardardespachoguia/' : 'produccion/guardardespachoguiaxpq/')
+        const ruta = (tipo == 1 ? 'produccion/guardardespachopedido/' : {'PQT':'produccion/guardardespachoguia/','TLL':'produccion/guardardespachoguia/','GLB':'produccion/guardardespachoguiaglb/'}[info.distribucion])
         await Consulta({
           // url: 'produccion/guardardespacho/', params: {
           url: ruta, params: {

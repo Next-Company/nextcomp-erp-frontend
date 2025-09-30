@@ -304,7 +304,7 @@ export default function NewGuia(){
           .then(resp => {
             console.log("info guia :",resp)
             setInfo(resp[0])
-            resp[0].distribucion == 'TLL' ? setRegistros(resp[1]) : setPaquetes(resp[1])
+            resp[0].distribucion !== 'PQT' ? setRegistros(resp[1]) : setPaquetes(resp[1])
 
             setDistribucion(resp[0].distribucion)
             setPenalidades(resp[2])
@@ -562,7 +562,8 @@ export default function NewGuia(){
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          <th className="lg:table-cell w-[500px]">Descripcion</th>  
+                          <th className="lg:table-cell w-[500px]">Descripcion</th>
+                          {/* {!urlparams.id && <th className="lg:table-cell">Disponible</th>} */}
                           <th className="lg:table-cell">Disponible</th>
                           <th className="lg:table-cell">XS / 26</th>
                           <th className="lg:table-cell">S / 28</th>
@@ -580,7 +581,8 @@ export default function NewGuia(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
-                              <td className="text-center w-[150px]">{row.disponible_total}</td>
+                              {/* {!urlparams.id && <td className="text-center w-[150px]">{row.disponible_total}</td>} */}
+                              <td className="text-center w-[150px]">{urlparams.id ? (row.disponible_total + row.cantidad) : row.disponible_total}</td>
                               <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs} className="fracciones"/></td>
                               <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s} className="fracciones"/></td>
                               <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m} className="fracciones"/></td>
@@ -626,7 +628,7 @@ export default function NewGuia(){
                         <tr>
                           <td colSpan={11} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                              <div onClick={nuevoregistro} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
                               </div>
                             </div>
@@ -702,7 +704,7 @@ export default function NewGuia(){
                         <tr>
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevopaquete} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                              <div onClick={nuevopaquete} className="bg-blue-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
                                 +
                               </div>
                             </div>
