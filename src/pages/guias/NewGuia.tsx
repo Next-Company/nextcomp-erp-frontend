@@ -357,7 +357,7 @@ export default function NewGuia(){
   
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
-    setRegistros([...registros,{item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
+    setRegistros([...registros,{item:0,articulo:'',disponible_total:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
   }
   const nuevopaquete= ()=>{
     setPaquetes([...paquetes,{item:0,articulo: (info.producto ?? '') + ' ' + (info.modelo ?? '') + ` PAQUETE ${paquetes.length + 1}`,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
@@ -384,14 +384,20 @@ export default function NewGuia(){
   }
   const editvalue = (e)=>{
     const column = e.target.dataset.name
+    let total = 0
     console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
     const position = e.target.dataset.position
     const tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
-    const total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
-      carry+=parseInt(row[1]);
-      return carry;
-    },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
+
+    if(column !== 'isprototipo'){
+      total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
+        carry+=parseInt(row[1]);
+        return carry;
+      },0) + (!['articulo','isprototipo'].includes(column) ? parseInt(e.target.value) : 0)
+      setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
+    }else{
+      setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
+    }
   }
   const editpaquete = (e)=>{
     const column = e.target.dataset.name

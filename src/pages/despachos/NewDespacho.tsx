@@ -852,10 +852,10 @@ export default function NewDespacho() {
                                     return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despachos.reduce((carry,item)=>{
                                       carry += parseFloat(item.cantidad_despacho) + parseFloat(item.cantidad_caidos) + parseFloat(item.cantidad_incompletos)
                                       return carry
-                                    },0)) - parseFloat(value.despacho ?? 0)
+                                    },0)) - parseFloat(value.despacho ?? 0) - parseFloat(value.caidos ?? 0) - parseFloat(value.incompletos ?? 0)
                                   }, 0)}</td>
                                   : <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                                    return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despacho ?? 0) - parseFloat(value.caidos ?? 0)
+                                    return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despacho ?? 0) - parseFloat(value.caidos ?? 0) - parseFloat(value.incompletos ?? 0)
                                   }, 0)}</td>
                                 }
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {

@@ -91,7 +91,8 @@ export default function ListaGuias() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: (distribucion == 'PQT' ? 'produccion/anularguiaxpq/' : 'produccion/anularguia/') + id, params: {
+              // url: (distribucion == 'PQT' ? 'produccion/anularguiaxpq/' : 'produccion/anularguia/') + id, params: {
+              url: {'PQT':'produccion/anularguiaxpq/','TLL':'produccion/anularguia/','GLB':'produccion/anularguiaglb/',}[distribucion] + id, params: {
                 method: 'DELETE'
               }
             })
