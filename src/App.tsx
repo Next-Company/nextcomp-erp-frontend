@@ -76,6 +76,7 @@ import LayoutRecetas from './pages/recetas/LayoutRecetas.tsx'
 import ListaRecetas from './pages/recetas/ListaRecetas.tsx'
 import { NewReceta } from './pages/recetas/NewReceta.tsx'
 import ListaProveedores from './pages/proveedores/ListaProveedores.tsx'
+import { NewProveedor } from './pages/proveedores/NewProveedor.tsx'
 
 const routes = [
   {
@@ -297,8 +298,8 @@ const routes = [
         element: <PrivateRoute><LayoutProductos/></PrivateRoute>,
         children: [
           { path: "",element: <ListaProveedores />, error: <ErrorController/> },
-          { path: "nuevo",element: <NewProducto />, error: <ErrorController/> },
-          { path: "nuevo/:id",element: <NewProducto />, error: <ErrorController/> }
+          { path: "nuevo",element: <NewProveedor />, error: <ErrorController/> },
+          { path: "nuevo/:id",element: <NewProveedor />, error: <ErrorController/> }
         ]
       }
     ]

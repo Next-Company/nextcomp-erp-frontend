@@ -103,7 +103,7 @@ export function Header({ logout, credentials }) {
                   Solicitudes
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
-                <Menu info={
+                {/* <Menu info={
                   [
                     {
                       items: [
@@ -126,7 +126,7 @@ export function Header({ logout, credentials }) {
                       division:false
                     }
                   ]
-                }/>
+                }/> */}
               </div>
               <div className={`button group`} onClick={()=>{}}>
                 <span className="relative h-[100%] flex items-center pointer-events-none">
@@ -141,12 +141,12 @@ export function Header({ logout, credentials }) {
                 </span>
                 <Menu info={
                   [
-                    {
-                      items: [
-                        { title:'General', action:()=>{}, submenu:[] }
-                      ],
-                      division:true
-                    },
+                    // {
+                    //   items: [
+                    //     { title:'General', action:()=>{}, submenu:[] }
+                    //   ],
+                    //   division:true
+                    // },
                     {
                       items: [
                         { title:'Recetas', action:()=>navigate("/main/recetas"), submenu:[] },

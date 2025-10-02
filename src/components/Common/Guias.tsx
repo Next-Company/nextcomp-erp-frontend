@@ -102,6 +102,7 @@ export default function Guias(children){
                     <th className="lg:table-cell">Producto</th>
                     <th className="lg:table-cell">Marca</th>
                     <th className="lg:table-cell">Modelo</th>
+                    <th className="lg:table-cell">Cantidad</th>
                     {/* <th className="lg:table-cell">Estado</th> */}
                   </>
                 :
@@ -134,6 +135,7 @@ export default function Guias(children){
                         <td>{row.producto}</td>
                         <td>{row.marca}</td>
                         <td>{row.modelo}</td>
+                        <td>{row.cantidad_servicio}</td>
                       </>
                     :
                       <>

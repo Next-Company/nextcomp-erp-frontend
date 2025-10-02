@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { Search } from "../Atoms/Search/Search"
 import { Consulta } from "../../utils/utils"
-import { useNavigate } from "react-router-dom"
 import { AuthPermitions } from "../../contexts/contexts"
 
 export default function Proveedores(children){

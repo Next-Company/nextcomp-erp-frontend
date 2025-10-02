@@ -150,7 +150,7 @@ export default function ListaProveedores() {
       })
   }
   const nuevoretiro = () => {
-    // navigate('/main/productos/nuevo')
+    navigate('/main/proveedores/nuevo')
   }
   const filtrarestado = (e) => {
     const estado = e.target.dataset.tipo
