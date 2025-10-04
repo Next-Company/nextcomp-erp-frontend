@@ -505,16 +505,20 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
   const translateClasses = ['', 'translate-x-[100%]', 'translate-x-[200%]', 'translate-x-[300%]'];
   return <>
     <div className={`flex flex-col gap-3 pt-4`}>
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3">
         <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
-        <Input name={'oc'} title="OC" defaults={info.length > 0 ? info[0].oc : null} type="text" verify="true"/>
+        <div className="w-[500px]">
+          <Input name={'oc'} title="OP" defaults={info.length > 0 ? info[0].oc : null} type="text" verify="true"/>
+        </div>
         <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" verify="true"/>
         <Input name={'id_receta'} defaults={info.length > 0 ? info[0].id_receta : null} type="hidden" verify="true"/>
         <div className="w-[350px]">
           <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
         </div>
-        <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" verify="true"/>
-        <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" verify="true"/>
+        <div className="flex gap-3 w-[50%]">
+          <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" verify="true"/>
+          <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" verify="true"/>
+        </div>
         <div className="w-[450px]">
           <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Producto" type="text" action={searchproducto} mode={'static'} />
         </div>
@@ -534,18 +538,18 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           ]} 
           df={Object.keys(info).length > 0 ? info[0].modalidad_pedido : null} 
         />
-        {
+        {/* {
           tipopedido
           ?
           <>
             <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden"/>
-            <Input name={'nro_pedido_origen'} title={'NroPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} verify="true" />
+            <Input name={'nro_pedido_origen'} title={'NroPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
           </>
           :
           <>
             <Input name={'nro_pedido_adi'} title={'DocReferencia'} defaults={info.length > 0 ? info[0].nro_pedido_adi : null} type="text" />
           </>
-        }
+        } */}
         <InputSelect title={'TipoFabricacion'} name={"tipo_fabricacion"} formref={form} data={
           [
             { indice: 'PT', option: 'PUNTO', selected: true  },
@@ -608,7 +612,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                 <th className="lg:table-cell">Unidad</th>
                 <th className="lg:table-cell">Color</th>
                 <th className="lg:table-cell">Talla</th>
-                <th className="lg:table-cell w-[200px]">CantidadTotal</th>
+                <th className="lg:table-cell w-[200px]">Consumo</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>

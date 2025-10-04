@@ -22,7 +22,7 @@ export default function ListaProveedores() {
       .then(resp => {
         console.log(resp)
         setOpenloader(false)
-        setInfo(resp)
+        setInfo(resp.result)
         // setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
@@ -73,51 +73,9 @@ export default function ListaProveedores() {
         // openModal(params_modal)
         break;
       case 'download':
-        params_modal = {
-          open: true,
-          content: <div>Desea continuar con la descarga del pedido de insumos?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
-          controls: true,
-          header: false,
-          action: () => {
-            const desc = async () => {
-              const data = new FormData()
-              data.append('id', id)
-              const tipo = info.filter(row => row.idx == id)[0].tipo
-
-              setOpenloader(true)
-              Consulta({
-                url: tipo == 'TELAS' ? 'reports/vistapreviaretiro/TELAS' : 'produccion/vistarapidapedidoavios/download', params: {
-                  method: 'POST',
-                  body: data
-                }
-              })
-                .then(resp => {
-                  setOpenloader(false)
-                  const binaryString = window.atob(resp.data);
-                  const binaryLen = binaryString.length;
-                  const bytes = new Uint8Array(binaryLen);
-                  for (let i = 0; i < binaryLen; i++) {
-                    const ascii = binaryString.charCodeAt(i);
-                    bytes[i] = ascii;
-                  }
-                  const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-                  const link = document.createElement('a')
-                  link.href = file
-                  link.target = 'blank'
-                  link.click()
-                })
-                .catch((err) => {
-                  setOpenloader(false)
-                  toast.error('Se produjo un error!!', { theme: "colored" })
-                })
-            }
-            desc()
-          }
-        }
-        openModal(params_modal)
         break;
       case 'edit':
-        // navigate("/main/productos/nuevo/" + id)
+        navigate("/main/proveedores/nuevo/" + id)
         break;
       default:
         break;
@@ -125,19 +83,14 @@ export default function ListaProveedores() {
   }
 
   const recargarinfo = () => {
-    const data = new FormData()
     setOpenloader(true)
-    Consulta({
-      url: 'productos/productosTotal', params: {
-        method: 'GET'
-      }
-    })
+    Consulta({url: 'proveedores/listarproveedores'})
       .then(resp => {
         console.log("Recargado informacion :", resp)
         setOpenloader(false)
-        setInfo(resp)
-        setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
-        console.log("Filtro info por estado :", infoestado)
+        setInfo(resp.result)
+        // setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
+        // console.log("Filtro info por estado :", infoestado)
       })
       .catch((error) => {
         console.log(error)
@@ -152,45 +105,15 @@ export default function ListaProveedores() {
   const nuevoretiro = () => {
     navigate('/main/proveedores/nuevo')
   }
-  const filtrarestado = (e) => {
-    const estado = e.target.dataset.tipo
-    setOpenloader(true)
-    Consulta({
-      url: 'productos/productosTotal', params: {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({filters:{tipo:estado == 'INSUMO' ? 'I' : 'A'}})
-      }
-    })
-    .then(resp => {
-      setOpenloader(false)
-      lista.current.querySelector('button.active').classList.remove('active')
-      e.target.classList.add('active')
-      setInfo(resp)
-      // setInfoestado(resp.filter(row => row.estado == estado))
-      setEstado(estado)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-    .finally(() => {
-      setOpenloader(false)
-    })
-  }
   const busquedaproducto = (input)=>{
     // console.log(input.value)
     setOpenloader(true)
     Consulta({
-      url: 'productos/productosTotal/' + input.value, params: {
-        method: 'GET'
-      }
-    })
+      url: 'proveedores/listarproveedores/' + input.value})
     .then(resp => {
       setOpenloader(false)
-      setInfo(resp)
-      setInfoestado(resp)
+      setInfo(resp.result)
+      // setInfoestado(resp.result)
     })
     .catch((error) => {
       console.log(error)
@@ -245,7 +168,7 @@ export default function ListaProveedores() {
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                 </div>
                               </li>
@@ -265,7 +188,7 @@ export default function ListaProveedores() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.id_producto_CAB}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                 </div>
                               </li>

@@ -128,11 +128,27 @@ export function Header({ logout, credentials }) {
                   ]
                 }/> */}
               </div>
-              <div className={`button group`} onClick={()=>{}}>
+              <div className={`button group relative`} onClick={()=>{}}>
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Logística
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
+		<Menu info={
+                  [
+                    {
+                      items: [
+                        { title:'Movimientos de almacen', action:()=>navigate("/main/almacen/movimientos"), submenu:[] }
+                      ],
+                      division:true
+                    },
+                    {
+                      items: [
+                        { title:'Vista de inventario', action:()=>navigate("/main/almacen/inventario"), submenu:[] } 
+                      ],
+                      division:true
+                    } 
+                  ]
+                }/>
               </div>
               <div className={`button group relative`} onClick={()=>{}}>
                 <span className="relative h-[100%] flex items-center pointer-events-none">

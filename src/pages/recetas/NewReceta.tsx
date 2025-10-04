@@ -496,47 +496,49 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
               df={Object.keys(info).length > 0 ? info[0].tipoPlan : null} placeholder={'Seleccione el rubro correpondiente al producto.'} 
             />
           </div>
+          <div className="w-[25%]">
+            <InputSelect title={'Genero'} name={"genero"} formref={form} data={
+              [
+                { indice: 'CAB', option: 'CABALLERO', selected: true  },
+                { indice: 'DAM', option: 'DAMA' },
+                { indice: 'NIO', option: 'NIÑO' },
+                { indice: 'NIA', option: 'NIÑA' },
+              ]} 
+              df={Object.keys(info).length > 0 ? info[0].genero : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
+            />
+          </div>
+          <div className="w-[30%]">
+            <InputSelect title={'Fabricacion'} name={"tipoFabricacion"} formref={form} data={
+              [
+                { indice: 'PT', option: 'PUNTO', selected: true  },
+                { indice: 'PL', option: 'PLANO' },
+                { indice: 'FT', option: 'FANTASIA' },
+                { indice: 'PC', option: 'PLANO COMPLEMENTO' }
+              ]} 
+              df={Object.keys(info).length > 0 ? info[0].tipoFabricacion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
+            />
+          </div>
         </div>
-        <div className="w-[25%]">
-          <InputSelect title={'Genero'} name={"genero"} formref={form} data={
-            [
-              { indice: 'CAB', option: 'CABALLERO', selected: true  },
-              { indice: 'DAM', option: 'DAMA' },
-              { indice: 'NIO', option: 'NIÑO' },
-              { indice: 'NIA', option: 'NIÑA' },
-            ]} 
-            df={Object.keys(info).length > 0 ? info[0].genero : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-          />
-        </div>
-        <div className="w-[35%]">
-          <InputSelect title={'Fabricacion'} name={"tipoFabricacion"} formref={form} data={
-            [
-              { indice: 'PT', option: 'PUNTO', selected: true  },
-              { indice: 'PL', option: 'PLANO' },
-              { indice: 'FT', option: 'FANTASIA' },
-              { indice: 'PC', option: 'PLANO COMPLEMENTO' }
-            ]} 
-            df={Object.keys(info).length > 0 ? info[0].tipoFabricacion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-          />
-        </div>
-        <div className="w-[30%]">
-          <InputSelect title={'Temporada'} name={"temporada"} formref={form} data={
-            [
-              { indice: 'PV', option: 'PRIMAVERA-VERANO', selected: true  },
-              { indice: 'OI', option: 'OTOÑO-INVIERNO' },
-              { indice: 'TT', option: 'TERMINO TEMPORADA' }
-            ]} 
-            df={Object.keys(info).length > 0 ? info[0].temporada : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-          />
-        </div>
-        <div className="w-[35%]">
-          <InputSelect title={'TipoProduccion'} name={"tipoProduccion"} formref={form} data={
-            [
-              { indice: 'NCNL', option: 'NACIONAL', selected: true  },
-              { indice: 'IMPT', option: 'IMPORTADO' },
-            ]} 
-            df={Object.keys(info).length > 0 ? info[0].tipoProduccion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-          />
+        <div className="flex gap-3">
+          <div className="w-[30%]">
+            <InputSelect title={'Temporada'} name={"temporada"} formref={form} data={
+              [
+                { indice: 'PV', option: 'PRIMAVERA-VERANO', selected: true  },
+                { indice: 'OI', option: 'OTOÑO-INVIERNO' },
+                { indice: 'TT', option: 'TERMINO TEMPORADA' }
+              ]} 
+              df={Object.keys(info).length > 0 ? info[0].temporada : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
+            />
+          </div>
+          <div className="w-[35%]">
+            <InputSelect title={'TipoProduccion'} name={"tipoProduccion"} formref={form} data={
+              [
+                { indice: 'NCNL', option: 'NACIONAL', selected: true  },
+                { indice: 'IMPT', option: 'IMPORTADO' },
+              ]} 
+              df={Object.keys(info).length > 0 ? info[0].tipoProduccion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
+            />
+          </div>
         </div>
       </div>
       <hr/>
@@ -550,10 +552,10 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           <Input name={'presentacion'} title="Presentacion" defaults={info.length > 0 ? info[0].presentacion : null} type="text" action={nuevapresentacion} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
       </div>
-      <div className="w-[24%]">
-        <Input name={'modelo'} title="Modelo" defaults={info.length > 0 ? info[0].modelo : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-      </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex gap-3">
+        <div className="w-[24%]">
+          <Input name={'modelo'} title="Modelo" defaults={info.length > 0 ? info[0].modelo : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+        </div>
         <div className="w-[20%]">
           <Input name={'estilo'} title="Estilo" defaults={info.length > 0 ? info[0].estilo : null} type="text" action={nuevoestilo} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
@@ -566,6 +568,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             df={Object.keys(info).length > 0 ? info[0].fraccionable : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
           />
         </div>
+      </div>
+      <div className="flex flex-col gap-3">
         <div className="w-[25%]">
           <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
