@@ -549,7 +549,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           </div>
         </div>
         <div className="w-[35%]">
-          <Input name={'presentacion'} title="Presentacion" defaults={info.length > 0 ? info[0].presentacion : null} type="text" action={nuevapresentacion} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'presentacion'} title="TipoTela" defaults={info.length > 0 ? info[0].presentacion : null} type="text" action={nuevapresentacion} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
       </div>
       <div className="flex gap-3">
@@ -557,9 +557,9 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           <Input name={'modelo'} title="Modelo" defaults={info.length > 0 ? info[0].modelo : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         <div className="w-[20%]">
-          <Input name={'estilo'} title="Estilo" defaults={info.length > 0 ? info[0].estilo : null} type="text" action={nuevoestilo} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'estilo'} title="Base" defaults={info.length > 0 ? info[0].estilo : null} type="text" action={nuevoestilo} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
-        <div className="w-[18%]">
+        {/* <div className="w-[18%]">
           <InputSelect title={'Es Fraccionable'} name={"fraccionable"} formref={form} data={
             [
               { indice: '1', option: 'SI', selected: true  },
@@ -567,12 +567,12 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             ]} 
             df={Object.keys(info).length > 0 ? info[0].fraccionable : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
           />
-        </div>
+        </div> */}
       </div>
       <div className="flex flex-col gap-3">
-        <div className="w-[25%]">
-          <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        </div>
+        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+        {/* <div className="w-[25%]">
+        </div> */}
         <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         <div className="w-[45%]">
           <Input name={'proveedor'} title="Proveedor" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
