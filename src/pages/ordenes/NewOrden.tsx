@@ -491,7 +491,12 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       content: <Recetas actions={(items)=>{  
         console.log("Informacion de los insumos:",items)
         setopen(false)
-        setorden([{...info[0],id_receta:items[0].id_producto_CAB,producto:items[0].producto,tipoProduccion:items[0].tipoProduccion,tipoFabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].estilo,presentacion:items[0].presentacion}])
+        // setorden([{...info[0],id_receta:items[0].id_producto_CAB,producto:items[0].producto,tipoProduccion:items[0].tipoProduccion,tipoFabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].estilo,presentacion:items[0].presentacion}])
+
+        // setorden([{...info[0],id_receta:items[0].id_producto_CAB,producto:(items[0].rubro + ' ' + items[0].presentacion + ' ' + items[0].modelo),tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro}])
+
+        setorden([{...info[0],id_receta:items[0].id_producto_CAB,tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro}])
+
         // setinsumos([...insumos,...items.map(row=>({id_producto:row.id_producto_CAB,id_subprod:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0}))])
       }}
         closemodal={()=>setopen(false)}
@@ -539,21 +544,22 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           {/* <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" verify="true"/> */}
           <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" verify="true"/>
         </div>
-        <div className="flex gap-3 w-[70%]">
+        <div className="flex gap-3 w-[64%]">
           <Input name={'id_receta'} title="IdReceta" defaults={info.length > 0 ? info[0].id_receta : null} type="text" action={searchproducto} mode={'static'} verify="true"/>
-          <div className="w-[550px]">
-            <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Descripcion" type="text" />
-          </div>
-          <Input name={'presentacion'} defaults={info.length > 0 ? info[0].presentacion : null} title="Tela" type="text" />
+          <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Descripcion" type="hidden" />
+          {/* <div className="w-[550px]">
+          </div> */}
+          <Input name={'presentacion'} defaults={info.length > 0 ? info[0].presentacion : null} title="TipoTela" type="text" />
+          <Input name={'rubro'} defaults={info.length > 0 ? info[0].rubro : null} title="Articulo" type="text" />
         </div>
       </div>
       <div className="flex gap-3">
-        <InputSelect title={'TipoProduccion'} name={"tipoProduccion"} data={
+        <InputSelect title={'TipoProduccion'} name={"tipo_produccion"} data={
           [
             { indice: 'NCNL', option: 'NACIONAL', selected: true  },
             { indice: 'IMPT', option: 'IMPORTADO' },
           ]} 
-          df={Object.keys(info).length > 0 ? info[0].tipoProduccion : null} 
+          df={Object.keys(info).length > 0 ? info[0].tipo_produccion : null} 
         />
         <InputSelect title={'TipoPedido'} name={"modalidad_pedido"} formref={form} data={
           [
@@ -574,13 +580,13 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             <Input name={'nro_pedido_adi'} title={'DocReferencia'} defaults={info.length > 0 ? info[0].nro_pedido_adi : null} type="text" />
           </>
         } */}
-        <InputSelect title={'TipoFabricacion'} name={"tipoFabricacion"} formref={form} data={
+        <InputSelect title={'TipoFabricacion'} name={"tipo_fabricacion"} formref={form} data={
           [
             { indice: 'PT', option: 'PUNTO', selected: true  },
             { indice: 'PL', option: 'PLANO' },
             { indice: 'FT', option: 'FANTASIA' }
           ]} 
-          df={Object.keys(info).length > 0 ? info[0].tipoFabricacion : null} 
+          df={Object.keys(info).length > 0 ? info[0].tipo_fabricacion : null} 
         />
         <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" />
         <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" />
