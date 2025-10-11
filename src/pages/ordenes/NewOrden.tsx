@@ -527,100 +527,162 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         <div className="w-[450px]">
           <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Producto" type="text" action={searchproducto} mode={'static'} />
         </div> */}
+        <div className="flex items-center gap-2">
+          <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+          <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+        </div>
+        <hr/> 
         <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
         <div className="w-[500px]">
-          <Input name={'oc'} title="OP" defaults={info.length > 0 ? info[0].oc : null} type="text" verify="true"/>
+          <Input name={'oc'} title="OP" defaults={info.length > 0 ? info[0].oc : null} type="text" verify="true" placeholder={'Numero de la orden'}/>
         </div>
         <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" verify="true"/>
         <div className="w-[350px]">
-          <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
+          <Input name={'cliente'} title="Cliente" defaults={info.length > 0 ? info[0].cliente : null} type="text" action={nuevoproveedor} mode={'static'} verify="true" placeholder={'Numero de la orden'}/>
+        </div>
+        <div className="flex gap-3">
+          <div className="flex gap-3 w-[30%]">
+            <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" verify="true" placeholder={'Numero de la orden'}/>
+            {/* <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" verify="true"/> */}
+          </div>
+          <div className="flex gap-3 w-[30%]">
+            {/* <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" verify="true"/> */}
+            <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" verify="true" placeholder={'Numero de la orden'}/>
+          </div>
+        </div>
+        <div className="w-[500px]">
+          <InputSelect title={'MotivoProduccion'} name={"motivo"} data={
+            [
+              { indice: 'REPO', option: 'REPOSICION', selected: true },
+              { indice: 'CAMP', option: 'CAMPAÑA'},
+              { indice: 'TMPO', option: 'TEMPORADA' },
+              { indice: 'COLC', option: 'COLECCION' },
+              { indice: 'OTRS', option: 'OTROS' },
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].mnotivo : null}
+            placeholder={'Numero de la orden: CAMP,REPO,TMPO,COLC,OTRS'} 
+          />
+        </div>
+        <div className="flex-1 w-[600px]">
+          {
+            fases.length > 0
+            ? <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={info.length > 0 ? info[0].ruta_proceso : null} placeholder={'Numero de la orden'}/>
+            : <Input name={''} defaults={null} title="Ruta" type="text" />
+          }
+        </div>
+        <div className="flex gap-3 w-[70%]">
+          <InputSelect title={'TipoProduccion'} name={"tipo_produccion"} data={
+            [
+              { indice: 'NCNL', option: 'NACIONAL', selected: true  },
+              { indice: 'IMPT', option: 'IMPORTADO' },
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].tipo_produccion : null} placeholder={'Numero de la orden'}
+          />
+          <InputSelect title={'TipoFabricacion'} name={"tipo_fabricacion"} formref={form} data={
+            [
+              { indice: 'PT', option: 'PUNTO', selected: true  },
+              { indice: 'PL', option: 'PLANO' },
+              { indice: 'FT', option: 'FANTASIA' }
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].tipo_fabricacion : null} placeholder={'Numero de la orden'} 
+          />
+          <InputSelect title={'TipoPedido'} name={"modalidad_pedido"} formref={form} data={
+            [
+              { indice: 'ORDN', option: 'ORDEN', selected: true  },
+              { indice: 'STK', option: 'STOCK PROPIO' }
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].modalidad_pedido : null} placeholder={'Numero de la orden'}
+          />
+          {/* {
+            tipopedido
+            ?
+            <>
+              <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden"/>
+              <Input name={'nro_pedido_origen'} title={'NroPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
+            </>
+            :
+            <>
+              <Input name={'nro_pedido_adi'} title={'DocReferencia'} defaults={info.length > 0 ? info[0].nro_pedido_adi : null} type="text" />
+            </>
+          } */}
         </div>
         
-        <div className="flex gap-3 w-[30%]">
-          <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" verify="true"/>
-          {/* <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" verify="true"/> */}
+        <div className="flex items-center gap-2">
+          <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+          <span className="inline-block align-middle text-[12px]">Info de la prenda</span>
         </div>
-        <div className="flex gap-3 w-[30%]">
-          {/* <Input name={'fec_emitida'} defaults={info.length > 0 ? info[0].fec_emitida : null} title="FechaEmision" type="date" verify="true"/> */}
-          <Input name={'fec_entrega'} defaults={info.length > 0 ? info[0].fec_entrega : null} title="FechaComercial" type="date" verify="true"/>
-        </div>
-        <div className="flex gap-3 w-[64%]">
-          <Input name={'id_receta'} title="IdReceta" defaults={info.length > 0 ? info[0].id_receta : null} type="text" action={searchproducto} mode={'static'} verify="true"/>
+        <hr/> 
+        <div className="flex flex-col gap-3 w-[64%]">
           <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Descripcion" type="hidden" />
+          <div className="w-[350px]">
+            <Input name={'id_receta'} title="IdReceta" defaults={info.length > 0 ? info[0].id_receta : null} type="text" action={searchproducto} mode={'static'} verify="true" placeholder={'Numero de la orden'}/>
+          </div>
           {/* <div className="w-[550px]">
           </div> */}
-          <Input name={'presentacion'} defaults={info.length > 0 ? info[0].presentacion : null} title="TipoTela" type="text" />
-          <Input name={'rubro'} defaults={info.length > 0 ? info[0].rubro : null} title="Articulo" type="text" />
+          <div className="flex gap-3 w-[760px]">
+            <Input name={'presentacion'} defaults={info.length > 0 ? info[0].presentacion : null} title="TipoTela" type="text" placeholder={'Numero de la orden'}/>
+            <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" placeholder={'Numero de la orden'}/>
+          </div>
+          {/* <div className="w-[580px]">
+            <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
+          </div> */}
         </div>
-      </div>
-      <div className="flex gap-3">
-        <InputSelect title={'TipoProduccion'} name={"tipo_produccion"} data={
-          [
-            { indice: 'NCNL', option: 'NACIONAL', selected: true  },
-            { indice: 'IMPT', option: 'IMPORTADO' },
-          ]} 
-          df={Object.keys(info).length > 0 ? info[0].tipo_produccion : null} 
-        />
-        <InputSelect title={'TipoPedido'} name={"modalidad_pedido"} formref={form} data={
-          [
-            { indice: 'ORDN', option: 'ORDEN', selected: true  },
-            { indice: 'STK', option: 'STOCK PROPIO' }
-          ]} 
-          df={Object.keys(info).length > 0 ? info[0].modalidad_pedido : null} 
-        />
-        {/* {
-          tipopedido
-          ?
-          <>
-            <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden"/>
-            <Input name={'nro_pedido_origen'} title={'NroPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
-          </>
-          :
-          <>
-            <Input name={'nro_pedido_adi'} title={'DocReferencia'} defaults={info.length > 0 ? info[0].nro_pedido_adi : null} type="text" />
-          </>
-        } */}
-        <InputSelect title={'TipoFabricacion'} name={"tipo_fabricacion"} formref={form} data={
-          [
-            { indice: 'PT', option: 'PUNTO', selected: true  },
-            { indice: 'PL', option: 'PLANO' },
-            { indice: 'FT', option: 'FANTASIA' }
-          ]} 
-          df={Object.keys(info).length > 0 ? info[0].tipo_fabricacion : null} 
-        />
-        <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" />
-        <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" />
-      </div>
-      <div className="flex gap-3 flex-wrap">
-        <div className="w-[200px]">
-          <Input name={'curva'} defaults={info.length > 0 ? info[0].curva : null} title="Curva" type="text" />
+        <div className="flex gap-3">
+          <div className="w-[350px]">
+            <Input name={'rubro'} defaults={info.length > 0 ? info[0].rubro : null} title="Articulo" type="text" placeholder={'Numero de la orden'}/>
+          </div>
+          <div className="w-[350px]">
+            <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" placeholder={'Numero de la orden'}/>
+          </div>
+        <div className="w-[450px]">
+            <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" placeholder={'Numero de la orden'}/>
+          </div>  
         </div>
+        
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
+      </div>
+      <hr/>
+      {/* <div className="flex gap-3 flex-wrap"> */}
+      <div className="flex flex-col gap-3">
+        {/* <div className="w-[200px]">
+          <Input name={'curva'} defaults={info.length > 0 ? info[0].curva : null} title="Curva" type="text" placeholder={'Numero de la orden'}/>
+        </div> */}
         <div className="flex-1 min-w-[300px] flex flex-row gap-3">
-          <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
-          <Input name={'precio'} defaults={info.length > 0 ? info[0].precio : null} title="Precio" type="number" />
-          <div className="flex-1 min-w-[500px]">
+          <Input name={'curva'} defaults={info.length > 0 ? info[0].curva : null} title="Curva" type="text" placeholder={'Numero de la orden'}/>
+          <Input name={'precio'} defaults={info.length > 0 ? info[0].precio : null} title="Precio" type="number" placeholder={'Numero de la orden'}/>
+          {/* <div className="flex-1 min-w-[500px]">
             {
               fases.length > 0
               ? <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={info.length > 0 ? info[0].ruta_proceso : null} />
               : <Input name={''} defaults={null} title="Ruta" type="text" />
             }
-          </div>
+          </div> */}
           <div className="flex-1 min-w-[400px]">
             {
               materiales.length > 0
-              ? <InputMultiSelect title={'MaterialesProduccion'} name={"materiales_produccion"} data={materiales.map(fase=>({indice:fase.idx,option:fase.descripcion}))} df={info.length > 0 ? info[0].materiales_produccion : null} />
+              ? <InputMultiSelect title={'MaterialesProduccion'} name={"materiales_produccion"} data={materiales.map(fase=>({indice:fase.idx,option:fase.descripcion}))} df={info.length > 0 ? info[0].materiales_produccion : null} placeholder={'Numero de la orden'}/>
               : <Input name={''} defaults={null} title="MaterialesProduccion" type="text" />
             }
           </div>
-          <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null}/>
-          <Button action={loadimage} type={'button'} tipo={'accept'}>
-            <div className="flex flex-row items-center gap-2 justify-between">
-              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-photo"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.813 11.612c.457 -.38 .918 -.38 1.386 .011l.108 .098l4.986 4.986l.094 .083a1 1 0 0 0 1.403 -1.403l-.083 -.094l-1.292 -1.293l.292 -.293l.106 -.095c.457 -.38 .918 -.38 1.386 .011l.108 .098l4.674 4.675a4 4 0 0 1 -3.775 3.599l-.206 .005h-12a4 4 0 0 1 -3.98 -3.603l6.687 -6.69l.106 -.095zm9.187 -9.612a4 4 0 0 1 3.995 3.8l.005 .2v9.585l-3.293 -3.292l-.15 -.137c-1.256 -1.095 -2.85 -1.097 -4.096 -.017l-.154 .14l-.307 .306l-2.293 -2.292l-.15 -.137c-1.256 -1.095 -2.85 -1.097 -4.096 -.017l-.154 .14l-5.307 5.306v-9.585a4 4 0 0 1 3.8 -3.995l.2 -.005h12zm-2.99 5l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z" /></svg>
-            </div>
-          </Button>
+          <InputSelect title={'Estado'} name={"estado_orden"} data={[{ indice: 'EN PROCESO', option: 'EN PROCESO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={info.length > 0 ? info[0].estado_orden : null} placeholder={'Numero de la orden'}/>
+          <div>
+            <Button action={loadimage} type={'button'} tipo={'accept'}>
+              <div className="flex flex-row items-center gap-2 justify-between">
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-photo"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.813 11.612c.457 -.38 .918 -.38 1.386 .011l.108 .098l4.986 4.986l.094 .083a1 1 0 0 0 1.403 -1.403l-.083 -.094l-1.292 -1.293l.292 -.293l.106 -.095c.457 -.38 .918 -.38 1.386 .011l.108 .098l4.674 4.675a4 4 0 0 1 -3.775 3.599l-.206 .005h-12a4 4 0 0 1 -3.98 -3.603l6.687 -6.69l.106 -.095zm9.187 -9.612a4 4 0 0 1 3.995 3.8l.005 .2v9.585l-3.293 -3.292l-.15 -.137c-1.256 -1.095 -2.85 -1.097 -4.096 -.017l-.154 .14l-.307 .306l-2.293 -2.292l-.15 -.137c-1.256 -1.095 -2.85 -1.097 -4.096 -.017l-.154 .14l-5.307 5.306v-9.585a4 4 0 0 1 3.8 -3.995l.2 -.005h12zm-2.99 5l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z" /></svg>
+              </div>
+            </Button>
+          </div>
         </div>
       </div>
-      <div className="flex flex-row justify-center">
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
+      </div>
+      <hr/>
+      <div className="flex flex-row justify-left">
         <div className="flex flex-row justify-between p-1 bg-gray-200 rounded-l-full rounded-r-full relative">
           <div className={`w-[180px] h-[14px] text-center text-[9px] rounded-l-full rounded-r-full bg-red-600 ${translateClasses[panelactive] || ''} transition-all cursor-pointer absolute`}></div>
           <div className={`w-[180px] text-center text-[9px] rounded-l-full rounded-r-full cursor-pointer z-10 ${panelactive == 0 && 'text-white'} transition-all`} onClick={()=>changepanel(0)} data-position="0">Insumos</div>

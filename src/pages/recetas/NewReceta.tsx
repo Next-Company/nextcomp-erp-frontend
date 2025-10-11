@@ -454,11 +454,17 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     openmodal(params_modal)
   }
   return <>
-    <div className={`flex flex-col gap-3 pt-3`}>
+    <div className={`flex flex-col gap-3 pt-2`}>
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+      </div>
+      <hr/> 
+      {/* <hr className="m-0"/> */}
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col">
-          <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
-        </div>
+        <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
+        {/* <div className="flex flex-col">
+        </div> */}
         <div className="w-[400px]">
           <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
             [
@@ -466,7 +472,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
               { indice: 'I', option: 'INSUMO' },
               { indice: 'A', option: 'AVIO' }
             ]} 
-            df={Object.keys(info).length > 0 ? info[0].tipo : null} placeholder={'Seleccione el tipo de producto a registrar.'} 
+            df={Object.keys(info).length > 0 ? info[0].tipo : null} placeholder={'Seleccione el tipo de producto a registrar.'} readonly={true}
           />
         </div>
         <div className="w-[50%]">
@@ -476,8 +482,13 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" verify="true" placeholder={'Descripcion adicional del producto a crear.'}/>
         </div>
       </div>
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+      </div>
+      <hr/> 
       {/* <div className="h-[20px]"></div> */}
-      <hr className="m-0"/>
+      {/* <hr className="m-0"/> */}
       <div className="flex flex-col gap-3">
         <Input name={'RUBROS'} defaults={info.length > 0 ? info[0].RUBROS : null} type="hidden" verify="true"/>
         <div className="w-[35%]">
