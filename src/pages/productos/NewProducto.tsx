@@ -246,7 +246,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
               <InputTest name={'color'} title="Color" defaults={row.color} type="text" action={()=>agregarcolor(key)} mode={'static'} />
               <InputMultiSelect title={'Talla'} name={"talla"} data={
                 [
-                  { indice: '13', option: '28', selected: true},
+                  { indice: '26', option: 'S/T' },
+                  { indice: '13', option: '28' },
                   { indice: '14', option: '30' },
                   { indice: '15', option: '32' },
                   { indice: '16', option: '34' },
