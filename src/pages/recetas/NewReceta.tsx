@@ -454,11 +454,17 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     openmodal(params_modal)
   }
   return <>
-    <div className={`flex flex-col gap-3 pt-3`}>
+    <div className={`flex flex-col gap-3 pt-2`}>
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+      </div>
+      <hr/> 
+      {/* <hr className="m-0"/> */}
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col">
-          <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
-        </div>
+        <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
+        {/* <div className="flex flex-col">
+        </div> */}
         <div className="w-[400px]">
           <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
             [
@@ -466,18 +472,23 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
               { indice: 'I', option: 'INSUMO' },
               { indice: 'A', option: 'AVIO' }
             ]} 
-            df={Object.keys(info).length > 0 ? info[0].tipo : null} placeholder={'Seleccione el tipo de producto a registrar.'} 
+            df={Object.keys(info).length > 0 ? info[0].tipo : null} placeholder={'Seleccione el tipo de producto a registrar.'} readonly={true}
           />
         </div>
         <div className="w-[50%]">
-          <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nom : null} type="text" verify="true" placeholder={'Nombre completo del producto a crear.'}/>
+          <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nom : null} type="text" verify="true" placeholder={'Nombre completo del producto a crear.'} readonly={true}/>
         </div>
         <div className="w-[60%]">
           <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" verify="true" placeholder={'Descripcion adicional del producto a crear.'}/>
         </div>
       </div>
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+      </div>
+      <hr/> 
       {/* <div className="h-[20px]"></div> */}
-      <hr className="m-0"/>
+      {/* <hr className="m-0"/> */}
       <div className="flex flex-col gap-3">
         <Input name={'RUBROS'} defaults={info.length > 0 ? info[0].RUBROS : null} type="hidden" verify="true"/>
         <div className="w-[35%]">
@@ -549,7 +560,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           </div>
         </div>
         <div className="w-[35%]">
-          <Input name={'presentacion'} title="Presentacion" defaults={info.length > 0 ? info[0].presentacion : null} type="text" action={nuevapresentacion} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'presentacion'} title="TipoTela" defaults={info.length > 0 ? info[0].presentacion : null} type="text" action={nuevapresentacion} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
       </div>
       <div className="flex gap-3">
@@ -557,9 +568,9 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           <Input name={'modelo'} title="Modelo" defaults={info.length > 0 ? info[0].modelo : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         <div className="w-[20%]">
-          <Input name={'estilo'} title="Estilo" defaults={info.length > 0 ? info[0].estilo : null} type="text" action={nuevoestilo} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'estilo'} title="Base" defaults={info.length > 0 ? info[0].estilo : null} type="text" action={nuevoestilo} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
-        <div className="w-[18%]">
+        {/* <div className="w-[18%]">
           <InputSelect title={'Es Fraccionable'} name={"fraccionable"} formref={form} data={
             [
               { indice: '1', option: 'SI', selected: true  },
@@ -567,21 +578,21 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             ]} 
             df={Object.keys(info).length > 0 ? info[0].fraccionable : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
           />
-        </div>
+        </div> */}
       </div>
       <div className="flex flex-col gap-3">
-        <div className="w-[25%]">
-          <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        </div>
+        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : 10} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+        {/* <div className="w-[25%]">
+        </div> */}
         <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         <div className="w-[45%]">
           <Input name={'proveedor'} title="Proveedor" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         <div className="w-[20%]">
-          <Input name={'precio'} title="Precio" defaults={info.length > 0 ? info[0].precio : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'precio'} title="Precio" defaults={info.length > 0 ? info[0].precio : 10} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
       </div>
-      <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
+      <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2 hidden">
         <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
           <thead className="text-left sticky top-0 bg-white">
             <tr>
@@ -831,31 +842,31 @@ export function NewReceta() {
       }
     })
   }
-  const actualizarcombos = ()=>{
-    const pp = async () => {
-      setOpenloader(true)
-      await Consulta({url: 'ordenes/updatecombos/combos'})
-        .then(resp => {
-          console.log("Opportunity never die!!!!",resp)
-        })
-        .catch((err)=>{
-          setOpenloader(false)
-          toast.error('Se produjo un error!!', { theme: "colored" })
-        })
-        .finally(()=>{
-          setOpenloader(false)
-        })
-    }
-    openModal({
-      open: true,
-      header: false,
-      controls: true,
-      content: <div>Desea proceder con la actualizaion de los combos de la orden?.</div>,
-      action: ()=>{
-        pp()
-      }
-    })
-  }
+  // const actualizarcombos = ()=>{
+  //   const pp = async () => {
+  //     setOpenloader(true)
+  //     await Consulta({url: 'ordenes/updatecombos/combos'})
+  //       .then(resp => {
+  //         console.log("Opportunity never die!!!!",resp)
+  //       })
+  //       .catch((err)=>{
+  //         setOpenloader(false)
+  //         toast.error('Se produjo un error!!', { theme: "colored" })
+  //       })
+  //       .finally(()=>{
+  //         setOpenloader(false)
+  //       })
+  //   }
+  //   openModal({
+  //     open: true,
+  //     header: false,
+  //     controls: true,
+  //     content: <div>Desea proceder con la actualizaion de los combos de la orden?.</div>,
+  //     action: ()=>{
+  //       pp()
+  //     }
+  //   })
+  // }
   return (
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
