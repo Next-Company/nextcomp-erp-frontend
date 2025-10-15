@@ -15,8 +15,10 @@ const colorfase = {
 export default function Guias(children){
   let {actions = ()=>{},tipo='SERVICIOS'} = children
   let [lista,setLista] = useState([])
+  let [loading,setLoading] = useState(false)
   useEffect(()=>{
     const buscarguia = async ()=>{
+      setLoading(true)
       await Consulta({url: `${tipo == 'SERVICIOS' ? 'produccion/getListaGuias' : 'produccion/getListaMuestras'}`})
       .then(resp => {
         setLista(resp)
@@ -30,6 +32,7 @@ export default function Guias(children){
       })
       .finally(()=>{
         // setOpenloader(false)
+        setLoading(false)
       })
     }
     buscarguia()
@@ -37,12 +40,18 @@ export default function Guias(children){
   
   const searchproveedor = (input)=>{
     const buscarguia = async ()=>{
-      let url = input.value == '' ? 'produccion/getListaGuias' : 'produccion/searchguia/'+input.value
+      let url = input.value == '' ? 'produccion/getListaGuias/PENDIENTE' : 'produccion/searchguia/'+input.value+' PENDIENTE'
       // await Consulta({url: 'produccion/searchguia/'+ (input.value == '' ? '_' : input.value )})
+      setLoading(true)
       await Consulta({url})
       .then(resp => {
         console.log("Resultado seatch guia:",resp)
-        setLista(resp)
+        setLoading(false)
+	if(tipo == 'SERVICIOS'){
+          setLista(resp.filter(row=>row.tipo == tipo))
+	}else{
+          setLista(resp.filter(row=>row.tipo !== 'SERVICIOS'))
+	}
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -53,6 +62,7 @@ export default function Guias(children){
       })
       .finally(()=>{
         // setOpenloader(false)
+        setLoading(false)
       })
     }
     buscarguia()
@@ -77,32 +87,69 @@ export default function Guias(children){
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={searchproveedor} />
         </div>
-        <div className="h-[550px] w-[1150px] scrollbar-special rounded-md overflow-y-scroll ">
+        <div className="h-[550px] w-[1150px] scrollbar-special rounded-md overflow-y-scroll relative">
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
-                <th className="lg:table-cell">OC/OP</th>  
-                <th className="lg:table-cell">NroGuia</th>  
-                <th className="lg:table-cell">Servicio</th>
-                <th className="lg:table-cell">Proveedor</th>
-                <th className="lg:table-cell">Producto</th>
-                <th className="lg:table-cell">Marca</th>
-                <th className="lg:table-cell">Modelo</th>
-                {/* <th className="lg:table-cell">Estado</th> */}
+              {
+                tipo == 'SERVICIOS'
+                ? 
+                  <>
+                    <th className="lg:table-cell">OC/OP</th>  
+                    <th className="lg:table-cell">NroGuia</th>  
+                    <th className="lg:table-cell">Servicio</th>
+                    <th className="lg:table-cell">Proveedor</th>
+                    <th className="lg:table-cell">Producto</th>
+                    <th className="lg:table-cell">Marca</th>
+                    <th className="lg:table-cell">Modelo</th>
+                    <th className="lg:table-cell">Cantidad</th>
+                    {/* <th className="lg:table-cell">Estado</th> */}
+                  </>
+                :
+                  <>
+                    {/* <th className="lg:table-cell">OC/OP</th> */}
+                    <th className="lg:table-cell">NroGuia</th>
+                    {/* <th className="lg:table-cell">Servicio</th> */}
+                    <th className="lg:table-cell">Proveedor</th>
+                    <th className="lg:table-cell">Producto</th>
+                    <th className="lg:table-cell">Marca</th>
+                    <th className="lg:table-cell">Modelo</th>
+                    {/* <th className="lg:table-cell">Estado</th> */}
+                  </>
+              }
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
                 <tr onClick={onclick} data-position={key} data-action="add">
-                  <td>{row.orden_ref}</td>
-                  <td>{`${row.idx}`.padStart(8,'0')}</td>
-                  {/* <td>{row.servicio}</td> */}
-                  <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                  <td>{row.proveedor ? (row.proveedor.length >= 45 ? row.proveedor.substr(0,45) + '...' : row.proveedor) : ''}</td>
-                  <td>{row.producto}</td>
-                  <td>{row.marca}</td>
-                  <td>{row.modelo}</td>
+                  {
+                    tipo == 'SERVICIOS'
+                    ?
+                      <>
+                        <td>{row.orden_ref}</td>
+                        <td>{`${row.idx}`.padStart(8,'0')}</td>
+                        {/* <td>{row.servicio}</td> */}
+                        <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                        <td>{row.proveedor ? (row.proveedor.length >= 45 ? row.proveedor.substr(0,45) + '...' : row.proveedor) : ''}</td>
+                        <td>{row.producto}</td>
+                        <td>{row.marca}</td>
+                        <td>{row.modelo}</td>
+                        <td>{row.cantidad_servicio}</td>
+                      </>
+                    :
+                      <>
+                        {/* <td>{row.orden_ref}</td> */}
+                        <td>{`${row.idx}`.padStart(8,'0')}</td>
+                        {/* <td>{row.servicio}</td> */}
+                        {/* <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td> */}
+                        <td>{row.proveedor ? (row.proveedor.length >= 45 ? row.proveedor.substr(0,45) + '...' : row.proveedor) : ''}</td>
+                        <td>{row.producto}</td>
+                        <td>{row.marca}</td>
+                        <td>{row.modelo}</td>
+                      </>
+                  }
+                  
                   {/* <td>
                     {
                       row.estado == 'PENDIENTE'
@@ -156,6 +203,9 @@ export default function Guias(children){
               </tr>
             </tfoot> */}
           </table>
+          {
+            loading && <div className="absolute top-0 w-[100%] h-[100%] bg-white/50 flex flex-row justify-center items-center">Cargando...</div>
+          }
         </div>
       </div>
     </>

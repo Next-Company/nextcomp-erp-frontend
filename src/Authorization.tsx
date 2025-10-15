@@ -6,7 +6,7 @@ function Authorization({ children }) {
   const { isAuthenticated, login, logout, loading, error, credentials } = useAuth()
   
   useEffect(() => {
-    console.log("Mis credenciales son :",credentials)
+    // console.log("Mis credenciales son :",credentials)
   }, [])
   return (
     <>

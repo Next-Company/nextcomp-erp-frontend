@@ -294,7 +294,8 @@ export default function ListaLetras() {
     setOpenloader(true)
     const pp = async () => {
       await Consulta({
-        url: 'produccion/getListaGuias', params: {
+        // url: 'produccion/getListaGuias', params: {
+        url: 'letras/' + (estado == '1' ? 'EMIT' : 'TERM'), params: {
           method: 'GET'
         }
       })
@@ -304,20 +305,7 @@ export default function ListaLetras() {
           // lista.current.querySelector('button.active').classList.remove('active')
           // e.target.classList.add('active')
           // console.log("EL filt4ro 1 es:",resp.filter(row=>row.cantidad_servicio <= row.ingresos))
-          if (estado == 1) {
-            // setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos || row.estado == 'PENDIENTE'))  
-            // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE' && row.cantidad_servicio > row.ingresos))
-            setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-            // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))  
-          }
-          if (estado == 2) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-            // setInfoestado(resp.filter(row=>row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))  
-            // setInfoestado(resp.filter(row=>row.estado == 'FINALIZADO'))  
-          }
-          if (estado == 3) {
-            setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-          }
+          setInfo(resp)
           setEstado(estado)
         })
         .catch((error) => {
@@ -356,22 +344,25 @@ export default function ListaLetras() {
     navigate('/main/letras/nuevo')
   }
   const busquedaglobal = async (input) => {
+    setOpenloader(true)
     Consulta({
       // url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value ), params: {
-      url: 'produccion/getListaGuias/' + input.value, params: {
+      // url: 'produccion/getListaGuias/' + input.value, params: {
+      url: 'letras/' + input.value + ' ' + (estado == 1 ? 'EMIT' : 'TERM'), params: {
         method: 'GET'
       }
     })
       .then(resp => {
-        console.log(resp)
+        console.log("El resultado de la busqueda es la siguiente:",resp)
         setOpenloader(false)
+        setInfo(resp)
         // setInfo(resp)
-        if (estado == 1) {
-          setInfoestado(resp.filter(row => ['EMIT'].includes(row.estado)))
-        }
-        if (estado == 2) {
-          setInfoestado(resp.filter(row => !['EMIT'].includes(row.estado)))
-        }
+        // if (estado == 1) {
+        //   setInfoestado(resp.filter(row => ['EMIT'].includes(row.estado)))
+        // }
+        // if (estado == 2) {
+        //   setInfoestado(resp.filter(row => !['EMIT'].includes(row.estado)))
+        // }
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -425,7 +416,6 @@ export default function ListaLetras() {
        />,
       action: async () => {}
     })
-
   }
   return (
     <>

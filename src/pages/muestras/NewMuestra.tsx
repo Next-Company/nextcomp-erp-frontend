@@ -23,6 +23,20 @@ export default function NewMuestra(){
     e.preventDefault()
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
     console.log("El de talle de fracciones :",registros)
+
+    for(let element of form.current.querySelectorAll("input[verify='true']")){
+      if(element.value == ''){
+        console.log("El elmento culpable es el siguiente:",element)
+        toast.error('Debe completar los campos obligatorios', { theme: "colored" })
+	  return 0
+      }
+    }
+
+    if(!(registros.length > 0)){
+      toast.error('Se detecta de que no ha ingresado ningún articulo a la lista. Por favor verifique.', { theme: "colored" })
+      return 0
+    }
+
     openModal({
       open: true,
       header: false,
@@ -35,7 +49,7 @@ export default function NewMuestra(){
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',JSON.stringify(registros))
 
-        await Consulta({url: 'produccion/guardarguia/',params:{
+        await Consulta({url: 'produccion/guardarmuestra/',params:{
           method:'PUT',
           body:data
         }})
@@ -61,7 +75,7 @@ export default function NewMuestra(){
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/guia/' + urlparams.id,})
+        await Consulta({url: 'produccion/muestra/' + urlparams.id,})
           .then(resp => {
             console.log("info guia :",resp)
             setInfo(resp[0])
@@ -107,9 +121,10 @@ export default function NewMuestra(){
     let position = e.target.dataset.position
     let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
     let total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,value)=>{
-      carry+=parseInt(value[1]);
+      carry+=parseFloat(value[1]);
       return carry;
-    },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
+    },0) + (column !== 'articulo' ? parseFloat(e.target.value) : 0)
+    // setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total.toFixed(2)}:item)])
     setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
   }
 
@@ -138,7 +153,7 @@ export default function NewMuestra(){
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Muestras /</h2>
+              <h2 className="font-medium text-[16px]">Muestra /</h2>
               <span className="text-blue-500 font-bold">
                 Nueva Muestra
                 {/* {
@@ -152,20 +167,25 @@ export default function NewMuestra(){
           </div>
           <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
 
-            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} >
-              <div className={` flex-col gap-3 flex`}>
+            <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden h-full">
+              <div className={` flex-col gap-3 flex flex-1 overflow-y-scroll scrollbar-special`}>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   {/* <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" /> */}
-                  <InputSelect title={'Tipo'} name={"tipo"} data={
-                    [
-                      { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true }, 
-                      { indice: 'ACABADOS', option: 'ACABADOS' },
-                      { indice: 'REPARACION', option: 'REPARACION' },
-                      { indice: 'PRESTAMO', option: 'PRESTAMO' },
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo : null} 
-                  />
+                  <div className="w-[320px]">
+                    <InputSelect title={'Tipo'} name={"tipo"} data={
+                      [
+                        { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true }, 
+                        // { indice: 'ACABADOS', option: 'ACABADOS' },
+                        { indice: 'REPARACION', option: 'REPARACION' },
+                        { indice: 'PRESTAMO', option: 'PRESTAMO' },
+                        { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },
+                        { indice: 'INTERNO', option: 'INTERNO' }
+                      ]} 
+                      df={Object.keys(info).length > 0 ? info.tipo : null} 
+                    />
+                    
+                  </div>
                   {/* <InputSelect title={'Servicio'} name={"servicio"} data={
                     [
                       { indice: 'CONFECCION', option: 'CONFECCION', selected: true }, 
@@ -178,22 +198,22 @@ export default function NewMuestra(){
                     df={Object.keys(info).length > 0 ? info.servicio : null} 
                   /> */}
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" />
-                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" />
-                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" />                  
+                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true"/>
+                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true"/>
+                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true"/>                  
                 </div>
                 <div className="flex flex-row gap-3">
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   
-                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
-                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" />
+                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true" />
+                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true"/>
                   <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" />
                   <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" />
                 </div>
                 <div className="flex flex-row gap-3">
-                  <Input name={'destino'} title="Destino" defaults={Object.keys(info).length > 0 ? info.destino : null} type="text" />
-                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" />
-                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" />
+                  <Input name={'destino'} title="Destino" defaults={Object.keys(info).length > 0 ? info.destino : null} type="text" verify="true"/>
+                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" verify="true"/>
+                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" verify="true"/>
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
                       { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
@@ -226,13 +246,13 @@ export default function NewMuestra(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
-                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
-                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
-                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
-                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} value={row.l}/></td>
-                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} value={row.xl}/></td>
-                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl}/></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
+                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xs}/></td>
+                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.s}/></td>
+                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.m}/></td>
+                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.l}/></td>
+                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xl}/></td>
+                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xxl}/></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" step={0.01} value={row.cantidad} /></td>
                               <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">

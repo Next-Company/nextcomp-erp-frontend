@@ -1,12 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { Search } from "../../components/Atoms/Search/Search";
 import { Consulta } from "../../utils/utils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
 import { colortipoabono } from "../../utils/utils";
 import { colorfase } from "../../utils/utils";
+
+const VerificarEstado = ()=>{
+  console.log("Verificando estado de pago de las ordenes")
+}
 
 const CuerpoInforme = ({cuerpo})=>{
   return(
@@ -17,11 +21,75 @@ const CuerpoInforme = ({cuerpo})=>{
   )
 }
 export default function ListaPagos(){
+  const params = useParams()
+  const [searchParams, setSearchParams] = useSearchParams();
   const [info,setInfo] = useState([])
   const [estado,setEstado] = useState(0)
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   // const [refresh,setRefresh] = useState(false)
+
+  useEffect(()=>{
+    let url_ = 'abonos/servicios/'
+    let estado_ = 0
+    let position = searchParams.get('search');
+    console.log("El parametro de consulta es el siguiente :",searchParams,position)
+    if(position){
+      switch (parseInt(position)) {
+        case 0:
+          url_ = 'abonos/servicios/'
+          estado_ = 0
+          break;
+        case 1:
+          url_ = 'abonos/letras'
+          estado_ = 1
+          break;
+        case 2:
+          // url_ = 'abonos/100'
+          break;
+        case 3:
+          url_ = 'prestamos'
+          estado_ = 3
+          break;
+        case 4:
+          // url_ = 'abonos/100'
+          break;
+        case 5:
+          url_ = 'abonos/getabonoslist/100'
+          estado_ = 4
+          break;
+        default:
+          break;
+      }
+    }
+    setOpenloader(true)
+    Consulta({
+      // url: 'abonos/100', params: {
+      url: url_, params: {
+        method: 'GET'
+      }
+    })
+    .then(resp => {
+      console.log("Respuesta lista servicios a pagar:",resp)
+      setOpenloader(false)
+      setEstado(estado_)
+      if(parseInt(position) == 3){
+        setInfo(resp[0])
+      }else{
+        setInfo(resp)
+      }
+      // setInfo(resp)  
+    })
+    .catch((error) => {
+      console.log(error)
+      // logout()
+      // toast.error('Error en la consulta de base', { theme: "colored" })
+    })
+    .finally(()=>{
+      console.log("Horror en la consulta de base de datos")
+      // setOpenloader(false)
+    })
+  },[])
 
   const onclick = (e) => {
     const action = e.target.dataset.action
@@ -29,35 +97,52 @@ export default function ListaPagos(){
     let params_modal = null
     switch (action) {
       case 'delete':
-        params_modal = {
-          open:true,
-          content: <div>Desea eliminar el registro seleccionado?. Tenga en cuenta de que el <br/> proceso no es reversible.</div>,
-          controls: true,
-          header: false,
-          action:()=>{
-            setOpenloader(true)
-            Consulta({
-              url: 'abonos/deleteabono/' + id, params: {
-                method: 'DELETE'
-              }
-            })
-              .then(resp => {
-                // setOrdenes(resp)
-                toast.success('Despacho eliminado con éxito!', { theme: "colored" })
-                // setRefresh(true)
-                recargarinfo()
-                setOpenloader(false)
-              })
-              .catch(() => {
-                setOpenloader(false)
-                // logout()
-              })
-              .finally(()=>{
-                setOpenloader(false)
-              })
+        if(estado == 5){
+          let rutaDelete = ''
+          switch(e.target.dataset.origenabono){
+            case 'SERV':
+              rutaDelete = 'abonos/deleteabonoServicio/'
+              break
+            case 'CRED':
+              rutaDelete = 'abonos/deleteabonoLetra/'
+              break
+            case 'PRES':
+              rutaDelete = 'abonos/deleteabonoPrestamo/'
+              break
+            default:
+              break
           }
+          params_modal = {
+            open:true,
+            content: <div>Desea eliminar el registro seleccionado?. Tenga en cuenta de que el <br/> proceso no es reversible.</div>,
+            controls: true,
+            header: false,
+            action:()=>{
+              setOpenloader(true)    
+              Consulta({
+                url: rutaDelete + id, params: {
+                  method: 'DELETE'
+                }
+              })
+                .then(resp => {
+                  console.log("Info del servicidor :",resp)
+                  // setOrdenes(resp)
+                  toast.success('Abono de letra eliminado con éxito!', { theme: "colored" })
+                  // setRefresh(true)
+                  recargarinfo()
+                  setOpenloader(false)
+                })
+                .catch(() => {
+                  setOpenloader(false)
+                  // logout()
+                })
+                .finally(()=>{
+                  setOpenloader(false)
+                })
+            }
+          }
+          openModal(params_modal)
         }
-        openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -118,6 +203,7 @@ export default function ListaPagos(){
           case 2 :
             break
           case 3 :
+            navigate("/main/pagos/nuevopagoprestamo/"+ id + "/prestamos")
             break
           default:
             break
@@ -134,41 +220,15 @@ export default function ListaPagos(){
     } 
   }
 
-  useEffect(()=>{
-    const data = new FormData()
-    setOpenloader(true)
-    Consulta({
-      // url: 'abonos/100', params: {
-      url: 'abonos/servicios/100', params: {
-        method: 'GET'
-      }
-    })
-    .then(resp => {
-      console.log(resp)
-      setOpenloader(false)
-      setInfo(resp)  
-    })
-    .catch((error) => {
-      console.log(error)
-      // logout()
-      // toast.error('Error en la consulta de base', { theme: "colored" })
-    })
-    .finally(()=>{
-      console.log("Horror en la consulta de base de datos")
-      // setOpenloader(false)
-    })
-  },[])
-
   const filtrarestado = (e)=>{
     const estado = e.target.dataset.estado
-
     // setEstado(estado)
     setOpenloader(true)
     // let url = parseInt(estado) == 1 ? 'abonos/100' : 'abonos/servicios/100'
     let url = undefined
     switch (parseInt(estado)) {
       case 0:
-        url = 'abonos/servicios/100'
+        url = 'abonos/servicios/'
         break;
       case 1:
         url = 'abonos/letras'
@@ -177,7 +237,7 @@ export default function ListaPagos(){
         // url = 'abonos/100'
         break;
       case 3:
-        // url = 'abonos/100'
+        url = 'prestamos/'
         break;
       case 4:
         // url = 'abonos/100'
@@ -194,8 +254,13 @@ export default function ListaPagos(){
       }
     })
     .then(resp => {
+      console.log("Obligaciones consultadas:",resp)
       setOpenloader(false)
-      setInfo(resp)
+      if(parseInt(estado) == 3){
+        setInfo(resp[0])
+      }else{
+        setInfo(resp)
+      }
       setEstado(estado)
     })
     .catch((error) => {
@@ -208,9 +273,37 @@ export default function ListaPagos(){
 
   const recargarinfo = ()=>{
     const data = new FormData()
+    let url_ = ''
+    let position = searchParams.get('search');
     setOpenloader(true)
+
+    if(position){
+      switch (parseInt(position)) {
+        case 0:
+          url_ = 'abonos/servicios/'
+          break;
+        case 1:
+          url_ = 'abonos/letras'
+          break;
+        case 2:
+          // url_ = 'abonos/100'
+          break;
+        case 3:
+          url_ = 'prestamos'
+          break;
+        case 4:
+          // url_ = 'abonos/100'
+          break;
+        case 5:
+          url_ = 'abonos/getabonoslist/100'
+          break;
+        default:
+          break;
+      }
+    }
+
     Consulta({
-      url: 'abonos/100', params: {
+      url: url_, params: {
         method: 'GET'
       }
     })
@@ -243,7 +336,42 @@ export default function ListaPagos(){
     }
     openModal(params_modal)
   }
-
+  const busquedaglobal = async (input) => {
+    let ruta_consulta = ''
+    switch(parseInt(estado)){
+      case 0 :
+        ruta_consulta = "abonos/servicios/"+ input.value 
+        break
+      case 1 :
+        ruta_consulta = "abonos/letras/"
+        break
+      case 2 :
+        break
+      case 3 :
+        ruta_consulta = "prestamos/"
+        break
+      default:
+        break
+    }
+    setOpenloader(true)
+    Consulta({
+      url: ruta_consulta , params: {
+        method: 'GET'
+      }
+    })
+      .then(resp => {
+        console.log(resp)
+        setOpenloader(false)
+        setInfo(resp)
+      })
+      .catch((error) => {
+        console.log("El mnesaje de error es:", error)
+      })
+      .finally(() => {
+        console.log("Horror en la consulta de base de datos")
+        setOpenloader(false)
+      })
+  }
 
   return(
     <>
@@ -255,7 +383,7 @@ export default function ListaPagos(){
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Cuentas por pagar</h2>
               <div className="w-[500px]">
-                <Search config={{ width: '200px' }} action={()=>{}} />
+                <Search config={{ width: '200px' }} action={busquedaglobal} />
               </div>
             </div>
             {/* <hr /> */}
@@ -282,12 +410,12 @@ export default function ListaPagos(){
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 4 ? 'active' : ''}`} data-estado={4} onClick={filtrarestado}>
+                {/* <button className={`group ${estado == 4 ? 'active' : ''}`} data-estado={4} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Adicionales
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
-                </button>
+                </button> */}
                 <button className={`group ${estado == 5 ? 'active' : ''}`} data-estado={5} onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pagos
@@ -303,13 +431,20 @@ export default function ListaPagos(){
                   <tr>
                     {
                       parseInt(estado) == 0 && <>
-                        <th className="lg:table-cell">IdServ</th>
+                        {/* <th className="lg:table-cell">IdServ</th>
                         <th className="lg:table-cell">Origen</th>
                         <th className="lg:table-cell">Proveedor</th>
                         <th className="lg:table-cell">Producto</th>
                         <th className="lg:table-cell">Marca</th>
                         <th className="lg:table-cell">Modelo</th>
                         <th className="lg:table-cell">Costo</th>
+                        <th className="lg:table-cell">Cantidad</th>
+                        <th className="lg:table-cell">Ingresos</th>
+                        <th className="lg:table-cell">Importe</th>
+                        <th className="lg:table-cell">Saldo</th> */}
+                        <th className="lg:table-cell">#</th>
+                        <th className="lg:table-cell">Ruc</th>
+                        <th className="lg:table-cell">Proveedor</th>
                         <th className="lg:table-cell">Cantidad</th>
                         <th className="lg:table-cell">Ingresos</th>
                         <th className="lg:table-cell">Importe</th>
@@ -328,6 +463,22 @@ export default function ListaPagos(){
                         <th className="lg:table-cell">FecVigencia</th>
                         <th className="lg:table-cell">Importe</th>
                         <th className="lg:table-cell">DiaPendientes</th>
+                        <th className="lg:table-cell">Saldo</th>
+                        <th className="lg:table-cell text-center">Accciones</th>
+                      </>
+                    }
+                    {
+                      parseInt(estado) == 3 && <>
+                        <th className="lg:table-cell">Id</th>
+                        <th className="lg:table-cell">Proveedor</th>
+                        <th className="lg:table-cell">Deudor</th>
+                        <th className="lg:table-cell">Moneda</th>
+                        <th className="lg:table-cell">TCEA</th>
+                        <th className="lg:table-cell">PlazoPago</th>
+                        <th className="lg:table-cell">NroCuotas</th>
+                        <th className="lg:table-cell">FecSolicitud</th>
+                        <th className="lg:table-cell">MontoPrestamo</th>
+                        <th className="lg:table-cell">Abono</th>
                         <th className="lg:table-cell">Saldo</th>
                         <th className="lg:table-cell text-center">Accciones</th>
                       </>
@@ -356,9 +507,9 @@ export default function ListaPagos(){
                         <tr key={key} className="">
                           {
                             parseInt(estado) == 0 && <>
-                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.idx}</td>
+                              {/* <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.idx}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 45 ? row.proveedor.substr(1,45) +  '...' : row.proveedor}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 40 ? row.proveedor.substr(0,40) : row.proveedor}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.producto}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.marca}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.modelo}</td>
@@ -366,7 +517,14 @@ export default function ListaPagos(){
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.cantidad}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.despacho}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.importe.toFixed(2)}</td>
-                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{(row.importe - row.cancelado).toFixed(2)}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{(row.importe - row.cancelado).toFixed(2)}</td> */}
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{key + 1}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.ruc}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')}`}>{row.proveedor.length > 50 ? row.proveedor.substr(0,50) : row.proveedor}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.cantidad}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.despacho}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.importe.toFixed(2)}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{(row.importe - row.cancelado - row.descuentos).toFixed(2)}</td>
                             </>
                           }
                           {
@@ -384,9 +542,40 @@ export default function ListaPagos(){
                             </>
                           }
                           {
+                            parseInt(estado) == 3 && <>
+                              <td>{row.idx}</td>
+                              <td>{row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor}</td>
+                              <td>{row.cliente}</td>
+                              <td className="font-extrabold">{row.moneda}</td>
+                              <td>{row.tcea}</td>
+                              <td>{row.plazo_pago}</td>
+                              <td className="font-bold">{row.numero_cuotas}</td>
+                              <td>{row.fec_solicitud_prestamo}</td>
+                              {/* <td>{''}</td> */}
+                              <td className="font-extrabold">{row.monto_prestamo.toLocaleString('es-PE', {
+                                style: 'currency',
+                                currency: row.moneda,
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2  
+                              })}</td>
+                              <td className="font-extrabold">{row.abono.toLocaleString('es-PE', {
+                                style: 'currency',
+                                currency: row.moneda,
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2  
+                              })}</td>
+                              <td className="font-extrabold">{(row.monto_prestamo - row.abono).toLocaleString('es-PE', {
+                                style: 'currency',
+                                currency: row.moneda,
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2  
+                              })}</td>
+                            </>
+                          }
+                          {
                             parseInt(estado) == 5 && <>
                               <td className="text-center">{row.idx}</td>
-                              <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : 'PEDIDO'}</div></td>
+                              <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colortipoabono[row.tipo]}`}>{row.tipo == 'SERV' ? 'SERVICIO' : (row.tipo == 'CRED' ? 'LETRA' : 'PRESTAMO')}</div></td>
                               <td>{row.entidad_bancaria}</td>
                               <td>{row.idref}</td>
                               <td>{row.tipo_operacion}</td>
@@ -400,7 +589,7 @@ export default function ListaPagos(){
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-origenabono={estado == 5 ? row.tipo : ''}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                 </div>
                               </li>
@@ -420,9 +609,14 @@ export default function ListaPagos(){
                                 </div>
                               </li>
                               <li>
-                                {/* <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`${parseInt(estado) ? 'edit_pago' : 'add_pago'}`} onClick={onclick} data-id={row.idx}> */}
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={row.idx}>
-                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-credit-card-pay"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19h-6a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" /><path d="M3 10h18" /><path d="M16 19h6" /><path d="M19 16l3 3l-3 3" /><path d="M7.005 15h.005" /><path d="M11 15h2" /></svg>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action={`abonar`} onClick={onclick} data-id={row.idx ?? 0}>
+                                  {
+                                    parseInt(estado) == 5
+                                    ?
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                    :
+                                      <svg  xmlns="http://www.w3.org/2000/svg"  width="18"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-credit-card-pay"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19h-6a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" /><path d="M3 10h18" /><path d="M16 19h6" /><path d="M19 16l3 3l-3 3" /><path d="M7.005 15h.005" /><path d="M11 15h2" /></svg>
+                                  }
                                 </div>
                               </li>
                             </ul>
@@ -435,7 +629,7 @@ export default function ListaPagos(){
                 </tbody>
                 <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
                   <tr>
-                    <td className="h-[45px] border-t border-t-gray-600" colSpan={12}>
+                    <td className="h-[45px] border-t border-t-gray-600" colSpan={estado == 3 ? 13 : 12}>
                       <div className="flex flex-row justify-between items-center">
                         <div>
                           Showing 1 to 4 of 4 entries (filtered from 57 total entries)
@@ -457,7 +651,7 @@ export default function ListaPagos(){
             <div className="flex flex-row justify-end mt-2">
               <div className="flex gap-2">
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevoabono} tipo={'accept'}>Nuevo</Button>
+                {/* <Button action={nuevoabono} tipo={'accept'}>Nuevo</Button> */}
               </div>
             </div >
           </div>
