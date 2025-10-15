@@ -682,7 +682,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
       </div>
       <hr/>
-      <div className="flex flex-row justify-left">
+      <div className="flex flex-row justify-center">
         <div className="flex flex-row justify-between p-1 bg-gray-200 rounded-l-full rounded-r-full relative">
           <div className={`w-[180px] h-[14px] text-center text-[9px] rounded-l-full rounded-r-full bg-red-600 ${translateClasses[panelactive] || ''} transition-all cursor-pointer absolute`}></div>
           <div className={`w-[180px] text-center text-[9px] rounded-l-full rounded-r-full cursor-pointer z-10 ${panelactive == 0 && 'text-white'} transition-all`} onClick={()=>changepanel(0)} data-position="0">Insumos</div>

@@ -12,20 +12,27 @@ import Rubros from "../../components/Common/Rubros";
 import UnidadesMedida from "../../components/Common/Unidades";
 import Marca from "../../components/Common/Marca";
 import Colores from "../../components/Common/Colores";
+import { InputMultiSelect } from "../../components/Atoms/Input/InputMultiSelect";
+import { InputTest } from "../../components/Atoms/Input/InputTest";
 
 function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
+  console.log("Reenderizado de la seccion orden")
   const [tipopedido,setTipopedido] = useState(1)
   // const [dataimg,setDataimg] = useState([])
-  useEffect(()=>{
-    const handleSalamandra = (event) => {
-      setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
-    };
-    form.current.addEventListener("salamandra", handleSalamandra);
-  },[])
+  // useEffect(()=>{
+  //   const handleSalamandra = (event) => {
+  //     setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
+  //   };
+  //   form.current.addEventListener("salamandra", handleSalamandra);
+  // },[])
 
   const onclick = (e)=>{
     const position = e.target.dataset.position
-    setorden(orden => ([{...orden[0], combos: orden[0].combos.filter((row,key)=>key !== parseInt(position)) }]))
+    const action = e.target.dataset.action
+    if(action == 'delete'){
+      setcombos(combos.filter((row,key)=>key !== parseInt(position)))
+      // setorden(orden => ([{...orden[0], combos: orden[0].combos.filter((row,key)=>key !== parseInt(position)) }]))
+    }
   }
   const editvalue = (e)=>{
     const indice = e.target.dataset.position
@@ -108,21 +115,16 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
     }
     openmodal(params_modal)
   }
-  const agregarcolor = (e)=>{
+  const agregarcolor = (position)=>{
+    console.log("La posicion de la fila es la siguiente:",position)
     openmodal({
       open:true,
       content: <Colores actions={(items)=>{  
-        console.log("Informacion de los insumos:",items)
-        const id = e.target.dataset.id
-
-        setcombos({color:'Rojo',talla:'XL'})
-        // setcorte(corte=>corte.reduce((c,v)=>{
-        //   // items.map(item=>{id_hojacorte_CAB:'',idx_color:item.idx,color_combo:item.nom,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0})
-        //   // c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',idx_color:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
-        //   c.push({...v,combos:v.idx == id ? [...v.combos,...items.filter(item=>!v.combos.map(combo=>combo.idx_color).includes(item.idx)).map(item=>({id_hojacorte_CAB:'',idx_color:item.idx,color_combo:item.nom,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}))] : v.combos})
-        //   return c
-        // },[]))
-        // setopen(false)
+        console.log("La informaciondel color seleccionado es:",items)
+        console.log("El reordenamiento es:",position,combos.map((c,p)=>(p == parseInt(position) ? {color:items[0].nom,talla:c.talla} : c)))
+        setcombos(combos.map((c,p)=>(p == parseInt(position) ? {idcolor:items[0].idx,color:items[0].nom,talla:c.talla} : c)))
+        // setcombos([...combos,{color:items[0].nom,talla:'["XS","S","M","L","XL","XXL"]'}])
+        setopen(false)
       }}
         closemodal={()=>setopen(false)}
       />,
@@ -131,14 +133,23 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
       action:async ()=>{
       }
     })
-
-    // const id = e.target.dataset.id
-    // setcorte(corte=>corte.reduce((c,v)=>{
-    //   c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
-    //   return c
-    // },[]))
-
   }
+  const agregarfila = ()=>{
+    openmodal({
+      open:true,
+      content: <Colores actions={(items)=>{  
+        setcombos([...combos,{idcolor:items[0].idx,color:items[0].nom,talla:'["XS","S","M","L","XL","XXL"]'}])
+        setopen(false)
+      }}
+        closemodal={()=>setopen(false)}
+      />,
+      controls: false,
+      header: false,
+      action:async ()=>{
+      }
+    })
+  }
+
   return <>
     <div className={`flex flex-col gap-3 pt-3`}>
       <div className="flex items-center gap-2">
@@ -156,7 +167,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
               { indice: 'I', option: 'INSUMO', selected: true },
               { indice: 'A', option: 'AVIO' }
             ]} 
-            df={Object.keys(info).length > 0 ? info[0].tipo : null} placeholder={'Seleccione el tipo de producto a registrar.'} 
+            df={Object.keys(info).length > 0 ? info[0].tipo : null} placeholder={'Seleccione el tipo de producto a registrar.'}
           />
         </div>
         <div className="w-[50%]">
@@ -186,10 +197,10 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
       </div>
       <div className="flex w-[100%] gap-3">
         <div className="w-[20%]">
-          <Input name={'precio'} title="Densidad" defaults={info.length > 0 ? info[0].densidad : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'densidad'} title="Densidad" defaults={info.length > 0 ? info[0].densidad : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         <div className="w-[30%]">
-          <Input name={'marca'} title="Composicion" defaults={info.length > 0 ? info[0].composicion : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'composicion'} title="Composicion" defaults={info.length > 0 ? info[0].composicion : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
       </div>
       <div className="flex items-center gap-2">
@@ -207,9 +218,10 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
             df={Object.keys(info).length > 0 ? info[0].fraccionable : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
           />
         </div>
-        <div className="w-[25%]">
+        <Input name={'costo'} title="Costo" defaults={0} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'}/>
+        {/* <div className="w-[25%]">
           <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        </div>
+        </div> */}
         <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         <div className="flex gap-3 w-full">
           <div className="w-[45%]">
@@ -227,117 +239,49 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
       <hr/>
       {/* <div className="h-[300px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> */}
       <div className="scrollbar-special rounded-md border-b-[.2px] mt-2">
-
         {
           combos.length > 0 && combos.map((row,key)=>(
+            <>
             <div className="flex gap-3">
-              <Input name={'proveedor'} title="Color" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={agregarcolor} mode={'static'} verify="true"/>
-              <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
+              <InputTest name={'color'} title="Color" defaults={row.color} type="text" action={()=>agregarcolor(key)} mode={'static'} />
+              <InputMultiSelect title={'Talla'} name={"talla"} data={
                 [
-                  { indice: 'I', option: '28', selected: true },
-                  { indice: 'I', option: '30' },
-                  { indice: 'I', option: '32' },
-                  { indice: 'I', option: '36' },
-                  { indice: 'I', option: 'XS' },
-                  { indice: 'I', option: 'S' },
-                  { indice: 'I', option: 'M' },
-                  { indice: 'I', option: 'L' },
-                  { indice: 'I', option: 'XL' },
-                  { indice: 'I', option: 'XXL' }
+                  { indice: '13', option: '28', selected: true},
+                  { indice: '14', option: '30' },
+                  { indice: '15', option: '32' },
+                  { indice: '16', option: '34' },
+                  { indice: '17', option: '36' },
+                  { indice: '5', option: 'XS' },
+                  { indice: '3', option: 'S' },
+                  { indice: '2', option: 'M' },
+                  { indice: '1', option: 'L' },
+                  { indice: '4', option: 'XL' },
+                  { indice: '6', option: 'XXL' }
                 ]} 
-                df={Object.keys(info).length > 0 ? info[0].tipo : null} 
+                df={row.talla} formref={form} params={{'height':'200px'}} position={key}
               />
+              <div className="flex items-center [&_li:hover]:cursor-pointer">
+                <ul className="flex flex-row justify-end">
+                  <li>
+                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
+            {/* <hr> */}
+            <hr className="mt-2 mb-2" />
+            </>
           ))
         }
         <div className="flex flex-row justify-center mt-3">
-          <div onClick={agregarcolor} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+          <div onClick={agregarfila} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
             +
           </div>
         </div>
 
-        <table className="w-[100%] border-collapse hidden border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
-          <thead className="text-left sticky top-0 bg-white">
-            <tr>
-              <th className="lg:table-cell w-[500px]">Color</th>
-              <th className="lg:table-cell">Talla</th>
-              <th className="lg:table-cell">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              // info.length > 0 && info[0].combos && info[0].combos.length > 0 && info[0].combos.map((row,key)=>(
-              combos.length > 0 && combos.map((row,key)=>(
-                <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                  {/* <td><input type="text" onChange={(editvalue)} data-name="color" data-position={key} value={row.color} /></td> */}
-                  <td>
-                    <Input name={'proveedor'} title="Color" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={agregarcolor} mode={'static'} verify="true"/>
-                  </td>
-                  {/* <td><input type="text" onChange={(editvalue)} data-name="talla" data-position={key} value={row.talla} /></td> */}
-                  <td>
-                    <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
-                      [
-                        { indice: 'I', option: '28', selected: true },
-                        { indice: 'I', option: '30', selected: true },
-                        { indice: 'I', option: '32', selected: true },
-                        { indice: 'I', option: '36', selected: true },
-                        { indice: 'I', option: 'XS', selected: true },
-                        { indice: 'I', option: 'S', selected: true },
-                        { indice: 'I', option: 'M', selected: true },
-                        { indice: 'I', option: 'L', selected: true },
-                        { indice: 'I', option: 'XL', selected: true },
-                        { indice: 'I', option: 'XXL', selected: true }
-                      ]} 
-                      df={Object.keys(info).length > 0 ? info[0].tipo : null} 
-                    />
-                  </td>
-                  <td className="w-[250px]">
-                    <ul className="flex flex-row justify-end">
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                        </div>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-              ))
-            }
-          </tbody>
-          <tfoot className="sticky bottom-0">
-            <tr className="bg-white">
-              <td colSpan={10} >
-                <div className="flex flex-row justify-center">
-                  <div onClick={agregarcolor} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
-                    +
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
       </div>
-
       <div>
         <TextArea title="Observaciones" name="observaciones_fase_ordenes" />
       </div>
@@ -351,8 +295,12 @@ export function NewProducto() {
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const [position, setPosition] = useState(0)
   const [orden, setOrden] = useState([])
-  const [combos, setCombos] = useState([{color:'ROJO',talla:'XS'}])
+  // const [combos, setCombos] = useState([{color:'ROJO',talla:'["XS","S","M","L","XL","XXL"]'}])
+  const [combos, setCombos] = useState([])
+  const [test,setTest] = useState('juanpablo')
   const navigate = useNavigate()
+
+  console.log("Reenderizado del componente producto")
 
   const onsubmit = async (e) => {
     e.preventDefault()
@@ -360,14 +308,11 @@ export function NewProducto() {
     let data = undefined
 
     if(position == 0){
+      console.log("Los combos a registrar son:",combos)
       url_save = urlparams.id ? 'productos/updateProducto' : 'productos/generateProducto'
       method = urlparams.id ? 'PUT' : 'POST'
       data = new FormData(e.target)
-    }
-    if(position == 2){
-      url_save = 'ordenes/saveFaseMolde'
-      data = new FormData(e.target)
-      data.append('id',urlparams.id)
+      data.append('combos',JSON.stringify(combos))
     }
     const PARAMS_MODAL = {
       open: true,
@@ -403,6 +348,18 @@ export function NewProducto() {
   }
 
   useEffect(()=>{
+
+    const handleSalamandra = (event) => {
+      // setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
+      console.log("La info del multiselect es:",event.detail)
+      console.log("Los combos formateados son:",combos,test)
+      // console.log("Los combos formateados son:",combos,combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c)) )
+      // setCombos([{color:'VERDE',talla:JSON.stringify(['M','XXL','S'])}])
+      setCombos(combo=>combo.map((c,p)=>(p == parseInt(event.detail.position) ? {idcolor:c.idcolor,color:c.color,talla:JSON.stringify(event.detail.valor.map(row=>row.option))} : c) ))
+      // setCombos(combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c) ))
+    };
+    form.current.addEventListener("salamandra", handleSalamandra);
+
     // const handleSalamandra = (event) => {
     //   console.log("INof origen del select:",event.detail,event.detail.target.closest('div#cuerpo_ingresos'))
     //   if(event.detail.name == 'estado_corte'){
@@ -423,6 +380,7 @@ export function NewProducto() {
           .then(resp => {
             console.log("Mostrando informacion :",resp)
             setOrden(resp)
+            setCombos(resp[1].map(row=>({idcolor:row.idcolor,color:row.color,talla:JSON.stringify(row.tallas)})))
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -434,6 +392,7 @@ export function NewProducto() {
       }
       pp()
     }
+    // return ()=>form.current.removeEventListener("salamandra")
   },[])
   const cancelarcreacion = ()=>{
     openModal({
