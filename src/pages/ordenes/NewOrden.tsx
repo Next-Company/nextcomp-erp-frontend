@@ -15,64 +15,90 @@ import Productos from "../../components/Common/Productos";
 import Recetas from "../../components/Common/Recetas";
 import Colores from "../../components/Common/Colores";
 
-function InsumosCombos({info,actions}){
-  console.log("La informacion de info vinculo recibida es:",info)
+function InsumosCombos({orden,setorden,insumo,actions}){
+  const [info,setInfo] = useState(orden)
+  // const [info,setInfo] = useState([{...orden[0],combos:( orden[0].combos ? orden[0].combos.filter(c=>parseInt(c.cantidad_combos) > 0) : [] )}])
+  // const [info,setInfo] = useState(orden.filter(row=>parseInt(row.combos.cantidad_combo) > 0))
+  console.log("Reenderizado del componente InsumosCombos")
+  // const [selected,setSelected] = useState([])
+  const addcombos = (e)=>{
+    const position = e.target.dataset.position
+    const selected = e.target.dataset.selected
+    console.log("Los valores del combo seleccionado son:",insumo,position,selected)
+    console.log('Validacion boleana :',selected,selected ? 'hola' : 'adios')
+    if(parseInt(selected)){
+      // console.log("Dentro de true",info)
+      setInfo(cc=>[{...cc[0],combos:cc[0].combos.map((row,key)=>key == parseInt(position) ? ({...row,insumos:(row.insumos && row.insumos.length > 0) ? row.insumos.filter(ids=>parseInt(ids) !== parseInt(insumo)) : [] }) : row)}])
+    }else{
+      // console.log("Dentro de false",info)
+      setInfo(cc=>[{...cc[0],combos:cc[0].combos.map((row,key)=>key == parseInt(position) ? {...row,insumos:( (row.insumos && row.insumos.length > 0)? [...row.insumos,insumo] : [insumo] )} : row)}])  
+    }
+  }
+  const updatecombos = ()=>{
+    actions(info)
+  }
+  console.log("La informacion de info vinculo recibida es:",info,insumo)
   return(
     <>
-      <div className='h-[500px] w-[1000px]'>
-        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
-          <thead className="text-left sticky top-0 bg-white">
-            <tr>
-              <th className="lg:table-cell w-[200px]">ColorCombo</th>  
-              <th className="lg:table-cell">XS / 26</th>
-              <th className="lg:table-cell">S / 28</th>
-              <th className="lg:table-cell">M / 30</th>
-              <th className="lg:table-cell">L / 32</th>
-              <th className="lg:table-cell">XL / 34</th>
-              <th className="lg:table-cell">XXL / 36</th>
-              <th className="lg:table-cell">Cantidad</th>
-              <th className="lg:table-cell">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              Object.keys(info[0]).length > 0 && info[0].combos && info[0].combos.map((row,key)=>(
-                <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                  {/* <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td> */}
-                  <td className="text-center w-[200px]">{row.color_combo}</td>
-                  <td>{row.xs}</td>
-                  <td>{row.s}</td>
-                  <td>{row.m}</td>
-                  <td>{row.l}</td>
-                  <td>{row.xl}</td>
-                  <td>{row.xxl}</td>
-                  <td>{row.cantidad_combo}</td>
-                  <td className="w-[150px]">
-                    <ul className="flex flex-row justify-end">
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" onClick={()=>{}} data-position={key} data-id={info.idx}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                          {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg> */}
-                          {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-select"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M9 11l3 3l3 -3" /></svg> */}
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
-                        </div>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
+      <div className='h-[500px] w-[1000px] flex flex-col'>
+        <div className="flex-1">
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr.selected:nth-child(n)]:bg-green-200 [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+            <thead className="text-left sticky top-0 bg-white">
+              <tr>
+                <th className="lg:table-cell w-[200px]">ColorCombo</th>  
+                <th className="lg:table-cell">XS / 26</th>
+                <th className="lg:table-cell">S / 28</th>
+                <th className="lg:table-cell">M / 30</th>
+                <th className="lg:table-cell">L / 32</th>
+                <th className="lg:table-cell">XL / 34</th>
+                <th className="lg:table-cell">XXL / 36</th>
+                <th className="lg:table-cell">Cantidad</th>
+                <th className="lg:table-cell">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                Object.keys(info[0]).length > 0 && info[0].combos && info[0].combos.map((row,key)=>(
+                  <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${(row.insumos && row.insumos.includes(insumo)) ? 'selected' : ''}`}>
+                  {/* <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${row.insumos.includes(insumo) ? 'selected' : ''}`}> */}
+                    {/* <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td> */}
+                    <td className="text-center w-[200px]">{row.color_combo}</td>
+                    <td>{row.xs}</td>
+                    <td>{row.s}</td>
+                    <td>{row.m}</td>
+                    <td>{row.l}</td>
+                    <td>{row.xl}</td>
+                    <td>{row.xxl}</td>
+                    <td>{row.cantidad_combo}</td>
+                    <td className="w-[150px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete_combo_orden" onClick={()=>{}} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-position={key} data-action="edit" data-selected={(row.insumos && row.insumos.includes(insumo)) ? 1 : 0} onClick={addcombos}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>  
+        <div className="flex flex-row justify-end gap-3 mt-3">
+          <Button action={()=>{}} type={'button'} tipo={'default'}>Cancelar</Button>
+          <Button action={updatecombos} type={'button'} tipo={'default'}>Aceptar</Button>
+        </div>
       </div>
     </>
   )
@@ -445,17 +471,23 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
   }
   const onclickinsumos = (e)=>{
     const position = e.target.dataset.position
+    const valor = insumos[parseInt(position)]?.id_subprod_CAB
     const action = e.target.dataset.action
     switch (action) {
+      case 'review':
+        console.log('Informacion del insumo es:',insumos,valor)
+        break;
       case 'delete':
         setinsumos([...insumos.filter((row,key)=>key !== parseInt(position))])
+        setorden(orden=>[{...orden[0],combos:orden[0].combos.map(row=>({...row,insumos:((row.insumos && row.insumos.length > 0 && row.insumos.includes(valor)) ? row.insumos.filter(ins=>parseInt(ins) !== parseInt(valor)) : (row.insumos ?? []) )}))}])
         break;
       case 'edit':
         openmodal({
           open:true,
-          content: <InsumosCombos info={info} actions={(items)=>{  
+          content: <InsumosCombos orden={info} setorden={setorden} insumo={valor} actions={(combos)=>{  
+            setorden(combos)
             // console.log("Informacion de los insumos:",items)
-            // setopen(false)
+            setopen(false)
             // setinsumos([...insumos,...items.map(row=>({id_producto_CAB:row.id_producto_CAB,id_subprod_CAB:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0}))])
           }}
             // closemodal={()=>setopen(false)}
@@ -892,7 +924,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                     <td className="text-center">{row.color}</td>
                     <td className="text-center">{row.talla}</td>
                     <td className="text-center"><input data-name="cantidad" type="number" onChange={editvalueinsumos} data-position={key} value={row.cantidad} step={0.001}/></td>
-                    <td className="text-center">0</td>
+                    <td className="text-center">{info[0].combos ? info[0].combos.reduce((c,v)=> (v.insumos && v.insumos.includes(row.id_subprod_CAB)) ? c + parseFloat(v.cantidad_combo)*parseFloat(row.cantidad) : 0,0) : 0}</td>
                     <td className="text-center">0</td>
                     <td className="text-center">0</td>
                     <td className="w-[250px]">
@@ -903,13 +935,14 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                           </div>
                         </li>
                         <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" onClick={onclickinsumos} data-position={key}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                           </div>
                         </li>
                         <li>
                           <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclickinsumos} data-position={key}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                            {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg> */}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrows-join-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7h1.948c1.913 0 3.705 .933 4.802 2.5a5.861 5.861 0 0 0 4.802 2.5h6.448" /><path d="M3 17h1.95a5.854 5.854 0 0 0 4.798 -2.5a5.854 5.854 0 0 1 4.798 -2.5h5.454" /><path d="M18 15l3 -3l-3 -3" /></svg>
                           </div>
                         </li>
                       </ul>

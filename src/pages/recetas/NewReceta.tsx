@@ -588,6 +588,15 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         <div className="w-[45%]">
           <Input name={'proveedor'} title="Proveedor" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
+        <div className="w-[35%]">
+          <InputSelect title={'Estado'} name={"activo"} formref={form} data={
+            [
+              { indice: '1', option: 'ACTIVO', selected: true  },
+              { indice: '0', option: 'DESACTIVADO' },
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].activo : null} placeholder={'Seleccione el estado del producto.'}
+          />
+        </div>
         <div className="w-[20%]">
           <Input name={'precio'} title="Precio" defaults={info.length > 0 ? info[0].precio : 10} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
