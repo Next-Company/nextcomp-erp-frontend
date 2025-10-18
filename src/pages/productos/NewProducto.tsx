@@ -15,7 +15,7 @@ import Colores from "../../components/Common/Colores";
 import { InputMultiSelect } from "../../components/Atoms/Input/InputMultiSelect";
 import { InputTest } from "../../components/Atoms/Input/InputTest";
 
-function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
+function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tallas}){
   console.log("Reenderizado de la seccion orden")
   const [tipopedido,setTipopedido] = useState(1)
   // const [dataimg,setDataimg] = useState([])
@@ -197,10 +197,10 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
       </div>
       <div className="flex w-[100%] gap-3">
         <div className="w-[20%]">
-          <Input name={'densidad'} title="Densidad" defaults={info.length > 0 ? info[0].densidad : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'densidad'} title="Densidad" defaults={info.length > 0 ? (info[0].densidad ?? 0) : 0} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         <div className="w-[30%]">
-          <Input name={'composicion'} title="Composicion" defaults={info.length > 0 ? info[0].composicion : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'composicion'} title="Composicion" defaults={info.length > 0 ? (info[0].composicion ?? 0) : 0} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
       </div>
       <div className="flex items-center gap-2">
@@ -208,21 +208,26 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
         <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
       </div>
       <hr/>
-      <div className="flex flex-col gap-3">
-        <div className="w-[18%]">
-          <InputSelect title={'Es Fraccionable'} name={"fraccionable"} formref={form} data={
-            [
-              { indice: '1', option: 'SI', selected: true  },
-              { indice: '0', option: 'NO' },
-            ]} 
-            df={Object.keys(info).length > 0 ? info[0].fraccionable : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
-          />
+      <div className="flex flex-col gap-3 w-[100%]">
+        <div className="flex gap-3">
+          <div className="w-[20%]">
+            <InputSelect title={'Es Fraccionable'} name={"fraccionable"} formref={form} data={
+              [
+                { indice: '1', option: 'SI', selected: true  },
+                { indice: '0', option: 'NO' },
+              ]} 
+              df={Object.keys(info).length > 0 ? info[0].fraccionable : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
+            />
+          </div>
+          <div className="w-[20%]">
+            <Input name={'minimo'} title="StockMinimo" defaults={info.length > 0 ? info[0].minimo : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          </div>
         </div>
         <Input name={'costo'} title="Costo" defaults={0} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'}/>
         {/* <div className="w-[25%]">
           <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div> */}
-        <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+        <Input name={'PROVEEDORES'} defaults={info.length > 0 ? (info[0].PROVEEDORES ?? 0) : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         <div className="flex gap-3 w-full">
           <div className="w-[45%]">
             <Input name={'proveedor'} title="Proveedor" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
@@ -245,20 +250,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
             <div className="flex gap-3">
               <InputTest name={'color'} title="Color" defaults={row.color} type="text" action={()=>agregarcolor(key)} mode={'static'} />
               <InputMultiSelect title={'Talla'} name={"talla"} data={
-                [
-                  { indice: '26', option: 'S/T' },
-                  { indice: '13', option: '28' },
-                  { indice: '14', option: '30' },
-                  { indice: '15', option: '32' },
-                  { indice: '16', option: '34' },
-                  { indice: '17', option: '36' },
-                  { indice: '5', option: 'XS' },
-                  { indice: '3', option: 'S' },
-                  { indice: '2', option: 'M' },
-                  { indice: '1', option: 'L' },
-                  { indice: '4', option: 'XL' },
-                  { indice: '6', option: 'XXL' }
-                ]} 
+                  tallas.map(row=>({indice: row.idx, option:row.detalle}))
+                }
                 df={row.talla} formref={form} params={{'height':'200px'}} position={key}
               />
               <div className="flex items-center [&_li:hover]:cursor-pointer">
@@ -295,10 +288,9 @@ export function NewProducto() {
   const urlparams = useParams()
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const [position, setPosition] = useState(0)
-  const [orden, setOrden] = useState([])
-  // const [combos, setCombos] = useState([{color:'ROJO',talla:'["XS","S","M","L","XL","XXL"]'}])
+  const [orden, setOrden] = useState([{tipo:'I'}])
   const [combos, setCombos] = useState([])
-  const [test,setTest] = useState('juanpablo')
+  const [tallas, setTallas] = useState([])
   const navigate = useNavigate()
 
   console.log("Reenderizado del componente producto")
@@ -307,6 +299,14 @@ export function NewProducto() {
     e.preventDefault()
     let url_save = '', method = 'GET'
     let data = undefined
+
+    for(let element of form.current.querySelectorAll("input[verify='true']")){
+      console.log("El input a verificar es:",element)
+      if(element.value == ''){
+        toast.error('Debe ingresar los datos del input' + element.name, { theme: "colored" })
+        return 0
+      }
+    }
 
     if(position == 0){
       console.log("Los combos a registrar son:",combos)
@@ -353,9 +353,6 @@ export function NewProducto() {
     const handleSalamandra = (event) => {
       // setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
       console.log("La info del multiselect es:",event.detail)
-      console.log("Los combos formateados son:",combos,test)
-      // console.log("Los combos formateados son:",combos,combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c)) )
-      // setCombos([{color:'VERDE',talla:JSON.stringify(['M','XXL','S'])}])
       setCombos(combo=>combo.map((c,p)=>(p == parseInt(event.detail.position) ? {idcolor:c.idcolor,color:c.color,talla:JSON.stringify(event.detail.valor.map(row=>row.option))} : c) ))
       // setCombos(combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c) ))
     };
@@ -376,22 +373,48 @@ export function NewProducto() {
 
     if(urlparams.id){
       setOpenloader(true)
-      const pp = async () => {
-        await Consulta({url: 'productos/searchproductobyid/' + urlparams.id,})
-          .then(resp => {
-            console.log("Mostrando informacion :",resp)
-            setOrden(resp)
-            setCombos(resp[1].map(row=>({idcolor:row.idcolor,color:row.color,talla:JSON.stringify(row.tallas)})))
-          })
-          .catch((err)=>{
-            setOpenloader(false)
-            toast.error('Se produjo un error!!', { theme: "colored" })
-          })
-          .finally(()=>{
-            setOpenloader(false)
-          })
-      }
-      pp()
+      Promise.all([
+        Consulta({url: 'productos/searchproductobyid/' + urlparams.id,}),
+        Consulta({url: 'mantenimiento/getlistatallas/'})  
+      ])
+      .then(resp=>{
+        setOrden(resp[0])
+        setCombos(resp[0][1].map(row=>({idcolor:row.idcolor,color:row.color,talla:JSON.stringify(row.tallas)})))
+        setTallas(resp[1])
+      })
+      .catch((err)=>{
+        setOpenloader(false)
+        toast.error('Se produjo un error!!', { theme: "colored" })
+      })
+      .finally(()=>{
+        setOpenloader(false)
+      })
+
+      // const pp = async () => {
+      //   await Consulta({url: 'productos/searchproductobyid/' + urlparams.id,})
+      //     .then(resp => {
+      //       console.log("Mostrando informacion :",resp)
+      //       setOrden(resp)
+      //       setCombos(resp[1].map(row=>({idcolor:row.idcolor,color:row.color,talla:JSON.stringify(row.tallas)})))
+      //     })
+      //     .catch((err)=>{
+      //       setOpenloader(false)
+      //       toast.error('Se produjo un error!!', { theme: "colored" })
+      //     })
+      //     .finally(()=>{
+      //       setOpenloader(false)
+      //     })
+      // }
+      // pp()
+    }else{
+      Consulta({url: 'mantenimiento/getlistatallas/'})
+      .then(resp=>{
+        // console.log("La lista de tallas es:",resp)
+        setTallas(resp)
+      })
+      .catch(err=>{
+
+      })
     }
     // return ()=>form.current.removeEventListener("salamandra")
   },[])
@@ -468,7 +491,7 @@ export function NewProducto() {
             <form ref={form} onSubmit={onsubmit} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
-                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} combos={combos} setcombos={setCombos} />
+                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} combos={combos} setcombos={setCombos} tallas={tallas} />
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">

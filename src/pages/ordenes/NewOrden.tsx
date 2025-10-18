@@ -464,7 +464,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
   const agregarcombo = ()=>{
     console.log("info combos:",info)
     if(!(info.length > 0) || !info[0].combos){
-      setorden([{combos: [{id_orden_CAB: null,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0 }] }])
+      setorden([{combos: [{id_orden_CAB: null,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0}] }])
     }else{
       setorden(orden => ([{ ...orden[0], combos: [...orden[0].combos,{id_orden_CAB: null, color_combo: '',xs:0,s:0,m:0,l:0,xl:0,xxl:0, cantidad_combo: 0 }] }]))
     }
@@ -505,8 +505,14 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     
   } 
   const editvalueinsumos = (e)=>{
+    const name = e.target.dataset.name
     const position = e.target.dataset.position
-    setinsumos([...insumos.map((row,key)=> key == parseInt(position) ? {...insumos[position],cantidad:e.target.value} : row )])
+    if(name == 'fases'){
+      setinsumos([...insumos.map((row,key)=> key == parseInt(position) ? {...insumos[position],fases:[parseInt(e.target.value)]} : row )])
+    }else{
+      setinsumos([...insumos.map((row,key)=> key == parseInt(position) ? {...insumos[position],cantidad:e.target.value} : row )])
+    }
+    console.log("La lista de insumos es:",insumos)
   }
   const agregarinsumos = ()=>{
     openmodal({
@@ -896,6 +902,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
+                <th className="lg:table-cell">Id</th>
                 <th className="lg:table-cell w-[500px]">Articulo</th>
                 <th className="lg:table-cell ">Fase</th>
                 <th className="lg:table-cell">Unidad</th>
@@ -912,19 +919,44 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
               {
                 insumos.length > 0 && insumos.map((row,key)=>(
                   <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_select]:text-center [&_select]:p-[2px] [&_select]:w-full [&_select]:bg-transparent focus-visible:[&select]:outline-[0px] focus-visible:[&select]:bg-gray-200 focus-visible:[&select]:border-black focus-visible:[&select]:bg-transparent focus:[&_select]:outline-none">
+                    <td className="text-center">{row.id_subprod_CAB}</td>
                     <td className="text-center">{row.producto}</td>
                     <td className="text-center">
-                      <select onChange={()=>{}} data-name="tipodoc" data-position={key} defaultValue={row.tipodoc}>
-                        <option selected>Corte</option>
-                        <option>Confeccion</option>
-                        <option>Acabados</option>
+                      {/* <InputSelect title={'MotivoProduccion'} name={"motivo"} data={
+                        [
+                          { indice: 'REPO', option: 'REPOSICION', selected: true },
+                          { indice: 'CAMP', option: 'CAMPAÑA'},
+                          { indice: 'TMPO', option: 'TEMPORADA' },
+                          { indice: 'COLC', option: 'COLECCION' },
+                          { indice: 'OTRS', option: 'OTROS' },
+                        ]} 
+                        df={Object.keys(info).length > 0 ? info[0].mnotivo : null} 
+                      /> */}
+                      <select onChange={editvalueinsumos} data-name="fases" data-position={key} defaultValue={row.tipodoc}>
+                        {
+                          fases.map(fs=>
+                            (
+                              row.fases?.includes(fs.id) ? <option value={fs.id} selected>{fs.ruta}</option> : <option value={fs.id}>{fs.ruta}</option>
+                            )
+                          )
+                        }
                       </select>
                     </td>
                     <td className="text-center">-</td>
                     <td className="text-center">{row.color}</td>
                     <td className="text-center">{row.talla}</td>
                     <td className="text-center"><input data-name="cantidad" type="number" onChange={editvalueinsumos} data-position={key} value={row.cantidad} step={0.001}/></td>
-                    <td className="text-center">{info[0].combos ? info[0].combos.reduce((c,v)=> (v.insumos && v.insumos.includes(row.id_subprod_CAB)) ? c + parseFloat(v.cantidad_combo)*parseFloat(row.cantidad) : 0,0) : 0}</td>
+                    <td className="text-center">
+                      {
+                        info[0].combos 
+                        ? info[0].combos.reduce((c,v) =>{
+                            c = c + ((v.insumos && v.insumos.includes(row.id_subprod_CAB)) ? parseFloat(v.cantidad_combo)*parseFloat(row.cantidad) : 0)
+                            return c
+                          },0) 
+                        : 0
+                      }
+                    </td>
+                    {/* <td className="text-center">{JSON.stringify(info[0].combos.map(row=>row.cantidad_combo))}</td> */}
                     <td className="text-center">0</td>
                     <td className="text-center">0</td>
                     <td className="w-[250px]">
@@ -962,7 +994,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                 <td className="font-bold text-center text-[14px]"></td>
               </tr>
               <tr className="bg-white">
-                <td colSpan={10} >
+                <td colSpan={11} >
                   <div className="flex flex-row justify-center">
                     <div onClick={agregarinsumos} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                       +
