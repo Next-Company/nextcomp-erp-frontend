@@ -733,9 +733,10 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           </div>
           {/* <div className="w-[550px]">
           </div> */}
-          <div className="flex gap-3 w-[760px]">
-            <Input name={'presentacion'} defaults={info.length > 0 ? info[0].presentacion : null} title="TipoTela" type="text" placeholder={'Numero de la orden'}/>
-            <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" placeholder={'Numero de la orden'}/>
+          <div className="flex gap-3 w-[900px]">
+            <Input name={'presentacion'} defaults={info.length > 0 ? info[0].presentacion : null} title="TipoTela" type="text" placeholder={'Numero de la orden'} readonly={true}/>
+            <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" placeholder={'Numero de la orden'} readonly={true}/>
+            <Input name={'estilo'} defaults={info.length > 0 ? info[0].estilo : null} title="Estilo" type="text" placeholder={'Estilo de la prenda'} readonly={true}/>
           </div>
           {/* <div className="w-[580px]">
             <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
@@ -743,13 +744,13 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         </div>
         <div className="flex gap-3">
           <div className="w-[350px]">
-            <Input name={'rubro'} defaults={info.length > 0 ? info[0].rubro : null} title="Articulo" type="text" placeholder={'Numero de la orden'}/>
+            <Input name={'rubro'} defaults={info.length > 0 ? info[0].rubro : null} title="Articulo" type="text" placeholder={'Numero de la orden'} readonly={true}/>
           </div>
           <div className="w-[350px]">
-            <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" placeholder={'Numero de la orden'}/>
+            <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" placeholder={'Numero de la orden'} readonly={true}/>
           </div>
         <div className="w-[450px]">
-            <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" placeholder={'Numero de la orden'}/>
+            <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" placeholder={'Numero de la orden'} readonly={true}/>
           </div>  
         </div>
         
