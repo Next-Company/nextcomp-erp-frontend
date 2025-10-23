@@ -16,7 +16,7 @@ import Almacenes from "../../components/Common/Almacenes"
 
 export default function NewMovimiento(){
   const [tipo,setTipo] = useState(0)
-  const [motivo,setMotivo] = useState('mst')
+  const [motivo,setMotivo] = useState('ajt')
   const [searchParams,setSearchParams] = useSearchParams()
   const urlparams = useParams()
   const [info,setInfo] = useState({tipo_operacion:'9'})
@@ -65,7 +65,7 @@ export default function NewMovimiento(){
           setOpenloader(false)
           if(resp.ok){
             // navigate('/main/pedidos/')
-            toast.success('Nuevo retiro generado con éxito!!', { theme: "colored" })
+            toast.success('Movimiento de inventario generado con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })
             return
@@ -421,44 +421,49 @@ export default function NewMovimiento(){
                         { indice: '10', option: 'RETIROS' }, 
                       ]} 
                       df={Object.keys(info).length > 0 ? info.tipo_operacion : null} formref={form} 
+                      placeholder={"Texto referencial"}
                     />
                   </div>
-                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
+                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true" placeholder={"Texto referencial"}/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
                   <div className="w-[500px]">
-                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true" placeholder={"Texto referencial"}/>
                   </div>
                   <Input name={'Suc_Tienda'} defaults={Object.keys(info).length > 0 ? info.Suc_Tienda : null} type="hidden" />                  
-                  <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true"/>
+                  <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true" placeholder={"Texto referencial"}/>
                   {/* <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/> */}
                 </div>
                 <div className="flex gap-3">
                   <InputSelect title={'Motivo'} name={"motivo"} data={
                     [
-                      { indice: 'mst', option: 'MUESTRA', selected: true }, 
-                      { indice: 'ajt', option: 'AJUSTE' }, 
-                      { indice: 'acb', option: 'ACABADOS' },
+                      { indice: 'ajt', option: 'AJUSTE', selected: true }, 
+                      { indice: 'rep', option: 'REPOSICION' },  
                       { indice: 'crt', option: 'CORTE' }
                     ]} 
                     df={Object.keys(info).length > 0 ? info.motivo : null} formref={form} 
+                    placeholder={"Texto referencial"}
                   />
-                  {/* {
-                    motivo == 'crt' &&
-                  } */}
-                  <Input name={'id_orden'} defaults={Object.keys(info).length > 0 && info.id_orden ? info.id_orden : null} type="hidden" />
-                  <Input name={'modelo'} defaults={Object.keys(info).length > 0 && info.modelo ? info.modelo : null} title="Modelo" type="text" />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
+                  {
+                    motivo !== 'ajt' &&
+                    <>
+                      <Input name={'id_orden'} defaults={Object.keys(info).length > 0 && info.id_orden ? info.id_orden : null} type="hidden" verify="true"/>
+                      <Input name={'modelo'} defaults={Object.keys(info).length > 0 && info.modelo ? info.modelo : null} title="Modelo" type="text" verify="true" placeholder={"Texto referencial"}/>
+                    </>
+                  }
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true" placeholder={"Texto referencial"}/>
                   {/* <div className="w-[500px]">
                     <Input name={'Suc_Tienda'} defaults={Object.keys(info).length > 0 ? info.Suc_Tienda : null} type="hidden" />                  
                     <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true"/>
                   </div> */}
                 </div>
-                <div>
-                  <span className="flex flex-row items-center gap-2">
-                    Detalle
-                  </span>                  
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/> 
+                <div>                 
                   <div className="h-[370px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
@@ -550,7 +555,7 @@ export default function NewMovimiento(){
                         <tr>
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center gap-2">
-                              <div onClick={tipo ? searchproductoEgreso : searchproductoIngreso} className={`${tipo ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} w-[150px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer `}>
+                              <div onClick={tipo ? searchproductoEgreso : searchproductoIngreso} className={`${tipo ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer `}>
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                               </div>
                               {/* <div onClick={searchproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
