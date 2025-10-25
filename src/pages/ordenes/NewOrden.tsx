@@ -692,14 +692,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             ]} 
             df={Object.keys(info).length > 0 ? info[0].tipo_produccion : null} placeholder={'Numero de la orden'}
           />
-          <InputSelect title={'TipoFabricacion'} name={"tipo_fabricacion"} formref={form} data={
-            [
-              { indice: 'PT', option: 'PUNTO', selected: true  },
-              { indice: 'PL', option: 'PLANO' },
-              { indice: 'FT', option: 'FANTASIA' }
-            ]} 
-            df={Object.keys(info).length > 0 ? info[0].tipo_fabricacion : null} placeholder={'Numero de la orden'} 
-          />
+          
           <InputSelect title={'TipoPedido'} name={"modalidad_pedido"} formref={form} data={
             [
               { indice: 'ORDN', option: 'ORDEN', selected: true  },
@@ -733,10 +726,21 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           </div>
           {/* <div className="w-[550px]">
           </div> */}
-          <div className="flex gap-3 w-[900px]">
+          <div className="flex gap-3 w-[1200px]">
             <Input name={'presentacion'} defaults={info.length > 0 ? info[0].presentacion : null} title="TipoTela" type="text" placeholder={'Numero de la orden'} readonly={true}/>
             <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" placeholder={'Numero de la orden'} readonly={true}/>
             <Input name={'estilo'} defaults={info.length > 0 ? info[0].estilo : null} title="Estilo" type="text" placeholder={'Estilo de la prenda'} readonly={true}/>
+
+            <Input name={'tipo_fabricacion'} defaults={info.length > 0 ? info[0].tipo_fabricacion : null} title="TipoFabricacion" type="text" placeholder={'Tipo de fabricacion'} readonly={true}/>
+            {/* <InputSelect title={'TipoFabricacion'} name={"tipo_fabricacion"} formref={form} data={
+              [
+                { indice: 'PT', option: 'PUNTO', selected: true  },
+                { indice: 'PL', option: 'PLANO' },
+                { indice: 'FT', option: 'FANTASIA' }
+              ]} 
+              df={Object.keys(info).length > 0 ? info[0].tipo_fabricacion : null} placeholder={'Numero de la orden'} 
+            /> */}
+
           </div>
           {/* <div className="w-[580px]">
             <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
@@ -1183,7 +1187,7 @@ export function NewOrden() {
         })
         .then(resp => {
           if(resp.ok){
-            // navigate("/main/ordenes/")
+            navigate("/main/ordenes/")
             toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.mensaje, { theme: "colored" })
