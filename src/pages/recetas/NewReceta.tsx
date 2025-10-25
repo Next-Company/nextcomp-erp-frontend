@@ -162,10 +162,12 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     params_modal = {
       open:true,
       content: <Estilos actions={(item)=>{
-        setorden(orden=>([{...orden[0],estilo:item.nom}]))
-        setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
-        setopen(false)
-      }}/>,
+          setorden(orden=>([{...orden[0],estilo:item.nom}]))
+          setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
+          setopen(false)
+        }}
+        filters={form.current.elements['RUBROS'].value ?? ''}
+      />,
       controls: false,
       header: false,
       action:()=>{
@@ -178,9 +180,11 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     params_modal = {
       open:true,
       content: <Bases actions={(item)=>{
-        setorden(orden=>([{...orden[0],base:item.nom}]))
-        setopen(false)
-      }}/>,
+          setorden(orden=>([{...orden[0],base:item.nom}]))
+          setopen(false)
+        }}
+        filters={form.current.elements['RUBROS'].value ?? ''}
+      />,
       controls: false,
       header: false,
       action:()=>{
@@ -532,7 +536,7 @@ export function NewReceta() {
         .then(resp => {
           console.log("La informacion recibida es:",resp)
           if(resp.ok){
-            // navigate("/main/ordenes/")
+            navigate("/main/recetas/")
             toast.success('Los datos ingresados fueron registrados con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })
@@ -571,6 +575,7 @@ export function NewReceta() {
             console.log("Mostrando informacion :",resp)
 
             setOrden(resp)
+            setNom(resp[0].nom)
             // setMolde(resp[1])
             // setCorte(resp[2])
             // setMateriales(resp[3])

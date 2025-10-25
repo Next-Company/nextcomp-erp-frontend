@@ -229,7 +229,7 @@ export default function NewGuia(){
   const [penalidades,setPenalidades] = useState([])
   const [reprogramacion,setReprogramacion] = useState([])
   const [fases,setFases] = useState([])
-  const [distribucion,setDistribucion] = useState('GLB')
+  const [distribucion,setDistribucion] = useState('TLL')
   // const [infop,setInfop] = useState([])
   const [servicio,setServicio] = useState('CONFECCION')
   const navigate = useNavigate()
@@ -279,7 +279,7 @@ export default function NewGuia(){
         .then(resp => {
           console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          // navigate('/main/guias/')
+          navigate('/main/guias/')
           if(resp.ok){
             toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{
@@ -555,8 +555,8 @@ export default function NewGuia(){
                   />
                   <InputSelect title={'TipoDistribucion'} formref={form} name={"distribucion"} data={
                     [
-                      { indice: 'GLB', option: 'GLOBALES', selected: true }, 
-                      { indice: 'TLL', option: 'TALLAS', }, 
+                      { indice: 'TLL', option: 'TALLAS', selected: true }, 
+                      { indice: 'GLB', option: 'GLOBALES' }, 
                       { indice: 'PQT', option: 'PAQUETES' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.distribucion : null} 
@@ -634,7 +634,7 @@ export default function NewGuia(){
                         <tr>
                           <td colSpan={11} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                              <div onClick={nuevoregistro} className="bg-green-500 w-[220px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
                               </div>
                             </div>

@@ -6,12 +6,12 @@ import { AuthPermitions } from "../../contexts/contexts"
 
 export default function Bases(children){
   const { logout} = useContext(AuthPermitions)
-  let {actions = ()=>{}, closemodal} = children
+  let {actions = ()=>{}, closemodal, filters = ''} = children
   let [lista,setLista] = useState([])
   let [selected,setSelected] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'productos/productosBase'})
+      await Consulta({url: 'productos/productosBase/'+ filters})
       .then(resp => {
         console.log("La respuesta de la consulta de es de a cco:",resp)
         setLista(resp.map((row)=>({...row,selected:false})))
@@ -38,7 +38,7 @@ export default function Bases(children){
   const busqueda = (input)=>{
     const buscarestilo = async ()=>{
       // await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
-      await Consulta({url: 'productos/productosBase/'+ input.value})
+      await Consulta({url: 'productos/productosBase/'+ (input.value + ' ' + filters).trim()})
       .then(resp => {
         setLista(resp.map((row)=>({...row,selected:false})))
         // setLista(resp)
