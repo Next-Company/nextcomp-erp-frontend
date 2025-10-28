@@ -198,32 +198,32 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
     // },[]))
   }
   const agregarcombo = (e)=>{
-    openmodal({
-      open:true,
-      content: <Colores actions={(items)=>{  
-        console.log("Informacion de los insumos:",items)
-        const id = e.target.dataset.id
-        setcorte(corte=>corte.reduce((c,v)=>{
-          // items.map(item=>{id_hojacorte_CAB:'',idx_color:item.idx,color_combo:item.nom,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0})
-          // c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',idx_color:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
-          c.push({...v,combos:v.idx == id ? [...v.combos,...items.filter(item=>!v.combos.map(combo=>combo.idx_color).includes(item.idx)).map(item=>({id_hojacorte_CAB:'',idx_color:item.idx,color_combo:item.nom,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}))] : v.combos})
-          return c
-        },[]))
-        setopen(false)
-      }}
-        closemodal={()=>setopen(false)}
-      />,
-      controls: false,
-      header: false,
-      action:async ()=>{
-      }
-    })
+    // openmodal({
+    //   open:true,
+    //   content: <Colores actions={(items)=>{  
+    //     console.log("Informacion de los insumos:",items)
+    //     const id = e.target.dataset.id
+    //     setcorte(corte=>corte.reduce((c,v)=>{
+    //       // items.map(item=>{id_hojacorte_CAB:'',idx_color:item.idx,color_combo:item.nom,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0})
+    //       // c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',idx_color:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
+    //       c.push({...v,combos:v.idx == id ? [...v.combos,...items.filter(item=>!v.combos.map(combo=>combo.idx_color).includes(item.idx)).map(item=>({id_hojacorte_CAB:'',idx_color:item.idx,color_combo:item.nom,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}))] : v.combos})
+    //       return c
+    //     },[]))
+    //     setopen(false)
+    //   }}
+    //     closemodal={()=>setopen(false)}
+    //   />,
+    //   controls: false,
+    //   header: false,
+    //   action:async ()=>{
+    //   }
+    // })
 
-    // const id = e.target.dataset.id
-    // setcorte(corte=>corte.reduce((c,v)=>{
-    //   c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
-    //   return c
-    // },[]))
+    const id = e.target.dataset.id
+    setcorte(corte=>corte.reduce((c,v)=>{
+      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
+      return c
+    },[]))
 
   }
   const deletecorte = (e)=>{
@@ -282,8 +282,8 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
                 {
                   Object.keys(info).length > 0 && info.combos && info.combos.map((row,key)=>(
                     <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                      {/* <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td> */}
-                      <td className="text-center">{row.color_combo}</td>
+                      <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
+                      {/* <td className="text-center">{row.color_combo}</td> */}
                       <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
                       <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
                       <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
@@ -318,7 +318,8 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
                 <tr>
                   <td colSpan={6} className="text-right"></td>
                   <td className="text-center font-black">TOTAL</td>
-                  <td className="text-center text-[15px] font-black">{info.combos.reduce((c,v)=>c + (v.cantidad_combo ?? 0),0)}</td>
+                  {/* <td className="text-center text-[15px] font-black">{info.combos.reduce((c,v)=>c + (v.cantidad_combo ?? 0),0)}</td> */}
+                  <td className="text-center text-[15px] font-black">{info.combos.reduce((c,v)=>parseInt(c) + (parseInt(v.cantidad_combo) ?? 0),0)}</td>
                   <td></td>
                 </tr>
                 <tr>
