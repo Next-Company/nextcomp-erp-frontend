@@ -183,6 +183,7 @@ export default function NewMuestra(){
                         { indice: 'INTERNO', option: 'INTERNO' }
                       ]} 
                       df={Object.keys(info).length > 0 ? info.tipo : null} 
+                      placeholder={'Info referencial'}
                     />
                     
                   </div>
@@ -198,22 +199,21 @@ export default function NewMuestra(){
                     df={Object.keys(info).length > 0 ? info.servicio : null} 
                   /> */}
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true"/>
-                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true"/>
-                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true"/>                  
+                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true" placeholder={'Info referencial'}/>
                 </div>
                 <div className="flex flex-row gap-3">
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
-                  
-                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true" />
-                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true"/>
-                  <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" />
-                  <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" />
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Info referencial'}/>
+                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" placeholder={'Info referencial'}/>
+                  <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" placeholder={'Info referencial'}/>
                 </div>
                 <div className="flex flex-row gap-3">
-                  <Input name={'destino'} title="Destino" defaults={Object.keys(info).length > 0 ? info.destino : null} type="text" verify="true"/>
-                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" verify="true"/>
-                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" verify="true"/>
+                  <Input name={'destino'} title="Destino" defaults={Object.keys(info).length > 0 ? info.destino : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" verify="true" placeholder={'Info referencial'}/>
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
                       { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
@@ -221,6 +221,7 @@ export default function NewMuestra(){
                       { indice: 'ANULADO', option: 'ANULADO' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.estado : null} 
+                    placeholder={'Info referencial'}
                   />
                 </div>
                 <div>
@@ -291,7 +292,7 @@ export default function NewMuestra(){
                         <tr>
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                              <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
                               </div>
                             </div>
