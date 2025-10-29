@@ -13,6 +13,7 @@ import Pedidos from "../../components/Common/Pedidos"
 import Modelos from "../../components/Common/Modelos"
 import ProductosLote from "../../components/Common/ProductosLote"
 import Almacenes from "../../components/Common/Almacenes"
+import Ordenes from "../../components/Common/Ordenes"
 
 export default function NewMovimiento(){
   const [tipo,setTipo] = useState(0)
@@ -37,6 +38,10 @@ export default function NewMovimiento(){
         toast.error('Alguno de los campos del formulario son obligatorios. Por favor verifique.', { theme: "colored" })
         return
       }
+    }
+    if(registros.filter(row=>row.Cant_despacho_DET == 0).length > 0){
+      toast.error('Debe ingresar al menos un artículo con cantidad mayor a cero!!', { theme: "colored" })
+      return 0
     }
     if(registros.length == 0){
       toast.error('Debe ingresar al menos un artículo!!', { theme: "colored" })
@@ -392,6 +397,45 @@ export default function NewMovimiento(){
     }
     openModal(params_modal)
   }
+  const listaordenes = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Ordenes actions={(item)=>{
+        console.log("INfor de la orden es:",item)
+        setOpen(false)
+        // setOpenloader(true)
+
+        setInfo({...info,modelo:item.producto,id_orden:item.idx})
+        // setInfo(info=>({...info,id_orden_CAB:item.idx,id_corte_CAB:item.id_corte,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
+
+        // Consulta({url:'ordenes/extraeritemscaja/' + item.idx + '/' + item.id_corte})
+        // .then((resp)=>{
+        //   console.log("Los registros de la orden son :",resp)
+        //   if(resp.length > 0){
+        //     setInfo(info=>({...info,id_orden_CAB:item.idx,id_corte_CAB:item.id_corte,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
+        //     setRegistros(resp)
+        //   }else{
+        //     toast.warning('No se encontraron datos disponibles.', { theme: "colored" })
+        //   }
+        //   console.log("Resultado del proceso de extraccion :",resp)
+        // })
+        // .catch((error)=>{
+        //   console.log("Error con la consulta",error)
+        // })
+        // .finally(()=>{
+        //   setOpenloader(false)
+        // })
+
+        console.log("Evento del input select otra vez",event.detail)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openModal(params_modal)
+  }
   const cambioinput = (e)=>{
     // console.log("El input modificado fue el siguiente:",e.target)
   }
@@ -449,7 +493,7 @@ export default function NewMovimiento(){
                     motivo !== 'ajt' &&
                     <>
                       <Input name={'id_orden'} defaults={Object.keys(info).length > 0 && info.id_orden ? info.id_orden : null} type="hidden" verify="true"/>
-                      <Input name={'modelo'} defaults={Object.keys(info).length > 0 && info.modelo ? info.modelo : null} title="Modelo" type="text" verify="true" placeholder={"Texto referencial"}/>
+                      <Input name={'modelo'} defaults={Object.keys(info).length > 0 && info.modelo ? info.modelo : null} title="Modelo" type="text" verify="true" action={listaordenes} mode={'static'} placeholder={"Texto referencial"}/>
                     </>
                   }
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true" placeholder={"Texto referencial"}/>
