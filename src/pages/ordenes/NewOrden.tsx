@@ -610,7 +610,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
 
         // setorden([{...info[0],id_receta:items[0].id_producto_CAB,producto:(items[0].rubro + ' ' + items[0].presentacion + ' ' + items[0].modelo),tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro}])
 
-        setorden([{...info[0],id_receta:items[0].id_producto_CAB,tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro}])
+        setorden([{...info[0],id_receta:items[0].id_producto_CAB,tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].base,estilo:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro,producto:(items[0].rubro + ' ' + items[0].presentacion + ' ' + items[0].modelo)}])
 
         // setinsumos([...insumos,...items.map(row=>({id_producto:row.id_producto_CAB,id_subprod:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0}))])
       }}
@@ -721,6 +721,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         </div>
         <hr/> 
         <div className="flex flex-col gap-3 w-[64%]">
+          {/* <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Producto" type="text" action={searchproducto} mode={'static'} /> */}
           <Input name={'producto'} defaults={info.length > 0 ? info[0].producto : null} title="Descripcion" type="hidden" />
           <div className="w-[350px]">
             <Input name={'id_receta'} title="IdReceta" defaults={info.length > 0 ? info[0].id_receta : null} type="text" action={searchproducto} mode={'static'} verify="true" placeholder={'Numero de la orden'}/>

@@ -774,7 +774,13 @@ export default function ListaOrdenes() {
                 {
               ordenes.length > 0
                 ? ordenes.map((row, key) => (
-                  <div className={`${row.running_state == 'OFF' && 'bg-gray-300'} ${row.running_state == 'PAUSE' && 'bg-amber-300'} ${row.running_state == 'STOP' && 'bg-red-400'} ${row.running_state == 'PLAY' && 'bg-green-200'} rounded-t-xl rounded-bl-xl rounded-br-xl p-3 relative cursor-pointer hover:opacity-80 mb-[34px] mt-2 hover:bg-gray-500 z-0`} data-action="show" onClick={onclick} data-id={row.idx} onContextMenu={onrightclick}>
+                  <div className={`${row.running_state == 'OFF' && 'bg-gray-300'} ${row.running_state == 'PAUSE' && 'bg-amber-300'} ${row.running_state == 'STOP' && 'bg-red-400'} ${row.running_state == 'PLAY' && 'bg-green-200'} rounded-t-xl rounded-bl-xl rounded-br-xl p-3 relative cursor-pointer hover:opacity-80 mb-[34px] mt-2 hover:bg-gray-500 z-0 pt-[15px]`} data-action="show" onClick={onclick} data-id={row.idx} onContextMenu={onrightclick}>
+
+                    {/* <div>Condiciones de desarrollo</div> */}
+                    {/* <div className="absolute top-[7px] h-[1px] ml-2 mr-2 bg-orange-300 rounded-full left-0 right-0 flex flex-row items-center gap-2"></div> */}
+                    <div className="absolute top-[7px] h-[1px] ml-3 mr-3 rounded-full left-0 right-0 flex flex-row items-center gap-2 border-dashed border-purple-500 border-t-[1px]"></div>
+                    {/* <div className="h-[1px] ml-1 mr-1 rounded-full left-0 right-0 flex flex-row items-center gap-2 pb-3"></div> */}
+
                     <div className="flex flex-row items-center gap-2">
                       <div className={`bg-white ${row.running_state == 'OFF' && 'text-gray-500'} ${row.running_state == 'PAUSE' && 'text-amber-500'} ${row.running_state == 'STOP' && 'text-red-500'} ${row.running_state == 'PLAY' && 'text-green-500'}  rounded-full h-[40px] w-[40px] flex flex-row justify-center items-center`}>
                         {
@@ -790,7 +796,10 @@ export default function ListaOrdenes() {
                           row.running_state == 'PLAY' && <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" /></svg>
                         }
                       </div>
-                      <div className="text-black text-[14px] font-bold flex-1">{row.marca} {row.producto} {row.modelos}</div>
+                      <div className="flex-1 flex flex-col justify-center items-left">
+                        <div className="text-[8px]">ARTICULO</div>
+                        <div className="text-black text-[14px] font-bold">{row.marca} {row.producto} {row.modelos}</div>
+                      </div>
                       <div className="text-black text-[20px] flex flex-row gap-4">
                         <div className="flex flex-col justify-center items-center">
                           <div className="text-[8px]">SUGERIDO</div>
@@ -809,8 +818,8 @@ export default function ListaOrdenes() {
                           <div className={`text-center italic font-extrabold ${row.dias_pendientes < 0 ? 'text-red-500' : 'text-black'}`}>{row.dias_pendientes}</div>
                         </div>
                         <div className="flex flex-col justify-center items-center">
-                          <div className="text-[8px]">PORCENTAJE</div>
-                          <div className="italic font-extrabold">2%</div>
+                          <div className="text-[8px]">#ORDEN</div>
+                          <div className="italic font-extrabold">{row.oc}</div>
                         </div>
                         <div className="flex flex-row items-center">
                           <ul className="flex flex-row justify-end">
