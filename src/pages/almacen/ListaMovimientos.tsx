@@ -120,7 +120,8 @@ export default function ListaMovimientosAlmacen() {
               setOpenloader(true)
               Consulta({
                 // url: 'reports/vistapreviaretiro/TELAS', params: {
-                url: 'almacen/vistapreviaretiro/TELAS', params: {
+                // url: 'almacen/vistapreviaretiro/TELAS', params: {
+                url: 'almacen/vistapreviadespacho/TELAS', params: {
                   method: 'POST',
                   body: data
                 }

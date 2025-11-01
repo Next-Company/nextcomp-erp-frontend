@@ -79,6 +79,10 @@ export default function NewPedido(){
       toast.error('Debe ingresar la cantidad y el precio del articulo.', { theme: "colored" })
       return
     }
+    if(tipo == 1 && (registros.filter(row=>parseFloat(row.conversion) == 0).length > 0)){
+      toast.error('Debe ingresar el valor de conversión para los articulos ingresados.', { theme: "colored" })
+      return
+    }
 
     openModal({
       open: true,
@@ -404,8 +408,13 @@ export default function NewPedido(){
                   />
                   <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'TRANSITO', option: 'TRANSITO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} placeholder="Texto complementario"/>
                 </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de los artículos a solicitar</span>
+                </div>
+                <hr/> 
                 <div>
-                  <span>Artículos</span>                  
+                  {/* <span>Artículos</span> */}
                   <div className="h-[370px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
@@ -497,12 +506,12 @@ export default function NewPedido(){
                             <div className="flex flex-row justify-center gap-2">
                               {
                                 tipo !== 1 
-                                ? <div onClick={searchproducto} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                                ? <div onClick={searchproducto} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                   <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                                 </div>
                                 :
                                 // <div onClick={nuevoproducto} className="bg-blue-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
-                                <div onClick={searchproducto} className="bg-blue-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                                <div onClick={searchproducto} className="bg-blue-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
                                   <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
                                 </div>
                               }

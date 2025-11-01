@@ -119,6 +119,7 @@ export default function NewMovimiento(){
       }
       if(event.detail.name == 'tipo_operacion'){
         setTipo(event.detail.valor == 'INGRESOS' ? 0 : 1)
+        setRegistros([])
       }
       // setRegistros([])
     };
@@ -128,6 +129,42 @@ export default function NewMovimiento(){
       if (form.current) form.current.removeEventListener("salamandra", handleInputChange);
     };
   },[])
+
+  const searchproducto = ()=>{
+    openModal({
+      open:true,
+      content: <Productos actions={(items)=>{  
+        setOpen(false)
+        console.log("Los items seleccionados HALLOWEEN son: ",items)
+        setRegistros([
+          ...registros,
+          ...items.map(row=>({
+            id_subprod:row.idxsub,
+            id_producto_DET:row.id_producto_CAB,
+            producto:row.producto,
+            idx_color:row.idx_color,
+            color:row.color,
+            cantidad:0,
+            Cant_despacho_DET:0,
+            precio:0,
+            idx_talla:row.idx_talla,
+            talla:row.talla,
+            lote:0,
+            unidad:row.unidad,
+            metros:0,
+            rollos:0,
+            tipo:row.tipo
+          }))
+        ])
+      }}
+        closemodal={()=>setOpen(false)}
+      />,
+      controls: false,
+      header: false,
+      action:async ()=>{
+      }
+    })
+  }
 
   const searchproductoIngreso = ()=>{
     if(!info.Suc_Tienda){
@@ -231,9 +268,10 @@ export default function NewMovimiento(){
       toast.error("Debe seleccionar primero el almacén destino. Porfavor verifique.", { theme: "colored" })
       return 0
     }
+
     openModal({
       open:true,
-      content: <ProductosLote actions={(items)=>{  
+      content: <ProductosLote almacen={info?.Suc_Tienda ?? 0} actions={(items)=>{  
         console.log("La informacion del producto seleccionado es:",items)
         setOpen(false)
         setRegistros([...registros,...items.map(row=>(
@@ -248,7 +286,7 @@ export default function NewMovimiento(){
             precio:0,
             idx_talla:row.idx_talla,
             talla:row.talla,
-            lote:row.lote,
+            num_lote:row.lote,
             unidad:row.unidad,
             metros:0,
             rollos:0,
@@ -404,30 +442,9 @@ export default function NewMovimiento(){
       content: <Ordenes actions={(item)=>{
         console.log("INfor de la orden es:",item)
         setOpen(false)
-        // setOpenloader(true)
+        setInfo({...info,producto:item.producto,id_orden:item.idx})
 
-        setInfo({...info,modelo:item.producto,id_orden:item.idx})
-        // setInfo(info=>({...info,id_orden_CAB:item.idx,id_corte_CAB:item.id_corte,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
-
-        // Consulta({url:'ordenes/extraeritemscaja/' + item.idx + '/' + item.id_corte})
-        // .then((resp)=>{
-        //   console.log("Los registros de la orden son :",resp)
-        //   if(resp.length > 0){
-        //     setInfo(info=>({...info,id_orden_CAB:item.idx,id_corte_CAB:item.id_corte,orden_ref:item.oc,marca:item.marca,modelo:item.modelos,producto:item.producto}))
-        //     setRegistros(resp)
-        //   }else{
-        //     toast.warning('No se encontraron datos disponibles.', { theme: "colored" })
-        //   }
-        //   console.log("Resultado del proceso de extraccion :",resp)
-        // })
-        // .catch((error)=>{
-        //   console.log("Error con la consulta",error)
-        // })
-        // .finally(()=>{
-        //   setOpenloader(false)
-        // })
-
-        console.log("Evento del input select otra vez",event.detail)
+        // console.log("Evento del input select otra vez",event.detail)
       }}/>,
       controls: true,
       header: false,
@@ -493,7 +510,7 @@ export default function NewMovimiento(){
                     motivo !== 'ajt' &&
                     <>
                       <Input name={'id_orden'} defaults={Object.keys(info).length > 0 && info.id_orden ? info.id_orden : null} type="hidden" verify="true"/>
-                      <Input name={'modelo'} defaults={Object.keys(info).length > 0 && info.modelo ? info.modelo : null} title="Modelo" type="text" verify="true" action={listaordenes} mode={'static'} placeholder={"Texto referencial"}/>
+                      <Input name={'producto'} defaults={Object.keys(info).length > 0 && info.producto ? info.producto : null} title="Producto" type="text" verify="true" action={listaordenes} mode={'static'} placeholder={"Texto referencial"}/>
                     </>
                   }
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true" placeholder={"Texto referencial"}/>
@@ -599,7 +616,7 @@ export default function NewMovimiento(){
                         <tr>
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center gap-2">
-                              <div onClick={tipo ? searchproductoEgreso : searchproductoIngreso} className={`${tipo ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer `}>
+                              <div onClick={tipo ? searchproductoEgreso : searchproducto} className={`${tipo ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer `}>
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                               </div>
                               {/* <div onClick={searchproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">

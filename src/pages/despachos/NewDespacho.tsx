@@ -304,6 +304,10 @@ export default function NewDespacho() {
         return 0
       }
     }
+    if(tipo == 1 && registros.reduce((c,v)=>c + (v.despacho ?? 0),0) <= 0){
+      toast.error('No ha registro ningún importe de ingreso. Por favor verifique.', { theme: "colored" })
+      return 0
+    }
 
     if(registros.length > 0 && tipo == 2 && fase == 1){
       if(registros.filter(row=>row.fracciones_despacho.length > 0).length == 0){
@@ -351,7 +355,7 @@ export default function NewDespacho() {
           .then(resp => {
             console.log("Info respues:",resp)
             setOpenloader(false)
-            // navigate('/main/despachos/')
+            navigate('/main/despachos/')
             if(resp.ok){
               toast.success(resp.message, { theme: "colored" })
             }else{
@@ -805,7 +809,7 @@ export default function NewDespacho() {
                                       }
                                       {/* <td>{row.ingresos}</td> */}
                                       {
-                                        !urlparams.id ? <td>{(row.cantidad - (row.despachos.length > 0 ? row.despachos.reduce((c,v)=>(c+v.cantidad_despacho),0) : 0)).toFixed(2)
+                                        !urlparams.id ? <td>{(row.cantidad*parseFloat(row.conversion ?? 1) - (row.despachos.length > 0 ? row.despachos.reduce((c,v)=>(c+v.cantidad_despacho),0) : 0)).toFixed(2)
                                         }</td>
                                         : <td>0</td>
                                       }

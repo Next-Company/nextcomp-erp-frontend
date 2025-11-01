@@ -259,7 +259,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos}){
                   { indice: '4', option: 'XL' },
                   { indice: '6', option: 'XXL' }
                 ]} 
-                df={row.talla} formref={form} params={{'height':'200px'}} position={key}
+                df={'["S/T"]'} formref={form} params={{'height':'200px'}} position={key}
               />
               <div className="flex items-center [&_li:hover]:cursor-pointer">
                 <ul className="flex flex-row justify-end">
@@ -356,7 +356,9 @@ export function NewProducto() {
       console.log("Los combos formateados son:",combos,test)
       // console.log("Los combos formateados son:",combos,combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c)) )
       // setCombos([{color:'VERDE',talla:JSON.stringify(['M','XXL','S'])}])
+
       setCombos(combo=>combo.map((c,p)=>(p == parseInt(event.detail.position) ? {idcolor:c.idcolor,color:c.color,talla:JSON.stringify(event.detail.valor.map(row=>row.option))} : c) ))
+
       // setCombos(combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c) ))
     };
     form.current.addEventListener("salamandra", handleSalamandra);
@@ -379,7 +381,7 @@ export function NewProducto() {
       const pp = async () => {
         await Consulta({url: 'productos/searchproductobyid/' + urlparams.id,})
           .then(resp => {
-            console.log("Mostrando informacion :",resp)
+            console.log("Mostrando informacion del producto halloween:",resp)
             setOrden(resp)
             setCombos(resp[1].map(row=>({idcolor:row.idcolor,color:row.color,talla:JSON.stringify(row.tallas)})))
           })
