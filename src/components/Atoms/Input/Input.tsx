@@ -48,6 +48,7 @@ export function Input({ name, defaults = null, title = "", type, dataset = [], s
     <>
       <div className={`${type == 'hidden' && 'hidden'} flex-1`}>
         <div onClick={onclick} className={`rounded-md bg-gray-100 flex flex-col justify-start items-start pl-[16px] pr-[16px] pt-[5px] pb-[8px] hover:bg-gray-200 relative box-content group overflow-hidden `} style={style}>
+        {/* <div onClick={onclick} className={`rounded-md bg-white flex flex-col justify-start items-start pl-[16px] pr-[16px] pt-[5px] pb-[8px] hover:bg-gray-200 relative box-content group overflow-hidden  border-[#bfbfbf] border-[1px]`} style={style}> */}
           <label className={`text-[12px] text-blue-600 transition-all mover pointer-events-none`}>{title}</label>
           {/* <input onClick={(e) => e.stopPropagation()} ref={ref} type={type} onChange={onchange} name={name} value={initial} onFocus={onfocus} onBlur={onblur} autoComplete="off" className="inp bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" /> */}
           {/* <input onClick={()=>console.log('clickeando')} /> */}

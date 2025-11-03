@@ -60,6 +60,7 @@ export function InputSelect({ title, name, data, df, formref=null, placeholder=n
     <>
       <div className="flex-1">
         <div onClick={onclick} className="rounded-md bg-gray-100 flex flex-col justify-start items-start pl-[16px] pr-[16px] pt-[5px] pb-[8px] hover:bg-gray-200 relative box-content group">
+        {/* <div onClick={onclick} className="rounded-md bg-white flex flex-col justify-start items-start pl-[16px] pr-[16px] pt-[5px] pb-[8px] hover:bg-gray-200 relative box-content group border-[#bfbfbf] border-[1px]"> */}
           <label className="text-[12px] text-blue-600 transition-all pointer-events-none">{title}</label>
 
           {/* <input type='hidden' name={name} value={select >= 0 ? info[select].indice : null} /> */}

@@ -550,7 +550,7 @@ export default function NewMovimiento(){
                         <tr>
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center gap-2">
-                              <div onClick={tipo ? searchproductoEgreso : searchproductoIngreso} className={`${tipo ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} w-[150px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer `}>
+                              <div onClick={tipo ? searchproductoEgreso : searchproductoIngreso} className={`${tipo ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer `}>
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                               </div>
                               {/* <div onClick={searchproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
