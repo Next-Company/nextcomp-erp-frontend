@@ -54,6 +54,29 @@ import LayoutCaja from './pages/caja/LayoutCaja.tsx'
 import InformeCaja from './pages/caja/InformeCaja.tsx'
 import Unauthorized from './pages/pedidos/Unauthorized.tsx'
 import PrivateRoute from './pages/pedidos/PrivateRouter.tsx'
+import LayoutRetiro from './pages/retiros/LayoutRetiro.tsx'
+import ListaRetiros from './pages/retiros/ListaRetiros.tsx'
+import NewRetiro from './pages/retiros/NewRetiro.tsx'
+import ListaMovimientosAlmacen from './pages/almacen/ListaMovimientos.tsx'
+import LayoutAlmacen from './pages/almacen/LayoutAlmacen.tsx'
+import LayoutMovimientos from './pages/almacen/LayoutMovimientos.tsx'
+import LayoutInventario from './pages/almacen/LayoutInventario.tsx'
+import NewInOut from './pages/almacen/NewIngresoEgreso.tsx'
+import ListaInventarioAlmacen from './pages/almacen/ListaInventario.tsx'
+import LayoutSolicitud from './pages/almacen/LayoutSolicitud.tsx'
+import ListaSolicitudes from './pages/almacen/ListaSolicitudes.tsx'
+import RevisionSolicitud from './pages/almacen/RevisionSolicitud.tsx'
+import ErrorController from './pages/error/ErrorBoundary.tsx'
+import LayoutProductos from './pages/productos/LayoutProductos.tsx'
+import ListaProductos from './pages/productos/ListaProductos.tsx'
+import { NewProducto } from './pages/productos/NewProducto.tsx'
+import CuadreCorte from './pages/almacen/NewCuadre.tsx'
+import NewMovimiento from './pages/almacen/NewMovimiento.tsx'
+import LayoutRecetas from './pages/recetas/LayoutRecetas.tsx'
+import ListaRecetas from './pages/recetas/ListaRecetas.tsx'
+import { NewReceta } from './pages/recetas/NewReceta.tsx'
+import ListaProveedores from './pages/proveedores/ListaProveedores.tsx'
+import { NewProveedor } from './pages/proveedores/NewProveedor.tsx'
 
 const routes = [
   {
@@ -97,9 +120,9 @@ const routes = [
         element: <PrivateRoute><LayoutGuia /></PrivateRoute>,
         children: [
           { path: "", element: <ListaGuias /> },
-          { path: "nuevo", element: <NewGuia /> },
-          { path: "nuevo/:id", element: <NewGuia /> },
-          { path: "seguimiento/:id", element: <SeguimientoGuia /> },
+          { path: "nuevo", element: <NewGuia />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewGuia />, error: <ErrorController/> },
+          { path: "seguimiento/:id", element: <SeguimientoGuia />, error: <ErrorController/> },
         ]
       },
       {
@@ -107,8 +130,8 @@ const routes = [
         element: <PrivateRoute><LayoutMuestras /></PrivateRoute>,
         children: [
           { path: "", element: <ListaMuestras /> },
-          { path: "nuevo", element: <NewMuestra /> },
-          { path: "nuevo/:id", element: <NewMuestra /> },
+          { path: "nuevo", element: <NewMuestra />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewMuestra />, error: <ErrorController/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ] 
@@ -118,8 +141,8 @@ const routes = [
         element: <PrivateRoute><LayoutPedido /></PrivateRoute>,
         children: [
           { path: "", element: <ListaPedidos /> },
-          { path: "nuevo", element: <NewPedido /> },
-          { path: "nuevo/:id", element: <NewPedido /> },
+          { path: "nuevo", element: <NewPedido />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewPedido />, error: <ErrorController/> },
           // { path: "nuevo/:id", element: <NuevoEstampado/> },
           // { path: "review/:id", element: <ReviewEstampado/> },
         ]
@@ -129,8 +152,8 @@ const routes = [
         element: <PrivateRoute><LayoutOrden /></PrivateRoute>,
         children: [
           { path: "", element: <ListaOrdenes /> },
-          { path: "nuevo", element: <NewOrden /> },
-          { path: "nuevo/:id", element: <NewOrden /> },
+          { path: "nuevo", element: <NewOrden />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewOrden />, error: <ErrorController/> },
         ]
       },
       {
@@ -138,9 +161,19 @@ const routes = [
         element: <PrivateRoute><LayoutDespacho /></PrivateRoute>,
         children: [
           { path: "", element: <ListaDespachos /> },
-          { path: "nuevo", element: <NewDespacho /> },
-          { path: "nuevo/:id", element: <NewDespacho /> },
-          { path: "load/:idmuestra", element: <NewDespacho /> },
+          { path: "nuevo", element: <NewDespacho />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewDespacho />, error: <ErrorController/> },
+          { path: "load/:idmuestra", element: <NewDespacho />, error: <ErrorController/> },
+        ]
+      },
+      {
+        path: "retiros",
+        element: <PrivateRoute><LayoutRetiro /></PrivateRoute>,
+        children: [
+          { path: "", element: <ListaRetiros /> },
+          { path: "nuevo", element: <NewRetiro />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewRetiro />, error: <ErrorController/> },
+          { path: "load/:idmuestra", element: <NewRetiro />, error: <ErrorController/> },
         ]
       },
       {
@@ -193,7 +226,7 @@ const routes = [
       },
       {
         path: "informes",
-        element: <LayoutInforme />,
+        element: <PrivateRoute><LayoutInforme /></PrivateRoute>,
         children: [
           { path: "", element: <Informe /> },
         ]
@@ -207,6 +240,66 @@ const routes = [
           // { path: "nuevo", element: <><h1>Editando el detalle</h1></> }
           { path: "nuevo", element: <NuevaOrdenProduccion /> },
           { path: "nuevo/:id", element: <NuevaOrdenProduccion /> }
+        ]
+      },
+      {
+        path: "almacen",
+        element: <PrivateRoute><LayoutAlmacen /></PrivateRoute>,
+        children: [
+          { 
+            path: "movimientos", 
+            element: <LayoutMovimientos />,
+            children: [
+              { path: "", element: <ListaMovimientosAlmacen />, error: <ErrorController/> },
+              // { path: "nuevo", element: <NewInOut />, error: <ErrorController/> },
+              { path: "nuevo", element: <NewMovimiento />, error: <ErrorController/> },
+              { path: "nuevo/:id", element: <NewMovimiento />, error: <ErrorController/> },
+              { path: "cuadre/:id", element: <CuadreCorte /> }
+            ]
+          },
+          { 
+            path: "inventario", 
+            element: <LayoutInventario />,
+            children: [
+              { path: "", element: <ListaInventarioAlmacen />, error: <ErrorController/> },
+            ]
+          },
+          { 
+            path: "solicitudes", 
+            element: <LayoutSolicitud />,
+            children: [
+              { path: "", element: <ListaSolicitudes /> },
+              { path: "nuevo", element: <RevisionSolicitud /> },
+              { path: "cuadre", element: <CuadreCorte /> },
+            ]
+          }
+        ]
+      },
+      {
+        path: "recetas",
+        element: <PrivateRoute><LayoutRecetas/></PrivateRoute>,
+        children: [
+          { path: "",element: <ListaRecetas />, error: <ErrorController/> },
+          { path: "nuevo",element: <NewReceta />, error: <ErrorController/> },
+          { path: "nuevo/:id",element: <NewReceta />, error: <ErrorController/> }
+        ]
+      },
+      {
+        path: "productos",
+        element: <PrivateRoute><LayoutProductos/></PrivateRoute>,
+        children: [
+          { path: "",element: <ListaProductos />, error: <ErrorController/> },
+          { path: "nuevo",element: <NewProducto />, error: <ErrorController/> },
+          { path: "nuevo/:id",element: <NewProducto />, error: <ErrorController/> }
+        ]
+      },
+      {
+        path: "proveedores",
+        element: <PrivateRoute><LayoutProductos/></PrivateRoute>,
+        children: [
+          { path: "",element: <ListaProveedores />, error: <ErrorController/> },
+          { path: "nuevo",element: <NewProveedor />, error: <ErrorController/> },
+          { path: "nuevo/:id",element: <NewProveedor />, error: <ErrorController/> }
         ]
       }
     ]

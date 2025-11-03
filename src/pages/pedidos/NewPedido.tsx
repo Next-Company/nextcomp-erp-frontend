@@ -16,7 +16,8 @@ const CuerpoInforme = ({info,tipo})=>{
     console.log("El tipo de pedido es:",tipo)
     let crear = async ()=>{
       // await Consulta({url: `${tipo ? 'produccion/vistapreviapedido/avios' : 'produccion/vistapreviapedido/telas'}`,params:{
-      await Consulta({url: `${tipo ? 'produccion/vistapreviapedidoavios/avios' : 'produccion/vistapreviapedido/telas' }`,params:{
+      // await Consulta({url: `${tipo ? 'produccion/vistapreviapedidoavios/avios' : 'produccion/vistapreviapedido/telas' }`,params:{
+      await Consulta({url: `${tipo ? 'produccion/vistarapidapedidoavios/download' : 'produccion/vistapreviapedido/telas' }`,params:{
         method:'POST',
         body:info
       }})
@@ -63,14 +64,18 @@ export default function NewPedido(){
   const onsubmit = (e)=>{
     e.preventDefault()
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
-    
     console.log("El de talle de fracciones :",registros)
-
+    for(let element of form.current.querySelectorAll("input[verify='true']")){
+      if(element && element.value == ''){
+        toast.error('Alguno de los campos del formulario son obligatorios. Por favor verifique.', { theme: "colored" })
+        return
+      }
+    }
     if(registros.length == 0){
       toast.error('Debe ingresar al menos un artículo!!', { theme: "colored" })
       return
     }
-    if(registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0){
+    if(tipo == 1 && (registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0)){
       toast.error('Debe ingresar la cantidad y el precio del articulo.', { theme: "colored" })
       return
     }
@@ -88,14 +93,18 @@ export default function NewPedido(){
 
         console.log("Detalle de la lista de articuos :",registros)
         setOpenloader(true)
-        await Consulta({url: 'produccion/guardarpedido/',params:{
+        await Consulta({url: tipo ? 'produccion/guardarpedidoavios/' : 'produccion/guardarpedidotelas/',params:{
           method:'PUT',
           body:data
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/pedidos/')
-          toast.success('Nuevo pedido guardado con éxito!!', { theme: "colored" })
+          if(resp.ok){
+            navigate('/main/pedidos/')
+            toast.success('Nuevo pedido guardado con éxito!!', { theme: "colored" })
+          }else{
+            toast.error(resp.message, { theme: "colored" })
+          }
         })
         .catch((err)=>{
           setOpenloader(false)
@@ -153,37 +162,54 @@ export default function NewPedido(){
     };
   },[])
 
+  const searchproducto = ()=>{
+    openModal({
+      open:true,
+      content: <Productos actions={(items)=>{  
+        setOpen(false)
+        setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,origen:'automatico'}))])
+      }}
+        closemodal={()=>setOpen(false)}
+      />,
+      controls: false,
+      header: false,
+      action:async ()=>{
+      }
+    })
+  }
   const nuevoproducto = ()=>{
-    if(tipo == 1){
-      setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',modelo:'',corte:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0}])
-    }else{
-      openModal({
-        open:true,
-        content: <Productos actions={(items)=>{  
-          setOpen(false)
-          // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])}
-          // setRegistros([...registros,...items.filter(row=>!registros.map(row2=>row2.id_producto_CAB).includes(row.idxsub)).map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'',precio:0}))])
-          setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
-        }}
-          closemodal={()=>setOpen(false)}
-        />,
-        controls: false,
-        header: false,
-        action:async ()=>{
-        }
-      })
-    }
-    // setRegistros([...registros,{item:0,producto:'',color:'',rollos:0,cantidad:0,unidad:'',precio:0}])
+    setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',modelo:'',corte:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0,origen:'manual'}])
+    // if(tipo == 1){
+    //   setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',modelo:'',corte:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0}])
+    // }else{
+    //   openModal({
+    //     open:true,
+    //     content: <Productos actions={(items)=>{  
+    //       setOpen(false)
+    //       setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,modelo:row.modelo,corte:row.corte,color:row.color,rollos:0,cantidad:0,unidad:'KG',precio:0}))])
+    //     }}
+    //       closemodal={()=>setOpen(false)}
+    //     />,
+    //     controls: false,
+    //     header: false,
+    //     action:async ()=>{
+    //     }
+    //   })
+    // }
   }
 
   const onclick = (e)=>{
     const action = e.target.dataset.action
     const position = e.target.dataset.position
     switch(action){
-
       case 'delete':
         setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
         console.log("Eliminado registros de la fila ",position)
+        break;
+      case 'clone':
+        let copia = registros.filter((row,key)=>key == parseInt(position))[0]
+        // setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+        setRegistros([...registros,copia])
         break;
       default :
     }
@@ -191,21 +217,20 @@ export default function NewPedido(){
   const editvalue = (e)=>{
     let column = e.target.dataset.name
     let position = e.target.dataset.position
+  
+    if(tipo == 0){
+      if(column == 'color'){
+        setRegistros([...registros.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:'', id_producto_CAB:''}:item)])
+      } else if(column == 'producto'){
+        setRegistros([...registros.map((item,key)=> position == key ? {...item, producto: e.target.value, idx_producto:''}:item)])
+      } else{
+        setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
+      }
+    }else{
+      setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
+    }
     
-    // let info = []
-    // if(column == 'precio'){
-    //   info = [...registros.map((item,key)=> position == key ? {...item,[column]: parseFloat(e.target.value),['importe']:parseFloat(e.target.value)*parseFloat(item.cantidad)}:item)]
-    // }else if(column == 'cantidad'){
-    //   info = [...registros.map((item,key)=> position == key ? {...item,[column]: parseFloat(e.target.value),['importe']:parseFloat(e.target.value)*parseFloat(item.precio)}:item)]
-    // }else{
-    //   info = [...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)]
-
-    // }
-    // console.log("Capturando edicion de campo :",registros,info)
-    // setRegistros(info)
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
   }
-
   const nuevoproveedor = ()=>{
     let params_modal = null
     params_modal = {
@@ -282,12 +307,12 @@ export default function NewPedido(){
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="hidden" />
-                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" />
+                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
+                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
                   {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
-                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" />
+                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" verify="true"/>
                   <InputSelect title={'Emisor'} name={"emisor"} data={
                     [
                       { indice: 'NEXT', option: 'NEXT', selected: true }, 
@@ -297,7 +322,7 @@ export default function NewPedido(){
                   />
                 </div>
                 <div className="flex gap-3">
-                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" />
+                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" verify="true"/>
                   <InputSelect title={'TipoPedido'} formref={form} name={"tipo"} data={
                     [
                       { indice: 'TELAS', option: 'TELAS', selected: true }, 
@@ -305,9 +330,9 @@ export default function NewPedido(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                   />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" />
-                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" />
-                  <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text" />
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
+                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" verify="true"/>
+                  <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text"/>
                 </div>
                 <div className="flex gap-3">
                   <InputSelect title={'Moneda'} name={"moneda"} data={
@@ -331,7 +356,7 @@ export default function NewPedido(){
                     ]} 
                     df={Object.keys(info).length > 0 ? info.igv : null} 
                   />
-                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
+                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'TRANSITO', option: 'TRANSITO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
                 </div>
                 <div>
                   <span>Artículos</span>                  
@@ -356,15 +381,20 @@ export default function NewPedido(){
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
+                              {
+                                tipo == 1 || row.origen == 'manual'
+                                ? <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
+                                : <td className="text-center">{row.producto}</td>
+                              }
+                              
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="modelo" value={row.modelo} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="corte" value={row.corte} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="color" value={row.color} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} /></td>
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
-                              <td><input type="number" onChange={editvalue} data-position={key} step=".01" data-name="precio" value={row.precio} /></td>
-                              <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(2)} /></td>
+                              <td><input type="number" onChange={editvalue} data-position={key} step=".001" data-name="precio" value={row.precio} /></td>
+                              <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(3)} /></td>
                               <td><input type="checkbox" id="anulado" onChange={editvalue} data-position={key} data-name="anulado" checked={row.anulado}  /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
@@ -374,13 +404,10 @@ export default function NewPedido(){
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="clone" onClick={onclick} data-position={key}>
+                                      {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-square-toggle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2l0 20" /><path d="M14 20h-8a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h8" /><path d="M20 6a2 2 0 0 0 -2 -2" /><path d="M18 20a2 2 0 0 0 2 -2" /><path d="M20 10l0 4" /></svg> */}
+                                      {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-flip-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l0 18" /><path d="M16 7l0 10l5 0l-5 -10" /><path d="M8 7l0 10l-5 0l5 -10" /></svg> */}
+                                      <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-copy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>
                                     </div>
                                   </li>
                                   <li>
@@ -404,22 +431,29 @@ export default function NewPedido(){
                           <td colSpan={4} className="text-right"></td>
                           <td className="text-center"><strong className="text-[14px]">TOTAL: </strong></td>
                           <td className="text-center text-[14px] font-bold">
-                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(2)}
+                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(3)}
                           </td>
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
                           <td className="text-center text-[14px] font-bold">
-                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(2)}
+                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(3)}
                           </td>
                           <td></td>
                           <td></td>
                         </tr>
                         <tr>
                           <td colSpan={11} >
-                            <div className="flex flex-row justify-center">
-                              <div onClick={nuevoproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
-                                +
-                              </div>
+                            <div className="flex flex-row justify-center gap-2">
+                              {
+                                tipo !== 1 
+                                ? <div onClick={searchproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                                </div>
+                                :
+                                <div onClick={nuevoproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                                </div>
+                              }
                             </div>
                           </td>
                         </tr>
@@ -453,40 +487,3 @@ export default function NewPedido(){
     </>
   )
 }
-// Componente InputSelect
-// export function InputSelect({ title, name, data, df }) {
-//   // ... (resto del código)
-
-//   const onSelectChange = (key) => {
-//     setSelect(key);
-//     const event = new CustomEvent("inputSelectChange", {
-//       detail: { value: info[key].indice },
-//     });
-//     ref_menu.current.dispatchEvent(event); // Disparamos el evento en un elemento del DOM
-//   };
-
-//   // ... (resto del código)
-// }
-
-// // Componente padre
-// function MiFormulario() {
-//   const handleInputChange = (event) => {
-//     console.log("Valor seleccionado en el formulario:", event.detail.value);
-//   };
-
-//   useEffect(() => {
-//     const menu = ref_menu.current; // Obtén una referencia al elemento donde se dispara el evento
-//     menu.addEventListener("inputSelectChange", handleInputChange); // Escuchamos el evento personalizado
-
-//     return () => {
-//       menu.removeEventListener("inputSelectChange", handleInputChange); // Limpiamos el listener al desmontar el componente
-//     };
-//   }, []);
-
-//   return (
-//     <form ref={ref_form}>
-//       <InputSelect title="Mi InputSelect" name="miInput" data={data} df={df} ref={ref_menu} />
-//       {/* ... otros elementos del formulario */}
-//     </form>
-//   );
-// }

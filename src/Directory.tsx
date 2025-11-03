@@ -565,7 +565,7 @@ export function Directory() {
   return (
     <>
       <div onContextMenu={onrightclick} onMouseOver={onmouseover} onDragOver={ondragover} onDragLeave={ondragleave} className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md bg-white w-full relative">
-        <div className="p-2">
+        <div className="p-2 overflow-scroll scrollbar-special">
           <div className="text-left">
             <Breadcrumb params={params} />
             <hr />
@@ -614,7 +614,7 @@ export function Directory() {
           <Button action={upload} tipo={'default'}>Subir</Button>
         </div>
 
-        <div ref={menuOptions} className="absolute bg-red-300 rounded-t-xl z-20 w-full left-0 h-full bottom-[-100%] transition-transform " onTouchMove={testdrag}>
+        <div ref={menuOptions} className="absolute bg-red-300 rounded-t-xl z-20 w-full left-0 h-full bottom-[-100%] transition-transform hidden" onTouchMove={testdrag}>
           {/* <MenuOptions  name={row} onclick={onclick} /> */}
           {/* <ul className="flex flex-row justify-around">
             <li>
