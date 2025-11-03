@@ -308,31 +308,33 @@ export default function NewPedido(){
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="hidden" />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
-                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true" placeholder={'Info referencial'}/>
                   {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
-                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" verify="true"/>
+                  <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" verify="true" placeholder={'Info referencial'}/>
                   <InputSelect title={'Emisor'} name={"emisor"} data={
                     [
                       { indice: 'NEXT', option: 'NEXT', selected: true }, 
                       { indice: 'ELENEX', option: 'ELENEXT' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
+                    placeholder={'Info referencial'}
                   />
                 </div>
                 <div className="flex gap-3">
-                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" verify="true"/>
+                  <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" verify="true" placeholder={'Info referencial'}/>
                   <InputSelect title={'TipoPedido'} formref={form} name={"tipo"} data={
                     [
                       { indice: 'TELAS', option: 'TELAS', selected: true }, 
                       { indice: 'AVIOS', option: 'AVIOS' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
+                    placeholder={'Info referencial'}
                   />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
-                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" verify="true"/>
-                  <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text"/>
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text" placeholder={'Info referencial'}/>
                 </div>
                 <div className="flex gap-3">
                   <InputSelect title={'Moneda'} name={"moneda"} data={
@@ -340,7 +342,8 @@ export default function NewPedido(){
                       { indice: 'S', option: 'SOLES', selected: true }, 
                       { indice: 'USD', option: 'DOLARES' }, 
                     ]} 
-                    df={Object.keys(info).length > 0 ? info.moneda : null} 
+                    df={Object.keys(info).length > 0 ? info.moneda : null}
+                    placeholder={'Info referencial'}
                   />
                   <InputSelect title={'AfectoRetención'} name={"afec_retencion"} data={
                     [
@@ -348,6 +351,7 @@ export default function NewPedido(){
                       { indice: '1', option: 'APLICA' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.afec_retencion : null} 
+                    placeholder={'Info referencial'}
                   />
                   <InputSelect title={'IGV'} name={"igv"} data={
                     [
@@ -355,8 +359,9 @@ export default function NewPedido(){
                       { indice: '1', option: 'AFECTO' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.igv : null} 
+                    placeholder={'Info referencial'}
                   />
-                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'TRANSITO', option: 'TRANSITO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} />
+                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'TRANSITO', option: 'TRANSITO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} placeholder={'Info referencial'}/>
                 </div>
                 <div>
                   <span>Artículos</span>                  
@@ -446,11 +451,11 @@ export default function NewPedido(){
                             <div className="flex flex-row justify-center gap-2">
                               {
                                 tipo !== 1 
-                                ? <div onClick={searchproducto} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                                ? <div onClick={searchproducto} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                   <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                                 </div>
                                 :
-                                <div onClick={nuevoproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                                <div onClick={nuevoproducto} className="bg-blue-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
                                   <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
                                 </div>
                               }

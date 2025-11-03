@@ -351,7 +351,7 @@ export default function NewDespacho() {
           .then(resp => {
             console.log("Info respues:",resp)
             setOpenloader(false)
-            // navigate('/main/despachos/')
+            navigate('/main/despachos/')
             if(resp.ok){
               toast.success(resp.message, { theme: "colored" })
             }else{

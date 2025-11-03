@@ -229,7 +229,7 @@ export default function NewGuia(){
   const [penalidades,setPenalidades] = useState([])
   const [reprogramacion,setReprogramacion] = useState([])
   const [fases,setFases] = useState([])
-  const [distribucion,setDistribucion] = useState('GLB')
+  const [distribucion,setDistribucion] = useState('TLL')
   // const [infop,setInfop] = useState([])
   const [servicio,setServicio] = useState('CONFECCION')
   const navigate = useNavigate()
@@ -279,7 +279,7 @@ export default function NewGuia(){
         .then(resp => {
           console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          // navigate('/main/guias/')
+          navigate('/main/guias/')
           if(resp.ok){
             toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{
@@ -519,32 +519,32 @@ export default function NewGuia(){
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" verify="true" />
-                  <Input name={'tipo'} defaults={'SERVICIOS'} type="hidden" />
+                  <Input name={'tipo'} defaults={'SERVICIOS'} type="hidden" placeholder={'Info referencial'}/>
                   <Input name={'id_corte_CAB'} defaults={Object.keys(info).length > 0 ? info.id_corte_CAB : null} type="hidden"/>
                   <div className="w-[300px]">
                     {
                       fases.length > 0
-                      ? <InputSelect title={'Servicio'} name={"servicio"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} formref={form} df={Object.keys(info).length > 0 ? info.servicio : null} 
+                      ? <InputSelect title={'Servicio'} name={"servicio"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} formref={form} df={Object.keys(info).length > 0 ? info.servicio : null} placeholder={'Info referencial'}
                       />
                       : <Input name={''} defaults={null} type="text" title="Servicio" />
                     }
                   </div>
-                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true"/>
+                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true" placeholder={'Info referencial'}/>
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" verify="true"/>
-                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true"/>
-                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true"/>                  
-                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true"/>
+                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true" placeholder={'Info referencial'}/>
                 </div>
                 <div className="flex flex-row gap-3">
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
-                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true"/>
-                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true"/>
-                  <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" verify="true"/>
-                  <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" />
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" placeholder={'Info referencial'}/>
                 </div>
                 <div className="flex flex-row gap-3">
-                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" verify="true"/>
-                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" verify="true"/>
+                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" verify="true" placeholder={'Info referencial'}/>
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
                       { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
@@ -552,14 +552,16 @@ export default function NewGuia(){
                       { indice: 'ANULADO', option: 'ANULADO' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.estado : null} 
+                    placeholder={'Info referencial'}
                   />
                   <InputSelect title={'TipoDistribucion'} formref={form} name={"distribucion"} data={
                     [
-                      { indice: 'GLB', option: 'GLOBALES', selected: true }, 
-                      { indice: 'TLL', option: 'TALLAS', }, 
+                      { indice: 'TLL', option: 'TALLAS', selected: true }, 
+                      { indice: 'GLB', option: 'GLOBALES' }, 
                       { indice: 'PQT', option: 'PAQUETES' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.distribucion : null} 
+                    placeholder={'Info referencial'}
                   />
                 </div>
                 <div className={`${distribucion == 'PQT' && 'hidden'}`}>
@@ -634,8 +636,9 @@ export default function NewGuia(){
                         <tr>
                           <td colSpan={11} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                              <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[16px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
+                                {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg> */}
                               </div>
                             </div>
                           </td>

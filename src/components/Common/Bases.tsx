@@ -4,15 +4,14 @@ import { Consulta } from "../../utils/utils"
 import { Button } from "../Atoms/Button/Button"
 import { AuthPermitions } from "../../contexts/contexts"
 
-export default function Estilos(children){
+export default function Bases(children){
   const { logout} = useContext(AuthPermitions)
   let {actions = ()=>{}, closemodal, filters = ''} = children
   let [lista,setLista] = useState([])
   let [selected,setSelected] = useState([])
   useEffect(()=>{
-    console.log("El filtro es :",filters)
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'productos/productosEstilo/'+ filters})
+      await Consulta({url: 'productos/productosBase/'+ filters})
       .then(resp => {
         console.log("La respuesta de la consulta de es de a cco:",resp)
         setLista(resp.map((row)=>({...row,selected:false})))
@@ -39,7 +38,7 @@ export default function Estilos(children){
   const busqueda = (input)=>{
     const buscarestilo = async ()=>{
       // await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
-      await Consulta({url: 'productos/productosEstilo/'+ (input.value + ' ' + filters).trim()})
+      await Consulta({url: 'productos/productosBase/'+ (input.value + ' ' + filters).trim()})
       .then(resp => {
         setLista(resp.map((row)=>({...row,selected:false})))
         // setLista(resp)
