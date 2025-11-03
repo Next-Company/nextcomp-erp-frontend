@@ -273,9 +273,37 @@ export default function ListaPagos(){
 
   const recargarinfo = ()=>{
     const data = new FormData()
+    let url_ = ''
+    let position = searchParams.get('search');
     setOpenloader(true)
+
+    if(position){
+      switch (parseInt(position)) {
+        case 0:
+          url_ = 'abonos/servicios/'
+          break;
+        case 1:
+          url_ = 'abonos/letras'
+          break;
+        case 2:
+          // url_ = 'abonos/100'
+          break;
+        case 3:
+          url_ = 'prestamos'
+          break;
+        case 4:
+          // url_ = 'abonos/100'
+          break;
+        case 5:
+          url_ = 'abonos/getabonoslist/100'
+          break;
+        default:
+          break;
+      }
+    }
+
     Consulta({
-      url: 'abonos/getabonoslist/100', params: {
+      url: url_, params: {
         method: 'GET'
       }
     })
@@ -496,7 +524,7 @@ export default function ListaPagos(){
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.cantidad}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>{row.despacho}</td>
                               <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{row.importe.toFixed(2)}</td>
-                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{(row.importe - row.cancelado).toFixed(2)}</td>
+                              <td className={`${row.despacho < 1 ? 'text-red-600' : (row.despacho >= row.cantidad ? 'text-green-600' : '')} font-extrabold`}>S/.{(row.importe - row.cancelado - row.descuentos).toFixed(2)}</td>
                             </>
                           }
                           {

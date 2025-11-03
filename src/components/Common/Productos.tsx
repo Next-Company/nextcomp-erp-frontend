@@ -72,11 +72,12 @@ export default function Productos(children){
     // actions(lista[e.target.dataset.position])
     let position = e.target.dataset.position ?? e.currentTarget.dataset.position
     let action = e.target.dataset.action ?? e.currentTarget.dataset.action
+    // console.log("La informacion es:",lista,lista[position])
     switch(action){
       case 'add':
         const item = lista[position]
-        if(selected.find((row)=>row.idxsub == item.idxsub)){
-          setSelected([...selected.filter(row=>row.idxsub !== item.idxsub)])
+        if(selected.find((row)=>parseInt(row.idxsub) == parseInt(item.idxsub) && parseInt(row.id_producto_CAB) == parseInt(item.id_producto_CAB))){
+          setSelected([...selected.filter(row=>parseInt(row.idxsub) !== parseInt(item.idxsub) && parseInt(row.id_producto_CAB) !== parseInt(item.id_producto_CAB))])
         }else{
           setSelected([...selected,lista[position]])
         }    
@@ -128,7 +129,7 @@ export default function Productos(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr className={`${selected.find((item)=>item.idxsub == row.idxsub) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
+                <tr className={`${selected.find((item)=>item.idxsub == row.idxsub && item.id_producto_CAB == row.id_producto_CAB) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
                   <td>{row.idxsub}</td>
                   <td>{row.cod_producto}</td>
                   <td>{row.producto}</td>

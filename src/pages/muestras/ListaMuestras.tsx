@@ -6,7 +6,7 @@ import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
 // import { colortipomuestras } from "../../utils/utils";
-
+const apiUrl = import.meta.env.VITE_API_URL
 const colorfase = {
   'MUESTRA_PROTOTIPO': 'bg-purple-500',
   // 'ACABADOS': 'bg-gray-500',
@@ -24,7 +24,9 @@ const colorfase = {
 // }
 const CuerpoInforme = ({ servicioid }) => {
   const [ruta, setRuta] = useState("")
+  console.log("Reenderizando el componente")
   useEffect(() => {
+    console.log("Ejecutando el efecto del componente CuerpoInforme")
     const crear = async () => {
       await Consulta({
         url: `produccion/showinformeservicio/${servicioid}`, params: {
@@ -32,29 +34,37 @@ const CuerpoInforme = ({ servicioid }) => {
         }
       })
         .then(resp => {
-          const binaryString = window.atob(resp.data);
+	  // con.log("Dentro de generacion de la muestra :",resp)
+          /*const binaryString = window.atob(resp.data);
           const binaryLen = binaryString.length;
           const bytes = new Uint8Array(binaryLen);
           for (let i = 0; i < binaryLen; i++) {
             const ascii = binaryString.charCodeAt(i);
             bytes[i] = ascii;
-          }
+          }*/
           const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
           setRuta(file)
         })
         .catch((err) => {
+	  console.log("El error producido es:",err)
         })
     }
-    crear()
+    // crear()
   }, [servicioid])
   return (
     <>
       <div>
-        {/* <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe> */}
-        <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
-        <div className="flex flex-row justify-center gap-2 mt-2">
+        {/* 
+        <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe>
+	*/}
+        {/*<iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>*/}
+        {/*<iframe src={`http://192.168.18.20:4002/produccion/showinformeservicio/${servicioid}`} className="w-[60vw] h-[70vh]"></iframe>*/}
+	<div className="mb-4">
+          <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh] text-[20px]"></iframe>
+	</div>
+        <div className="flex flex-row justify-end gap-2 p-2 border-t-[1px]">
           <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
-          <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
+	  {/*<Button action={() => { }} type="button" tipo="default">Imprimir</Button>*/}
         </div>
       </div>
     </>
@@ -83,7 +93,7 @@ export default function ListaMuestras() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarguia/' + id, params: {
+              url: 'produccion/borrarmuestra/' + id, params: {
                 method: 'DELETE'
               }
             })
@@ -115,8 +125,8 @@ export default function ListaMuestras() {
             const desc = async () => {
               setOpenloader(true)
               Consulta({
-                url: "produccion/exportguia/" + id, params: {
-                  method: 'POST'
+                url: "produccion/exportguia/" + id + "/1", params: {
+                  method: 'GET'
                 }
               })
                 .then((resp) => {
@@ -182,6 +192,7 @@ export default function ListaMuestras() {
         navigate("/main/muestras/nuevo/" + id)
         break;
       case 'review':
+        console.log("Dentro de la opcion review del modulo muestras")
         params_modal = {
           open: true,
           content: <CuerpoInforme servicioid={id} />,

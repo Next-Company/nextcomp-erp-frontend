@@ -11,6 +11,44 @@ const colorfase = {
   'TELAS': 'bg-orange-500',
   'AVIOS': 'bg-violet-500'
 }
+const CuerpoVistaRapida = ({ pedidoid, tipo }) => {
+  // const [ruta, setRuta] = useState("")
+  // useEffect(() => {
+  //   const crear = async () => {
+  //     await Consulta({
+  //       url: `produccion/showinformepedido/${pedidoid}`, params: {
+  //         method: 'GET'
+  //       }
+  //     })
+  //       .then(resp => {
+  //         const binaryString = window.atob(resp.data);
+  //         const binaryLen = binaryString.length;
+  //         const bytes = new Uint8Array(binaryLen);
+  //         for (let i = 0; i < binaryLen; i++) {
+  //           const ascii = binaryString.charCodeAt(i);
+  //           bytes[i] = ascii;
+  //         }
+  //         const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+  //         setRuta(file)
+  //       })
+  //       .catch((err) => {
+  //       })
+  //   }
+  //   crear()
+  // }, [])
+  return (
+    <>
+      <div>
+        <iframe src={`http://192.168.18.20:4002/produccion/${tipo == 'TELAS' ? 'vistarapidapedidotelas' : 'vistarapidapedidoavios'}/${pedidoid}/view`} className="w-[60vw] h-[70vh]"></iframe>
+        {/* <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe> */}
+        <div className="flex flex-row justify-center gap-2 mt-2">
+          <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
+          <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
+        </div>
+      </div>
+    </>
+  )
+}
 const CuerpoCuadrePedido = ({ pedidoid }) => {
   const [ruta, setRuta] = useState("")
   useEffect(() => {
@@ -102,7 +140,7 @@ export default function ListaPedidos() {
               })
           }
         }
-        openModal(params_modal)
+        // openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -118,7 +156,9 @@ export default function ListaPedidos() {
 
               setOpenloader(true)
               Consulta({
-                url: `produccion/vistapreviapedido/${tipo == 'TELAS' ? 'telas' : 'avios'}`, params: {
+                //url: `produccion/vistapreviapedido/${tipo == 'TELAS' ? 'telas' : 'avios'}`, params: {
+                //url: tipo == 'TELAS' ? 'produccion/vistapreviapedido/telas' : 'produccion/vistapreviapedidoavios/avios', params: {
+                url: tipo == 'TELAS' ? 'produccion/vistarapidapedidotelas/download' : 'produccion/vistarapidapedidoavios/download', params: {
                   method: 'POST',
                   body: data
                 }
@@ -153,9 +193,11 @@ export default function ListaPedidos() {
         break;
       case 'review':
         // navigate("/main/estampado/review/"+ id)
+        const tipo = info.filter(row => row.idx == id)[0].tipo
         const params = {
           open: true,
-          content: <CuerpoCuadrePedido pedidoid={id} />,
+          //content: <CuerpoCuadrePedido pedidoid={id} tipo={tipo} />,
+          content: <CuerpoVistaRapida pedidoid={id} tipo={tipo}/>,
           controls: false,
           header: false,
           action: async () => {
@@ -301,7 +343,7 @@ export default function ListaPedidos() {
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Pedidos</h2>
+              <h2 className="font-medium text-[16px]">Requerimientos</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '200px' }} action={filtrarpedidos} />
               </div>
@@ -315,6 +357,12 @@ export default function ListaPedidos() {
                 <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
+                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                  </span>
+                </button>
+                <button className="group" data-estado="TRANSITO" onClick={filtrarestado}>
+                  <span className="relative h-[100%] flex items-center pointer-events-none">
+                    Transito
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
@@ -377,7 +425,7 @@ export default function ListaPedidos() {
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                 </div>
                               </li>
@@ -445,7 +493,7 @@ export default function ListaPedidos() {
                   </div>
                 </div>
               </div> */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 mt-2">
                 {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
                 <Button action={nuevopedido} tipo={'accept'}>Nuevo</Button>

@@ -20,17 +20,19 @@ export default function NewLetraV2() {
   const [origen, setOrigen] = useState('SERVICIO')
   const [registros, setRegistros] = useState([])
   const [selected, setSelected] = useState([])
+  const [tipo, setTipo] = useState('VINCULANTE')
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const navigate = useNavigate()
 
   const onsubmit = (e) => {
     e.preventDefault()
-    if(selected.length == 0){
+    console.log("El valor del tipo es el siguiente:",tipo)
+    if(selected.length == 0 && tipo == 'VINCULANTE'){
       toast.error(<div>No se han seleccionado facturas para continuar <br/>con el registro de la letra</div>, { theme: "colored" })
       return 0
     }
-    if(form.current.elements.importe.value == '' || form.current.elements.num_letra.value == ''){
+    if(tipo == 'VINCULANTE' && (form.current.elements.importe.value == '' || form.current.elements.num_letra.value == '')){
       toast.error(<div>Hay datos como el importe o el numero de letra pendiente de ingreso. <br/>Por favor verifique.</div>, { theme: "colored" })
       return 0
     }
@@ -53,7 +55,7 @@ export default function NewLetraV2() {
         })
           .then(resp => {
             setOpenloader(false)
-            navigate('/main/letras/')
+            // navigate('/main/letras/')
             toast.success('Estampado guardado con éxito!!', { theme: "colored" })
           })
           .catch((err) => {
@@ -174,8 +176,13 @@ export default function NewLetraV2() {
     }
     const handleInputChange = (event) => {
       // setOrigen(event.detail.valor == 'PEDIDOS' ? 1 : ( event.detail.valor == 'SERVICIOS' ? 2 : 0 ))
+      console.log("La info completa es la siguiente:", event.detail)
       console.log("El valor de origen es:", event.detail.valor)
-      setOrigen(event.detail.valor)
+      if(event.detail.name == 'tipo'){
+      	setTipo(event.detail.valor)
+      }else{
+        setOrigen(event.detail.valor)
+      }
     };
     form.current.addEventListener("salamandra", handleInputChange);
 
@@ -271,6 +278,13 @@ export default function NewLetraV2() {
                       </>
                   }
                   <Input name={'importe'} title="Importe" defaults={Object.keys(info).length > 0 ? info.importe : null} type="number" />
+		  <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
+                    [
+                      { indice: 'VINC', option: 'VINCULANTE', selected: true },
+                      { indice: 'NVINC', option: 'NO VINCULANTE'},
+                    ]}
+                    df={Object.keys(info).length > 0 ? info.estado : null}
+                  />
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
                       { indice: 'EMIT', option: 'PENDIENTE', selected: true },

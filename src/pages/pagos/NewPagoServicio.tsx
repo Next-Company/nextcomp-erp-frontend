@@ -205,7 +205,7 @@ export default function NewPagoServicio(){
             if(resp.ok){
               setOpenloader(false)
               // navigate('/main/pagos/')
-              toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+              toast.success('El registro del pago fue ejecutado con éxito.', { theme: "colored" })
             }else{
               toast.error(resp.message, { theme: "colored" })
             }
@@ -294,6 +294,7 @@ export default function NewPagoServicio(){
           setInfo({...info,importe:parseFloat(selected.reduce((carry,item)=>+item.importe,0)) + parseFloat(item.importe)})
           setSelected([...selected,registros[position]])
         }
+        console.log("Info del detalle de servicios es :",registros)
         break;
       case 'discount':
         params_modal = {
@@ -497,7 +498,7 @@ export default function NewPagoServicio(){
     console.log("Actualizando la cantidad de pago",registros.filter((row,key)=>key !== parseInt(e.target.dataset.position)).reduce((carry,row)=>{carry += parseFloat(row.pago ?? 0);return carry;},0) + parseFloat(e.target.value))
     // setInfo({...info,'pago': parseFloat(info['pago'] ?? 0) + parseFloat(e.target.value)})
 
-    setInfo({...info,'importe': registros.filter((row,key)=>key !== parseInt(e.target.dataset.position)).reduce((carry,row)=>{carry += parseFloat(row.pago ?? 0);return carry;},0) + parseFloat(e.target.value)})
+    setInfo({...info,'importe': (registros.filter((row,key)=>key !== parseInt(e.target.dataset.position)).reduce((carry,row)=>{carry += parseFloat(row.pago ?? 0);return carry;},0) + parseFloat(e.target.value)).toFixed(2)})
     setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,pago:parseFloat(e.target.value)} : row))
     console.log("Info del listado de servicios:", info)
     console.log("Info de las guias detalle:", registros)
@@ -617,6 +618,7 @@ export default function NewPagoServicio(){
                           <th className="lg:table-cell">Descuentos</th>
                           <th className="lg:table-cell">Total</th>
                           <th className="lg:table-cell">Abonado</th>
+                          <th className="lg:table-cell">Saldo</th>
                           <th className="lg:table-cell">ImportePago</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
@@ -646,7 +648,8 @@ export default function NewPagoServicio(){
                               <td>{row.descuentos}</td>
                               <td>{(row.importe - row.descuentos).toFixed(2)}</td>
                               <td>{row.cancelado ?? 0}</td>
-                              <td><input name="pago" type="number" onChange={onchange} data-position={key} defaultValue={row.pago ?? 0} step="0.00" /></td>
+                              <td>{(row.importe - row.descuentos).toFixed(2) - (row.cancelado ?? 0)}</td>
+                              <td><input name="pago" type="number" onChange={onchange} data-position={key} defaultValue={row.pago ?? 0} step={0.01} /></td>
                               <td className="w-[200px]">
                                 <ul className="flex flex-row justify-end">
                                   {/* <li>

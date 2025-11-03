@@ -7,6 +7,7 @@ import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowCont
 import { toast } from "react-toastify";
 import { colorfase } from "../../utils/utils";
 
+const apiUrl = import.meta.env.VITE_API_URL
 // const colorfase = {
 //   'CONFECCION':'bg-purple-500',
 //   'ESTAMPADO':'bg-gray-500',
@@ -48,13 +49,18 @@ const CuerpoInforme = ({ servicioid }) => {
         .catch((err) => {
         })
     }
-    crear()
+    // crear()
   }, [])
   return (
     <>
       <div>
-        {/* <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe> */}
+        <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
+	{/*
+        <iframe src={`http://192.168.18.20:4002/produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
+	*/}
+	{/*
         <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
+	*/}
         <div className="flex flex-row justify-center gap-2 mt-2">
           <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
           <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
@@ -73,8 +79,45 @@ export default function ListaGuias() {
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id
+    const distribucion = e.target.dataset.distribucion
     let params_modal = null
     switch (action) {
+      case 'anulate':
+        params_modal = {
+          open: true,
+          content: <div>Desea anular el servicio seleccionado?. Tenga en cuenta de que el <br /> proceso no es reversible.</div>,
+          controls: true,
+          header: false,
+          action: () => {
+            setOpenloader(true)
+            Consulta({
+              // url: (distribucion == 'PQT' ? 'produccion/anularguiaxpq/' : 'produccion/anularguia/') + id, params: {
+              url: {'PQT':'produccion/anularguiaxpq/','TLL':'produccion/anularguia/','GLB':'produccion/anularguiaglb/',}[distribucion] + id, params: {
+                method: 'DELETE'
+              }
+            })
+              .then(resp => {
+                // setOrdenes(resp)
+                setOpenloader(false)
+                if(resp.ok){
+                  toast.success('Guia anulada con éxito!', { theme: "colored" })
+                  // setRefresh(true)
+                  recargarinfo()
+                }else{
+                  toast.error(resp.message, { theme: "colored" })
+                }
+              })
+              .catch(() => {
+                setOpenloader(false)
+                // logout()
+              })
+              .finally(() => {
+                setOpenloader(false)
+              })
+          }
+        }
+        openModal(params_modal)
+        break;
       case 'delete':
         params_modal = {
           open: true,
@@ -84,7 +127,7 @@ export default function ListaGuias() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarguia/' + id, params: {
+              url: distribucion == 'PQT' ? 'produccion/borrarguiaxpq' : 'produccion/borrarguia/' + id, params: {
                 method: 'DELETE'
               }
             })
@@ -117,8 +160,8 @@ export default function ListaGuias() {
               setOpenloader(true)
 
               Consulta({
-                url: "produccion/exportguia/" + id, params: {
-                  method: 'POST'
+                url: "produccion/exportguia/" + id + "/1", params: {
+                  method: 'GET'
                 }
               })
                 .then(resp => {
@@ -371,7 +414,8 @@ export default function ListaGuias() {
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.id_orden_CAB}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
-                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                          {/* <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td> */}
+                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${row.identificador}`}>{row.servicio}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
@@ -387,8 +431,8 @@ export default function ListaGuias() {
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="anulate" onClick={onclick} data-id={row.idx} data-distribucion={row.distribucion}>
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-cancel"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M18.364 5.636l-12.728 12.728" /></svg>
                                 </div>
                               </li>
                               <li>

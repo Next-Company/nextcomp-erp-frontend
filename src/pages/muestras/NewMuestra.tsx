@@ -23,6 +23,20 @@ export default function NewMuestra(){
     e.preventDefault()
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
     console.log("El de talle de fracciones :",registros)
+
+    for(let element of form.current.querySelectorAll("input[verify='true']")){
+      if(element.value == ''){
+        console.log("El elmento culpable es el siguiente:",element)
+        toast.error('Debe completar los campos obligatorios', { theme: "colored" })
+	  return 0
+      }
+    }
+
+    if(!(registros.length > 0)){
+      toast.error('Se detecta de que no ha ingresado ningún articulo a la lista. Por favor verifique.', { theme: "colored" })
+      return 0
+    }
+
     openModal({
       open: true,
       header: false,
@@ -35,7 +49,7 @@ export default function NewMuestra(){
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle',JSON.stringify(registros))
 
-        await Consulta({url: 'produccion/guardarguia/',params:{
+        await Consulta({url: 'produccion/guardarmuestra/',params:{
           method:'PUT',
           body:data
         }})
@@ -61,7 +75,7 @@ export default function NewMuestra(){
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'produccion/guia/' + urlparams.id,})
+        await Consulta({url: 'produccion/muestra/' + urlparams.id,})
           .then(resp => {
             console.log("info guia :",resp)
             setInfo(resp[0])
@@ -158,17 +172,20 @@ export default function NewMuestra(){
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   {/* <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" /> */}
-                  <InputSelect title={'Tipo'} name={"tipo"} data={
-                    [
-                      { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true }, 
-                      // { indice: 'ACABADOS', option: 'ACABADOS' },
-                      { indice: 'REPARACION', option: 'REPARACION' },
-                      { indice: 'PRESTAMO', option: 'PRESTAMO' },
-                      { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },
-                      { indice: 'INTERNO', option: 'INTERNO' }
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.tipo : null} 
-                  />
+                  <div className="w-[320px]">
+                    <InputSelect title={'Tipo'} name={"tipo"} data={
+                      [
+                        { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true }, 
+                        // { indice: 'ACABADOS', option: 'ACABADOS' },
+                        { indice: 'REPARACION', option: 'REPARACION' },
+                        { indice: 'PRESTAMO', option: 'PRESTAMO' },
+                        { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },
+                        { indice: 'INTERNO', option: 'INTERNO' }
+                      ]} 
+                      df={Object.keys(info).length > 0 ? info.tipo : null} 
+                    />
+                    
+                  </div>
                   {/* <InputSelect title={'Servicio'} name={"servicio"} data={
                     [
                       { indice: 'CONFECCION', option: 'CONFECCION', selected: true }, 
@@ -181,22 +198,22 @@ export default function NewMuestra(){
                     df={Object.keys(info).length > 0 ? info.servicio : null} 
                   /> */}
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" />
-                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" />
-                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" />                  
+                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true"/>
+                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true"/>
+                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true"/>                  
                 </div>
                 <div className="flex flex-row gap-3">
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
                   
-                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
-                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" />
+                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true" />
+                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true"/>
                   <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" />
                   <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" />
                 </div>
                 <div className="flex flex-row gap-3">
-                  <Input name={'destino'} title="Destino" defaults={Object.keys(info).length > 0 ? info.destino : null} type="text" />
-                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" />
-                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" />
+                  <Input name={'destino'} title="Destino" defaults={Object.keys(info).length > 0 ? info.destino : null} type="text" verify="true"/>
+                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" verify="true"/>
+                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" verify="true"/>
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
                       { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 

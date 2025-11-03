@@ -47,7 +47,11 @@ export default function Guias(children){
       .then(resp => {
         console.log("Resultado seatch guia:",resp)
         setLoading(false)
-        setLista(resp.filter(row=>row.tipo == tipo))
+	if(tipo == 'SERVICIOS'){
+          setLista(resp.filter(row=>row.tipo == tipo))
+	}else{
+          setLista(resp.filter(row=>row.tipo !== 'SERVICIOS'))
+	}
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -98,6 +102,7 @@ export default function Guias(children){
                     <th className="lg:table-cell">Producto</th>
                     <th className="lg:table-cell">Marca</th>
                     <th className="lg:table-cell">Modelo</th>
+                    <th className="lg:table-cell">Cantidad</th>
                     {/* <th className="lg:table-cell">Estado</th> */}
                   </>
                 :
@@ -130,6 +135,7 @@ export default function Guias(children){
                         <td>{row.producto}</td>
                         <td>{row.marca}</td>
                         <td>{row.modelo}</td>
+                        <td>{row.cantidad_servicio}</td>
                       </>
                     :
                       <>

@@ -23,7 +23,7 @@ export default function Ordenes(children){
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'ordenes/getordenes/'})
+      await Consulta({url: 'ordenes/getordenescorte/'})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)
@@ -49,7 +49,8 @@ export default function Ordenes(children){
     // console.log("EL valor consultado es:",input.value)
     // console.log("La ruta de consulta es :",'produccion/searchordenes/'+input.value)  
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'ordenes/getordenes/'+ input.value})
+      // await Consulta({url: 'ordenes/getordenes/'+ input.value})
+      await Consulta({url: 'ordenes/getordenescorte/'+ input.value})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)
@@ -83,11 +84,12 @@ export default function Ordenes(children){
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={searchordenes} />
         </div>
-        <div className="h-[500px] w-[1050px] scrollbar-special rounded-md overflow-y-scroll ">
+        <div className="h-[550px] w-[1100px] scrollbar-special rounded-md overflow-y-scroll ">
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell">OC</th>
+                <th className="lg:table-cell">IdCorte</th>
                 <th className="lg:table-cell">NroCorte</th>
                 <th className="lg:table-cell">Cliente</th>
                 <th className="lg:table-cell">Marca</th>
@@ -102,6 +104,7 @@ export default function Ordenes(children){
               {lista.length > 0 && lista.map((row,key)=>(
                 <tr key={key} data-position={key} data-action="add" onClick={onclick}>
                   <td className="h-[50px]">{row.oc}</td>
+                  <td>{row.id_corte}</td>
                   <td>{row.numero_corte}</td>
                   <td><strong>{row.cliente.substr(0,30)}</strong></td>
                   <td>{row.marca}</td>
