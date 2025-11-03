@@ -91,7 +91,7 @@ export default function ListaMovimientosAlmacen() {
             })
               .then(resp => {
                 // setOrdenes(resp)
-                toast.success('Guia eliminado con éxito!', { theme: "colored" })
+                toast.success('Movimiento de inventario eliminado con éxito!', { theme: "colored" })
                 recargarinfo()
                 setOpenloader(false)
               })
