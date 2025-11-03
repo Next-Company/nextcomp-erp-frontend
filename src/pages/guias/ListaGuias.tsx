@@ -7,6 +7,7 @@ import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowCont
 import { toast } from "react-toastify";
 import { colorfase } from "../../utils/utils";
 
+const apiUrl = import.meta.env.VITE_API_URL
 // const colorfase = {
 //   'CONFECCION':'bg-purple-500',
 //   'ESTAMPADO':'bg-gray-500',
@@ -48,13 +49,18 @@ const CuerpoInforme = ({ servicioid }) => {
         .catch((err) => {
         })
     }
-    crear()
+    // crear()
   }, [])
   return (
     <>
       <div>
-        {/* <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe> */}
+        <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
+	{/*
+        <iframe src={`http://192.168.18.20:4002/produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
+	*/}
+	{/*
         <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
+	*/}
         <div className="flex flex-row justify-center gap-2 mt-2">
           <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
           <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
@@ -67,14 +73,51 @@ export default function ListaGuias() {
   const lista = useRef(null)
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
-  const [estado, setEstado] = useState(1)
+  const [estado, setEstado] = useState('PENDIENTE')
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id
+    const distribucion = e.target.dataset.distribucion
     let params_modal = null
     switch (action) {
+      case 'anulate':
+        params_modal = {
+          open: true,
+          content: <div>Desea anular el servicio seleccionado?. Tenga en cuenta de que el <br /> proceso no es reversible.</div>,
+          controls: true,
+          header: false,
+          action: () => {
+            setOpenloader(true)
+            Consulta({
+              // url: (distribucion == 'PQT' ? 'produccion/anularguiaxpq/' : 'produccion/anularguia/') + id, params: {
+              url: {'PQT':'produccion/anularguiaxpq/','TLL':'produccion/anularguia/','GLB':'produccion/anularguiaglb/',}[distribucion] + id, params: {
+                method: 'DELETE'
+              }
+            })
+              .then(resp => {
+                // setOrdenes(resp)
+                setOpenloader(false)
+                if(resp.ok){
+                  toast.success('Guia anulada con éxito!', { theme: "colored" })
+                  // setRefresh(true)
+                  recargarinfo()
+                }else{
+                  toast.error(resp.message, { theme: "colored" })
+                }
+              })
+              .catch(() => {
+                setOpenloader(false)
+                // logout()
+              })
+              .finally(() => {
+                setOpenloader(false)
+              })
+          }
+        }
+        openModal(params_modal)
+        break;
       case 'delete':
         params_modal = {
           open: true,
@@ -84,7 +127,7 @@ export default function ListaGuias() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarguia/' + id, params: {
+              url: distribucion == 'PQT' ? 'produccion/borrarguiaxpq' : 'produccion/borrarguia/' + id, params: {
                 method: 'DELETE'
               }
             })
@@ -117,8 +160,8 @@ export default function ListaGuias() {
               setOpenloader(true)
 
               Consulta({
-                url: "produccion/exportguia/" + id, params: {
-                  method: 'POST'
+                url: "produccion/exportguia/" + id + "/1", params: {
+                  method: 'GET'
                 }
               })
                 .then(resp => {
@@ -173,7 +216,7 @@ export default function ListaGuias() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaGuias', params: {
+      url: 'produccion/getListaGuias/' + estado, params: {
         method: 'GET'
       }
     })
@@ -181,7 +224,8 @@ export default function ListaGuias() {
         console.log(resp)
         setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
+        setInfoestado(resp)
+        // setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -200,7 +244,7 @@ export default function ListaGuias() {
     setOpenloader(true)
     const pp = async () => {
       await Consulta({
-        url: 'produccion/getListaGuias', params: {
+        url: 'produccion/getListaGuias/' + estado, params: {
           method: 'GET'
         }
       })
@@ -210,20 +254,16 @@ export default function ListaGuias() {
           // lista.current.querySelector('button.active').classList.remove('active')
           // e.target.classList.add('active')
           // console.log("EL filt4ro 1 es:",resp.filter(row=>row.cantidad_servicio <= row.ingresos))
-          if (estado == 1) {
-            // setInfoestado(resp.filter(row=>row.cantidad_servicio > row.ingresos || row.estado == 'PENDIENTE'))  
-            // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE' && row.cantidad_servicio > row.ingresos))
-            setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-            // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))  
-          }
-          if (estado == 2) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-            // setInfoestado(resp.filter(row=>row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))  
-            // setInfoestado(resp.filter(row=>row.estado == 'FINALIZADO'))  
-          }
-          if (estado == 3) {
-            setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-          }
+          setInfoestado(resp)
+          // if (estado == 1) {
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
+          // }
+          // if (estado == 2) {
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
+          // }
+          // if (estado == 3) {
+          //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
+          // }
           setEstado(estado)
         })
         .catch((error) => {
@@ -240,7 +280,7 @@ export default function ListaGuias() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaGuias', params: {
+      url: 'produccion/getListaGuias/' +  estado, params: {
         method: 'GET'
       }
     })
@@ -248,6 +288,7 @@ export default function ListaGuias() {
         console.log("Resultado lista de guias:", resp)
         setOpenloader(false)
         setInfo(resp)
+        setInfoestado(resp)
       })
       .catch((error) => {
         console.log(error)
@@ -277,23 +318,24 @@ export default function ListaGuias() {
   const busquedaglobal = async (input) => {
     Consulta({
       // url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value ), params: {
-      url: 'produccion/getListaGuias/' + input.value, params: {
+      url: 'produccion/getListaGuias/' + (input.value + ` ${estado}`).trim(), params: {
         method: 'GET'
       }
     })
       .then(resp => {
         console.log(resp)
         setOpenloader(false)
+        setInfoestado(resp)
         // setInfo(resp)
-        if (estado == 1) {
-          setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-        }
-        if (estado == 2) {
-          setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-        }
-        if (estado == 3) {
-          setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-        }
+        // if (estado == 1) {
+        //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
+        // }
+        // if (estado == 2) {
+        //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
+        // }
+        // if (estado == 3) {
+        //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
+        // }
         // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
@@ -321,19 +363,19 @@ export default function ListaGuias() {
             <hr />
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className={`group ${estado == 1 ? 'active' : ''}`} data-estado="1" onClick={filtrarestado}>
+                <button className={`group ${estado == 'PENDIENTE' ? 'active' : ''}`} data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 2 ? 'active' : ''}`} data-estado="2" onClick={filtrarestado}>
+                <button className={`group ${estado == 'FINALIZADO' ? 'active' : ''}`} data-estado="FINALIZADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Completados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className={`group ${estado == 3 ? 'active' : ''}`} data-estado="3" onClick={filtrarestado}>
+                <button className={`group ${estado == 'ANULADO' ? 'active' : ''}`} data-estado="ANULADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -347,6 +389,7 @@ export default function ListaGuias() {
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
+                    <th className="lg:table-cell">IdOrden</th>
                     <th className="lg:table-cell">Hoja de Corte</th>
                     <th className="lg:table-cell">Servicio</th>
                     <th className="lg:table-cell">Proveedor</th>
@@ -369,8 +412,10 @@ export default function ListaGuias() {
                       ? infoestado.map((row, key) => (
                         <tr key={key}>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.id_orden_CAB}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
-                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                          {/* <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td> */}
+                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${row.identificador}`}>{row.servicio}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
@@ -386,8 +431,8 @@ export default function ListaGuias() {
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="anulate" onClick={onclick} data-id={row.idx} data-distribucion={row.distribucion}>
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-cancel"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M18.364 5.636l-12.728 12.728" /></svg>
                                 </div>
                               </li>
                               <li>
@@ -415,13 +460,13 @@ export default function ListaGuias() {
                         </tr>
                       ))
                       :
-                      <tr className="h-[40px]"><td colSpan={13} className="text-center"><span>Datos no encontrados</span></td></tr>
+                      <tr className="h-[40px]"><td colSpan={14} className="text-center"><span>Datos no encontrados</span></td></tr>
                   }
                 </tbody>
                 {/* <tfoot className="absolute bottom-0 w-full bg-yellow-300"> */}
                 <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
                   <tr>
-                    <td className="h-[45px] border-t border-t-gray-600" colSpan={14}>
+                    <td className="h-[45px] border-t border-t-gray-600" colSpan={15}>
                       <div className="flex flex-row justify-between items-center">
                         <div>
                           Showing 1 to 4 of 4 entries (filtered from 57 total entries)

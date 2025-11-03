@@ -6,12 +6,14 @@ import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
 // import { colortipomuestras } from "../../utils/utils";
-
+const apiUrl = import.meta.env.VITE_API_URL
 const colorfase = {
   'MUESTRA_PROTOTIPO': 'bg-purple-500',
-  'ACABADOS': 'bg-gray-500',
+  // 'ACABADOS': 'bg-gray-500',
   'REPARACION': 'bg-red-500',
-  'PRESTAMO': 'bg-green-500'
+  'PRESTAMO': 'bg-green-500',
+  'COMPLEMENTO': 'bg-amber-500',
+  'INTERNO': 'bg-cyan-500'
 }
 // const CuerpoInforme_ = ({ cuerpo }) => {
 //   return (
@@ -22,7 +24,9 @@ const colorfase = {
 // }
 const CuerpoInforme = ({ servicioid }) => {
   const [ruta, setRuta] = useState("")
+  console.log("Reenderizando el componente")
   useEffect(() => {
+    console.log("Ejecutando el efecto del componente CuerpoInforme")
     const crear = async () => {
       await Consulta({
         url: `produccion/showinformeservicio/${servicioid}`, params: {
@@ -30,29 +34,37 @@ const CuerpoInforme = ({ servicioid }) => {
         }
       })
         .then(resp => {
-          const binaryString = window.atob(resp.data);
+	  // con.log("Dentro de generacion de la muestra :",resp)
+          /*const binaryString = window.atob(resp.data);
           const binaryLen = binaryString.length;
           const bytes = new Uint8Array(binaryLen);
           for (let i = 0; i < binaryLen; i++) {
             const ascii = binaryString.charCodeAt(i);
             bytes[i] = ascii;
-          }
+          }*/
           const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
           setRuta(file)
         })
         .catch((err) => {
+	  console.log("El error producido es:",err)
         })
     }
-    crear()
+    // crear()
   }, [servicioid])
   return (
     <>
       <div>
-        {/* <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe> */}
-        <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
-        <div className="flex flex-row justify-center gap-2 mt-2">
+        {/* 
+        <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe>
+	*/}
+        {/*<iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>*/}
+        {/*<iframe src={`http://192.168.18.20:4002/produccion/showinformeservicio/${servicioid}`} className="w-[60vw] h-[70vh]"></iframe>*/}
+	<div className="mb-4">
+          <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh] text-[20px]"></iframe>
+	</div>
+        <div className="flex flex-row justify-end gap-2 p-2 border-t-[1px]">
           <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
-          <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
+	  {/*<Button action={() => { }} type="button" tipo="default">Imprimir</Button>*/}
         </div>
       </div>
     </>
@@ -64,6 +76,7 @@ export default function ListaMuestras() {
   const [infoestado, setInfoestado] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  const [estado, setEstado] = useState('PENDIENTE')
   // const [refresh,setRefresh] = useState(false)
   console.log("Rerenderizado!!!")
   const onclick = (e) => {
@@ -80,7 +93,7 @@ export default function ListaMuestras() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarguia/' + id, params: {
+              url: 'produccion/borrarmuestra/' + id, params: {
                 method: 'DELETE'
               }
             })
@@ -112,8 +125,8 @@ export default function ListaMuestras() {
             const desc = async () => {
               setOpenloader(true)
               Consulta({
-                url: "produccion/exportguia/" + id, params: {
-                  method: 'POST'
+                url: "produccion/exportguia/" + id + "/1", params: {
+                  method: 'GET'
                 }
               })
                 .then((resp) => {
@@ -179,6 +192,7 @@ export default function ListaMuestras() {
         navigate("/main/muestras/nuevo/" + id)
         break;
       case 'review':
+        console.log("Dentro de la opcion review del modulo muestras")
         params_modal = {
           open: true,
           content: <CuerpoInforme servicioid={id} />,
@@ -188,7 +202,9 @@ export default function ListaMuestras() {
         }
         openModal(params_modal)
         break;
-
+      case 'register':
+        navigate("/main/despachos/load/" + id)
+        break;
       default:
         break;
     }
@@ -198,7 +214,7 @@ export default function ListaMuestras() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaMuestras', params: {
+      url: 'produccion/getListaMuestras' + '/PENDIENTE', params: {
         method: 'GET'
       }
     })
@@ -207,7 +223,8 @@ export default function ListaMuestras() {
         console.log(resp)
         setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
+        setInfoestado(resp)
+        // setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -226,7 +243,7 @@ export default function ListaMuestras() {
     setOpenloader(true)
     const pp = async () => {
       await Consulta({
-        url: 'produccion/getListaMuestras', params: {
+        url: 'produccion/getListaMuestras/' + estado, params: {
           method: 'GET'
         }
       })
@@ -235,15 +252,17 @@ export default function ListaMuestras() {
           setOpenloader(false)
           lista.current.querySelector('button.active').classList.remove('active')
           e.target.classList.add('active')
-          if (estado == 1) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
-          }
-          if (estado == 2) {
-            setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))
-          }
-          if (estado == 3) {
-            setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-          }
+          setInfoestado(resp)
+          setEstado(estado)
+          // if (estado == 1) {
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
+          // }
+          // if (estado == 2) {
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))
+          // }
+          // if (estado == 3) {
+          //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
+          // }
         })
         .catch((error) => {
           console.log(error)
@@ -295,7 +314,8 @@ export default function ListaMuestras() {
   // }
   const busquedaglobal = async (input) => {
     Consulta({
-      url: 'produccion/getListaMuestras/' + (input.value == '' ? '_' : input.value), params: {
+      // url: 'produccion/getListaMuestras/' + (input.value == '' ? '_' : input.value), params: {
+      url: 'produccion/getListaMuestras/' + (input.value + ` ${estado}`).trim(), params: {
         method: 'GET'
       }
     })
@@ -303,7 +323,8 @@ export default function ListaMuestras() {
         console.log(resp)
         setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
+        setInfoestado(resp)
+        // setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -319,7 +340,7 @@ export default function ListaMuestras() {
         <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Muestras</h2>
+              <h2 className="font-medium text-[16px]">Muestras y Complementos</h2>
               <div className="w-[500px]">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
               </div>
@@ -329,31 +350,19 @@ export default function ListaMuestras() {
             <hr />
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="1" onClick={filtrarestado}>
+                <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="2" onClick={filtrarestado}>
+                <button className="group" data-estado="FINALIZADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Completados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                {/* <button className="group" data-estado="3" onClick={filtrarestado}>
-                  <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Abonados
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button> */}
-                {/* <button className="group" data-estado="4" onClick={filtrarestado}>
-                  <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Finalizados
-                    <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
-                  </span>
-                </button> */}
-                <button className="group" data-estado="3" onClick={filtrarestado}>
+                <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -388,7 +397,7 @@ export default function ListaMuestras() {
                       ? infoestado.map((row, key) => (
                         <tr key={key} className="">
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
-                          <td><div className={`text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                          <td><div className={`text-white text-center text-[8px] px-3 rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor ? row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor : row.responsable}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
@@ -419,9 +428,8 @@ export default function ListaMuestras() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={() => { }}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                  {/* <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg> */}
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="register" onClick={onclick} data-id={row.idx}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-package-import"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12v9" /><path d="M12 12l-8 -4.5" /><path d="M22 18h-7" /><path d="M18 15l-3 3l3 3" /></svg>
                                 </div>
                               </li>
                               <li>

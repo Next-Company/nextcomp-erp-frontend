@@ -56,12 +56,13 @@ export default function Cuentas(children){
     buscarproveedor()
   }
   const onclick = (e)=>{
-    let action = e.target.dataset.action
+    let action = e.target.dataset.action ?? e.currentTarget.dataset.action
+    let position = e.target.dataset.position ?? e.currentTarget.dataset.position
     // console.log("La accion es la siguiente:",action)
     switch(action){
       case 'add':
         // console.log("Agregando al proveedor",lista[e.target.dataset.position])
-        actions(lista[e.target.dataset.position])
+        actions(lista[position])
         break;
       default:
         break;
@@ -87,7 +88,7 @@ export default function Cuentas(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr key={key}>
+                <tr key={key} data-position={key} data-action="add" onClick={onclick}>
                   <td>{row.idx}</td>
                   <td>{row.nom}</td>
                   <td>{row.tipo}</td>
