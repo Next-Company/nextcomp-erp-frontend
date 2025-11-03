@@ -228,10 +228,10 @@ export default function NewGuia(){
   const penalidadestipo = useRef([])
   const [penalidades,setPenalidades] = useState([])
   const [reprogramacion,setReprogramacion] = useState([])
-  const infopenalidades = useRef([])
   const [fases,setFases] = useState([])
-  const [distribucion,setDistribucion] = useState('TLL')
+  const [distribucion,setDistribucion] = useState('GLB')
   // const [infop,setInfop] = useState([])
+  const [servicio,setServicio] = useState('CONFECCION')
   const navigate = useNavigate()
 
   const onsubmit = (e)=>{
@@ -261,13 +261,18 @@ export default function NewGuia(){
       action: async () => {
         setOpenloader(true)
         const data = new FormData()
+        const rutas = {
+          'GLB':'produccion/guardarguiaglb/',
+          'TLL':'produccion/guardarguia/',
+          'PQT':'produccion/guardarguiaxpq/',
+        }
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle', (distribucion == 'TLL' ? JSON.stringify(registros) : JSON.stringify(paquetes)))
+        data.append('detalle', (distribucion !== 'PQT' ? JSON.stringify(registros) : JSON.stringify(paquetes)))
         penalidades.length > 0 && data.append('penalidades',JSON.stringify(penalidades))
-	      reprogramacion.length > 0 && data.append('reprogramacion',JSON.stringify(reprogramacion))
+        reprogramacion.length > 0 && data.append('reprogramacion',JSON.stringify(reprogramacion))
 
-        await Consulta({url: ( distribucion == 'TLL' ? 'produccion/guardarguia/' : 'produccion/guardarguiaxpq/' ),params:{
+        await Consulta({url: rutas[distribucion],params:{
           method:'PUT',
           body:data
         }})
@@ -299,13 +304,14 @@ export default function NewGuia(){
           .then(resp => {
             console.log("info guia :",resp)
             setInfo(resp[0])
-            resp[0].distribucion == 'TLL' ? setRegistros(resp[1]) : setPaquetes(resp[1])
+            resp[0].distribucion !== 'PQT' ? setRegistros(resp[1]) : setPaquetes(resp[1])
 
             setDistribucion(resp[0].distribucion)
             setPenalidades(resp[2])
             penalidadestipo.current = resp[3]
             setFases(resp[4])
 	          setReprogramacion(resp[5])
+            setServicio(resp[0].servicio ?? 'CONFECCION')
             setOpenloader(false)
 
           })
@@ -333,8 +339,14 @@ export default function NewGuia(){
       })
     }
     const handleInputChange = (event) => {
-      console.log("Hola Ivon",event.detail.valor)
-      setDistribucion(event.detail.valor == 'PAQUETES' ? 'PQT' : 'TLL')
+      console.log("Hola Ivon",event.detail.valor,event.detail)
+      if(event.detail.name == 'servicio'){
+        setServicio(event.detail.valor)
+      }
+      if(event.detail.name == 'distribucion'){
+        // setDistribucion(event.detail.valor == 'PAQUETES' ? 'PQT' : 'TLL')
+        setDistribucion({GLOBALES:'GLB',TALLAS:'TLL',PAQUETES:'PQT'}[event.detail.valor])
+      }
     };
     form.current.addEventListener("salamandra", handleInputChange);
     return () => {
@@ -345,7 +357,7 @@ export default function NewGuia(){
   
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
-    setRegistros([...registros,{item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
+    setRegistros([...registros,{item:0,articulo:'',disponible_total:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
   }
   const nuevopaquete= ()=>{
     setPaquetes([...paquetes,{item:0,articulo: (info.producto ?? '') + ' ' + (info.modelo ?? '') + ` PAQUETE ${paquetes.length + 1}`,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
@@ -357,7 +369,7 @@ export default function NewGuia(){
     switch(action){
 
       case 'delete':
-        if(distribucion == 'TLL'){
+        if(distribucion !== 'PQT'){
           setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
           console.log("Eliminado registros de la fila ",position)
         } else {
@@ -371,21 +383,27 @@ export default function NewGuia(){
 
   }
   const editvalue = (e)=>{
-    let column = e.target.dataset.name
+    const column = e.target.dataset.name
+    let total = 0
     console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
-    let position = e.target.dataset.position
-    let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
-    let total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
-      carry+=parseInt(row[1]);
-      return carry;
-    },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
-    setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
+    const position = e.target.dataset.position
+    const tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+
+    if(column !== 'isprototipo'){
+      total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
+        carry+=parseInt(row[1]);
+        return carry;
+      },0) + (!['articulo','isprototipo'].includes(column) ? parseInt(e.target.value) : 0)
+      setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value),cantidad:total}:item)])
+    }else{
+      setRegistros([...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
+    }
   }
   const editpaquete = (e)=>{
-    let column = e.target.dataset.name
-    let position = e.target.dataset.position
-    let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
-    let total = Object.entries(paquetes[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
+    const column = e.target.dataset.name
+    const position = e.target.dataset.position
+    const tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+    const total = Object.entries(paquetes[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
       carry+=parseInt(row[1]);
       return carry;
     },0) + (column !== 'articulo' ? parseInt(e.target.value) : 0)
@@ -501,17 +519,17 @@ export default function NewGuia(){
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" verify="true" />
-                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true"/>
                   <Input name={'tipo'} defaults={'SERVICIOS'} type="hidden" />
                   <Input name={'id_corte_CAB'} defaults={Object.keys(info).length > 0 ? info.id_corte_CAB : null} type="hidden"/>
-                  <div className="w-[500px]">
+                  <div className="w-[300px]">
                     {
                       fases.length > 0
-                      ? <InputSelect title={'Servicio'} name={"servicio"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={Object.keys(info).length > 0 ? info.servicio : null} 
+                      ? <InputSelect title={'Servicio'} name={"servicio"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} formref={form} df={Object.keys(info).length > 0 ? info.servicio : null} 
                       />
                       : <Input name={''} defaults={null} type="text" title="Servicio" />
                     }
                   </div>
+                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true"/>
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" verify="true"/>
                   <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true"/>
                   <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true"/>                  
@@ -537,19 +555,22 @@ export default function NewGuia(){
                   />
                   <InputSelect title={'TipoDistribucion'} formref={form} name={"distribucion"} data={
                     [
-                      { indice: 'TLL', option: 'TALLAS', selected: true }, 
+                      { indice: 'GLB', option: 'GLOBALES', selected: true }, 
+                      { indice: 'TLL', option: 'TALLAS', }, 
                       { indice: 'PQT', option: 'PAQUETES' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.distribucion : null} 
                   />
                 </div>
-                <div className={`${distribucion !== 'TLL' && 'hidden'}`}>
+                <div className={`${distribucion == 'PQT' && 'hidden'}`}>
                   <span>Artículos:</span>
                   <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          <th className="lg:table-cell w-[500px]">Descripcion</th>  
+                          <th className="lg:table-cell w-[500px]">Descripcion</th>
+                          {/* {!urlparams.id && <th className="lg:table-cell">Disponible</th>} */}
+                          <th className="lg:table-cell">Disponible</th>
                           <th className="lg:table-cell">XS / 26</th>
                           <th className="lg:table-cell">S / 28</th>
                           <th className="lg:table-cell">M / 30</th>
@@ -566,6 +587,8 @@ export default function NewGuia(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
+                              {/* {!urlparams.id && <td className="text-center w-[150px]">{row.disponible_total}</td>} */}
+                              <td className="text-center w-[150px]">{urlparams.id ? (row.disponible_total + row.cantidad) : row.disponible_total}</td>
                               <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs} className="fracciones"/></td>
                               <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s} className="fracciones"/></td>
                               <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m} className="fracciones"/></td>
@@ -609,9 +632,9 @@ export default function NewGuia(){
                       </tbody>
                       <tfoot className="sticky bottom-0">
                         <tr>
-                          <td colSpan={10} >
+                          <td colSpan={11} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                              <div onClick={nuevoregistro} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
                               </div>
                             </div>
@@ -627,7 +650,7 @@ export default function NewGuia(){
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
-                          <th className="lg:table-cell w-[500px]">Paquete</th>  
+                          <th className="lg:table-cell w-[500px]">Paquete</th>
                           <th className="lg:table-cell">XS / 26</th>
                           <th className="lg:table-cell">S / 28</th>
                           <th className="lg:table-cell">M / 30</th>
@@ -687,7 +710,7 @@ export default function NewGuia(){
                         <tr>
                           <td colSpan={10} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevopaquete} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                              <div onClick={nuevopaquete} className="bg-blue-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
                                 +
                               </div>
                             </div>

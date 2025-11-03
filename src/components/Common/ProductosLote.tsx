@@ -6,34 +6,40 @@ import { AuthPermitions } from "../../contexts/contexts"
 
 export default function ProductosLote(children){
   const { logout} = useContext(AuthPermitions)
-  let {actions = ()=>{}, closemodal} = children
+  let {actions = ()=>{}, closemodal, almacen} = children
   let [lista,setLista] = useState([])
   let [selected,setSelected] = useState([])
   // let [selected,setSelected] = useState([])
   useEffect(()=>{
-    const buscarproveedor = async ()=>{
-      await Consulta({url: 'productos/productosConStock'})
-      .then(resp => {
-        console.log("La respuesta de la consulta de es de a cco:",resp)
-        setLista(resp.map((row)=>({...row,selected:false})))
-        // setLista(resp[0])
-        // setOpenloader(false)
-        // navigate('/main/guias/inicio')
-        // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
-      })
-      .catch((err)=>{
-        // console.log("Mensaje de error es :",err)
-        if(JSON.parse(err).statuscode == 401){
-          logout()
-        }
-        // setOpenloader(false)
-        // toast.error('Se produjo un error!!', { theme: "colored" })
-      })
-      .finally(()=>{
-        // setOpenloader(false)
-      })
-    }
-    buscarproveedor()
+    Consulta({url: 'productos/productosConStock',params:{
+      method:'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({filters:{ id_CAB_DET:almacen}})
+    }})
+    .then(resp => {
+      console.log("La respuesta de la consulta de es de a cco:",resp)
+      setLista(resp.map((row)=>({...row,selected:false})))
+      // setLista(resp[0])
+      // setOpenloader(false)
+      // navigate('/main/guias/inicio')
+      // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+    })
+    .catch((err)=>{
+      // console.log("Mensaje de error es :",err)
+      if(JSON.parse(err).statuscode == 401){
+        logout()
+      }
+      // setOpenloader(false)
+      // toast.error('Se produjo un error!!', { theme: "colored" })
+    })
+    .finally(()=>{
+      // setOpenloader(false)
+    })
+    // const buscarproveedor = async ()=>{
+    // }
+    // buscarproveedor()
   },[])
   
   const searchproveedor = (input)=>{

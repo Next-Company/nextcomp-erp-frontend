@@ -29,7 +29,9 @@ export default function NewMovimiento(){
 
   const onsubmit = (e)=>{
     e.preventDefault()
-    console.log("El de talle de fracciones :",registros)
+    console.log("Los datos del formulario son:",form.current.elements.almacen.value)
+    console.log("Los datos del formulario son:",info)
+    // console.log("El de talle de fracciones :",registros)
     for(const element of form.current.querySelectorAll("input[verify='true']")){
       if(element && element.value == ''){
         toast.error('Alguno de los campos del formulario son obligatorios. Por favor verifique.', { theme: "colored" })
@@ -50,12 +52,12 @@ export default function NewMovimiento(){
         const data = new FormData()
         urlparams.id && data.append('id',urlparams.id)
         data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle',JSON.stringify(registros.filter(row=>row.despacho > 0)))
+        data.append('detalle',JSON.stringify(registros.filter(row=>row.Cant_despacho_DET > 0)))
 
         console.log("Detalle de la lista de articuos :",registros)
         setOpenloader(true)
-        await Consulta({url: 'almacen/savedespacho/',params:{
-          method:'POST',
+        await Consulta({url: urlparams.id ? ('almacen/updatedespacho/' + urlparams.id) : 'almacen/savedespacho/',params:{
+          method: urlparams.id ? 'PUT' : 'POST',
           body:data
         }})
         .then(resp => {
@@ -123,12 +125,16 @@ export default function NewMovimiento(){
   },[])
 
   const searchproductoIngreso = ()=>{
+    if(!info.Suc_Tienda){
+      toast.error("Debe seleccionar primero el almacén destino. Porfavor verifique.", { theme: "colored" })
+      return 0
+    }
     openModal({
       open:true,
-      content: <ProductosLote almacen={588} actions={(items)=>{  
+      content: <ProductosLote almacen={info?.Suc_Tienda ?? 0} actions={(items)=>{  
         console.log("La informacion del producto seleccionado es:",items)
         setOpen(false)
-        // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',despacho:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
+        // setRegistros([...registros,...items.map(row=>({item:0,id_producto_CAB:row.idxsub,producto:row.producto,color:row.color,rollos:0,cantidad:0,unidad:'KG',Cant_despacho_DET:0,precio:0,idx_color:row.idx_color,idx_producto:row.id_producto_CAB,idxsub:row.idxsub,talla:row.talla}))])
 
         // [
         //   {
@@ -179,7 +185,7 @@ export default function NewMovimiento(){
             idx_color:row.idx_CAB_COLOR,
             color:row.color,
             cantidad:0,
-            despacho:0,
+            Cant_despacho_DET:0,
             precio:0,
             idx_talla:row.idx_talla,
             talla:row.talla,
@@ -216,6 +222,10 @@ export default function NewMovimiento(){
     })
   }
   const searchproductoEgreso = ()=>{
+    if(!info.Suc_Tienda){
+      toast.error("Debe seleccionar primero el almacén destino. Porfavor verifique.", { theme: "colored" })
+      return 0
+    }
     openModal({
       open:true,
       content: <ProductosLote actions={(items)=>{  
@@ -229,7 +239,7 @@ export default function NewMovimiento(){
             idx_color:row.idx_CAB_COLOR,
             color:row.color,
             cantidad:0,
-            despacho:0,
+            Cant_despacho_DET:0,
             precio:0,
             idx_talla:row.idx_talla,
             talla:row.talla,
@@ -250,7 +260,7 @@ export default function NewMovimiento(){
     })
   }
   const nuevoproducto = ()=>{
-    setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0, despacho:0}])
+    setRegistros([...registros,{item:0,id_producto_CAB:'',producto:'',color:'',rollos:0,cantidad:0,unidad:'KG',precio:0, Cant_despacho_DET:0}])
   }
 
   const onclick = (e)=>{
@@ -382,6 +392,9 @@ export default function NewMovimiento(){
     }
     openModal(params_modal)
   }
+  const cambioinput = (e)=>{
+    // console.log("El input modificado fue el siguiente:",e.target)
+  }
   return(
     <>
       <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
@@ -396,10 +409,9 @@ export default function NewMovimiento(){
             <hr />
           </div>
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
-
-            <form ref={form} onSubmit={onsubmit} onChange={()=>{}} onInputCapture={onchange}>
+            {/* <form ref={form} onSubmit={onsubmit} onInput={cambioinput} onChange={cambioinput}> */}
+            <form ref={form} onSubmit={onsubmit} onInput={cambioinput}>
               <div className={` flex-col gap-3 flex`}>
-
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <div className="w-[340px]">
@@ -478,12 +490,12 @@ export default function NewMovimiento(){
                               </td>
                               {/* <td className="text-center">{row.color}</td> */}
                               <td className="text-center">{row.talla}</td>
-                              <td className="text-center">{row.lote}</td>
+                              <td className="text-center">{row.num_lote}</td>
                               {/* <td className="w-[120px]"><input type="number" onChange={editvalue} data-position={key} data-name="lote" value={row.lote} /></td> */}
                               <td className="text-center"><input type="checkbox" id="sinlote" onChange={editvalue} data-position={key} data-name="sinlote" checked={row.sinlote} /></td>
                               <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} step={'0.01'} /></td>
                               <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="metros" value={row.metros} step={'0.01'} /></td>
-                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho} step={'0.01'} /></td>
+                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="Cant_despacho_DET" value={row.Cant_despacho_DET} step={'0.01'} /></td>
                               <td className="w-[250px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>

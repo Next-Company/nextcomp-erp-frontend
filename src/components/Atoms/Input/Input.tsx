@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 
-export function Input({ name, defaults = null, title = "", type, dataset = [], style = {}, action = ()=>{}, mode = null, verify = "false", placeholder = null }) {
+export function Input({ name, defaults = null, title = "", type, dataset = [], style = {}, action = ()=>{}, mode = null, verify = "false", placeholder = null, readonly = false }) {
   const ref = useRef(null)
   const [initial,setInitial] = useState(defaults)
   const onclick = (e) => {
@@ -51,7 +51,7 @@ export function Input({ name, defaults = null, title = "", type, dataset = [], s
           <label className={`text-[12px] text-blue-600 transition-all mover pointer-events-none`}>{title}</label>
           {/* <input onClick={(e) => e.stopPropagation()} ref={ref} type={type} onChange={onchange} name={name} value={initial} onFocus={onfocus} onBlur={onblur} autoComplete="off" className="inp bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none" /> */}
           {/* <input onClick={()=>console.log('clickeando')} /> */}
-          <input onClick={(e) => e.stopPropagation()} ref={ref} type={type} onChange={onchange} name={name} defaultValue={initial} onFocus={onfocus} onBlur={onblur}  autoComplete="off" verify={verify} className={`inp bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none ${mode ? 'pointer-events-none' : ''}`} min={0.00} step={.01}/>
+          <input onClick={(e) => e.stopPropagation()} ref={ref} type={type} onChange={onchange} name={name} defaultValue={initial} onFocus={onfocus} onBlur={onblur} readOnly={readonly} autoComplete="off" verify={verify} className={`inp bg-[inherit] w-full border-none focus:border-none focus-within:border-none focus-visible:border-none focus:outline-none ${mode ? 'pointer-events-none' : ''}`} min={0.00} step={.01}/>
           <span className="after:absolute pointer-events-none after:bottom-0 after:left-0 after:transition-all after:opacity-1 after:w-full after:border-b-[2px] after:border-b-transparent group-[.selected]:after:border-b-blue-600"></span>
         </div>
         <div>

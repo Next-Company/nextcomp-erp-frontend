@@ -39,7 +39,8 @@ export default function Colores(children){
   const searchproveedor = (input)=>{
     const buscarproveedor = async ()=>{
       // await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
-      await Consulta({url: 'mantenimiento/getlistacolores/'+ input.value})
+      let busqueda = input.value.replace('/',"%2F")
+      await Consulta({url: 'mantenimiento/getlistacolores/'+ busqueda})
       .then(resp => {
         setLista(resp.map((row)=>({...row,selected:false})))
         // setLista(resp)
