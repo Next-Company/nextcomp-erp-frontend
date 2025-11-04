@@ -304,6 +304,10 @@ export default function NewDespacho() {
         return 0
       }
     }
+    if(tipo == 1 && registros.reduce((c,v)=>c + (v.despacho ?? 0),0) <= 0){
+      toast.error('No ha registro ningún importe de ingreso. Por favor verifique.', { theme: "colored" })
+      return 0
+    }
 
     if(registros.length > 0 && tipo == 2 && fase == 1){
       if(registros.filter(row=>row.fracciones_despacho.length > 0).length == 0){
@@ -636,16 +640,17 @@ export default function NewDespacho() {
                       { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.tipo : null}
+                    placeholder="Texto complementario"
                   />
-                  <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionIngreso" type="date" />
-                  <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" />
+                  <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionIngreso" type="date" placeholder="Texto complementario"/>
+                  <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" placeholder="Texto complementario"/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   {
                     tipo == 1
                       ?
                       <>
-                        <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" />
-                        <Input name={'nro_pedido_origen'} title={`${tipo == 1 ? 'IdPedido' : (tipo == 2 ? 'IdServicio' : 'IdMuestra')}`} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
+                        <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" placeholder="Texto complementario"/>
+                        <Input name={'nro_pedido_origen'} title={`${tipo == 1 ? 'IdPedido' : (tipo == 2 ? 'IdServicio' : 'IdMuestra')}`} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} placeholder="Texto complementario"/>
                       </>
                       :
                       <>
@@ -667,16 +672,17 @@ export default function NewDespacho() {
                 <div className="flex gap-3">
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <div className="w-[500px]">
-                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder="Texto complementario"/>
                   </div>
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" />
-                  <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuiaReferencia" type="text" />
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" placeholder="Texto complementario"/>
+                  <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuiaReferencia" type="text" placeholder="Texto complementario"/>
                   <InputSelect title={'EsFacturado'} name={"facturado"} data={
                     [
                       { indice: '1', option: 'SI', selected: true },
                       { indice: '0', option: 'NO' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.facturado : null}
+                    placeholder="Texto complementario"
                   />
                   <InputSelect title={'Fase'} name={"fase"} data={
                     [
@@ -684,14 +690,20 @@ export default function NewDespacho() {
                       { indice: '0', option: 'CONTEO' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.fase : null}
+                    placeholder="Texto complementario"
                   />
                 </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/> 
                 <div>
                   <div className="flex flex-row justify-center">
                     <div className="flex flex-row justify-between p-1 bg-gray-200 rounded-l-full rounded-r-full relative">
-                      <div className={`w-[120px] h-[14px] text-center text-[9px] rounded-l-full rounded-r-full ${!panelactive ? 'bg-green-600' : 'bg-red-600 translate-x-full'} transition-all cursor-pointer absolute`}></div>
-                      <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full cursor-pointer z-10 ${!panelactive && 'text-white'} transition-all`} onClick={changepanel} data-position="0">Artículos</div>
-                      <div className={`w-[120px] text-center text-[9px] rounded-l-full rounded-r-full  cursor-pointer z-10 ${panelactive && 'text-white'} transition-all`} onClick={changepanel} data-position="1">Facturas</div>
+                      <div className={`w-[250px] h-[14px] text-center text-[9px] rounded-l-full rounded-r-full ${!panelactive ? 'bg-green-600' : 'bg-red-600 translate-x-full'} transition-all cursor-pointer absolute`}></div>
+                      <div className={`w-[250px] text-center text-[9px] rounded-l-full rounded-r-full cursor-pointer z-10 ${!panelactive && 'text-white'} transition-all`} onClick={changepanel} data-position="0">Artículos</div>
+                      <div className={`w-[250px] text-center text-[9px] rounded-l-full rounded-r-full  cursor-pointer z-10 ${panelactive && 'text-white'} transition-all`} onClick={changepanel} data-position="1">Facturas</div>
                     </div>
                   </div>
 
@@ -732,6 +744,7 @@ export default function NewDespacho() {
                                   <th className="lg:table-cell">Rollos</th>
                                   <th className="lg:table-cell">Cantidad</th>
                                   <th className="lg:table-cell">Unidad</th>
+                                  <th className="lg:table-cell">Conversion</th>
                                   <th className="lg:table-cell">Precio</th>
                                   {/* <th className="lg:table-cell">Entregado</th> */}
                                   {
@@ -789,13 +802,14 @@ export default function NewDespacho() {
                                       <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
                                       <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
                                       <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
+                                      <td><input type="text" onChange={editvalue} data-position={key} data-name="conversion" defaultValue={row.conversion} /></td>
                                       <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
                                       {
                                         !urlparams.id && row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho + item.cantidad_caidos + item.cantidad_incompletos}</td>)
                                       }
                                       {/* <td>{row.ingresos}</td> */}
                                       {
-                                        !urlparams.id ? <td>{(row.cantidad - (row.despachos.length > 0 ? row.despachos.reduce((c,v)=>(c+v.cantidad_despacho),0) : 0)).toFixed(2)
+                                        !urlparams.id ? <td>{(row.cantidad*parseFloat(row.conversion ?? 1) - (row.despachos.length > 0 ? row.despachos.reduce((c,v)=>(c+v.cantidad_despacho),0) : 0)).toFixed(2)
                                         }</td>
                                         : <td>0</td>
                                       }
@@ -881,7 +895,7 @@ export default function NewDespacho() {
                                 <td className="text-center text-[16px] italic">-</td>
                                 <td className="text-center text-[16px] italic">-</td>
                                 <td className="text-center text-[16px] italic">-</td>
-                                <td className="text-center text-[16px] italic">-</td>
+                                {/* <td className="text-center text-[16px] italic">-</td> */}
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                                   return carry + parseFloat(value.despacho  ?? 0)
                                 }, 0)}</td>

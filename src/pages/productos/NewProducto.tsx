@@ -250,9 +250,27 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tal
             <div className="flex gap-3">
               <InputTest name={'color'} title="Color" defaults={row.color} type="text" action={()=>agregarcolor(key)} mode={'static'} />
               <InputMultiSelect title={'Talla'} name={"talla"} data={
+<<<<<<< HEAD
                   tallas.map(row=>({indice: row.idx, option:row.detalle}))
                 }
                 df={row.talla} formref={form} params={{'height':'200px'}} position={key}
+=======
+                [
+                  { indice: '26', option: 'S/T' },
+                  { indice: '13', option: '28' },
+                  { indice: '14', option: '30' },
+                  { indice: '15', option: '32' },
+                  { indice: '16', option: '34' },
+                  { indice: '17', option: '36' },
+                  { indice: '5', option: 'XS' },
+                  { indice: '3', option: 'S' },
+                  { indice: '2', option: 'M' },
+                  { indice: '1', option: 'L' },
+                  { indice: '4', option: 'XL' },
+                  { indice: '6', option: 'XXL' }
+                ]} 
+                df={'["S/T"]'} formref={form} params={{'height':'200px'}} position={key}
+>>>>>>> feature/pedidos-ingresos-avios-almacen-15102025
               />
               <div className="flex items-center [&_li:hover]:cursor-pointer">
                 <ul className="flex flex-row justify-end">
@@ -353,7 +371,15 @@ export function NewProducto() {
     const handleSalamandra = (event) => {
       // setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
       console.log("La info del multiselect es:",event.detail)
+<<<<<<< HEAD
+=======
+      console.log("Los combos formateados son:",combos,test)
+      // console.log("Los combos formateados son:",combos,combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c)) )
+      // setCombos([{color:'VERDE',talla:JSON.stringify(['M','XXL','S'])}])
+
+>>>>>>> feature/pedidos-ingresos-avios-almacen-15102025
       setCombos(combo=>combo.map((c,p)=>(p == parseInt(event.detail.position) ? {idcolor:c.idcolor,color:c.color,talla:JSON.stringify(event.detail.valor.map(row=>row.option))} : c) ))
+
       // setCombos(combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c) ))
     };
     form.current.addEventListener("salamandra", handleSalamandra);
@@ -373,6 +399,7 @@ export function NewProducto() {
 
     if(urlparams.id){
       setOpenloader(true)
+<<<<<<< HEAD
       Promise.all([
         Consulta({url: 'productos/searchproductobyid/' + urlparams.id,}),
         Consulta({url: 'mantenimiento/getlistatallas/'})  
@@ -415,6 +442,24 @@ export function NewProducto() {
       .catch(err=>{
 
       })
+=======
+      const pp = async () => {
+        await Consulta({url: 'productos/searchproductobyid/' + urlparams.id,})
+          .then(resp => {
+            console.log("Mostrando informacion del producto halloween:",resp)
+            setOrden(resp)
+            setCombos(resp[1].map(row=>({idcolor:row.idcolor,color:row.color,talla:JSON.stringify(row.tallas)})))
+          })
+          .catch((err)=>{
+            setOpenloader(false)
+            toast.error('Se produjo un error!!', { theme: "colored" })
+          })
+          .finally(()=>{
+            setOpenloader(false)
+          })
+      }
+      pp()
+>>>>>>> feature/pedidos-ingresos-avios-almacen-15102025
     }
     // return ()=>form.current.removeEventListener("salamandra")
   },[])

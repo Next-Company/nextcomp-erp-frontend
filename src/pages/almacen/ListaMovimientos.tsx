@@ -91,7 +91,7 @@ export default function ListaMovimientosAlmacen() {
             })
               .then(resp => {
                 // setOrdenes(resp)
-                toast.success('Guia eliminado con éxito!', { theme: "colored" })
+                toast.success('Movimiento de inventario eliminado con éxito!', { theme: "colored" })
                 recargarinfo()
                 setOpenloader(false)
               })
@@ -120,7 +120,8 @@ export default function ListaMovimientosAlmacen() {
               setOpenloader(true)
               Consulta({
                 // url: 'reports/vistapreviaretiro/TELAS', params: {
-                url: 'almacen/vistapreviaretiro/TELAS', params: {
+                // url: 'almacen/vistapreviaretiro/TELAS', params: {
+                url: 'almacen/vistapreviadespacho/TELAS', params: {
                   method: 'POST',
                   body: data
                 }

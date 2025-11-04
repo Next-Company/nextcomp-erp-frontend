@@ -77,6 +77,8 @@ import ListaRecetas from './pages/recetas/ListaRecetas.tsx'
 import { NewReceta } from './pages/recetas/NewReceta.tsx'
 import ListaProveedores from './pages/proveedores/ListaProveedores.tsx'
 import { NewProveedor } from './pages/proveedores/NewProveedor.tsx'
+import LayoutMantenimiento from './pages/mantenimiento/LayoutMantenimiento.tsx'
+import Configuracion from './pages/mantenimiento/Configuracion.tsx'
 
 const routes = [
   {
@@ -272,6 +274,22 @@ const routes = [
               { path: "nuevo", element: <RevisionSolicitud /> },
               { path: "cuadre", element: <CuadreCorte /> },
             ]
+          }
+        ]
+      },
+      {
+        path: "mantenimiento",
+        element: <PrivateRoute><LayoutMantenimiento/></PrivateRoute>,
+        children: [
+          { 
+            path: "", 
+            element: <Configuracion/>,
+            // children: [
+            //   { path: "", element: <ListaMovimientosAlmacen />, error: <ErrorController/> },
+            //   { path: "nuevo", element: <NewMovimiento />, error: <ErrorController/> },
+            //   { path: "nuevo/:id", element: <NewMovimiento />, error: <ErrorController/> },
+            //   { path: "cuadre/:id", element: <CuadreCorte /> }
+            // ]
           }
         ]
       },
