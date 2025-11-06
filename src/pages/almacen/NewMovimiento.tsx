@@ -441,10 +441,36 @@ export default function NewMovimiento(){
       open:true,
       content: <Ordenes actions={(item)=>{
         console.log("INfor de la orden es:",item)
-        setOpen(false)
-        setInfo({...info,producto:item.producto,id_orden:item.idx})
 
-        // console.log("Evento del input select otra vez",event.detail)
+        Consulta({url: 'ordenes/insumosorden/' + item.idx})
+        .then(resp => {
+          setOpen(false)
+          setInfo({...info,producto:item.producto,id_orden:item.idx})
+
+          setRegistros([...resp.map(row=>(
+            {
+              id_subprod:row.id_subprod_CAB,
+              id_producto_DET:row.id_producto_CAB,
+              producto:row.producto,
+              idx_color:row.idx_CAB_COLOR,
+              color:row.color,
+              cantidad:0,
+              Cant_despacho_DET:0,
+              precio:0,
+              idx_talla:row.idx_talla,
+              talla:row.talla,
+              num_lote:row.lote,
+              unidad:row.unidad,
+              metros:0,
+              rollos:0,
+              tipo:row.tipo
+            }))
+          ])
+
+        })
+        .catch((err)=>{
+        })
+
       }}/>,
       controls: true,
       header: false,
@@ -501,7 +527,7 @@ export default function NewMovimiento(){
                     [
                       { indice: 'ajt', option: 'AJUSTE', selected: true }, 
                       { indice: 'rep', option: 'REPOSICION' },  
-                      { indice: 'crt', option: 'CORTE' }
+                      { indice: 'prd', option: 'PRODUCCION' }
                     ]} 
                     df={Object.keys(info).length > 0 ? info.motivo : null} formref={form} 
                     placeholder={"Texto referencial"}
