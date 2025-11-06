@@ -77,6 +77,8 @@ import ListaRecetas from './pages/recetas/ListaRecetas.tsx'
 import { NewReceta } from './pages/recetas/NewReceta.tsx'
 import ListaProveedores from './pages/proveedores/ListaProveedores.tsx'
 import { NewProveedor } from './pages/proveedores/NewProveedor.tsx'
+import LayoutGps from './pages/gps/LayoutGps.tsx'
+import TrackWorkers from './pages/gps/TrackWorkers.tsx'
 
 const routes = [
   {
@@ -300,6 +302,13 @@ const routes = [
           { path: "",element: <ListaProveedores />, error: <ErrorController/> },
           { path: "nuevo",element: <NewProveedor />, error: <ErrorController/> },
           { path: "nuevo/:id",element: <NewProveedor />, error: <ErrorController/> }
+        ]
+      },
+      {
+        path: "gps",
+        element: <PrivateRoute><LayoutGps/></PrivateRoute>,
+        children: [
+          { path: "tracker",element: <TrackWorkers />, error: <ErrorController/> },
         ]
       }
     ]
