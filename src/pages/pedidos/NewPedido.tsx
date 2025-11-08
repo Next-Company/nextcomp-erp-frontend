@@ -494,7 +494,7 @@ export default function NewPedido(){
                           </td>
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
-                          <td className="text-center">-</td>
+                          {/* <td className="text-center">-</td> */}
                           <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(3)}
                           </td>

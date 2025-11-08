@@ -892,7 +892,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
               <tr className="bg-white">
                 <td colSpan={10} >
                   <div className="flex flex-row justify-center">
-                    <div onClick={agregarcombo} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                    <div onClick={agregarcombo} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                       +
                     </div>
                   </div>
@@ -1003,7 +1003,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
               <tr className="bg-white">
                 <td colSpan={11} >
                   <div className="flex flex-row justify-center">
-                    <div onClick={agregarinsumos} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                    <div onClick={agregarinsumos} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                       +
                     </div>
                   </div>
@@ -1075,7 +1075,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
               <tr className="bg-white">
                 <td colSpan={10} >
                   <div className="flex flex-row justify-center">
-                    <div onClick={agregarpedido} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                    <div onClick={agregarpedido} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                       +
                     </div>
                   </div>

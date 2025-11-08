@@ -355,7 +355,7 @@ export default function NewDespacho() {
           .then(resp => {
             console.log("Info respues:",resp)
             setOpenloader(false)
-            navigate('/main/despachos/')
+            // navigate('/main/despachos/')
             if(resp.ok){
               toast.success(resp.message, { theme: "colored" })
             }else{
@@ -988,7 +988,7 @@ export default function NewDespacho() {
                           <tr>
                             <td colSpan={12} >
                               <div className="flex flex-row justify-center">
-                                <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                                <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                   +
                                 </div>
                               </div>

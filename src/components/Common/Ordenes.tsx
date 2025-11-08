@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { Search } from "../Atoms/Search/Search"
 import { Consulta } from "../../utils/utils"
-import { useNavigate } from "react-router-dom"
 import { AuthPermitions } from "../../contexts/contexts"
 
 const colorfase = {
@@ -18,8 +17,8 @@ const colorfase = {
 }
 
 export default function Ordenes(children){
-  const { logout} = useContext(AuthPermitions)
-  let {actions = ()=>{}} = children
+  const { logout } = useContext(AuthPermitions)
+  let {actions = ()=>{}, closemodal = ()=>{}} = children
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
@@ -72,6 +71,7 @@ export default function Ordenes(children){
     let position = e.target.dataset.position ?? e.currentTarget.dataset.position
     switch(action){
       case 'add':
+        closemodal()
         actions(lista[position])
         break;
       default:
