@@ -98,7 +98,7 @@ export default function NewMovimiento(){
         await Consulta({url: 'almacen/getdespacho/' + urlparams.id,})
           .then(resp => {
             console.log("Busqueda info pedido:",resp)
-            setInfo({...info,tipo_operacion:resp.cab.tipomov,fec_emision:resp.cab.fec_emision,fec_retorno:resp.cab.fec_emision,id_modelo:resp.cab.id_modelo,modelos:resp.cab.modelos,id_pedido_origen:resp.cab.id_pedido_origen,nro_pedido_origen:resp.cab.id_pedido_origen,id_proveedor_CAB:resp.cab.id_proveedor_CAB,proveedor:resp.cab.Raz_social_DOC,ruc:resp.cab.Nro_Doc_Prov,orden_ref:resp.cab.nro_requerimiento,oc:resp.cab.oc,nro_corte:resp.cab.nro_corte,responsable:'CARLOS',Suc_Tienda:resp.cab.Suc_Tienda,almacen:resp.cab.almacen,motivo:resp.cab.motivo})
+            setInfo({...info,tipo_operacion:resp.cab.tipomov,fec_emision:resp.cab.fec_emision,fec_retorno:resp.cab.fec_emision,id_modelo:resp.cab.id_modelo,modelos:resp.cab.modelos,id_pedido_origen:resp.cab.id_pedido_origen,nro_pedido_origen:resp.cab.id_pedido_origen,id_proveedor_CAB:resp.cab.id_proveedor_CAB,proveedor:resp.cab.Raz_social_DOC,ruc:resp.cab.Nro_Doc_Prov,orden_ref:resp.cab.nro_requerimiento,oc:resp.cab.oc,nro_corte:resp.cab.nro_corte,responsable:'CARLOS',Suc_Tienda:resp.cab.Suc_Tienda,almacen:resp.cab.almacen,motivo:resp.cab.motivo,producto:resp.cab.producto,id_orden:resp.cab.id_orden})
             setRegistros(resp.det)
             setTipo(resp.cab.tipomov == 'INGRESOS' ? 0 : 1)
             setMotivo(resp.cab.motivo)
