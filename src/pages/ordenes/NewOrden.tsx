@@ -14,6 +14,7 @@ import { InputTest } from "../../components/Atoms/Input/InputTest";
 import Productos from "../../components/Common/Productos";
 import Recetas from "../../components/Common/Recetas";
 import Colores from "../../components/Common/Colores";
+import Marca from "../../components/Common/Marca";
 
 function InsumosCombos({orden,setorden,insumo,actions}){
   const [info,setInfo] = useState(orden)
@@ -610,7 +611,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
 
         // setorden([{...info[0],id_receta:items[0].id_producto_CAB,producto:(items[0].rubro + ' ' + items[0].presentacion + ' ' + items[0].modelo),tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro}])
 
-        setorden([{...info[0],id_receta:items[0].id_producto_CAB,tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].base,estilo:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro,producto:(items[0].rubro + ' ' + items[0].presentacion + ' ' + items[0].modelo)}])
+        setorden([{...info[0],id_receta:items[0].id_producto_CAB,tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,modelos:items[0].modelo,base:items[0].base,estilo:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro,producto:(items[0].rubro + ' ' + items[0].presentacion + ' ' + items[0].modelo)}])
 
         // setinsumos([...insumos,...items.map(row=>({id_producto:row.id_producto_CAB,id_subprod:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0}))])
       }}
@@ -621,6 +622,21 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       action:async ()=>{
       }
     })
+  }
+  const nuevamarca = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Marca actions={(item)=>{
+        setorden(orden=>([{...orden[0],marca:item.nom}]))
+        setopen(false)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openmodal(params_modal)
   }
   const translateClasses = ['', 'translate-x-[100%]', 'translate-x-[200%]', 'translate-x-[300%]'];
   return <>
@@ -714,7 +730,11 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             </>
           } */}
         </div>
-        
+        <div className="flex gap-3">
+          <div className="w-[30%]">
+            <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" action={nuevamarca} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          </div>
+        </div>
         <div className="flex items-center gap-2">
           <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
           <span className="inline-block align-middle text-[12px]">Info de la prenda</span>
@@ -749,12 +769,12 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           </div> */}
         </div>
         <div className="flex gap-3">
-          <div className="w-[350px]">
+          <div className="w-[450px]">
             <Input name={'rubro'} defaults={info.length > 0 ? info[0].rubro : null} title="Articulo" type="text" placeholder={'Numero de la orden'} readonly={true}/>
           </div>
-          <div className="w-[350px]">
+          {/* <div className="w-[350px]">
             <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" placeholder={'Numero de la orden'} readonly={true}/>
-          </div>
+          </div> */}
         <div className="w-[450px]">
             <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" placeholder={'Numero de la orden'} readonly={true}/>
           </div>  

@@ -340,7 +340,7 @@ export default function NewDespacho() {
         const data = new FormData()
         urlparams.id && data.append('id', urlparams.id)
         data.append('info', JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle', fase ? JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0)) : JSON.stringify(registros))
+        data.append('detalle', fase ? JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0 || (row.incompletos ?? 0) > 0)) : JSON.stringify(registros))
         data.append('facturas', JSON.stringify(facturas))
 
         // const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : (info.distribucion !== 'PQT' ? 'produccion/guardardespachoguia/' : 'produccion/guardardespachoguiaxpq/')
@@ -582,11 +582,19 @@ export default function NewDespacho() {
             //   Reflect.deleteProperty(row, 'idx')
             //   return row
             // })])
-            setRegistros([...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
-              row = { ...row, id_item: row.idx }
-              Reflect.deleteProperty(row, 'idx')
-              return row
-            })])
+            if((info.id_pedido_origen ?? 0) !== item.idx){
+              setRegistros(resp[1].map(row => {
+                row = { ...row, id_item: row.idx }
+                Reflect.deleteProperty(row, 'idx')
+                return row
+              }))
+            }else{
+              setRegistros([...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+                row = { ...row, id_item: row.idx }
+                Reflect.deleteProperty(row, 'idx')
+                return row
+              })])
+            }
 
           })
           .catch((err) => {

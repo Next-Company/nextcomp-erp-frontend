@@ -337,11 +337,11 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       </div>
       <hr/>
       <div className="flex flex-col gap-3">
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
           <div className="w-[30%]">
             <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" action={nuevamarca} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
           </div>
-        </div>
+        </div> */}
         <div className="w-[35%]">
           <Input name={'presentacion'} title="TipoTela" defaults={info.length > 0 ? info[0].presentacion : null} type="text" action={nuevapresentacion} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
@@ -370,10 +370,10 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : 10} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         {/* <div className="w-[25%]">
         </div> */}
-        <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+        {/* <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         <div className="w-[45%]">
           <Input name={'proveedor'} title="Proveedor" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        </div>
+        </div> */}
         <div className="w-[35%]">
           <InputSelect title={'Estado'} name={"activo"} formref={form} data={
             [
