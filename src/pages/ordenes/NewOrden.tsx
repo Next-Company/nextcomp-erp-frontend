@@ -32,7 +32,7 @@ function InsumosCombos({orden,setorden,insumo,actions}){
       setInfo(cc=>[{...cc[0],combos:cc[0].combos.map((row,key)=>key == parseInt(position) ? ({...row,insumos:(row.insumos && row.insumos.length > 0) ? row.insumos.filter(ids=>parseInt(ids) !== parseInt(insumo)) : [] }) : row)}])
     }else{
       // console.log("Dentro de false",info)
-      setInfo(cc=>[{...cc[0],combos:cc[0].combos.map((row,key)=>key == parseInt(position) ? {...row,insumos:( (row.insumos && row.insumos.length > 0)? [...row.insumos,insumo] : [insumo] )} : row)}])  
+      setInfo(cc=>[{...cc[0],combos:cc[0].combos.map((row,key)=>key == parseInt(position) ? {...row,insumos:( (row.insumos && row.insumos.length > 0)? [...row.insumos,parseInt(insumo)] : [parseInt(insumo)] )} : row)}])  
     }
   }
   const updatecombos = ()=>{
@@ -60,7 +60,7 @@ function InsumosCombos({orden,setorden,insumo,actions}){
             <tbody>
               {
                 Object.keys(info[0]).length > 0 && info[0].combos && info[0].combos.map((row,key)=>(
-                  <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${(row.insumos && row.insumos.includes(insumo)) ? 'selected' : ''}`}>
+                  <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${(row.insumos && row.insumos.includes(parseInt(insumo))) ? 'selected' : ''}`}>
                   {/* <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${row.insumos.includes(insumo) ? 'selected' : ''}`}> */}
                     {/* <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td> */}
                     <td className="text-center w-[200px]">{row.color_combo}</td>
@@ -522,7 +522,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       content: <Productos actions={(items)=>{  
         console.log("Informacion de los insumos:",items)
         setopen(false)
-        setinsumos([...insumos,...items.map(row=>({id_producto_CAB:row.id_producto_CAB,id_subprod_CAB:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0}))])
+        setinsumos([...insumos,...items.map(row=>({id_producto_CAB:row.id_producto_CAB,id_subprod_CAB:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0,stock:row.stock}))])
       }}
         // closemodal={()=>setopen(false)}
       />,
@@ -938,7 +938,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                 <th className="lg:table-cell w-[150px]">Consumo</th>
                 <th className="lg:table-cell w-[150px]">Comprometido</th>
                 <th className="lg:table-cell">Stock</th>
-                <th className="lg:table-cell">PorLlegar</th>
+                {/* <th className="lg:table-cell">PorLlegar</th> */}
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
@@ -949,16 +949,6 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                     <td className="text-center">{row.id_subprod_CAB}</td>
                     <td className="text-center">{row.producto}</td>
                     <td className="text-center">
-                      {/* <InputSelect title={'MotivoProduccion'} name={"motivo"} data={
-                        [
-                          { indice: 'REPO', option: 'REPOSICION', selected: true },
-                          { indice: 'CAMP', option: 'CAMPAÑA'},
-                          { indice: 'TMPO', option: 'TEMPORADA' },
-                          { indice: 'COLC', option: 'COLECCION' },
-                          { indice: 'OTRS', option: 'OTROS' },
-                        ]} 
-                        df={Object.keys(info).length > 0 ? info[0].mnotivo : null} 
-                      /> */}
                       <select onChange={editvalueinsumos} data-name="fases" data-position={key} defaultValue={row.tipodoc}>
                         {
                           fases.map(fs=>
@@ -977,15 +967,15 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                       {
                         info[0].combos 
                         ? info[0].combos.reduce((c,v) =>{
-                            c = c + ((v.insumos && v.insumos.includes(row.id_subprod_CAB)) ? parseFloat(v.cantidad_combo)*parseFloat(row.cantidad) : 0)
+                            c = c + ((v.insumos && v.insumos.includes(parseInt(row.id_subprod_CAB))) ? parseFloat(v.cantidad_combo)*parseFloat(row.cantidad) : 0)
                             return c
                           },0) 
                         : 0
                       }
                     </td>
                     {/* <td className="text-center">{JSON.stringify(info[0].combos.map(row=>row.cantidad_combo))}</td> */}
-                    <td className="text-center">0</td>
-                    <td className="text-center">0</td>
+                    <td className="text-center">{row.stock ?? 0}</td>
+                    {/* <td className="text-center">0</td> */}
                     <td className="w-[250px]">
                       <ul className="flex flex-row justify-end">
                         <li>
@@ -1012,11 +1002,13 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             </tbody>
             <tfoot className="sticky bottom-0">
               <tr className="h-[45px] bg-white">
+                <td className="font-bold text-center text-[14px]"></td>
+                <td className="font-bold text-center text-[14px]"></td>
                 <td className="font-bold text-center text-[14px]">TOTAL</td>
                 <td className="font-bold text-center text-[14px]"></td>
                 <td className="font-bold text-center text-[14px]"></td>
                 <td className="font-bold text-center text-[14px]"></td>
-                {/* <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0) : 0) : 0}</td> */}
+                <td className="font-bold text-center text-[14px]"></td>
                 <td className="font-bold text-center text-[14px]">{insumos.length > 0 ? insumos.reduce((c,v)=>c+parseFloat(v.cantidad),0) : 0}</td>
                 <td className="font-bold text-center text-[14px]"></td>
               </tr>

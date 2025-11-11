@@ -440,6 +440,7 @@ export default function NewMovimiento(){
   }
   const listaordenes = ()=>{
     let params_modal = null
+    const LIST_ORDENES_MODE = 0
     if(!almacen){
       toast.error('Debe ingresar antes la información del almacen.',{theme:'colored'})
       return 0
@@ -485,6 +486,7 @@ export default function NewMovimiento(){
             // setOpen(false)
           })
         }}
+        mode={LIST_ORDENES_MODE}
         closemodal={()=>setOpen(false)}
       />,
       controls: true,

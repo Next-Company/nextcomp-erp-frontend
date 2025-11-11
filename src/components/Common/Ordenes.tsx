@@ -18,11 +18,11 @@ const colorfase = {
 
 export default function Ordenes(children){
   const { logout } = useContext(AuthPermitions)
-  let {actions = ()=>{}, closemodal = ()=>{}} = children
+  let {actions = ()=>{}, closemodal = ()=>{}, mode = 1} = children
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
-      await Consulta({url: 'ordenes/getordenescorte/'})
+      await Consulta({url: mode ? 'ordenes/getordenescorte/' : 'ordenes/getordenesfull/'})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)
@@ -49,7 +49,7 @@ export default function Ordenes(children){
     // console.log("La ruta de consulta es :",'produccion/searchordenes/'+input.value)  
     const buscarproveedor = async ()=>{
       // await Consulta({url: 'ordenes/getordenes/'+ input.value})
-      await Consulta({url: 'ordenes/getordenescorte/'+ input.value})
+      await Consulta({url: (mode ? 'ordenes/getordenescorte/' : 'ordenes/getordenesfull/') + input.value})
       .then(resp => {
         setLista(resp)
         // setOpenloader(false)
