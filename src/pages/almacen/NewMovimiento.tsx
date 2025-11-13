@@ -153,7 +153,7 @@ export default function NewMovimiento(){
             talla:row.talla,
             lote:0,
             unidad:row.unidad,
-            metros:0,
+            peso:0,
             rollos:0,
             tipo:row.tipo
           }))
@@ -235,7 +235,7 @@ export default function NewMovimiento(){
             talla:row.talla,
             lote:row.lote,
             unidad:row.unidad,
-            metros:0,
+            peso:0,
             rollos:0,
             tipo:row.tipo
           }))
@@ -290,7 +290,7 @@ export default function NewMovimiento(){
             talla:row.talla,
             num_lote:row.lote,
             unidad:row.unidad,
-            metros:0,
+            peso:0,
             rollos:0,
             tipo:row.tipo
           }))
@@ -470,7 +470,7 @@ export default function NewMovimiento(){
                 talla:row.talla,
                 num_lote:row.lote,
                 unidad:row.unidad,
-                metros:0,
+                peso:0,
                 rollos:0,
                 comprometido: parseFloat(row.comprometido),
                 entregado: parseFloat(row.entregado),
@@ -589,7 +589,7 @@ export default function NewMovimiento(){
                           <th className="lg:table-cell">Lote</th>
                           {/* <th className="lg:table-cell">SN/Lote</th> */}
                           <th className="lg:table-cell">Rollos</th>
-                          <th className="lg:table-cell">Metros</th>
+                          <th className="lg:table-cell">Peso</th>
                           {
                             motivo == 'prd' &&
                             <>
@@ -622,7 +622,7 @@ export default function NewMovimiento(){
                               {/* <td className="w-[120px]"><input type="number" onChange={editvalue} data-position={key} data-name="lote" value={row.lote} /></td> */}
                               {/* <td className="text-center"><input type="checkbox" id="sinlote" onChange={editvalue} data-position={key} data-name="sinlote" checked={row.sinlote} /></td> */}
                               <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} step={'0.01'} /></td>
-                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="metros" value={row.metros} step={'0.01'} /></td>
+                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="metros" value={row.peso} step={'0.01'} /></td>
                               {
                                 motivo == 'prd' && <>
                                   <td className="w-[100px] text-center">{row.comprometido ?? 0}</td>

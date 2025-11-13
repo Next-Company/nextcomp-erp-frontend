@@ -16,6 +16,85 @@ import Recetas from "../../components/Common/Recetas";
 import Colores from "../../components/Common/Colores";
 import Marca from "../../components/Common/Marca";
 
+
+function CombosInsumos(children){
+  const {actions,closemodal,insumos = [],c_insumos=[],setcorte} = children
+  console.log('Los insumos de los combos son:',c_insumos)
+  const onclickinsumos = (e)=>{
+    const action = e.target.dataset.action
+    switch (action) {
+      case 'select':
+        // setcorte(corte=>[...corte,'insumos':corte.insumos.filter()])
+        break;
+    
+      default:
+        break;
+    }
+
+  }
+  return(
+    <>
+      <div className='h-[650px] w-[1100px] flex flex-col overflow-hidden'>
+        <hr />
+        <div className="flex-1 scrollbar-special rounded-md overflow-y-scroll bg-gray-200 mb-2">
+                  {/* <div className={`h-[500px] flex-1 scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2`}> */}
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-green-200">
+            <thead className="text-left sticky top-0 bg-white">
+              <tr>
+                <th className="lg:table-cell">Id</th>
+                <th className="lg:table-cell">Articulo</th>
+                {/* <th className="lg:table-cell ">Fase</th> */}
+                <th className="lg:table-cell">Unidad</th>
+                <th className="lg:table-cell">Color</th>
+                <th className="lg:table-cell">Talla</th>
+                {/* <th className="lg:table-cell w-[150px]">Consumo</th> */}
+                <th className="lg:table-cell ">Comprometido</th>
+                <th className="lg:table-cell">Stock</th>
+                {/* <th className="lg:table-cell">PorLlegar</th> */}
+                <th className="lg:table-cell">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                insumos.length > 0 && insumos.map((row,key)=>(
+                  <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_select]:text-center [&_select]:p-[2px] [&_select]:w-full [&_select]:bg-transparent focus-visible:[&select]:outline-[0px] focus-visible:[&select]:bg-gray-200 focus-visible:[&select]:border-black focus-visible:[&select]:bg-transparent focus:[&_select]:outline-none ${(c_insumos && c_insumos.includes(parseInt(row.id_subprod_CAB))) ? 'selected' : ''}`}>
+                    <td className="text-center">{row.id_subprod_CAB}</td>
+                    <td className="text-center">{row.producto}</td>
+                    <td className="text-center">-</td>
+                    <td className="text-center">{row.color}</td>
+                    <td className="text-center">{row.talla}</td>
+                    <td className="text-center"><input data-name="cantidad" type="number" onChange={()=>{}} data-position={key} value={row.cantidad} step={0.001}/></td>
+                    <td className="text-center">{row.stock ?? 0}</td>
+                    <td className="w-[150px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" onClick={onclickinsumos} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="select" onClick={onclickinsumos} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  )
+}
+
 function InsumosCombos({orden,setorden,insumo,actions}){
   const [info,setInfo] = useState(orden)
   // const [info,setInfo] = useState([{...orden[0],combos:( orden[0].combos ? orden[0].combos.filter(c=>parseInt(c.cantidad_combos) > 0) : [] )}])
@@ -41,8 +120,8 @@ function InsumosCombos({orden,setorden,insumo,actions}){
   console.log("La informacion de info vinculo recibida es:",info,insumo)
   return(
     <>
-      <div className='h-[500px] w-[1000px] flex flex-col'>
-        <div className="flex-1">
+      <div className='h-[650px] w-[1100px] flex flex-col overflow-hidden'>
+        <div className="flex-1 scrollbar-special rounded-md overflow-y-scroll">
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr.selected:nth-child(n)]:bg-green-200 [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
@@ -149,9 +228,10 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   )
 }
 
-function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
+function CuerpoCorte(children){
+  let {info,setcorte,position,quitar,form,setopen,openmodal,insumos} = children
   console.log("El chapuloin colorado 2: ",info)
-  const [active,setActive] = useState(-1)
+  const [active,setActive] = useState(1)
   const onclick = (e)=>{
     const position = e.target.dataset.position
     const id = e.target.dataset.id
@@ -231,6 +311,31 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
     const position = e.target.dataset.position
     setcorte(corte=>corte.filter((row,key)=>key !== parseInt(position)))
   }
+  const add_insumo = (e)=>{
+    const c_insumos = e.target.dataset.insumos ?? []
+    openmodal({
+      open:true,
+      content: <CombosInsumos actions={(items)=>{  
+        console.log("Informacion de los insumos:",items)
+        // const id = e.target.dataset.id
+        // setcorte(corte=>corte.reduce((c,v)=>{
+        //   c.push({...v,combos:v.idx == id ? [...v.combos,...items.filter(item=>!v.combos.map(combo=>combo.idx_color).includes(item.idx)).map(item=>({id_hojacorte_CAB:'',idx_color:item.idx,color_combo:item.nom,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}))] : v.combos})
+        //   return c
+        // },[]))
+        // setopen(false)
+      }}
+        closemodal={()=>setopen(false)}
+        insumos={insumos}
+        c_insumos={JSON.parse(c_insumos)}
+        setcorte={setcorte}
+      />,
+      controls: true,
+      header: false,
+      action:async ()=>{
+      }
+    })
+
+  }
   return <>
     <div key={position}>
       {/* <InputTest name={'numero_corte'} defaults={Object.keys(info).length > 0 && info.numero_corte ? info.numero_corte : null} title="#HojaCorte" type="text" /> */}
@@ -305,8 +410,9 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
                             </div>
                           </li>
                           <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={add_insumo} data-insumos={JSON.stringify(row.insumos)}>
+                              {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg> */}
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrows-join"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7h5l3.5 5h9.5" /><path d="M3 17h5l3.495 -5" /><path d="M18 15l3 -3l-3 -3" /></svg>
                             </div>
                           </li>
                         </ul>
@@ -326,7 +432,7 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
                 <tr>
                   <td colSpan={10} >
                     <div className="flex flex-row justify-center">
-                      <div onClick={agregarcombo} data-id={info.idx} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                      <div onClick={agregarcombo} data-id={info.idx} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-full text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                         +
                       </div>
                     </div>
@@ -361,13 +467,17 @@ function SeccionMateriales({info,orden}){
   </>
 }
 
-function SeccionCorte({info,setcorte,form,setopen,openmodal}){
+function SeccionCorte(children){
+  let {info,setcorte,form,setopen,openmodal,orden,insumos} = children
   // console.log("El chapuloin colorado : ",info)
   // useEffect(()=>{
   //   form.current.addEve
   // },[])
   const addcorte = ()=>{
-    setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:[]}]))
+    // setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:[]}]))
+    console.log("Tomate barraza:",orden)
+    // setcorte(orden[0].combos.map(row=>({idx:'',numnero_corte:''})))
+    setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:orden[0].combos }]) )
   }
   const deletecorte = ()=>{
     setcorte(corte=>corte.filter((row,key)=>key !== 0))
@@ -378,7 +488,7 @@ function SeccionCorte({info,setcorte,form,setopen,openmodal}){
   return <>
     <div className={`flex flex-col gap-3 pt-2`}>
       {
-        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form} setopen={setopen} openmodal={openmodal} />)
+        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form} setopen={setopen} openmodal={openmodal} insumos={insumos}/>)
         // info.length > 0 && info.map((row,key)=><div key={key} className="w-[100px] h-[80px] bg-red-300">
         //   <input type="text" value={Object.keys(row).length > 0 ? row.numero_corte : ''} />
         // </div>)
@@ -1201,7 +1311,7 @@ export function NewOrden() {
         })
         .then(resp => {
           if(resp.ok){
-            navigate("/main/ordenes/")
+            // navigate("/main/ordenes/")
             toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.mensaje, { theme: "colored" })
@@ -1446,7 +1556,7 @@ export function NewOrden() {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
                 }
                 {
-                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form} setopen={setOpen} openmodal={openModal}/>
+                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form} setopen={setOpen} openmodal={openModal} orden={orden} insumos={insumos}/>
                 }
                 {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
