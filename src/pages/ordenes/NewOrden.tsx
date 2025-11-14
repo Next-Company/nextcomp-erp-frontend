@@ -18,52 +18,68 @@ import Marca from "../../components/Common/Marca";
 
 
 function CombosInsumos(children){
-  const {actions,closemodal,insumos = [],c_insumos=[],setcorte} = children
-  console.log('Los insumos de los combos son:',c_insumos)
+  const {actions,closemodal,insumos = [],c_insumos=[],setcorte,position_corte,position_combo,info} = children
+  const [insu,setInsu] = useState(c_insumos)
+  
+  console.log('Los insumos de los combos son:',c_insumos,info)
   const onclickinsumos = (e)=>{
     const action = e.target.dataset.action
+    const id = parseInt(e.target.dataset.id)
+    console.log("La vena es:",action,id)
     switch (action) {
       case 'select':
-        // setcorte(corte=>[...corte,'insumos':corte.insumos.filter()])
+        setInsu(row=>row.includes(id) ? row.filter(item=>item !== id) : [...row,id])
+        setcorte(corte=>corte.map((row,key)=>{
+          // console.log("Ajaummmm!!",row,id)
+          return {
+            ...row,
+            combos: (
+              key == position_corte 
+              ? row.combos.map((row2,key2)=>(
+                key2 == position_combo 
+                ? {...row2,insumos: (row2.insumos.includes(id) ? row2.insumos.filter(item=>item !== id) : [...row2.insumos,id]) }
+                : row2
+              ))
+              : row.combos
+            )
+          }
+        }))
         break;
     
       default:
         break;
     }
-
   }
   return(
     <>
       <div className='h-[650px] w-[1100px] flex flex-col overflow-hidden'>
         <hr />
         <div className="flex-1 scrollbar-special rounded-md overflow-y-scroll bg-gray-200 mb-2">
-                  {/* <div className={`h-[500px] flex-1 scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2`}> */}
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-green-200">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell">Id</th>
                 <th className="lg:table-cell">Articulo</th>
-                {/* <th className="lg:table-cell ">Fase</th> */}
                 <th className="lg:table-cell">Unidad</th>
                 <th className="lg:table-cell">Color</th>
                 <th className="lg:table-cell">Talla</th>
-                {/* <th className="lg:table-cell w-[150px]">Consumo</th> */}
                 <th className="lg:table-cell ">Comprometido</th>
                 <th className="lg:table-cell">Stock</th>
-                {/* <th className="lg:table-cell">PorLlegar</th> */}
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {
                 insumos.length > 0 && insumos.map((row,key)=>(
-                  <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_select]:text-center [&_select]:p-[2px] [&_select]:w-full [&_select]:bg-transparent focus-visible:[&select]:outline-[0px] focus-visible:[&select]:bg-gray-200 focus-visible:[&select]:border-black focus-visible:[&select]:bg-transparent focus:[&_select]:outline-none ${(c_insumos && c_insumos.includes(parseInt(row.id_subprod_CAB))) ? 'selected' : ''}`}>
+                  <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_select]:text-center [&_select]:p-[2px] [&_select]:w-full [&_select]:bg-transparent focus-visible:[&select]:outline-[0px] focus-visible:[&select]:bg-gray-200 focus-visible:[&select]:border-black focus-visible:[&select]:bg-transparent focus:[&_select]:outline-none
+                    ${insu && (insu.includes(parseInt(row.id_subprod_CAB)) ? 'selected' : '' )}
+                  `}>
                     <td className="text-center">{row.id_subprod_CAB}</td>
                     <td className="text-center">{row.producto}</td>
                     <td className="text-center">-</td>
                     <td className="text-center">{row.color}</td>
                     <td className="text-center">{row.talla}</td>
-                    <td className="text-center"><input data-name="cantidad" type="number" onChange={()=>{}} data-position={key} value={row.cantidad} step={0.001}/></td>
+                    <td className="text-center">{row.cantidad}</td>
                     <td className="text-center">{row.stock ?? 0}</td>
                     <td className="w-[150px]">
                       <ul className="flex flex-row justify-end">
@@ -78,7 +94,7 @@ function CombosInsumos(children){
                           </div>
                         </li>
                         <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="select" onClick={onclickinsumos} data-position={key}>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="select" onClick={onclickinsumos} data-position={key} data-id={row.id_subprod_CAB}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
                           </div>
                         </li>
@@ -90,6 +106,10 @@ function CombosInsumos(children){
             </tbody>
           </table>
         </div>
+        {/* <div className="flex flex-row justify-end gap-3 mt-3">
+          <Button action={()=>{}} type={'button'} tipo={'default'}>Cancelar</Button>
+          <Button action={updateinsumos} type={'button'} tipo={'default'}>Aceptar</Button>
+        </div> */}
       </div>
     </>
   )
@@ -302,7 +322,7 @@ function CuerpoCorte(children){
 
     const id = e.target.dataset.id
     setcorte(corte=>corte.reduce((c,v)=>{
-      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
+      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0,insumos:[]}] : v.combos})
       return c
     },[]))
 
@@ -313,6 +333,7 @@ function CuerpoCorte(children){
   }
   const add_insumo = (e)=>{
     const c_insumos = e.target.dataset.insumos ?? []
+    const position_combo = e.target.dataset.position ?? -1
     openmodal({
       open:true,
       content: <CombosInsumos actions={(items)=>{  
@@ -327,7 +348,10 @@ function CuerpoCorte(children){
         closemodal={()=>setopen(false)}
         insumos={insumos}
         c_insumos={JSON.parse(c_insumos)}
+        info={info}
         setcorte={setcorte}
+        position_combo={position_combo}
+        position_corte={position}
       />,
       controls: true,
       header: false,
@@ -410,8 +434,7 @@ function CuerpoCorte(children){
                             </div>
                           </li>
                           <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={add_insumo} data-insumos={JSON.stringify(row.insumos)}>
-                              {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg> */}
+                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={add_insumo} data-insumos={JSON.stringify(row.insumos)} data-position={key}>
                               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrows-join"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7h5l3.5 5h9.5" /><path d="M3 17h5l3.495 -5" /><path d="M18 15l3 -3l-3 -3" /></svg>
                             </div>
                           </li>
@@ -476,6 +499,7 @@ function SeccionCorte(children){
   const addcorte = ()=>{
     // setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:[]}]))
     console.log("Tomate barraza:",orden)
+    console.log("Pecjepojkpep:",orden[0].combos)
     // setcorte(orden[0].combos.map(row=>({idx:'',numnero_corte:''})))
     setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:orden[0].combos }]) )
   }
@@ -510,26 +534,49 @@ function SeccionMolde({info,orden}){
   console.log("Info molde:",orden)
   return <>
     <div className={`flex flex-col gap-3 pt-4`}>
-      <div className="flex gap-3">
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
+      </div>
+      <hr/>
+      <div className="flex gap-3 flex-col">
         <Input name={'idx'} defaults={info.length > 0 && info[0].idx ? info[0].idx : null}  type="hidden" />
         <Input name={'id_cab_orden'} defaults={orden ?? null}  type="hidden" />
-        <Input name={'responsable'} defaults={info.length > 0 && info[0].responsable ? info[0].responsable : null} title="Responsable" type="text" />
-        <Input name={'molde'} defaults={info.length > 0 && info[0].molde ? info[0].molde : null}  title="Molde" type="text" />
-        <Input name={'muestra'} defaults={info.length > 0 && info[0].muestra ? info[0].muestra : null} title="Muestra" type="text" />
-        <Input name={'lavado'} defaults={info.length > 0 && info[0].lavado ? info[0].lavado : null} title="Lavado" type="text" />
+        <div className="w-[450px]">
+          <Input name={'responsable'} defaults={info.length > 0 && info[0].responsable ? info[0].responsable : null} title="Responsable" type="text" placeholder={'Dato informativo opcional'}/>
+        </div>
+        <div className="w-[650px]">
+          <Input name={'molde'} defaults={info.length > 0 && info[0].molde ? info[0].molde : null}  title="Molde" type="text" placeholder={'Dato informativo opcional'}/>
+        </div>
+        <div className="w-[950px] flex gap-2">
+          <Input name={'muestra'} defaults={info.length > 0 && info[0].muestra ? info[0].muestra : null} title="Muestra" type="text" placeholder={'Dato informativo opcional'}/>
+          <Input name={'lavado'} defaults={info.length > 0 && info[0].lavado ? info[0].lavado : null} title="Lavado" type="text" placeholder={'Dato informativo opcional'}/>
+        </div>
+        {/* <div className="w-[450px]">
+        </div> */}
+        <div className="w-[550px]">
+          <Input name={'cliente_corte'} defaults={info.length > 0 && info[0].cliente_corte ? info[0].cliente_corte : null} title="Aprobación Cliente" type="text" placeholder={'Dato informativo opcional'}/>
+        </div>
       </div>
-      <div className="flex gap-3">
-        <Input name={'cliente_corte'} defaults={info.length > 0 && info[0].cliente_corte ? info[0].cliente_corte : null} title="Aprobación Cliente" type="text" />
-        {/* <Input name={'tizado'} defaults={info.length > 0 && info[0].tizado ? info[0].tizado : null} title="Tizado" type="text" /> */}
-        <InputSelect title={'Tizado'} name={"tizado"} data={
-          [
-            { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true  },
-            { indice: 'OBSERVADO', option: 'OBSERVADO' },
-            { indice: 'FINALIZADO', option: 'FINALIZADO' },
-          ]} 
-          df={Object.keys(info).length > 0 ? info[0].tizado : null} 
-        />
-        <InputSelect title={'Estado'} name={"estado_molde"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_molde : null} />
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
+      </div>
+      <hr/>
+      <div className="flex gap-3 flex-col">
+        <div className="w-[1050px] flex gap-2">
+          <InputSelect title={'Tizado'} name={"tizado"} data={
+            [
+              { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true  },
+              { indice: 'OBSERVADO', option: 'OBSERVADO' },
+              { indice: 'FINALIZADO', option: 'FINALIZADO' },
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].tizado : null} 
+            placeholder={'Dato informativo opcional'}
+          />
+          <InputSelect title={'Estado'} name={"estado_molde"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_molde : null} placeholder={'Dato informativo opcional'}/>
+        </div>
+
       </div>
       <div>
         <TextArea title="Observaciones" name="observaciones_fase_molde" />
