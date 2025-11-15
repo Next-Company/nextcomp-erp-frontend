@@ -15,13 +15,25 @@ import ProductosLote from "../../components/Common/ProductosLote"
 import Almacenes from "../../components/Common/Almacenes"
 import Ordenes from "../../components/Common/Ordenes"
 
-
 function InfoRollos(children){
-  const {actions} = children
-  const [lista,setLista] = useState([{peso:23.34,partida:'PDF-34'}])
-  // const lista = [{peso:23.34,partida:'PDF-34'}]
+  const {actions,info=[]} = children
+  const [lista,setLista] = useState(info)
   const addrollo = ()=>{
-    setLista([...lista,{peso:0,partida:''}])
+    setLista([...lista,{peso:0,partida:'',cantidad:0}])
+  }
+  const onclick = (e)=>{
+    const action = e.target.dataset.action ?? ''
+    const position = e.target.dataset.position ?? -1
+    console.log("La posiconi es:",position,action)
+    switch (action) {
+      case 'delete':
+        // setLista(row=>row.map((v,k)=>k == position ?) )
+        setLista(row=>row.filter((v,k)=>k !== parseInt(position)))
+        break;
+    
+      default:
+        break;
+    }
   }
   return(
     <>
@@ -33,6 +45,7 @@ function InfoRollos(children){
                 <th className="lg:table-cell">#</th>  
                 <th className="lg:table-cell">Peso</th>
                 <th className="lg:table-cell">Partida</th>
+                <th className="lg:table-cell">Cantidad</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
@@ -41,11 +54,12 @@ function InfoRollos(children){
                 <tr key={key} data-position={key} data-action="add" onClick={()=>{}} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                   <td className="w-[100px]">{key + 1}</td>
                   <td className=""><input type="number" onChange={(e)=>setLista(lista=>lista.map((row,pos)=>(pos == key ? {...row,peso:e.target.value} : row )))} data-position={key} data-name="peso" value={row.peso} step={'0.01'} /></td>
-                  <td className=""><input type="text" onChange={()=>{}} data-position={key} data-name="metros" value={row.partida} /></td>
+                  <td className=""><input type="text" onChange={(e)=>setLista(lista=>lista.map((row,pos)=>(pos == key ? {...row,partida:e.target.value} : row )))} data-position={key} data-name="partida" value={row.partida} /></td>
+                  <td className=""><input type="number" onChange={(e)=>setLista(lista=>lista.map((row,pos)=>(pos == key ? {...row,cantidad:e.target.value} : row )))} data-position={key} data-name="cantidad" value={row.cantidad} step={'0.01'} /></td>
                   <td className="w-[250px]">
                     <ul className="flex flex-row justify-end">
                       <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete">
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                         </div>
                       </li>
@@ -66,16 +80,20 @@ function InfoRollos(children){
             </tbody>
             <tfoot className="sticky bottom-0 bg-white">
               <tr>
-                <td colSpan={13} >
+                <td colSpan={5} >
                   <div className="flex flex-row justify-center gap-2">
                     <div onClick={addrollo} className={`bg-blue-500 hover:bg-blue-600 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer `}>
-                      <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
                     </div>
                   </div>
                 </td>
               </tr>
             </tfoot>
           </table>
+        </div>
+        <div className="flex flex-row justify-end gap-3 mt-3">
+          <Button action={()=>{}} type={'button'} tipo={'default'}>Cancelar</Button>
+          <Button action={()=>actions(lista)} type={'button'} tipo={'default'}>Aceptar</Button>
         </div>
       </div>
     </>
@@ -384,21 +402,25 @@ export default function NewMovimiento(){
         console.log("Eliminado registros de la fila ",position)
         break;
         
-      case 'edit':
+      case 'edit':        
         let params_modal = null
         params_modal = {
           open:true,
-          content: <InfoRollos actions={(item)=>{  
-            // console.log("El item seleccionado es: ",item)
-            // setInfo(info=>({...info,id_proveedor_CAB:item.idx,proveedor:item.nom,ruc:item.ruc}))
-            // setOpen(false)
-          }}/>,
-          controls: true,
+          content: <InfoRollos 
+            actions={(info)=>{  
+              console.log("La informacion de la lista es:",position,info,registros)
+              // setRegistros(row=>[...row.map((v,p)=>p==position ? {...v,info_rollos:info,rollo:60,peso:info.reduce((c,v)=>c+v,0)} : v)])
+              setRegistros(row=>row.map((v,p)=> p == parseInt(position) ? {...v,info_rollos:info,rollos:info.length,peso:info.reduce((c,v)=>c+parseFloat(v.peso),0),Cant_despacho_DET:info.reduce((c,v)=>c+parseFloat(v.cantidad),0).toFixed(2)} : v))
+              setOpen(false)
+            }}
+            info={registros[position]?.info_rollos ?? []}
+          />,
+          controls: false,
           header: false,
           action:()=>{
           }
         }
-        openModal(params_modal)
+        if(almacen !== 508) openModal(params_modal)
         break;
 
       default :
@@ -705,8 +727,8 @@ export default function NewMovimiento(){
                               <td className="text-center">{row.num_lote}</td>
                               {/* <td className="w-[120px]"><input type="number" onChange={editvalue} data-position={key} data-name="lote" value={row.lote} /></td> */}
                               {/* <td className="text-center"><input type="checkbox" id="sinlote" onChange={editvalue} data-position={key} data-name="sinlote" checked={row.sinlote} /></td> */}
-                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} step={'0.01'} /></td>
-                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="metros" value={row.peso} step={'0.01'} /></td>
+                              <td className="w-[100px] text-center">{row.rollos}</td>
+                              <td className="w-[100px] text-center">{row.peso}</td>
                               {
                                 motivo == 'prd' && <>
                                   <td className="w-[100px] text-center">{row.comprometido ?? 0}</td>
@@ -715,7 +737,13 @@ export default function NewMovimiento(){
                                 </>
                               }
                               <td className="w-[100px] text-center">{row.stock}</td>
-                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="Cant_despacho_DET" value={row.Cant_despacho_DET} step={'0.01'} /></td>
+                              {
+                                almacen == 508
+                                ? <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="Cant_despacho_DET" value={row.Cant_despacho_DET} step={'0.01'} /></td>
+                                : <td className="w-[100px] text-center">{row.Cant_despacho_DET}</td>
+                              }
+                              {/* <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="Cant_despacho_DET" value={row.Cant_despacho_DET} step={'0.01'} /></td> */}
+                              
                               <td className="w-[200px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
@@ -729,7 +757,7 @@ export default function NewMovimiento(){
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-position={key}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                     </div>
                                   </li>

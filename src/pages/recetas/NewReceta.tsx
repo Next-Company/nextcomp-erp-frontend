@@ -307,7 +307,9 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                 { indice: 'PT', option: 'PUNTO', selected: true  },
                 { indice: 'PL', option: 'PLANO' },
                 { indice: 'FT', option: 'FANTASIA' },
-                { indice: 'PC', option: 'PLANO COMPLEMENTO' }
+                { indice: 'PC', option: 'PLANO COMPLEMENTO' },
+                { indice: 'AC', option: 'ACCESORIOS' },
+                { indice: 'HI', option: 'HILOS' }
               ]} 
               df={Object.keys(info).length > 0 ? info[0].tipoFabricacion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
             />
