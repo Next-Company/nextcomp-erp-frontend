@@ -340,7 +340,7 @@ export default function NewDespacho() {
         const data = new FormData()
         urlparams.id && data.append('id', urlparams.id)
         data.append('info', JSON.stringify(Object.fromEntries(new FormData(form.current))))
-        data.append('detalle', fase ? JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0)) : JSON.stringify(registros))
+        data.append('detalle', fase ? JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0 || (row.incompletos ?? 0) > 0)) : JSON.stringify(registros))
         data.append('facturas', JSON.stringify(facturas))
 
         // const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : (info.distribucion !== 'PQT' ? 'produccion/guardardespachoguia/' : 'produccion/guardardespachoguiaxpq/')
@@ -355,8 +355,8 @@ export default function NewDespacho() {
           .then(resp => {
             console.log("Info respues:",resp)
             setOpenloader(false)
-            navigate('/main/despachos/')
             if(resp.ok){
+              // navigate('/main/despachos/')
               toast.success(resp.message, { theme: "colored" })
             }else{
               toast.error(resp.message, { theme: "colored" })  
@@ -582,11 +582,19 @@ export default function NewDespacho() {
             //   Reflect.deleteProperty(row, 'idx')
             //   return row
             // })])
-            setRegistros([...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
-              row = { ...row, id_item: row.idx }
-              Reflect.deleteProperty(row, 'idx')
-              return row
-            })])
+            if((info.id_pedido_origen ?? 0) !== item.idx){
+              setRegistros(resp[1].map(row => {
+                row = { ...row, id_item: row.idx }
+                Reflect.deleteProperty(row, 'idx')
+                return row
+              }))
+            }else{
+              setRegistros([...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+                row = { ...row, id_item: row.idx }
+                Reflect.deleteProperty(row, 'idx')
+                return row
+              })])
+            }
 
           })
           .catch((err) => {
@@ -739,8 +747,8 @@ export default function NewDespacho() {
                                 </>
                                 :
                                 <>
-                                  <th className="lg:table-cell w-[500px]">Descripción</th>
-                                  <th className="lg:table-cell">Color</th>
+                                  <th className="lg:table-cell w-[350px]">Descripción</th>
+                                  <th className="lg:table-cell w-[100px]">Color</th>
                                   <th className="lg:table-cell">Rollos</th>
                                   <th className="lg:table-cell">Cantidad</th>
                                   <th className="lg:table-cell">Unidad</th>
@@ -751,7 +759,7 @@ export default function NewDespacho() {
                                     registros.length > 0 && !urlparams.id && registros[0].despachos.map((row) => <th className="lg:table-cell w-[80px]"><span className="font-extrabold">{row.fec_despacho}</span></th>)
                                   }
                                   <th className="lg:table-cell w-[100px]">Pendiente</th>
-                                  <th className="lg:table-cell w-[100px]">Ingreso</th>
+                                  <th className="lg:table-cell w-[60px]">Ingreso</th>
                                   <th className="lg:table-cell">Acciones</th>
                                 </>
                             }
@@ -818,7 +826,7 @@ export default function NewDespacho() {
                                       <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
                                     </>
                                 }
-                                <td className="w-[200px]">
+                                <td className="w-[150px]">
                                   <ul className="flex flex-row justify-end">
                                     <li>
                                       <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" data-position={key}>
@@ -831,7 +839,7 @@ export default function NewDespacho() {
                                       </div>
                                     </li>
                                     <li>
-                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-position={key} data-combo={row.id_combo}>
+                                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={tipo == 2 ? onclick : ()=>{}} data-position={key} data-combo={row.id_combo}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                       </div>
                                     </li>
@@ -896,6 +904,10 @@ export default function NewDespacho() {
                                 <td className="text-center text-[16px] italic">-</td>
                                 <td className="text-center text-[16px] italic">-</td>
                                 {/* <td className="text-center text-[16px] italic">-</td> */}
+                                {
+                                  !urlparams.id && (registros[0]?.despachos?.map(row=><td className="text-center">-</td>) ?? '')
+                                }
+                                <td className="text-center">-</td>
                                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                                   return carry + parseFloat(value.despacho  ?? 0)
                                 }, 0)}</td>
@@ -988,7 +1000,7 @@ export default function NewDespacho() {
                           <tr>
                             <td colSpan={12} >
                               <div className="flex flex-row justify-center">
-                                <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                                <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                   +
                                 </div>
                               </div>

@@ -104,7 +104,7 @@ export default function NewPedido(){
         .then(resp => {
           setOpenloader(false)
           if(resp.ok){
-            // navigate('/main/pedidos/')
+            navigate('/main/pedidos/')
             toast.success('Nuevo pedido guardado con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })
@@ -494,7 +494,7 @@ export default function NewPedido(){
                           </td>
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
-                          <td className="text-center">-</td>
+                          {/* <td className="text-center">-</td> */}
                           <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(3)}
                           </td>

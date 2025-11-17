@@ -798,7 +798,7 @@ export default function ListaOrdenes() {
                       </div>
                       <div className="flex-1 flex flex-col justify-center items-left">
                         <div className="text-[8px]">ARTICULO</div>
-                        <div className="text-black text-[14px] font-bold">{row.marca} {row.producto} {row.modelos}</div>
+                        <div className="text-black text-[14px] font-bold">{row.tipo_produccion !== 'IMPT' ? (row.marca + ' ' +row.rubro + ' ' + row.presentacion + ' ' +row.modelos) : (row.marca + ' ' + row.producto + ' ' + row.modelos)}</div>
                       </div>
                       <div className="text-black text-[20px] flex flex-row gap-4">
                         <div className="flex flex-col justify-center items-center">
