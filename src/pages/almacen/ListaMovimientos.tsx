@@ -119,11 +119,12 @@ export default function ListaMovimientosAlmacen() {
               const data = new FormData()
               data.append('id', id)
               // const tipo = info.filter(row => row.idx == id)[0].tipo
+              console.log("La info de la sucursal es:",sucursal)
               setOpenloader(true)
               Consulta({
                 // url: 'reports/vistapreviaretiro/TELAS', params: {
                 // url: 'almacen/vistapreviaretiro/TELAS', params: {
-                url: motivo == 'prd' ? 'almacen/vistapreviadespachocorte/' + (sucursal !== 508 ? 'TELAS' : 'AVIOS')  : 'almacen/vistapreviadespacho/TELAS', params: {
+                url: motivo == 'prd' ? 'almacen/vistapreviadespachocorte_' + (parseInt(sucursal) !== 508 ? 'telas/TELAS' : 'avios/AVIOS')  : 'almacen/vistapreviadespacho/TELAS', params: {
                   method: 'POST',
                   body: data
                 }

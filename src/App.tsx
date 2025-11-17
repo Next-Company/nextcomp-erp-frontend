@@ -1,5 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
 import './App.css'
+
 import { Home } from './pages/Home'
 import { Home2 } from './Home'
 import { Login } from './Login'
@@ -80,6 +82,89 @@ import { NewProveedor } from './pages/proveedores/NewProveedor.tsx'
 import LayoutMantenimiento from './pages/mantenimiento/LayoutMantenimiento.tsx'
 import Configuracion from './pages/mantenimiento/Configuracion.tsx'
 
+
+
+// const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
+// const Home2 = lazy(() => import('./Home').then(module => ({ default: module.Home2 })));
+// const Login = lazy(() => import('./Login').then(module => ({ default: module.Login })));
+// const Dasboard = lazy(() => import('./Dasboard').then(module => ({ default: module.Dasboard })));
+// const Config = lazy(() => import('./Config').then(module => ({ default: module.Config })));
+// const Authorization = lazy(() => import('./Authorization.tsx'));
+// const Directory = lazy(() => import('./Directory.tsx').then(module => ({ default: module.Directory })));
+// const Soporte = lazy(() => import('./Soporte.tsx').then(module => ({ default: module.Soporte })));
+// const Settings = lazy(() => import('./pages/Settings/Settings.tsx').then(module => ({ default: module.Settings })));
+// const ChatRoom = lazy(() => import('./pages/ChatRoom.tsx').then(module => ({ default: module.ChatRoom })));
+// const Agenda = lazy(() => import('./pages/Agenda.tsx').then(module => ({ default: module.Agenda })));
+// const Operaciones = lazy(() => import('./Operaciones.tsx'));
+// const Inicio = lazy(() => import('./components/operaciones/inicio.tsx'));
+// const NuevaOrdenProduccion = lazy(() => import('./components/operaciones/nuevo.tsx').then(module => ({ default: module.NuevaOrdenProduccion })));
+// const Estampado = lazy(() => import('./pages/estampado/Estampado.tsx'));
+// const ListaEstampado = lazy(() => import('./pages/estampado/ListaEstampado.tsx'));
+// const NuevoEstampado = lazy(() => import('./pages/estampado/NuevoEstampado.tsx'));
+// const ReviewEstampado = lazy(() => import('./pages/estampado/ReviewEstampado.tsx'));
+// const LayoutGuia = lazy(() => import('./pages/guias/LayoutGuia.tsx'));
+// const ListaGuias = lazy(() => import('./pages/guias/ListaGuias.tsx'));
+// const NewGuia = lazy(() => import('./pages/guias/NewGuia.tsx'));
+// const LayoutPedido = lazy(() => import('./pages/pedidos/LayoutPedido.tsx'));
+// const ListaPedidos = lazy(() => import('./pages/pedidos/ListaPedidos.tsx'));
+// const NewPedido = lazy(() => import('./pages/pedidos/NewPedido.tsx'));
+// const LayoutDespacho = lazy(() => import('./pages/despachos/LayoutDespacho.tsx'));
+// const ListaDespachos = lazy(() => import('./pages/despachos/ListaDespachos.tsx'));
+// const NewDespacho = lazy(() => import('./pages/despachos/NewDespacho.tsx'));
+// const LayoutInforme = lazy(() => import('./pages/informes/LayoutInforme.tsx'));
+// const Informe = lazy(() => import('./pages/informes/Informe.tsx'));
+// const ListaPagos = lazy(() => import('./pages/pagos/ListaPagos.tsx'));
+// const LayoutPagos = lazy(() => import('./pages/pagos/LayoutPagos.tsx'));
+// const LayoutMuestras = lazy(() => import('./pages/muestras/LayoutMuestras.tsx'));
+// const ListaMuestras = lazy(() => import('./pages/muestras/ListaMuestras.tsx'));
+// const NewMuestra = lazy(() => import('./pages/muestras/NewMuestra.tsx'));
+// const LayoutLetras = lazy(() => import('./pages/letras/LayoutLetras.tsx').then(module => ({ default: module.LayoutLetras })));
+// const ListaLetras = lazy(() => import('./pages/letras/ListaLetras.tsx'));
+// const NewLetraV2 = lazy(() => import('./pages/letras/NewLetrav2.tsx'));
+// const SeguimientoGuia = lazy(() => import('./pages/guias/NewSeguimiento.tsx'));
+// const NewPagoServicio = lazy(() => import('./pages/pagos/NewPagoServicio.tsx'));
+// const NewPagoLetra = lazy(() => import('./pages/pagos/NewPagoLetras.tsx'));
+// const LayoutPrestamo = lazy(() => import('./pages/prestamos/LayoutPrestamo.tsx'));
+// const ListaPrestamos = lazy(() => import('./pages/prestamos/ListaPrestamos.tsx'));
+// const NewPrestamo = lazy(() => import('./pages/prestamos/NewPrestamo.tsx'));
+// const NewPagoPrestamo = lazy(() => import('./pages/pagos/NewPagoPrestamos.tsx'));
+// const ListaOrdenes = lazy(() => import('./pages/ordenes/ListaOrdenes.tsx'));
+// const NewOrden = lazy(() => import('./pages/ordenes/NewOrden.tsx').then(module => ({ default: module.NewOrden })));
+// const LayoutOrden = lazy(() => import('./pages/ordenes/LayoutOrden.tsx'));
+// const LayoutCobros = lazy(() => import('./pages/cobros/LayoutCobros.tsx'));
+// const ListaCobros = lazy(() => import('./pages/cobros/ListaCobros.tsx'));
+// const NewCobro = lazy(() => import('./pages/cobros/NewCobro.tsx'));
+// const LayoutCaja = lazy(() => import('./pages/caja/LayoutCaja.tsx'));
+// const InformeCaja = lazy(() => import('./pages/caja/InformeCaja.tsx'));
+// const Unauthorized = lazy(() => import('./pages/pedidos/Unauthorized.tsx'));
+// const PrivateRoute = lazy(() => import('./pages/pedidos/PrivateRouter.tsx'));
+// const LayoutRetiro = lazy(() => import('./pages/retiros/LayoutRetiro.tsx'));
+// const ListaRetiros = lazy(() => import('./pages/retiros/ListaRetiros.tsx'));
+// const NewRetiro = lazy(() => import('./pages/retiros/NewRetiro.tsx'));
+// const ListaMovimientosAlmacen = lazy(() => import('./pages/almacen/ListaMovimientos.tsx'));
+// const LayoutAlmacen = lazy(() => import('./pages/almacen/LayoutAlmacen.tsx'));
+// const LayoutMovimientos = lazy(() => import('./pages/almacen/LayoutMovimientos.tsx'));
+// const LayoutInventario = lazy(() => import('./pages/almacen/LayoutInventario.tsx'));
+// const NewInOut = lazy(() => import('./pages/almacen/NewIngresoEgreso.tsx'));
+// const ListaInventarioAlmacen = lazy(() => import('./pages/almacen/ListaInventario.tsx'));
+// const LayoutSolicitud = lazy(() => import('./pages/almacen/LayoutSolicitud.tsx'));
+// const ListaSolicitudes = lazy(() => import('./pages/almacen/ListaSolicitudes.tsx'));
+// const RevisionSolicitud = lazy(() => import('./pages/almacen/RevisionSolicitud.tsx'));
+// const ErrorController = lazy(() => import('./pages/error/ErrorBoundary.tsx'));
+// const LayoutProductos = lazy(() => import('./pages/productos/LayoutProductos.tsx'));
+// const ListaProductos = lazy(() => import('./pages/productos/ListaProductos.tsx'));
+// const NewProducto = lazy(() => import('./pages/productos/NewProducto.tsx').then(module => ({ default: module.NewProducto })));
+// const CuadreCorte = lazy(() => import('./pages/almacen/NewCuadre.tsx'));
+// const NewMovimiento = lazy(() => import('./pages/almacen/NewMovimiento.tsx'));
+// const LayoutRecetas = lazy(() => import('./pages/recetas/LayoutRecetas.tsx'));
+// const ListaRecetas = lazy(() => import('./pages/recetas/ListaRecetas.tsx'));
+// const NewReceta = lazy(() => import('./pages/recetas/NewReceta.tsx').then(module => ({ default: module.NewReceta })));
+// const ListaProveedores = lazy(() => import('./pages/proveedores/ListaProveedores.tsx'));
+// const NewProveedor = lazy(() => import('./pages/proveedores/NewProveedor.tsx').then(module => ({ default: module.NewProveedor })));
+// const LayoutMantenimiento = lazy(() => import('./pages/mantenimiento/LayoutMantenimiento.tsx'));
+// const Configuracion = lazy(()=>import('./pages/mantenimiento/Configuracion.tsx'))
+
+
 const routes = [
   {
     path: "unauthorized", element: <Unauthorized />
@@ -121,7 +206,7 @@ const routes = [
         path: "guias",
         element: <PrivateRoute><LayoutGuia /></PrivateRoute>,
         children: [
-          { path: "", element: <ListaGuias /> },
+          { path: "", element: <Suspense fallback={"Cargando informacion....."}><ListaGuias /></Suspense> },
           { path: "nuevo", element: <NewGuia />, error: <ErrorController/> },
           { path: "nuevo/:id", element: <NewGuia />, error: <ErrorController/> },
           { path: "seguimiento/:id", element: <SeguimientoGuia />, error: <ErrorController/> },

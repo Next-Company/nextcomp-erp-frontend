@@ -146,6 +146,7 @@ function InsumosCombos({orden,setorden,insumo,actions}){
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell w-[200px]">ColorCombo</th>  
+                <th className="lg:table-cell">S/T</th>
                 <th className="lg:table-cell">XS / 26</th>
                 <th className="lg:table-cell">S / 28</th>
                 <th className="lg:table-cell">M / 30</th>
@@ -163,6 +164,7 @@ function InsumosCombos({orden,setorden,insumo,actions}){
                   {/* <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${row.insumos.includes(insumo) ? 'selected' : ''}`}> */}
                     {/* <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td> */}
                     <td className="text-center w-[200px]">{row.color_combo}</td>
+                    <td>{row.st}</td>
                     <td>{row.xs}</td>
                     <td>{row.s}</td>
                     <td>{row.m}</td>
@@ -267,8 +269,8 @@ function CuerpoCorte(children){
     console.log("La informacion del corte es:",info)
 
     let total = 0
-    if(['xs','s','m','l','xl','xxl'].includes(name)){
-      total = ['xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+    if(['st','xs','s','m','l','xl','xxl'].includes(name)){
+      total = ['st','xs','s','m','l','xl','xxl'].reduce((c,v)=>{
         if(v !== name){
           c += parseInt(info.combos[indice][v])
         }
@@ -322,7 +324,7 @@ function CuerpoCorte(children){
 
     const id = e.target.dataset.id
     setcorte(corte=>corte.reduce((c,v)=>{
-      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0,insumos:[]}] : v.combos})
+      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0,insumos:[]}] : v.combos})
       return c
     },[]))
 
@@ -398,6 +400,7 @@ function CuerpoCorte(children){
               <thead className="text-left sticky top-0 bg-white">
                 <tr>
                   <th className="lg:table-cell w-[500px]">ColorCombo</th>  
+                  <th className="lg:table-cell">S/T</th>
                   <th className="lg:table-cell">XS / 26</th>
                   <th className="lg:table-cell">S / 28</th>
                   <th className="lg:table-cell">M / 30</th>
@@ -414,6 +417,7 @@ function CuerpoCorte(children){
                     <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                       <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
                       {/* <td className="text-center">{row.color_combo}</td> */}
+                      <td><input data-name="st" type="number" onChange={editvalue} data-position={key} value={row.st}/></td>
                       <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
                       <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
                       <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
@@ -606,8 +610,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     let total = 0
     console.log("La info cargada es la siguiente:",info)
 
-    if(['xs','s','m','l','xl','xxl'].includes(name)){
-      total = ['xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+    if(['st','xs','s','m','l','xl','xxl'].includes(name)){
+      total = ['st','xs','s','m','l','xl','xxl'].reduce((c,v)=>{
         if(v !== name){
           c += parseInt(info[0].combos[indice][v])
         }
@@ -623,9 +627,9 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
   const agregarcombo = ()=>{
     console.log("info combos:",info)
     if(!(info.length > 0) || !info[0].combos){
-      setorden([{combos: [{id_orden_CAB: null,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0}] }])
+      setorden([{combos: [{id_orden_CAB: null,st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0}] }])
     }else{
-      setorden(orden => ([{ ...orden[0], combos: [...orden[0].combos,{id_orden_CAB: null, color_combo: '',xs:0,s:0,m:0,l:0,xl:0,xxl:0, cantidad_combo: 0 }] }]))
+      setorden(orden => ([{ ...orden[0], combos: [...orden[0].combos,{id_orden_CAB: null, color_combo: '',st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0, cantidad_combo: 0 }] }]))
     }
   }
   const onclickinsumos = (e)=>{
@@ -999,6 +1003,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell w-[500px]">Color</th>
+                <th className="lg:table-cell">S/T</th>
                 <th className="lg:table-cell">XS / 26</th>
                 <th className="lg:table-cell">S / 28</th>
                 <th className="lg:table-cell">M / 30</th>
@@ -1014,6 +1019,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                 info.length > 0 && info[0].combos && info[0].combos.length > 0 && info[0].combos.map((row,key)=>(
                   <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                     <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
+                    <td><input data-name="st" type="number" onChange={editvalue} data-position={key} value={row.st}/></td>
                     <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
                     <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
                     <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
@@ -1057,13 +1063,14 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             <tfoot className="sticky bottom-0">
               <tr className="h-[45px] bg-white">
                 <td className="font-bold text-center text-[14px]">TOTAL</td>
+                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.st),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xs),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.s),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.m),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.l),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xl),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xxl),0) : 0) : 0}</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0) : 0) : 0}</td>
+                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.st)+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]"></td>
               </tr>
               <tr className="bg-white">
