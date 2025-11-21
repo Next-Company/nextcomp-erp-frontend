@@ -359,7 +359,16 @@ const routes = [
               { path: "nuevo", element: <RevisionSolicitud /> },
               { path: "cuadre", element: <CuadreCorte /> },
             ]
-          }
+          },
+          // { 
+          //   path: "etiquetas", 
+          //   element: <LayoutSolicitud />,
+          //   children: [
+          //     { path: "", element: <ListaSolicitudes /> },
+          //     { path: "nuevo", element: <RevisionSolicitud /> },
+          //     { path: "cuadre", element: <CuadreCorte /> },
+          //   ]
+          // }
         ]
       },
       {
