@@ -3,6 +3,8 @@ import { Input } from "../Atoms/Input/Input";
 import { Consulta } from "../../utils/utils";
 import { toast } from "react-toastify";
 import { InputSelect } from "../Atoms/Input/InputSelect";
+import { Button } from "../Atoms/Button/Button";
+import { ButtonLoader } from "../Atoms/Button/ButtonLoader";
 
 export default function Etiquetas(params){
   const { idprod } = params;
@@ -10,25 +12,60 @@ export default function Etiquetas(params){
   const [moneda,setMoneda] = useState('PEN')
   const [colores,setColores] = useState([])
   const [tallas,setTallas] = useState([])
+  const [loading,setLoading] = useState(false)
   useEffect(()=>{
     Consulta({url:'almacen/getinfoetiqueta/' + idprod})
     .then((resp)=>{
-      console.log("La info para la etiqueta es:",resp)
+      // console.log("La info para la etiqueta es:",resp)
       setTallas(resp.reduce((c,v)=>{
-        !c.map(r=>r.talla).includes(v.talla) && c.push({id:v.idx_talla,nom:v.talla})
+        !c.map(r=>r.nom).includes(v.talla) && c.push({id:v.idx_talla,nom:v.talla,selected:0})
         return c
       },[]))
-      setColores(resp.map(row=>({id:row.idcolor,nom:row.color})))
-      // setTallas(resp.map(row=>({id:row.idx_talla,nom:row.talla})))
+      setColores(resp.reduce((c,v)=>{
+        !c.map(r=>r.nom).includes(v.color) && c.push({id:v.idcolor,nom:v.color,selected:0})
+        return c
+      },[]))
       // if(resp.ok){
       // }else{
       //   toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
       // }
     })
     .catch((err)=>{
-
+      toast.error('Se produjo un error al momento de recuperar los datos.', { theme: "colored" })
     })
   },[])
+  const seleccionarTalla = (talla) => {
+    console.log("Seleccionando talla:",talla)
+    // setTallas(prev=>prev.map(t=>({...t,selected:t.id == talla.id ? (talla.selected ? 0 : 1) : talla.selected})))
+    setTallas(prev=>prev.map(t=>({...t,selected:t.id == talla.id ? (t.selected ? 0 : 1) : t.selected})))
+  }
+  const seleccionarColor = (color) => {
+    console.log("Seleccionando talla:",color)
+    setColores(prev=>prev.map(c=>({...c,selected:c.id == color.id ? (c.selected ? 0 : 1) : c.selected})))
+  }
+  const imprimirEtiquetas = (e) => {
+    e.preventDefault();
+    setLoading(true)
+    try {
+      setTimeout(()=>{
+        setLoading(false)
+      },3000)
+      // Consulta({url:'almacen/imprimiretiquetas', params: {
+      //     method:'POST', 
+      //     data:{info,moneda,tallas:tallas.filter(t=>t.selected),colores:colores.filter(c=>c.selected)  }
+      //   }
+      // })
+      // .then((resp)=>{
+      //   console.log("La respuestad el servidor es:",resp)
+      // })
+      
+    } catch (error) {
+      
+    } finally {
+      // setLoading(false)
+    }
+    console.log("Imprimiendo etiquetas con la siguiente info:")
+  }
   return(
     <>
       <div className="flex flex-col mb-2">
@@ -56,10 +93,10 @@ export default function Etiquetas(params){
           </div>
           <div className="flex-1 flex flex-row gap-4 mb-2">
             <div className="flex-1 flex-row justify-between ">
-              <div className="[&_div]:h-[30px] h-[500px] [&_div]:border [&_div]:cursor-pointer scrollbar-special [&_div:hover]:bg-gray-500 [&_div:hover]:text-white [&_div]:border-b-1 overflow-y-scroll">
+              <div className="[&_div]:h-[30px] h-[500px] [&_div]:border [&_div]:cursor-pointer scrollbar-special [&_div:hover]:bg-gray-500 selected:[&_div]:bg-gray-500 [&_div:hover]:text-white [&_div]:border-b-1 overflow-y-scroll">
                 {
-                  tallas && tallas.map((talla)=>(
-                    <div key={talla.id}>{talla.nom}</div>
+                  tallas && tallas.map((talla,index)=>(
+                    <div key={index} onClick={()=>seleccionarTalla(talla)} className={`${talla.selected ? 'bg-gray-500 text-white' : ''}`}>{talla.nom}</div>
                   ))
                 }
               </div>
@@ -95,15 +132,19 @@ export default function Etiquetas(params){
               <div>ds</div>
             </div>
             <div className="flex-1 flex-row justify-between ">
-              <div className="[&_div]:h-[30px] h-[500px] [&_div]:border [&_div]:cursor-pointer scrollbar-special [&_div:hover]:bg-gray-500 [&_div:hover]:text-white [&_div]:border-b-1 overflow-y-scroll">
+              <div className="[&_div]:h-[30px] h-[500px] [&_div]:border [&_div]:cursor-pointer scrollbar-special [&_div:hover]:bg-gray-400 [&_div:hover]:text-white [&_div]:border-b-1 overflow-y-scroll">
                 {
-                  colores && colores.map((color)=>(
-                    <div key={color.id}>{color.nom}</div>
+                  colores && colores.map((color,index)=>(
+                    <div key={index} onClick={()=>seleccionarColor(color)} className={`${color.selected ? 'bg-gray-500 text-white' : ''}`}>{color.nom}</div>
                   ))
                 }
               </div>
             </div>
           </div>
+        </div>
+        <div className="flex flex-row justify-end gap-2">
+          <Button tipo="default">Cancelar</Button>
+          <ButtonLoader tipo="accept" loading={loading} task={imprimirEtiquetas}>Imprimir</ButtonLoader>
         </div>
       </div>
     </>

@@ -87,7 +87,7 @@ export default function ListaRecetas() {
         params_modal = {
           open: true,
           content: <Etiquetas idprod={id}/>,
-          controls: true,
+          controls: false,
           header: false,
           action: () => {
             // setOpenloader(true)
