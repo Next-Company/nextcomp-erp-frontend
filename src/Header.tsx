@@ -168,7 +168,8 @@ export function Header({ logout, credentials }) {
                         { title:'Recetas', action:()=>navigate("/main/recetas"), submenu:[] },
                         { title:'Avios e Insumos', action:()=>navigate("/main/productos"), submenu:[] },
                         { title:'Proveedores', action:()=>navigate("/main/proveedores"), submenu:[] },
-                        { title:'Tallas y Colores', action:()=>{}, submenu:[] },
+                        // { title:'Tallas y Colores', action:()=>{}, submenu:[] },
+                        { title:'Atributos', action:()=>navigate("/main/mantenimiento"), submenu:[] },
                       ],
                       division:false
                     }

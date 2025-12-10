@@ -72,6 +72,8 @@ export default function ListaMovimientosAlmacen() {
 
   const onclick = (e) => {
     const action = e.target.dataset.action
+    const motivo = e.target.dataset.motivo
+    const sucursal = e.target.dataset.sucursal
     const id = e.target.dataset.id
     let params_modal = null
     switch (action) {
@@ -91,7 +93,7 @@ export default function ListaMovimientosAlmacen() {
             })
               .then(resp => {
                 // setOrdenes(resp)
-                toast.success('Guia eliminado con éxito!', { theme: "colored" })
+                toast.success('Movimiento de inventario eliminado con éxito!', { theme: "colored" })
                 recargarinfo()
                 setOpenloader(false)
               })
@@ -117,10 +119,12 @@ export default function ListaMovimientosAlmacen() {
               const data = new FormData()
               data.append('id', id)
               // const tipo = info.filter(row => row.idx == id)[0].tipo
+              console.log("La info de la sucursal es:",sucursal)
               setOpenloader(true)
               Consulta({
                 // url: 'reports/vistapreviaretiro/TELAS', params: {
-                url: 'almacen/vistapreviaretiro/TELAS', params: {
+                // url: 'almacen/vistapreviaretiro/TELAS', params: {
+                url: motivo == 'prd' ? 'almacen/vistapreviadespachocorte_' + (parseInt(sucursal) !== 508 ? 'telas/TELAS' : 'avios/AVIOS')  : 'almacen/vistapreviadespacho/TELAS', params: {
                   method: 'POST',
                   body: data
                 }
@@ -333,7 +337,7 @@ export default function ListaMovimientosAlmacen() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.id_CAB}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.id_CAB} data-motivo={row.motivo} data-sucursal={row.Suc_Tienda}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                 </div>
                               </li>
