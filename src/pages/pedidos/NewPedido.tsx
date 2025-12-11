@@ -97,7 +97,8 @@ export default function NewPedido(){
 
         console.log("Detalle de la lista de articuos :",registros)
         setOpenloader(true)
-        await Consulta({url: tipo ? 'produccion/guardarpedidoavios/' : 'produccion/guardarpedidotelas/',params:{
+        // await Consulta({url:['produccion/guardarpedidotelas/','produccion/guardarpedidoavios/','produccion/guardarpedidoadicionales/'][tipo] tipo ? 'produccion/guardarpedidoavios/' : 'produccion/guardarpedidotelas/',params:{
+        await Consulta({url:['produccion/guardarpedidotelas/','produccion/guardarpedidoavios/','produccion/guardarpedidoadicionales/'][tipo],params:{
           method:'PUT',
           body:data
         }})
@@ -156,7 +157,7 @@ export default function NewPedido(){
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
       console.log("Hola Ivon",event.detail.valor)
-      setTipo(event.detail.valor == 'TELAS' ? 0 : 1)
+      setTipo(event.detail.valor == 'TELAS' ? 0 : (event.detail.valor == 'AVIOS' ? 1 : 2))
       // setRegistros([])
     };
     form.current.addEventListener("salamandra", handleInputChange);
@@ -373,6 +374,7 @@ export default function NewPedido(){
                     [
                       { indice: 'TELAS', option: 'TELAS', selected: true }, 
                       { indice: 'AVIOS', option: 'AVIOS' }, 
+                      { indice: 'ADICIONALES', option: 'ADICIONALES' }, 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                     placeholder={'Info referencial'}
@@ -439,9 +441,14 @@ export default function NewPedido(){
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              <td className="text-center">{row.producto}</td>
+                              {/* <td className="text-center">{row.producto}</td> */}
+                              {
+                                tipo == 2
+                                ? <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
+                                : <td className="text-center">{row.producto}</td>
+                              }
                               {/* {
-                                tipo == 1 || row.origen == 'manual'
+                                tipo == 2 || row.origen == 'manual'
                                 ? <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
                                 : <td className="text-center">{row.producto}</td>
                               } */}
@@ -505,13 +512,17 @@ export default function NewPedido(){
                           <td colSpan={12} >
                             <div className="flex flex-row justify-center gap-2">
                               {
-                                tipo !== 1 
-                                ? <div onClick={searchproducto} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                                tipo == 0 && <div onClick={searchproducto} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                   <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                                 </div>
-                                :
-                                // <div onClick={nuevoproducto} className="bg-blue-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
-                                <div onClick={searchproducto} className="bg-blue-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                              }
+                              {
+                                tipo == 1 && <div onClick={searchproducto} className="bg-blue-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                                </div>
+                              }
+                              {
+                                tipo == 2 && <div onClick={nuevoproducto} className="bg-orange-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-orange-600">
                                   <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
                                 </div>
                               }

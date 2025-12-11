@@ -421,7 +421,6 @@ export default function ListaDespachos() {
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                
               </ul>
             </div>
             <hr />
