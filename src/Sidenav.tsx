@@ -53,13 +53,16 @@ export function Sidenav() {
       e.target.classList.remove('vanish_scroll')
     }
   }
+  const mouseovertest = (e)=>{
+
+  }
   useEffect(() => {
 
   }, [])
   return (
     <>
       {/* <nav className="flex flex-col text-[12px] flex-none gap-y-3 w-[15%] overflow-hidden relative transition-[width] group collapsee [&.collapsee]:w-[55px] bg-[rgb(253,253,253)]"> */}
-      <nav className="lg:flex lg:flex-col text-[12px] flex-none gap-y-3 w-[15%] relative transition-[width] group collapsee [&.collapsee]:w-[55px] bg-[rgb(253,253,253)] sm:hidden border-r-[1px] ">
+      <nav className="lg:flex lg:flex-col text-[12px] flex-none gap-y-3 w-[15%] relative transition-[width] group collapsee [&.collapsee]:w-[55px] bg-[rgb(253,253,253)] sm:hidden border-r-[1px] z-[2]">
         <div
           className="block w-[6px] rounded-xl right-0 absolute bg-gray-400 opacity-0 personal_scroll"
           ref={scroll_sidenav}
@@ -67,7 +70,7 @@ export function Sidenav() {
         ></div>
         <div
           // className="flex flex-col gap-3 flex-1 overflow-y-scroll mr-[-17px] p-1 pepe"
-          className="flex flex-col gap-3 flex-1 p-1 pepe"
+          className="flex flex-col gap-3 flex-1 p-1 pepe hover:w-[250px] w-[50px] bg-[rgb(253,253,253)] z-[1] container" style={{transition:'width .12s ease'}}
           // className="flex flex-col gap-3 flex-1 p-1 pepe"
           onScroll={onscroll}
           onMouseEnter={mouseenter}
@@ -110,9 +113,12 @@ export function Sidenav() {
                   isPending ? "pending" : isActive ? "active" : "default"
                 }
               >
-                <div className="w-full h-[45px] flex flex-row justify-center items-center rounded-lg group/sub relative">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" className="ayb brz oc se ur"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"></path></svg>
-                  <SuggestBox title="Directorio" />
+                <div className="w-[40px] h-[40px] flex flex-row justify-center items-center rounded-full group/sub relative">
+                  {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" className="ayb brz oc se ur w-[18px]"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"></path></svg> */}
+                  <div className="test hidden">
+                    Directorio
+                    {/* <SuggestBox title="Directorio" /> */}
+                  </div>
                 </div>
               </NavLink>
             }
@@ -150,7 +156,7 @@ export function Sidenav() {
                 isPending ? "pending" : isActive ? "active" : "default"
               }
             >
-              <div className="w-full h-[45px] flex flex-row justify-center items-center rounded-lg group/sub relative">
+              <div className="w-full h-[45px] flex flex-row justify-left items-center rounded-lg group/sub relative">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
                 <SuggestBox title="Requerimientos" />
               </div>
@@ -326,6 +332,7 @@ export function Sidenav() {
         <div className="border-t h-14 p-3">
           {/* <span className="before:content-['\eb7d']">Vista colapsada</span> */}
         </div>
+        <div className="test w-[50px] h-[50px] bg-red-500 hover:w-[200px] sm:bg-purple-400 md:bg-orange-400 lg:bg-slate-500" onMouseOver={mouseovertest}></div>
       </nav>
     </>
   )

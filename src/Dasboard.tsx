@@ -29,7 +29,9 @@ export function Dasboard() {
             <SideNavMobileProvider>
               <Header logout={logout} credentials={credentials} />
               <div className="relative flex flex-1 h-full overflow-hidden bg-[rgba(146,146,146,0.12)]">
-                <Sidenav />
+                <div className="w-[50px]">
+                  <Sidenav />
+                </div>
                 <Outlet />
               </div>
             </SideNavMobileProvider>
