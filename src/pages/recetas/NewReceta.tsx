@@ -131,8 +131,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       open:true,
       content: <Rubros actions={(item)=>{  
         setorden(orden=>([{...orden[0],RUBROS:item.idx,rubro:item.nom}]))
-        setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
-        setnom(item.nom + form.current.elements['estilo'].value + ' ' + form.current.elements['modelo'].value)
+        // setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
+        setnom(item.nom + form.current.elements['base'].value + ' ' + form.current.elements['modelo'].value)
         setopen(false)
       }}/>,
       controls: true,
@@ -163,7 +163,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       open:true,
       content: <Estilos actions={(item)=>{
           setorden(orden=>([{...orden[0],estilo:item.nom}]))
-          setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
+          // setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
           setopen(false)
         }}
         filters={form.current.elements['RUBROS'].value ?? ''}
@@ -181,6 +181,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       open:true,
       content: <Bases actions={(item)=>{
           setorden(orden=>([{...orden[0],base:item.nom}]))
+          setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
           setopen(false)
         }}
         filters={form.current.elements['RUBROS'].value ?? ''}
@@ -637,8 +638,9 @@ export function NewReceta() {
     }
     const articulo = form.current.elements['rubro'].value
     const estilo = form.current.elements['estilo'].value
+    const base = form.current.elements['base'].value
     const modelo = form.current.elements['modelo'].value
-    setNom(articulo + ' ' + estilo + ' ' + modelo)
+    setNom(articulo + ' ' + base + ' ' + modelo)
   }
   const cancelarcreacion = ()=>{
     openModal({
