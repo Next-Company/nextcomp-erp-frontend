@@ -70,7 +70,7 @@ export default function ProductosLote(children){
       case 'add':
         const item = lista[position]
         if(selected.find((row)=>parseInt(row.idx_subprod) == parseInt(item.idx_subprod) && parseInt(row.idx_prod) == parseInt(item.idx_prod))){
-          setSelected([...selected.filter(row=>parseInt(row.idx_subprod) !== parseInt(item.idx_subprod) && parseInt(row.idx_prod) !== parseInt(item.idx_prod))])
+          setSelected([...selected.filter(row=>parseInt(row.idx_subprod) !== parseInt(item.idx_subprod) && parseInt(row.idx_prod) !== parseInt(item.idx_prod) && parseInt(row.lote) !== parseInt(item.lote) )])
         }else{
           setSelected([...selected,lista[position]])
         }    
@@ -108,7 +108,7 @@ export default function ProductosLote(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr className={`${selected.find((item)=>item.idx_subprod == row.idx_subprod && item.idx_prod == row.idx_prod) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
+                <tr className={`${selected.find((item)=>item.idx_subprod == row.idx_subprod && item.idx_prod == row.idx_prod && item.lote == row.lote ) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
                   <td>{row.idx_subprod}</td>
                   <td>{row.codigo}</td>
                   <td>{row.producto}</td>

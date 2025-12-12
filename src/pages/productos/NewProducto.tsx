@@ -354,6 +354,7 @@ export function NewProducto() {
       // setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
       console.log("La info del multiselect es:",event.detail)
       setCombos(combo=>combo.map((c,p)=>(p == parseInt(event.detail.position) ? {idcolor:c.idcolor,color:c.color,talla:JSON.stringify(event.detail.valor.map(row=>row.option))} : c) ))
+
       // setCombos(combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c) ))
     };
     form.current.addEventListener("salamandra", handleSalamandra);

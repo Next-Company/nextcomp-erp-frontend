@@ -9,7 +9,8 @@ import { AuthPermitions } from "../../contexts/contexts";
 
 const colorfase = {
   'TELAS': 'bg-orange-500',
-  'AVIOS': 'bg-violet-500'
+  'AVIOS': 'bg-violet-500',
+  'ADICIONALES': 'bg-green-500'
 }
 const CuerpoVistaRapida = ({ pedidoid, tipo }) => {
   // const [ruta, setRuta] = useState("")
