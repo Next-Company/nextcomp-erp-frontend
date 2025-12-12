@@ -279,7 +279,7 @@ export default function NewDespacho() {
   // const [estampado,setEstampado] = useState([])
   const [tipo, setTipo] = useState(2)
   const urlparams = useParams()
-  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '', facturado:'1', fase:'1', distribucion: 'TLL' })
+  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '', facturado:'1', fase:'1', distribucion: 'TLL', subtipo:'' })
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros, setRegistros] = useState([])
@@ -342,6 +342,7 @@ export default function NewDespacho() {
         data.append('info', JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle', fase ? JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0 || (row.incompletos ?? 0) > 0)) : JSON.stringify(registros))
         data.append('facturas', JSON.stringify(facturas))
+        data.append('subtipo', info.subtipo)
 
         // const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : (info.distribucion !== 'PQT' ? 'produccion/guardardespachoguia/' : 'produccion/guardardespachoguiaxpq/')
         const ruta = (tipo == 1 ? 'produccion/guardardespachopedido/' : {'PQT':'produccion/guardardespachoguia/','TLL':'produccion/guardardespachoguia/','GLB':'produccion/guardardespachoguiaglb/'}[info.distribucion])
@@ -356,7 +357,7 @@ export default function NewDespacho() {
             console.log("Info respues:",resp)
             setOpenloader(false)
             if(resp.ok){
-              // navigate('/main/despachos/')
+              navigate('/main/despachos/')
               toast.success(resp.message, { theme: "colored" })
             }else{
               toast.error(resp.message, { theme: "colored" })  
@@ -574,8 +575,9 @@ export default function NewDespacho() {
         setOpen(false)
         Consulta({ url: 'produccion/pedido/' + item.idx })
           .then(resp => {
+            console.log("Respuesta info pedido:",resp)
             // setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
-            setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
+            setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor,subtipo:resp[0].tipo}))
 
             // setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
             //   row = { ...row, id_item: row.idx }

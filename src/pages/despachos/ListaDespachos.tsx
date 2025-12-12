@@ -14,6 +14,7 @@ const apiUrl = import.meta.env.VITE_API_URL
 const colordespacho = {
   'PEDIDOS_TELAS': 'bg-orange-500',
   'PEDIDOS_AVIOS': 'bg-blue-500',
+  'PEDIDOS_ADICIONALES': 'bg-green-500',
   'MUESTRA_PROTOTIPO': 'bg-violet-500'
 }
 
