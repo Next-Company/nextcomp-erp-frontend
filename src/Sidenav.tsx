@@ -68,7 +68,7 @@ export function Sidenav() {
           onAnimationEnd={onanimationend}
         ></div> */}
         <div
-          className="flex flex-col gap-3 flex-1 pepe h-[100vh] hover:w-[250px] w-[100%] bg-[--main-bg-color] z-[1] container" style={{transition:'width .12s ease'}}
+          className="flex flex-col gap-3 flex-1 pepe h-[100vh] hover:w-[250px] w-[100%] bg-[--main-bg-color] z-[1] container pt-[12px]" style={{transition:'width .12s ease'}}
           onScroll={onscroll}
           onMouseEnter={mouseenter}
         >
