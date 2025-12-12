@@ -278,7 +278,7 @@ export default function NewPagoPrestamo(){
   }
   return(
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
@@ -433,7 +433,7 @@ export default function NewPagoPrestamo(){
             </form>
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }
