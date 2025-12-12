@@ -623,7 +623,7 @@ export default function ListaOrdenes() {
   const [vista,setVista] = useState('1')
   return (
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
+      {/* <div className="directory flex flex-col h-full lg:p-4 sm:p-1 rounded-md w-full relative bg-white"> */}
 
         <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
 
@@ -903,7 +903,7 @@ export default function ListaOrdenes() {
             </div >
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }
