@@ -144,3 +144,24 @@ svg {
   color: black;
   background-color: rgb(215, 215, 215);
 }
+:root{
+  --progreso:0deg;
+  --progreso:0deg;
+}
+@keyframes circle_loading {
+  to{
+    transform: rotate(360deg);
+  }
+  /* 0% { --progreso: 0deg; }
+  100% { --progreso: 360deg; } */
+
+}
+.circle_loading{
+  /* animation-name: circle_loading;
+  animation-duration: 5s;
+  animation-play-state:running; */
+  /* animation-fill-mode: backwards; */
+  /* animation-iteration-count: infinite; */
+  animation: circle_loading 1s linear infinite;
+  /* background: conic-gradient(red 0deg var(--progreso), transparent var(--progreso) 360deg) */
+}

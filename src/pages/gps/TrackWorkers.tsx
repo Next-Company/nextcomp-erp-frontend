@@ -2,6 +2,7 @@ import {AdvancedMarker, APIProvider, ControlPosition, Map, MapControl, Marker, P
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createClient } from '@supabase/supabase-js'
 import { toast } from 'react-toastify';
+import { Consulta } from '../../utils/utils';
 
 const supabase = createClient('https://tecmrahsqeoqkfqagbwp.supabase.co', 'sb_publishable_qtX58T-ZvZlkoYybfQgrAQ_lvZbbu-M')
 const RECORRIDO = [
@@ -165,6 +166,77 @@ export function TrackWorkers_1(){
   )
 }
 
+const ControlsMap = ()=>{
+  const [loading,setLoading] = useState(false)
+  const [result,setResult] = useState([])
+
+  const clickActions = (e)=>{
+    Consulta({url:''})
+    .then(()=>{
+
+    })
+    .catch(()=>{
+
+    })
+    
+  }
+  const keyActions = ()=>{
+
+  }
+  return(
+    <>
+      <MapControl position={ControlPosition.TOP_LEFT}>
+        <div className='w-[350px] p-3 box-content h-[100vh] bg-white absolute left-0 top-[0px]'>
+
+        </div>
+      </MapControl>
+      <MapControl position={ControlPosition.TOP_LEFT}>
+        <div className='w-[350px] has-[:focus]:h-[400px] has-[:focus]:rounded-[20px] has-[:focus]:border-gray-300 has-[:focus]:bg-white overflow-hidden m-3 z-10'>
+          <div className='rounded-full border border-gray-300 py-3 px-[18px] flex flex-row items-center gap-4 has-[:focus]:rounded-none has-[:focus]:border-0 has-[:focus]:border-b-[1px]'>
+            <div className='flex flex-col gap-[3px] [&_div]:h-[2px] [&_div]:w-[20px] [&_div]:bg-gray-500'>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div className='flex-1'>
+              <input className='my-input w-full h-[25px] text-[14px]' onKeyUp={keyActions} type='text' />
+            </div>
+            <div className='cursor-pointer'>
+              {loading 
+                ?
+                  <div className={`${loading ? 'circle_loading' : ''}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-loader-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a9 9 0 1 0 9 9" /></svg>
+                  </div>
+                :
+                  <div onClick={clickActions}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                  </div>
+              }
+            </div>
+          </div>
+        </div>
+      </MapControl>
+      
+      <MapControl position={ControlPosition.TOP_LEFT}>
+        <div className="p-2">
+          <div className='p-3 cursor-pointer hover:bg-gray-200 h-[30px] rounded-full bg-white border shadow-md flex flex-row justify-center items-center text-[14px] font-bold' style={{boxShadow:'0 1px 2px rgba(60,64,67,0.3),0 1px 3px 1px rgba(60,64,67,0.15)'}}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 icon icon-tabler icons-tabler-outline icon-tabler-building-store"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M3 7v1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1h-18l2 -4h14l2 4" /><path d="M5 21l0 -10.15" /><path d="M19 21l0 -10.15" /><path d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4" /></svg>
+            Tiendas</div>
+        </div>
+      </MapControl>
+      <MapControl position={ControlPosition.TOP_LEFT}>
+        <div className="p-2">
+          <div className='p-3 cursor-pointer hover:bg-gray-200 h-[30px] rounded-full bg-white border shadow-md flex flex-row justify-center items-center text-[14px] font-bold' style={{boxShadow:'0 1px 2px rgba(60,64,67,0.3),0 1px 3px 1px rgba(60,64,67,0.15)'}}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="m-1 icon icon-tabler icons-tabler-outline icon-tabler-wash-hand"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3.486 8.965c.168 .02 .34 .033 .514 .035c.79 .009 1.539 -.178 2 -.5c.426 -.296 .777 -.5 1.5 -.5h1" /><path d="M16 8l.615 .034c.552 .067 1.046 .23 1.385 .466c.461 .322 1.21 .509 2 .5c.17 0 .339 -.014 .503 -.034" /><path d="M14 10.5l.586 .578a1.516 1.516 0 0 0 2 0c.476 -.433 .55 -1.112 .176 -1.622l-1.762 -2.456c-.37 -.506 -1.331 -1 -2 -1h-3.117a1 1 0 0 0 -.992 .876l-.499 3.986a3.857 3.857 0 0 0 2.608 4.138a2.28 2.28 0 0 0 3 -2.162v-2.338z" /><path d="M3 6l1.721 10.329a2 2 0 0 0 1.973 1.671h10.612a2 2 0 0 0 1.973 -1.671l1.721 -10.329" /></svg>
+            Proveedores
+          </div>
+        </div>
+      </MapControl>
+    </>
+
+  )
+}
+
 
 export default function TrackWorkers(){
   // Estado del componente o custom hook
@@ -319,11 +391,12 @@ export default function TrackWorkers(){
         {/* <APIProvider apiKey={'Your API key here'}> */}
           {/* <Map defaultZoom={10} defaultCenter={{lat: 53.54992, lng: 10.00678}}> */}
           {/* <Map mapId='f85e5903510adef7379942d5' defaultZoom={10} defaultCenter={{lat: -12.07147840019903, lng: -76.99764673360458}} center={position}> */}
-          <Map mapId='f85e5903510adef7379942d5' defaultZoom={15} defaultCenter={{lat: -12.07147840019903, lng: -76.99764673360458}}>
+          <Map mapId='f85e5903510adef7379942d5' disableDefaultUI={true} defaultZoom={15} defaultCenter={{lat: -12.07147840019903, lng: -76.99764673360458}}>
             
-            <MapControl position={ControlPosition.TOP_LEFT}>
-              <div className='w-[50px] h-[50px] bg-green-500'>hola</div>
-            </MapControl>
+            {
+              <ControlsMap/>
+            }
+            
             {
               markerState.currentPosition.lat !== 0 &&
               <AdvancedMarker 
