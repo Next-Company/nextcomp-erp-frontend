@@ -287,18 +287,19 @@ export default function ListaPrestamos() {
 
   return (
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
-        <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
+        <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Prestamos</h2>
-              <div className="w-[500px]">
+              <div className="w-[500px] mb-1">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
               </div>
             </div>
           </div>
+          <div className="w-full h-[1px] bg-gray-200"></div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
-            <hr />
+            {/* <hr /> */}
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
                 <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
@@ -439,7 +440,7 @@ export default function ListaPrestamos() {
 
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }

@@ -124,21 +124,20 @@ export default function ListaProveedores() {
   }
   return (
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
 
-        <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
+        <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Listado de proveedores</h2>
-              <div className="w-[500px]">
+              <div className="w-[500px] mb-1">
                 <Search config={{ width: '200px' }} action={busquedaproducto} />
               </div>
             </div>
-            {/* <hr /> */}
           </div>
+          <div className="w-full h-[1px] bg-gray-200"></div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
-            <hr />
             <div className="flex-1 scrollbar-special overflow-y-scroll">
               <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                 <thead className="text-left sticky top-0 bg-white">
@@ -230,7 +229,7 @@ export default function ListaProveedores() {
 
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }

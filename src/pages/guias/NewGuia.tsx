@@ -279,7 +279,7 @@ export default function NewGuia(){
         .then(resp => {
           console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          navigate('/main/guias/')
+          // navigate('/main/guias/')
           if(resp.ok){
             toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{
@@ -502,7 +502,7 @@ export default function NewGuia(){
   // },[registros])
   return(
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-[500px]">
 
           <div className="flex flex-col gap-2">
@@ -756,7 +756,7 @@ export default function NewGuia(){
 
         </div>
 
-      </div>
+      {/* </div> */}
     </>
   )
 }

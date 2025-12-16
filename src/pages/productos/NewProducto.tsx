@@ -354,6 +354,7 @@ export function NewProducto() {
       // setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
       console.log("La info del multiselect es:",event.detail)
       setCombos(combo=>combo.map((c,p)=>(p == parseInt(event.detail.position) ? {idcolor:c.idcolor,color:c.color,talla:JSON.stringify(event.detail.valor.map(row=>row.option))} : c) ))
+
       // setCombos(combos.map((c,p)=>(p == parseInt(event.detail.position) ? {color:c.color,talla:JSON.stringify(event.datail.valor.map(row=>row.option))} : c) ))
     };
     form.current.addEventListener("salamandra", handleSalamandra);
@@ -456,7 +457,7 @@ export function NewProducto() {
   }
   return (
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
@@ -501,7 +502,7 @@ export function NewProducto() {
             </form>
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }

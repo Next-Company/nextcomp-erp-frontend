@@ -218,13 +218,14 @@ const ExportFilters = ({ close, update }) => {
           bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
         }
         const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }))
-        const a = document.createElement("a");
-        a.classList.add("pdf_link")
-        a.href = file;
-        a.download = resp.name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a)
+        window.open(file,'_blank')
+        // const a = document.createElement("a");
+        // a.classList.add("pdf_link")
+        // a.href = file;
+        // a.download = resp.name;
+        // document.body.appendChild(a);
+        // a.click();
+        // document.body.removeChild(a)
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -417,11 +418,11 @@ export default function ListaOrdenes() {
                     bytes[i] = ascii;
                   }
                   const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-
-                  const link = document.createElement('a')
-                  link.href = file
-                  link.target = 'blank'
-                  link.click()
+                  window.open(file,'_blank')
+                  // const link = document.createElement('a')
+                  // link.href = file
+                  // link.target = 'blank'
+                  // link.click()
                 })
                 .catch((err) => {
                   setOpenloader(false)
@@ -623,19 +624,20 @@ export default function ListaOrdenes() {
   const [vista,setVista] = useState('1')
   return (
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
+      {/* <div className="directory flex flex-col h-full lg:p-4 sm:p-1 rounded-md w-full relative bg-white"> */}
 
-        <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
+        <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Producción</h2>
-              <div className="w-[400px]">
+              <div className="w-[400px] mb-1">
                 <Search config={{ width: '200px' }} action={busqueda_search} />
               </div>
             </div>
-            <hr />
+            {/* <hr /> */}
           </div>
+          <div className="w-full h-[1px] bg-gray-200"></div>
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll">
             <div className="flex flex-row justify-between items-center">
               <ul ref={menu} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
@@ -798,7 +800,7 @@ export default function ListaOrdenes() {
                       </div>
                       <div className="flex-1 flex flex-col justify-center items-left">
                         <div className="text-[8px]">ARTICULO</div>
-                        <div className="text-black text-[14px] font-bold">{row.marca} {row.producto} {row.modelos}</div>
+                        <div className="text-black text-[14px] font-bold">{row.tipo_produccion !== 'IMPT' ? (row.marca + ' ' +row.rubro + ' ' + row.presentacion + ' ' +row.modelos) : (row.marca + ' ' + row.producto + ' ' + row.modelos)}</div>
                       </div>
                       <div className="text-black text-[20px] flex flex-row gap-4">
                         <div className="flex flex-col justify-center items-center">
@@ -903,7 +905,7 @@ export default function ListaOrdenes() {
             </div >
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }
