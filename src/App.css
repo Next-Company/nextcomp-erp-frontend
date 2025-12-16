@@ -156,6 +156,15 @@ svg {
 /* div.icon-content-nav{
   margin-left: 20px;
 } */
+div.pepe{
+  transition: width .12s ease;
+  /* transition-delay: s; */
+}
+div.pepe:hover{
+  width: 250px;
+  transition: width .12s .5s ease;
+  /* transition-delay: 1s; */
+}
 @container (min-width: 150px) {
   div.test{
     display: block;

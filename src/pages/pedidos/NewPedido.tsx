@@ -75,7 +75,8 @@ export default function NewPedido(){
       toast.error('Debe ingresar al menos un artículo!!', { theme: "colored" })
       return
     }
-    if(tipo == 1 && (registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0)){
+    // if(tipo == 1 && (registros.filter(row=>parseFloat(row.cantidad) == 0 || parseFloat(row.precio) == 0).length > 0)){
+    if(tipo == 1 && registros.filter(row=>parseFloat(row.cantidad) == 0 ).length > 0){
       toast.error('Debe ingresar la cantidad y el precio del articulo.', { theme: "colored" })
       return
     }
