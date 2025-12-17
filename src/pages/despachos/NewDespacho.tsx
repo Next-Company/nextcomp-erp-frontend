@@ -526,7 +526,7 @@ export default function NewDespacho() {
             setOpenloader(false)
           })
       }} />,
-      controls: true,
+      controls: false,
       header: false,
       action: () => {
       }
