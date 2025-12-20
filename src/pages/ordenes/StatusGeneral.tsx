@@ -40,11 +40,11 @@ const CuerpoServicio = ({info,openloader,myfase,fase})=>{
               bytes[i] = ascii;
             }
             const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-
-            const link = document.createElement('a')
-            link.href = file
-            link.target = 'blank'
-            link.click()
+            window.open(file,'_blank')
+            // const link = document.createElement('a')
+            // link.href = file
+            // link.target = 'blank'
+            // link.click()
           })
           .catch((err) => {
             openloader(false)
@@ -139,11 +139,11 @@ const CuerpoDespacho = ({info,openloader})=>{
               bytes[i] = ascii;
             }
             const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-
-            const link = document.createElement('a')
-            link.href = file
-            link.target = 'blank'
-            link.click()
+            window.open(file,'_blank')
+            // const link = document.createElement('a')
+            // link.href = file
+            // link.target = 'blank'
+            // link.click()
           })
           .catch((err) => {
             openloader(false)
@@ -227,11 +227,11 @@ export default function StatusGeneral({id,openmodal}){
                 bytes[i] = ascii;
               }
               const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-
-              const link = document.createElement('a')
-              link.href = file
-              link.target = 'blank'
-              link.click()
+              window.open(file,'_blank')
+              // const link = document.createElement('a')
+              // link.href = file
+              // link.target = 'blank'
+              // link.click()
             })
             .catch((err) => {
               setOpenloader(false)

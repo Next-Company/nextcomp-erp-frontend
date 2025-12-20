@@ -275,7 +275,7 @@ function CuerpoIngresosXPQ({registros,setregistros,setopen}){
   )
 }
 
-export default function NewDespacho() {
+export default function EmpaqueadoDistribucion() {
   // const [estampado,setEstampado] = useState([])
   const [tipo, setTipo] = useState(2)
   const urlparams = useParams()
@@ -293,6 +293,7 @@ export default function NewDespacho() {
     console.log("La otra info del formulario es:",info)
     console.log("Los datos del formulario son:", registros)
     // console.log("El estado de la fase es:",form.current.elements.fase.value)
+
     if(registros.length > 0 && tipo == 2 && fase == 0){
       if(registros.filter(row=>row.fracciones_despacho.length > 0).length > 0){
         toast.error('Si piensa registrar algún despacho seleccione primero la fase de despacho.', { theme: "colored" })
@@ -631,8 +632,8 @@ export default function NewDespacho() {
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Ingresos /</h2>
-              <span className="text-blue-500 font-bold">Nuevo Ingreso</span>
+              <h2 className="font-medium text-[16px]">Empaquetado /</h2>
+              <span className="text-blue-500 font-bold">Nueva recepción</span>
             </div>
             <hr />
           </div>

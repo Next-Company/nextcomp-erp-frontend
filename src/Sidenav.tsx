@@ -1,5 +1,5 @@
 import { useRef, useEffect, useContext } from "react"
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AuthPermitions } from "./contexts/contexts";
 
 
@@ -26,6 +26,7 @@ export function Sidenav() {
   const { credentials } = useContext(AuthPermitions)
   // console.log("Mostrando sidenav credentials:",JSON.parse(credentials))
   const scroll_sidenav = useRef();
+  const ruta = useLocation()
   const navigate = useNavigate()
   const onccc = (e) => {
     if (e.target.matches('li')) {
@@ -57,7 +58,7 @@ export function Sidenav() {
 
   }
   useEffect(() => {
-
+    console.log("Aqui validamos la ruta",ruta)
   }, [])
   return (
     <>
@@ -106,7 +107,7 @@ export function Sidenav() {
             <NavLink
               to="ordenes/"
               className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "active" : "default"
+                isPending ? "pending" : (isActive || ruta.pathname == '/main/ordenes/' ? "active" : "default")
               }
             >
               <div className="jj w-[35px] h-[35px] rounded-full flex flex-row items-center p-[5.5px]">
@@ -248,6 +249,19 @@ export function Sidenav() {
               </div>
             </NavLink>
             <NavLink
+              to="empaquetado/"
+              className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? "active" : "default"
+              }
+            >
+              <div className="jj w-[35px] h-[35px] rounded-full flex flex-row items-center p-[5.5px]">
+                <div className="flex icon-content-nav flex-row items-center w-[24px]">
+                  <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-package"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12l0 9" /><path d="M12 12l-8 -4.5" /><path d="M16 5.25l-8 4.5" /></svg>
+                  <div className="pl-2 title_pill hidden">Empaquetado</div>
+                </div>
+              </div>
+            </NavLink>
+            <NavLink
               to="almacen/movimientos"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "active" : "default"
@@ -269,7 +283,8 @@ export function Sidenav() {
             >
               <div className="jj w-[35px] h-[35px] rounded-full flex flex-row items-center p-[5.5px]">
                 <div className="flex icon-content-nav flex-row items-center w-[24px]">
-                  <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-package"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12l0 9" /><path d="M12 12l-8 -4.5" /><path d="M16 5.25l-8 4.5" /></svg>
+                  {/* <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-package"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12l0 9" /><path d="M12 12l-8 -4.5" /><path d="M16 5.25l-8 4.5" /></svg> */}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-forklift"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M7 17l5 0" /><path d="M3 17v-6h13v6" /><path d="M5 11v-4h4" /><path d="M9 11v-6h4l3 6" /><path d="M22 15h-3v-10" /><path d="M16 13l3 0" /></svg>
                   {/* <SuggestBox title="Inventario" /> */}
                   <div className="pl-2 title_pill hidden">Inventario</div>
                 </div>
