@@ -397,14 +397,15 @@ export default function EmpaqueadoRecepcion() {
   useEffect(() => {
     if (urlparams.id) {
       setOpenloader(true)
+      // console.log("La ruta a consutlar es la siguiente:", 'produccion/getInfoEmpaquetado/' + urlparams.id)
       const pp = async () => {
-        await Consulta({ url: 'produccion/despacho/' + urlparams.id, })
+        await Consulta({ url: 'produccion/getInfoEmpaquetado/' + urlparams.id, })
           .then(resp => {
             console.log("Los datos del despacho son:", resp)
             setInfo(resp[0])
             setRegistros(resp[1])
-            resp[2] && setFacturas(resp[2])
-            setTipo(resp[0].tipo == 'PEDIDOS' ? 1 : (resp[0].tipo == 'SERVICIOS' ? 2 : 0))
+            // resp[2] && setFacturas(resp[2])
+            // setTipo(resp[0].tipo == 'PEDIDOS' ? 1 : (resp[0].tipo == 'SERVICIOS' ? 2 : 0))
             setOpenloader(false)
           })
           .catch((err) => {
@@ -416,27 +417,25 @@ export default function EmpaqueadoRecepcion() {
       }
       pp()
     }
-    if (urlparams.idmuestra) {
-      setOpenloader(true)
-      Consulta({ url: 'produccion/guia/' + urlparams.idmuestra })
-        .then(resp => {
-          setOpenloader(false)
-          console.log("Despacho directo:", resp)
-          setTipo(resp[0].tipo)
-          setInfo(info => ({ ...info,tipo:resp[0].tipo, id_guia_origen: resp[0].idx, nro_guia_origen: resp[0].idx, id_proveedor_CAB: resp[0].id_proveedor_CAB, proveedor: resp[0].proveedor }))
-          setRegistros(resp[1].map(row => {
-            row = { ...row, id_item: row.idx }
-            Reflect.deleteProperty(row, 'idx')
-            return row
-          }))
-        })
-        .catch((err) => {
-          // setOpenloader(false)
-        })
-        .finally(() => {
-          // setOpenloader(false)
-        })
-    }
+    // if (urlparams.idmuestra) {
+    //   setOpenloader(true)
+    //   Consulta({ url: 'produccion/guia/' + urlparams.idmuestra })
+    //     .then(resp => {
+    //       setOpenloader(false)
+    //       console.log("Despacho directo:", resp)
+    //       setTipo(resp[0].tipo)
+    //       setInfo(info => ({ ...info,tipo:resp[0].tipo, id_guia_origen: resp[0].idx, nro_guia_origen: resp[0].idx, id_proveedor_CAB: resp[0].id_proveedor_CAB, proveedor: resp[0].proveedor }))
+    //       setRegistros(resp[1].map(row => {
+    //         row = { ...row, id_item: row.idx }
+    //         Reflect.deleteProperty(row, 'idx')
+    //         return row
+    //       }))
+    //     })
+    //     .catch((err) => {
+    //     })
+    //     .finally(() => {
+    //     })
+    // }
   }, [setOpenloader, urlparams])
 
   const onclick = (e) => {
@@ -447,7 +446,6 @@ export default function EmpaqueadoRecepcion() {
         setFacturas(facturas.filter((row, key) => key !== parseInt(position)))
         break;
       case 'edit':
-
         console.log("Los registros enviados a la modal son lo siguientes:", registros[position])
         openModal({
           open: true,
@@ -515,7 +513,6 @@ export default function EmpaqueadoRecepcion() {
     }
     openModal(params_modal)
   }
-
   const onchange = (e) => {
     console.log("Cambiando tipo de pedido")
     // console.log("VA o neleet")
@@ -524,6 +521,18 @@ export default function EmpaqueadoRecepcion() {
   const changepanel = (e) => {
     const position = parseInt(e.target.dataset.position)
     setPanelActive(position)
+  }
+  const cancelarempaquetado = () => {
+    openModal({
+      open: true,
+      header: false,
+      controls: true,
+      content: <div>¿Está seguro de cancelar el registro de recepción de empaquetado?<br/> Se perderán los datos ingresados.</div>,
+      action: async () => {
+        // regresar()
+        navigate(-1)
+      }
+    })
   }
   useEffect(() => {
     console.log("Los items ingresados son:", registros)
@@ -708,7 +717,7 @@ export default function EmpaqueadoRecepcion() {
                 <div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={() => navigate('/main/despachos/')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={cancelarempaquetado} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>
               </div>

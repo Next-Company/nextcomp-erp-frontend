@@ -157,7 +157,7 @@ const CuerpoInforme = ({ cuerpo }) => {
 }
 export default function EmpaquetadoVistaGeneral() {
   const [info, setInfo] = useState([])
-  const [estado, setEstado] = useState('ACABADOS')
+  const [estado, setEstado] = useState('EMPAQUETADO')
   const navigate = useNavigate()
   const lista = useRef()
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
@@ -246,7 +246,7 @@ export default function EmpaquetadoVistaGeneral() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/despachos/nuevo/" + id)
+        navigate("/main/empaquetado/recepcion/" + id)
         break;
       case 'review':
         params_modal = {
