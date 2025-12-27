@@ -86,8 +86,6 @@ export function TrackWorkers__(){
     </div>
   )
 }
-
-
 export function TrackWorkers_1(){
   const [position,setPosition] = useState({ latitud: -12.0743177, longitud: -76.9916131 })
   // const [contador,setContador] = useState(0)
@@ -166,40 +164,99 @@ export function TrackWorkers_1(){
   )
 }
 
-const ControlsMap = ()=>{
-  const [loading,setLoading] = useState(false)
-  const [result,setResult] = useState([])
+const ResultContentBox = ({result})=>{
+  const [infoproveedor,setInfoProveedor] = useState([])
+  const [showdetail,setShowdetail] = useState(false)
+  useEffect(()=>{
 
-  const clickActions = (e)=>{
-    Consulta({url:''})
-    .then(()=>{
-
-    })
-    .catch(()=>{
-
-    })
-    
-  }
-  const keyActions = ()=>{
-
+  },[])
+  const showinfo = ()=>{
+    setShowdetail(true)
   }
   return(
     <>
-      <MapControl position={ControlPosition.TOP_LEFT}>
-        <div className='w-[350px] p-3 box-content h-[100vh] bg-white absolute left-0 top-[0px]'>
+      <div className='bg-white w-[410px] h-full flex flex-col shadow-2xl'>
+        <div className='h-[100px]'></div>
+        <div className='flex-1 overflow-y-auto scrollbar-special'>
+          { 
+            result && result.map((row,key)=>
+              <div key={key} className='p-4 min-h-[150px] cursor-pointer border-b-[1px] border-b-gray-300 hover:bg-gray-100' onClick={showinfo}>
+                <div className='flex flex-row'>
+                  <div className='flex-1 text-left'>
+                    <div>{row.nom}</div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  <div className='bg-gray-200 rounded-lg w-[80px] h-[80px]'></div>
+                </div>
+              </div>
+            )
+          }
+          <div className={`absolute top-[50px] ${!showdetail ? 'hidden' : ''} right-0 bottom-[20px] bg-white w-[400px] rounded-[20px] overflow-hidden shadow-2xl`} style={{transform:'translateX(420px)'}}>
+            <div className='w-full'>
+              <div className='realtive h-[200px] bg-emerald-300'></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
 
+const ControlsMap = ()=>{
+  const [loading,setLoading] = useState(false)
+  const [result,setResult] = useState([])
+  const [showresultbox,setShowresultbox] = useState(false)
+  const [search,setSearch] = useState('')
+
+  const clickActions = async (e)=>{
+    console.log("Dentro de los clickactions!")
+    setLoading(true)
+    try {
+      await Consulta({url: 'gpstracker/getinfo/' + search})
+      .then((resp)=>{
+        setResult(resp)
+        setShowresultbox(true)
+        console.log("El resultado de la consulta es:",resp)
+      })
+      .catch((err)=>{
+        console.log("Otro mensaje de error",err)
+      })
+      
+    } catch (error) {
+      console.log(error)
+    } finally{
+      setLoading(false) 
+    }
+  }
+  const clearsearch = ()=>{
+    setShowresultbox(false)
+  }
+  
+  const onchange = (e)=>{
+    setSearch(e.target.value)
+    console.log("Mostradno filtro ingresado:",e.target.value)
+  }
+  return(
+    <>      
+      <MapControl position={ControlPosition.TOP_LEFT}>
+        <div className={`map_controller absolute left-0 top-0 bottom-0`}>
+          {
+          showresultbox && <ResultContentBox result={result} />
+          }
         </div>
       </MapControl>
       <MapControl position={ControlPosition.TOP_LEFT}>
-        <div className='w-[350px] has-[:focus]:h-[400px] has-[:focus]:rounded-[20px] has-[:focus]:border-gray-300 has-[:focus]:bg-white overflow-hidden m-3 z-10'>
-          <div className='rounded-full border border-gray-300 py-3 px-[18px] flex flex-row items-center gap-4 has-[:focus]:rounded-none has-[:focus]:border-0 has-[:focus]:border-b-[1px]'>
+        <div className={`w-[380px] has-[:focus]:h-[400px] has-[:focus]:rounded-[20px] has-[:focus]:border-gray-300 has-[:focus]:bg-white overflow-hidden m-[15px] z-[10] ${!showresultbox && 'shadow-lg'} rounded-full`}>
+          <div className='rounded-full bg-white border border-gray-300 py-3 px-[18px] flex flex-row items-center gap-6 has-[:focus]:rounded-none has-[:focus]:border-0 has-[:focus]:border-b-[1px]'>
             <div className='flex flex-col gap-[3px] [&_div]:h-[2px] [&_div]:w-[20px] [&_div]:bg-gray-500'>
               <div></div>
               <div></div>
               <div></div>
             </div>
             <div className='flex-1'>
-              <input className='my-input w-full h-[25px] text-[14px]' onKeyUp={keyActions} type='text' />
+              <input className='my-input w-full h-[25px] text-[15px] placeholder:text-gray-500 focus:outline-none' placeholder='Buscar en' value={search} onChange={onchange} type='text' />
             </div>
             <div className='cursor-pointer'>
               {loading 
@@ -209,14 +266,18 @@ const ControlsMap = ()=>{
                   </div>
                 :
                   <div onClick={clickActions}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                   </div>
               }
             </div>
+            {
+              showresultbox && <div onClick={clearsearch} className='cursor-pointer'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+              </div>
+            }
           </div>
         </div>
       </MapControl>
-      
       <MapControl position={ControlPosition.TOP_LEFT}>
         <div className="p-2">
           <div className='p-3 cursor-pointer hover:bg-gray-200 h-[30px] rounded-full bg-white border shadow-md flex flex-row justify-center items-center text-[14px] font-bold' style={{boxShadow:'0 1px 2px rgba(60,64,67,0.3),0 1px 3px 1px rgba(60,64,67,0.15)'}}>
@@ -386,17 +447,15 @@ export default function TrackWorkers(){
   },[])
   return(
     <>
-      <div className="directory flex flex-col m-2 rounded-md w-full relative bg-white overflow-hidden">
+      <div className="directory flex flex-col m-2 rounded-md w-full relative border bg-white overflow-hidden">
         <APIProvider apiKey={'AIzaSyAoogN_c7uL6osdLW6doI3NJjA_8I_fJwY'}>
         {/* <APIProvider apiKey={'Your API key here'}> */}
           {/* <Map defaultZoom={10} defaultCenter={{lat: 53.54992, lng: 10.00678}}> */}
           {/* <Map mapId='f85e5903510adef7379942d5' defaultZoom={10} defaultCenter={{lat: -12.07147840019903, lng: -76.99764673360458}} center={position}> */}
           <Map mapId='f85e5903510adef7379942d5' disableDefaultUI={true} defaultZoom={15} defaultCenter={{lat: -12.07147840019903, lng: -76.99764673360458}}>
-            
             {
               <ControlsMap/>
             }
-            
             {
               markerState.currentPosition.lat !== 0 &&
               <AdvancedMarker 
@@ -441,11 +500,15 @@ export default function TrackWorkers(){
                 <img src={'/src/assets/elenex.svg'} width={32} height={32} />
               </div>
             </AdvancedMarker>
-            <AdvancedMarker 
+            {/* <AdvancedMarker 
               position={{lat: -12.055156819369076, lng: -76.97134263637695}} 
+            > */}
+            <AdvancedMarker 
+              position={{lat: -12.05515681, lng: -76.97134263}} 
             >
-              <div className='w-[25px] h-[25px] bg-white rounded-full'>
+              <div className='w-[25px] h-[25px] bg-white rounded-full relative'>
                 <img src={'/src/assets/elenex.svg'} width={32} height={32} />
+                <div className='absolute bg-orange-400 w-[100px] h-[100px]'></div>
               </div>
             </AdvancedMarker>
             <AdvancedMarker 
@@ -498,7 +561,7 @@ export default function TrackWorkers(){
               </div>
             </AdvancedMarker>
           </Map>
-        </APIProvider>  
+        </APIProvider>        
       </div>
     </>
   )

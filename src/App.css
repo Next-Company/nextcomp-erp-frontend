@@ -165,3 +165,6 @@ svg {
   animation: circle_loading 1s linear infinite;
   /* background: conic-gradient(red 0deg var(--progreso), transparent var(--progreso) 360deg) */
 }
+div:has(> div.map_controller){
+  height: 100%;
+}

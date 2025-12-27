@@ -47,7 +47,7 @@ export async function DataFetch(params) {
     return { ok: false, info: error }
   }
 }
-export async function Consulta({ url, params = {} }) {
+export async function Consulta_({ url, params = {} }) {
   return await fetch(apiUrl + url,
     {
       credentials: 'include', ...params
@@ -81,6 +81,19 @@ export async function Consulta({ url, params = {} }) {
   //   console.log("El error es:",err)
   //   return Promise.reject('Errorrraaa')
   // }
+}
+export async function Consulta({ url, params = {} }) {
+  const data = await fetch(apiUrl + url,{credentials: 'include', ...params})
+
+  if(data.ok) return data.json()
+
+  switch (data.status) {
+    case 401:
+      const msg = JSON.stringify({ statuscode: 401, message: 'Usuario no autorizado o credenciales vencidas.' })
+      return Promise.reject(msg)
+    default:
+      throw new Error('Otro codigo de error')
+  }
 }
 // export async function CargarInfo() {
 //   return await fetch(apiUrl + 'soporte', {
