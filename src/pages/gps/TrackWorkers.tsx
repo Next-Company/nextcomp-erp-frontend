@@ -181,9 +181,9 @@ const ResultContentBox = ({result})=>{
           { 
             result && result.map((row,key)=>
               <div key={key} className='p-4 min-h-[150px] cursor-pointer border-b-[1px] border-b-gray-300 hover:bg-gray-100' onClick={showinfo}>
-                <div className='flex flex-row'>
+                <div className='flex flex-row gap-2'>
                   <div className='flex-1 text-left'>
-                    <div>{row.nom}</div>
+                    <div className='capitalize text-[16px] font-bold text-wrap'>{row.nom}</div>
                     <div></div>
                     <div></div>
                     <div></div>
