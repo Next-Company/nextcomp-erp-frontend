@@ -338,11 +338,13 @@ export default function EmpaqueadoRecepcion() {
         // data.append('facturas', JSON.stringify(facturas))
         // data.append('subtipo', info.subtipo)
 
-        const ruta = ('produccion/saveRecepcionAcabados' )
+        const ruta = urlparams.id ? 'produccion/updateRecepcionAcabados' : 'produccion/saveRecepcionAcabados'
+        const method = urlparams.id ? 'PUT' : 'POST'
+        console.log("Los paramaetros de consulta son:", ruta, method)
         await Consulta({
           // url: 'produccion/guardardespacho/', params: {
           url: ruta, params: {
-            method: 'POST',
+            method: method,
             body: data
           }
         })
