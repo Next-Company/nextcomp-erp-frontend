@@ -8,21 +8,7 @@ import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
-import Guias from "../../components/Common/Guias"
-import Pedidos from "../../components/Common/Pedidos"
-import ReviewEstampado from "../estampado/ReviewEstampado"
 import Ordenes from "../../components/Common/Ordenes"
-
-const colorfase = {
-  'CONFECCION': 'bg-purple-500',
-  'ESTAMPADO': 'bg-gray-500',
-  'ACABADOS': 'bg-red-500',
-  'LAVANDERIA': 'bg-green-500',
-  'MOLDES': 'bg-orange-500',
-  'OJAL BOTON': 'bg-blue-500',
-  'CORTE': 'bg-rose-400',
-  'BORDADO': 'bg-yellow-500',
-}
 
 const model = {fracciones_despacho:[
     {concepto:'INGRESO',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0},
