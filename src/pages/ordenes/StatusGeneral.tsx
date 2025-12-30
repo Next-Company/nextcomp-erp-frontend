@@ -119,16 +119,16 @@ const CuerpoServicio = ({info,openloader,myfase,fase})=>{
     </>
   )
 }
-const CuerpoDespacho = ({info,openloader})=>{
+const CuerpoDespacho = ({info,openloader,tipo = ''})=>{
   const {openModal,setOpen} = useContext(ModalWindowContext)
   const onclick = (e)=>{
     const action = e.target.dataset.action
     const id = e.target.dataset.id
-    const idguia = e.target.dataset.idguia
+    const idref = (tipo == 'acabados' ? e.target.dataset.idorden : e.target.dataset.idguia)
     switch(action){
       case 'download':
         openloader(true)
-        Consulta({url: `produccion/verdespachoguia/${id}/${idguia}/2`})
+        Consulta({url: (tipo == 'acabados' ? 'produccion/verdespachoacabados/' : 'produccion/verdespachoguia/') + `${id}/${idref}/2`})
           .then(resp => {
             openloader(false)
             const binaryString = window.atob(resp.data);
@@ -169,7 +169,7 @@ const CuerpoDespacho = ({info,openloader})=>{
               <div className="flex flex-row justify-end">
                 <ul className="flex flex-row justify-end">
                   <li>
-                    <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download" data-idguia={row.idguia} data-id={row.id} onClick={onclick}>
+                    <div className="rounded-full w-9 h-9 hover:bg-gray-500 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="download" data-idguia={row.idguia} data-id={row.id} data-idorden={row.id_orden_origen} onClick={onclick}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                     </div>
                   </li>
@@ -381,7 +381,7 @@ const CuerpoStatusActual = ({info,setOpenloader,faseactive})=>{
                     info[6].map(row=>
                       <div className="px-2 py-1 h-[110px] flex flex-row justify-center items-center">
                         {
-                          row.despachos && <CuerpoDespacho info={row.despachos} openloader={setOpenloader}/>
+                          row.despachos && <CuerpoDespacho info={row.despachos} openloader={setOpenloader} tipo="acabados"/>
                         }
                       </div>
                     )
@@ -473,7 +473,7 @@ export default function StatusGeneral({id,openmodal}){
 
       })
     }
-    // action()
+    action()
     
     const KeyHandler = (e)=>{
       console.log("Imprimiendo nuevo evento de teclado",e.key)
@@ -512,12 +512,17 @@ export default function StatusGeneral({id,openmodal}){
   const mostrarsaldo = (fase)=>{
     setFaseActive(fase)
   }
+
+  const clickpress = (e)=>{
+    console.log("Click press en la imagen")
+  }
   const dragover = ()=>{
     console.log("Drag over en la imagen")
     // vistarapida.current.classList.remove('hidden')
   }
-  const dragout = ()=>{
-    console.log("Drag out en la imagen")
+  const dragout = (e)=>{
+    console.log("Drag out en la imagen",e.clientX,e.clientY,e.screenX,e.screenY)
+
     // vistarapida.current.classList.add('hidden')
   }
   const dragfocus = (e)=>{
@@ -526,7 +531,7 @@ export default function StatusGeneral({id,openmodal}){
    
   }
   const dragstart = (e)=>{
-    console.log("Drag start en la imagen")
+    console.log("Drag start en la imagen",e.clientX,e.clientY,e.screenX,e.screenY)
   }
   return(
     <>
@@ -589,19 +594,19 @@ export default function StatusGeneral({id,openmodal}){
                   </div>
                 </div>
                 <hr/>
-                <div className="relative h-[550px] flex flex-col overflow-hidden p-2 z-1">
-                  <div className="w-[500px] h-[100px] border border-red-500">
-                    <div className="w-[900px] h-[100px] bg-gray-300/50 cursor-pointer" onDragExit={dragout} onDragEnter={dragover} onClick={dragfocus} onDragStart={dragstart} tabIndex={20}>adios</div>
-                  </div>
-                </div>
                 {/* <div className="relative h-[550px] flex flex-col overflow-hidden p-2 z-1">
+                  <div className="w-[500px] h-[100px] border border-red-500">
+                    <div className="w-[900px] h-[100px] bg-gray-300/50 cursor-pointer" onDrag={dragout} onDragEnter={dragover} onClick={dragfocus} onDragStart={dragstart} tabIndex={20} draggable={true} onMouseDown={clickpress}>adios</div>
+                  </div>
+                </div> */}
+                <div className="relative h-[550px] flex flex-col overflow-hidden p-2 z-1">
                   <div className={`absolute top-0 left-0 w-full h-full flex-1 overflow-y-scroll scrollbar-special`}>
                     {
                       tabstate 
                       ? <CuerpoStatusInicial info={info}/> 
                       : <CuerpoStatusActual info={info} setOpenloader={setOpenloader} faseactive={faseactive}/>}
                   </div>
-                </div> */}
+                </div>
                 {
                   openloader && <div className="absolute top-0 w-full h-full bg-gray-300 z-1000 flex flex-col items-center justify-center opacity-50" style={{zIndex:'100'}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-loader-2 loading"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3a9 9 0 1 0 9 9" /></svg>

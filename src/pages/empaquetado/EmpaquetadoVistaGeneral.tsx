@@ -166,7 +166,7 @@ export default function EmpaquetadoVistaGeneral() {
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id
-    const idguia = e.target.dataset.idguia
+    const idorden = e.target.dataset.orden
     const distribucion = e.target.dataset.distribucion
     let params_modal = null
     switch (action) {
@@ -179,13 +179,11 @@ export default function EmpaquetadoVistaGeneral() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              // url: (estado == 'PEDIDOS' ? 'produccion/borrardespachopedido/' : (distribucion == 'TLL' ? 'produccion/borrardespachoguia/' : 'produccion/borrardespachoguiaxpq/')) + id, params: {
-              url: (estado == 'PEDIDOS' ? 'produccion/borrardespachopedido/' : ({'TLL':'produccion/borrardespachoguia/','GLB':'produccion/borrardespachoguiaglb/','PQT':'produccion/borrardespachoguiaxpq/'}[distribucion])) + id, params: {
+              url: 'produccion/borrardespachoempaquetado/' + id, params: {
                 method: 'DELETE'
               }
             })
               .then(resp => {
-                // setOrdenes(resp)
                 if(resp.ok){
                   toast.success(resp.message, { theme: "colored" })
                 }else{
@@ -217,10 +215,8 @@ export default function EmpaquetadoVistaGeneral() {
           action: () => {
             const desc = async () => {
               setOpenloader(true)
-              const ruta = (estado == 'SERVICIOS' ? {'TLL':'produccion/verdespachoguia/','GLB':'produccion/verdespachoguiaglb/','PQT':'produccion/verdespachoguia/'}[distribucion] : (estado == 'PEDIDOS' ? 'produccion/verdespachopedido/' : 'produccion/verdespachomuestra/'))
               Consulta({
-                /*url: "produccion/exportdespacho/" + id + "/" + idguia + '/-1', params: {*/
-		            url: ruta + id + "/" + idguia + '/2' 
+		            url: 'produccion/verdespachoacabados/' + id + "/" + idorden + '/2' 
               })
               .then(resp => {
                 setOpenloader(false)
@@ -249,16 +245,17 @@ export default function EmpaquetadoVistaGeneral() {
         navigate("/main/empaquetado/recepcion/" + id)
         break;
       case 'review':
-        params_modal = {
-          open: true,
-          content: <div className="pb-4">
-            <iframe src={`${apiUrl}produccion/verdespachoguia/${id}/${idguia}/1`} width={1100} height={700} />
-          </div>,
-          controls: true,
-          header: false,
-          action: () => {}
-        }
-        openModal(params_modal)
+        // params_modal = {
+        //   open: true,
+        //   content: <div className="pb-4">
+        //     <iframe src={`${apiUrl}produccion/verdespachoguia/${id}/${idguia}/1`} width={1100} height={700} />
+        //   </div>,
+        //   controls: true,
+        //   header: false,
+        //   action: () => {}
+        // }
+        // openModal(params_modal)
+
         // navigate("/main/estampado/review/"+ id)
         break;
 
@@ -271,7 +268,7 @@ export default function EmpaquetadoVistaGeneral() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaDespachos/' + estado, params: {
+      url: 'produccion/getListaDespachosAcabados/' + estado, params: {
         method: 'GET'
       }
     })
@@ -296,7 +293,7 @@ export default function EmpaquetadoVistaGeneral() {
     setOpenloader(true)
 
     Consulta({
-      url: 'produccion/getListaDespachos/' + estado, params: {
+      url: 'produccion/getListaDespachosAcabados/' + estado, params: {
         method: 'GET'
       }
     })
@@ -320,7 +317,7 @@ export default function EmpaquetadoVistaGeneral() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaDespachos/' + estado, params: {
+      url: 'produccion/getListaDespachosAcabados/' + estado, params: {
         // url: 'produccion/inventario/22', params: {
         method: 'GET'
       }
@@ -358,7 +355,7 @@ export default function EmpaquetadoVistaGeneral() {
   const busquedaglobal = async (input) => {
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaDespachos/' + estado + '/' + (input.value == '' ? '' : input.value), params: {
+      url: 'produccion/getListaDespachosAcabados/' + estado + '/' + (input.value == '' ? '' : input.value), params: {
         method: 'GET'
       }
     })
@@ -401,15 +398,15 @@ export default function EmpaquetadoVistaGeneral() {
           <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll-auto">
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="SERVICIOS" onClick={filtrarestado}>
+                <button className="group active" data-estado="EMPAQUETADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Recepcion
+                    Predespacho
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="MUESTRA_PROTOTIPO" onClick={filtrarestado}>
+                <button className="group" data-estado="DISTRIBUCION" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Distribución
+                    Despacho
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
@@ -422,15 +419,16 @@ export default function EmpaquetadoVistaGeneral() {
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">NroOrden</th>
-                    <th className="lg:table-cell">Proveedor</th>
+                    <th className="lg:table-cell">NroGuia</th>
+                    <th className="lg:table-cell">Cliente</th>
                     <th className="lg:table-cell">Producto</th>
-                    <th className="lg:table-cell">Marca</th>
                     <th className="lg:table-cell">Modelo</th>
-                    <th className="lg:table-cell">Servicio</th>
-                    <th className="lg:table-cell text-center">GuiaRef</th>
-                    <th className="lg:table-cell">FechaEmisionGuia</th>
-                    <th className="lg:table-cell">FechaDespacho</th>
+                    <th className="lg:table-cell">OC</th>
+                    <th className="lg:table-cell text-center">Despachos</th>
+                    <th className="lg:table-cell text-center">Caidos</th>
+                    <th className="lg:table-cell text-center">Incompletos</th>
+                    <th className="lg:table-cell text-center">FechaEmisionGuia</th>
+                    <th className="lg:table-cell text-center">FechaDespacho</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -439,17 +437,24 @@ export default function EmpaquetadoVistaGeneral() {
                     info.length > 0
                       ? info.map((row, key) => (
                         <tr key={key} className="">
-                          <td>{row.idx}</td>
-                          <td>{row.nro_orden_origen}</td>
-                          <td className="font-bold">{row.proveedor.length >= 45 ? row.proveedor.substr(0, 45) + '...' : row.proveedor}</td>
+                          <td className="font-bold">{row.idx}</td>
+                          <td>{row.nro_guia}</td>
+                          <td className="font-bold">{row.cliente.length >= 45 ? row.cliente.substr(0, 45) + '...' : row.cliente}</td>
                           <td>{row.producto}</td>
+                          <td>{row.modelos}</td>
+                          <td>{row.oc}</td>
+                          <td className="text-center font-bold text-green-600">{row.total_despacho}</td>
+                          <td className="text-center font-bold text-red-600">{row.total_caidos}</td>
+                          <td className="text-center font-bold text-red-600">{row.total_incompletos}</td>
+                          {/* <td>{row.nro_orden_origen}</td>
+                          <td className="font-bold">{row.proveedor.length >= 45 ? row.proveedor.substr(0, 45) + '...' : row.proveedor}</td>
                           <td>{row.marca}</td>
                           <td>{row.modelo}</td>
                           <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
-                          <td className="w-[100px] text-center">{row.id_guia_origen}</td>
-                          <td>{row.fec_emision_guia}</td>
-                          <td>{row.fec_despacho}</td>
-                          <td className="w-[250px]">
+                          <td className="w-[100px] te className="text-center font-bold text-green-600"xt-center">{row.id_guia_origen}</td> */}
+                          <td className="text-center font-bold">{row.fec_emision_guia}</td>
+                          <td className="text-center font-bold">{row.fec_despacho}</td>
+                          <td className="w-[200px]">
                             <ul className="flex flex-row justify-end">
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-distribucion={row.distribucion}>
@@ -457,7 +462,7 @@ export default function EmpaquetadoVistaGeneral() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx} data-idguia={row.id_guia_origen ?? row.id_pedido_origen} data-distribucion={row.distribucion}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx} data-orden={row.id_orden_origen ?? row.id_orden_origen} data-distribucion={row.distribucion}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                 </div>
                               </li>

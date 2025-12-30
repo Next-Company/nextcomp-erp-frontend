@@ -352,7 +352,7 @@ export default function EmpaqueadoRecepcion() {
           console.log("Info respues:",resp)
           setOpenloader(false)
           if(resp.ok){
-            // navigate('/main/despachos/')
+            navigate('/main/empaquetado/recepcion/')
             toast.success(resp.message, { theme: "colored" })
           }else{
             console.log("Denteo de rror")
