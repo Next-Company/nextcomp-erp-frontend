@@ -129,7 +129,7 @@ export default function Etiquetas(params){
           </div>
           <hr/>
           <div className="flex gap-2 mt-2">
-            <form ref={form.current}>
+            <form ref={form.current} className="flex flex-row gap-4 w-full">
               <div className="w-[300px] text-left">
                 <Input name={'orden_ref'} title="OP/OC" defaults={''} type="text" action={()=>{}} mode={'static'} verify="true" placeholder={'Info referencial'}/>
               </div>
