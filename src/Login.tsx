@@ -17,7 +17,7 @@ export function Login() {
     }
   })
   useEffect(() => {
-    if (isAuthenticated) navigate("/main")
+    if (isAuthenticated) navigate("/main/ordenes")
     console.log(isAuthenticated)
   }, [isAuthenticated])
   return (

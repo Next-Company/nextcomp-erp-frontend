@@ -18,7 +18,7 @@ const colorfase = {
 
 export default function Ordenes(children){
   const { logout } = useContext(AuthPermitions)
-  let {actions = ()=>{}, closemodal = ()=>{}, mode = 1} = children
+  let {actions = ()=>{}, closemodal = ()=>{}, mode = 0} = children
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
