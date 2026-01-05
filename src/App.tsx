@@ -81,6 +81,10 @@ import ListaProveedores from './pages/proveedores/ListaProveedores.tsx'
 import { NewProveedor } from './pages/proveedores/NewProveedor.tsx'
 import LayoutMantenimiento from './pages/mantenimiento/LayoutMantenimiento.tsx'
 import Configuracion from './pages/mantenimiento/Configuracion.tsx'
+import EmpaquetadoVistaGeneral from './pages/empaquetado/EmpaquetadoVistaGeneral.tsx'
+import LayoutEmpaquedado from './pages/empaquetado/LayoutEmpaquetado.tsx'
+import EmpaqueadoRecepcion from './pages/empaquetado/EmpaquetadoRecepcion.tsx'
+import EmpaqueadoDistribucion from './pages/empaquetado/EmpaquetadoDistribucion.tsx'
 
 
 
@@ -251,6 +255,17 @@ const routes = [
           { path: "nuevo", element: <NewDespacho />, error: <ErrorController/> },
           { path: "nuevo/:id", element: <NewDespacho />, error: <ErrorController/> },
           { path: "load/:idmuestra", element: <NewDespacho />, error: <ErrorController/> },
+        ]
+      },
+      {
+        path: "empaquetado",
+        element: <PrivateRoute><LayoutEmpaquedado /></PrivateRoute>,
+        children: [
+          { path: "", element: <EmpaquetadoVistaGeneral /> },
+          { path: "recepcion", element: <EmpaqueadoRecepcion />, error: <ErrorController/> },
+          { path: "recepcion/:id", element: <EmpaqueadoRecepcion />, error: <ErrorController/> },
+          { path: "distribucion", element: <EmpaqueadoDistribucion />, error: <ErrorController/> },
+          { path: "distribucion/:id", element: <EmpaqueadoDistribucion />, error: <ErrorController/> },
         ]
       },
       {

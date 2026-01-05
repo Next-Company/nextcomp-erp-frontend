@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Search } from "../Atoms/Search/Search"
 import { Consulta } from "../../utils/utils"
+import { Button } from "../Atoms/Button/Button"
 
 const colorfase = {
   'CONFECCION':'bg-purple-500',
@@ -13,6 +14,7 @@ const colorfase = {
   'BORDADO':'bg-yellow-500',
 }
 export default function Guias(children){
+  const [selected,setSelected] = useState([])
   let {actions = ()=>{},tipo='SERVICIOS'} = children
   let [lista,setLista] = useState([])
   let [loading,setLoading] = useState(false)
@@ -47,11 +49,11 @@ export default function Guias(children){
       .then(resp => {
         console.log("Resultado seatch guia:",resp)
         setLoading(false)
-	if(tipo == 'SERVICIOS'){
-          setLista(resp.filter(row=>row.tipo == tipo))
-	}else{
-          setLista(resp.filter(row=>row.tipo !== 'SERVICIOS'))
-	}
+      if(tipo == 'SERVICIOS'){
+        setLista(resp.filter(row=>row.tipo == tipo))
+      }else{
+        setLista(resp.filter(row=>row.tipo !== 'SERVICIOS'))
+      }
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -71,7 +73,12 @@ export default function Guias(children){
     // let action = e.target.dataset.action
     let action = e.target.dataset.action ?? e.currentTarget.dataset.action
     let position = e.target.dataset.position ?? e.currentTarget.dataset.position
-    console.log("La accion es la siguiente:",action)
+    console.log("La accion es la siguiente:",action,selected,selected.filter(row=>row==position))
+
+    // if(tipo == 'SERVICIOS'){
+    //   selected.filter(row=>row==position).length > 0 ? setSelected(items=>items.filter(row=>row!==parseInt(position))) : setSelected(items=>[...items,parseInt(position)])
+    // }else{
+    // }
     switch(action){
       case 'add':
         console.log("Agregando al proveedor",lista[position])
@@ -83,12 +90,12 @@ export default function Guias(children){
   }
   return(
     <>
-      <div className="flex flex-col mb-2">
+      <div className="flex flex-col">
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={searchproveedor} />
         </div>
-        <div className="h-[550px] w-[1150px] scrollbar-special rounded-md overflow-y-scroll relative">
-          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+        <div className="h-[600px] w-[1150px] scrollbar-special rounded-md overflow-y-scroll relative">
+          <table className={`w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-red-300`}>
             <thead className="text-left sticky top-0 bg-white">
               <tr>
               {
@@ -122,7 +129,7 @@ export default function Guias(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr onClick={onclick} data-position={key} data-action="add">
+                <tr onClick={onclick} data-position={key} data-action="add" className={`${selected.find(item=>item==key) ? 'selected' : ''}`}>
                   {
                     tipo == 'SERVICIOS'
                     ?
@@ -159,18 +166,8 @@ export default function Guias(children){
                         <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="text-green-700 icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
                     }
                   </td> */}
-                  <td className="w-[250px]">
+                  <td className="">
                     <ul className="flex flex-row justify-end">
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                        </div>
-                      </li>
                       <li>
                         <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
@@ -207,6 +204,10 @@ export default function Guias(children){
             loading && <div className="absolute top-0 w-[100%] h-[100%] bg-white/50 flex flex-row justify-center items-center">Cargando...</div>
           }
         </div>
+        {/* <div className="flex flex-row justify-end gap-2 mt-2">
+          <Button type="button" tipo="default" action={()=>{}}>Cancelar</Button>
+          <Button type="button" tipo="default" action={()=>{}}>Aceptar</Button>
+        </div> */}
       </div>
     </>
   )

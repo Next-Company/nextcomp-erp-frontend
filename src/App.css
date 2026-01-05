@@ -161,7 +161,7 @@ div.pepe{
   /* transition-delay: s; */
 }
 div.pepe:hover{
-  width: 250px;
+  width: 300px;
   transition: width .12s .5s ease;
   /* transition-delay: 1s; */
 }

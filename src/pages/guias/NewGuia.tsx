@@ -279,7 +279,7 @@ export default function NewGuia(){
         .then(resp => {
           console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          // navigate('/main/guias/')
+          navigate('/main/guias/')
           if(resp.ok){
             toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{
@@ -636,7 +636,7 @@ export default function NewGuia(){
                         <tr>
                           <td colSpan={11} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[16px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                              <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
                                 {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg> */}
                               </div>
@@ -732,7 +732,7 @@ export default function NewGuia(){
                     {
                       urlparams.id && <>
                         <Button type={'button'} tipo={'accept'} action={opendescuentos}>{`Configurar penalidades - Total: S/.${penalidades.length > 0 ? penalidades.reduce((carry,row)=>{carry += row.importe; return carry;},0).toFixed(2) : 0.00}`}</Button>
-			<Button type={'button'} tipo={'warning'} action={openreprogramacion}>{`Reprogramacion de despacho`}</Button>
+			                  <Button type={'button'} tipo={'warning'} action={openreprogramacion}>{`Reprogramacion de despacho`}</Button>
                       </>                   
                     }
                   </div>
