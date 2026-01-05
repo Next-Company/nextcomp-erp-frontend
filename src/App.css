@@ -25,6 +25,7 @@
   height: 6px;
   /* background: #efefef; */
   background: transparent;
+
 }
 
 .scrollbar-special::-webkit-scrollbar-thumb {
