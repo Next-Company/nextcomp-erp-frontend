@@ -13,10 +13,96 @@ import Pedidos from "../../components/Common/Pedidos"
 import Modelos from "../../components/Common/Modelos"
 import ProductosLote from "../../components/Common/ProductosLote"
 import Almacenes from "../../components/Common/Almacenes"
+import Ordenes from "../../components/Common/Ordenes"
+
+function InfoRollos(children){
+  const {actions,info=[]} = children
+  const [lista,setLista] = useState(info)
+  const addrollo = ()=>{
+    setLista([...lista,{peso:0,partida:'',cantidad:0}])
+  }
+  const onclick = (e)=>{
+    const action = e.target.dataset.action ?? ''
+    const position = e.target.dataset.position ?? -1
+    console.log("La posiconi es:",position,action)
+    switch (action) {
+      case 'delete':
+        // setLista(row=>row.map((v,k)=>k == position ?) )
+        setLista(row=>row.filter((v,k)=>k !== parseInt(position)))
+        break;
+    
+      default:
+        break;
+    }
+  }
+  return(
+    <>
+      <div className="flex flex-col mb-2">
+        <div className="h-[500px] w-[1000px] scrollbar-special rounded-md overflow-y-scroll">
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+            <thead className="text-left sticky top-0 bg-white">
+              <tr>
+                <th className="lg:table-cell">#</th>  
+                <th className="lg:table-cell">Peso</th>
+                <th className="lg:table-cell">Partida</th>
+                <th className="lg:table-cell">Cantidad</th>
+                <th className="lg:table-cell">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lista.length > 0 && lista.map((row,key)=>(
+                <tr key={key} data-position={key} data-action="add" onClick={()=>{}} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                  <td className="w-[100px]">{key + 1}</td>
+                  <td className=""><input type="number" onChange={(e)=>setLista(lista=>lista.map((row,pos)=>(pos == key ? {...row,peso:e.target.value} : row )))} data-position={key} data-name="peso" value={row.peso} step={'0.01'} /></td>
+                  <td className=""><input type="text" onChange={(e)=>setLista(lista=>lista.map((row,pos)=>(pos == key ? {...row,partida:e.target.value} : row )))} data-position={key} data-name="partida" value={row.partida} /></td>
+                  <td className=""><input type="number" onChange={(e)=>setLista(lista=>lista.map((row,pos)=>(pos == key ? {...row,cantidad:e.target.value} : row )))} data-position={key} data-name="cantidad" value={row.cantidad} step={'0.01'} /></td>
+                  <td className="w-[250px]">
+                    <ul className="flex flex-row justify-end">
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-position={key} data-action="add" onClick={onclick}>
+                          <svg  xmlns="http://www.w3.org/2000/svg"  width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
+                        </div>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot className="sticky bottom-0 bg-white">
+              <tr>
+                <td colSpan={5} >
+                  <div className="flex flex-row justify-center gap-2">
+                    <div onClick={addrollo} className={`bg-blue-500 hover:bg-blue-600 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer `}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div className="flex flex-row justify-end gap-3 mt-3">
+          <Button action={()=>{}} type={'button'} tipo={'default'}>Cancelar</Button>
+          <Button action={()=>actions(lista)} type={'button'} tipo={'default'}>Aceptar</Button>
+        </div>
+      </div>
+    </>
+  )
+}
 
 export default function NewMovimiento(){
   const [tipo,setTipo] = useState(0)
-  const [motivo,setMotivo] = useState('mst')
+  const [motivo,setMotivo] = useState('ajt')
   const [searchParams,setSearchParams] = useSearchParams()
   const urlparams = useParams()
   const [info,setInfo] = useState({tipo_operacion:'9'})
@@ -24,6 +110,7 @@ export default function NewMovimiento(){
   const form = useRef()
   const [registros,setRegistros] = useState([])
   const navigate = useNavigate()
+  const [almacen, setAlmacen] = useState(0)
 
   console.log("Los search params recibidos:",searchParams.get('nombre'))
 
@@ -37,6 +124,10 @@ export default function NewMovimiento(){
         toast.error('Alguno de los campos del formulario son obligatorios. Por favor verifique.', { theme: "colored" })
         return
       }
+    }
+    if(registros.filter(row=>row.Cant_despacho_DET == 0).length > 0){
+      toast.error('Debe ingresar al menos un artículo con cantidad mayor a cero!!', { theme: "colored" })
+      return 0
     }
     if(registros.length == 0){
       toast.error('Debe ingresar al menos un artículo!!', { theme: "colored" })
@@ -65,7 +156,7 @@ export default function NewMovimiento(){
           setOpenloader(false)
           if(resp.ok){
             // navigate('/main/pedidos/')
-            toast.success('Nuevo retiro generado con éxito!!', { theme: "colored" })
+            toast.success('Movimiento de inventario generado con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })
             return
@@ -92,9 +183,10 @@ export default function NewMovimiento(){
         await Consulta({url: 'almacen/getdespacho/' + urlparams.id,})
           .then(resp => {
             console.log("Busqueda info pedido:",resp)
-            setInfo({...info,tipo_operacion:resp.cab.tipomov,fec_emision:resp.cab.fec_emision,fec_retorno:resp.cab.fec_emision,id_modelo:resp.cab.id_modelo,modelos:resp.cab.modelos,id_pedido_origen:resp.cab.id_pedido_origen,nro_pedido_origen:resp.cab.id_pedido_origen,id_proveedor_CAB:resp.cab.id_proveedor_CAB,proveedor:resp.cab.Raz_social_DOC,ruc:resp.cab.Nro_Doc_Prov,orden_ref:resp.cab.nro_requerimiento,oc:resp.cab.oc,nro_corte:resp.cab.nro_corte,responsable:'CARLOS',Suc_Tienda:resp.cab.Suc_Tienda,almacen:resp.cab.almacen})
+            setInfo({...info,tipo_operacion:resp.cab.tipomov,fec_emision:resp.cab.fec_emision,fec_retorno:resp.cab.fec_emision,id_modelo:resp.cab.id_modelo,modelos:resp.cab.modelos,id_pedido_origen:resp.cab.id_pedido_origen,nro_pedido_origen:resp.cab.id_pedido_origen,id_proveedor_CAB:resp.cab.id_proveedor_CAB,proveedor:resp.cab.Raz_social_DOC,ruc:resp.cab.Nro_Doc_Prov,orden_ref:resp.cab.nro_requerimiento,oc:resp.cab.oc,nro_corte:resp.cab.nro_corte,responsable:'CARLOS',Suc_Tienda:resp.cab.Suc_Tienda,almacen:resp.cab.almacen,motivo:resp.cab.motivo,producto:resp.cab.producto,id_orden:resp.cab.id_orden})
             setRegistros(resp.det)
-            // setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
+            setTipo(resp.cab.tipomov == 'INGRESOS' ? 0 : 1)
+            setMotivo(resp.cab.motivo)
             setOpenloader(false)
           })
           .catch((err)=>{
@@ -114,6 +206,7 @@ export default function NewMovimiento(){
       }
       if(event.detail.name == 'tipo_operacion'){
         setTipo(event.detail.valor == 'INGRESOS' ? 0 : 1)
+        setRegistros([])
       }
       // setRegistros([])
     };
@@ -123,6 +216,42 @@ export default function NewMovimiento(){
       if (form.current) form.current.removeEventListener("salamandra", handleInputChange);
     };
   },[])
+
+  const searchproducto = ()=>{
+    openModal({
+      open:true,
+      content: <Productos actions={(items)=>{  
+        setOpen(false)
+        console.log("Los items seleccionados HALLOWEEN son: ",items)
+        setRegistros([
+          ...registros,
+          ...items.map(row=>({
+            id_subprod:row.idxsub,
+            id_producto_DET:row.id_producto_CAB,
+            producto:row.producto,
+            idx_color:row.idx_color,
+            color:row.color,
+            cantidad:0,
+            Cant_despacho_DET:0,
+            precio:0,
+            idx_talla:row.idx_talla,
+            talla:row.talla,
+            lote:0,
+            unidad:row.unidad,
+            peso:0,
+            rollos:0,
+            tipo:row.tipo
+          }))
+        ])
+      }}
+        closemodal={()=>setOpen(false)}
+      />,
+      controls: false,
+      header: false,
+      action:async ()=>{
+      }
+    })
+  }
 
   const searchproductoIngreso = ()=>{
     if(!info.Suc_Tienda){
@@ -191,7 +320,7 @@ export default function NewMovimiento(){
             talla:row.talla,
             lote:row.lote,
             unidad:row.unidad,
-            metros:0,
+            peso:0,
             rollos:0,
             tipo:row.tipo
           }))
@@ -226,9 +355,10 @@ export default function NewMovimiento(){
       toast.error("Debe seleccionar primero el almacén destino. Porfavor verifique.", { theme: "colored" })
       return 0
     }
+
     openModal({
       open:true,
-      content: <ProductosLote actions={(items)=>{  
+      content: <ProductosLote almacen={info?.Suc_Tienda ?? 0} actions={(items)=>{  
         console.log("La informacion del producto seleccionado es:",items)
         setOpen(false)
         setRegistros([...registros,...items.map(row=>(
@@ -243,9 +373,9 @@ export default function NewMovimiento(){
             precio:0,
             idx_talla:row.idx_talla,
             talla:row.talla,
-            lote:row.lote,
+            num_lote:row.lote,
             unidad:row.unidad,
-            metros:0,
+            peso:0,
             rollos:0,
             tipo:row.tipo
           }))
@@ -267,11 +397,32 @@ export default function NewMovimiento(){
     const action = e.target.dataset.action
     const position = e.target.dataset.position
     switch(action){
-
       case 'delete':
         setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
         console.log("Eliminado registros de la fila ",position)
         break;
+        
+      case 'edit':        
+        let params_modal = null
+        params_modal = {
+          open:true,
+          content: <InfoRollos 
+            actions={(info)=>{  
+              console.log("La informacion de la lista es:",position,info,registros)
+              // setRegistros(row=>[...row.map((v,p)=>p==position ? {...v,info_rollos:info,rollo:60,peso:info.reduce((c,v)=>c+v,0)} : v)])
+              setRegistros(row=>row.map((v,p)=> p == parseInt(position) ? {...v,info_rollos:info,rollos:info.length,peso:info.reduce((c,v)=>c+parseFloat(v.peso),0),Cant_despacho_DET:info.reduce((c,v)=>c+parseFloat(v.cantidad),0).toFixed(2)} : v))
+              setOpen(false)
+            }}
+            info={registros[position]?.info_rollos ?? []}
+          />,
+          controls: false,
+          header: false,
+          action:()=>{
+          }
+        }
+        if(almacen !== 508) openModal(params_modal)
+        break;
+
       default :
     }
   }
@@ -307,6 +458,7 @@ export default function NewMovimiento(){
       content: <Almacenes actions={(item)=>{  
         console.log("El item seleccionado es: ",item)
         setInfo(info=>({...info,Suc_Tienda:item.idx,almacen:item.nom}))
+        setAlmacen(item.idx)
         setOpen(false)
       }}/>,
       controls: true,
@@ -392,12 +544,70 @@ export default function NewMovimiento(){
     }
     openModal(params_modal)
   }
+  const listaordenes = ()=>{
+    let params_modal = null
+    const LIST_ORDENES_MODE = 0
+    if(!almacen){
+      toast.error('Debe ingresar antes la información del almacen.',{theme:'colored'})
+      return 0
+    }
+    params_modal = {
+      open:true,
+      content: <Ordenes actions={(item)=>{
+          console.log("INfor de la orden es:",item)
+          setOpenloader(true)
+          Consulta({url: 'ordenes/insumosorden/' + item.idx + '/' + almacen})
+          .then(resp => {
+            console.log("La informacion de la orden de produccion es:",resp)
+            setOpenloader(false)
+            setInfo({...info,producto:item.producto,id_orden:item.idx})
+
+            setRegistros([...resp.map(row=>(
+              {
+                id_subprod:row.id_subprod_CAB,
+                id_producto_DET:row.id_producto_CAB,
+                producto:row.producto,
+                idx_color:row.idx_CAB_COLOR,
+                color:row.color,
+                cantidad:0,
+                Cant_despacho_DET:0,
+                precio:0,
+                idx_talla:row.idx_talla,
+                talla:row.talla,
+                num_lote:row.lote,
+                unidad:row.unidad,
+                peso:0,
+                rollos:0,
+                comprometido: parseFloat(row.comprometido),
+                entregado: parseFloat(row.entregado),
+                stock: row.stock,
+                tipo:row.tipo
+              }))
+            ])
+
+          })
+          .catch((err)=>{
+          })
+          .finally(()=>{
+            // setOpen(false)
+          })
+        }}
+        mode={LIST_ORDENES_MODE}
+        closemodal={()=>setOpen(false)}
+      />,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openModal(params_modal)
+  }
   const cambioinput = (e)=>{
     // console.log("El input modificado fue el siguiente:",e.target)
   }
   return(
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
@@ -421,44 +631,59 @@ export default function NewMovimiento(){
                         { indice: '10', option: 'RETIROS' }, 
                       ]} 
                       df={Object.keys(info).length > 0 ? info.tipo_operacion : null} formref={form} 
+                      placeholder={"Texto referencial"}
                     />
                   </div>
-                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true"/>
+                  <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true" placeholder={"Texto referencial"}/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
                   <div className="w-[500px]">
-                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true"/>
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true" placeholder={"Texto referencial"}/>
                   </div>
                   <Input name={'Suc_Tienda'} defaults={Object.keys(info).length > 0 ? info.Suc_Tienda : null} type="hidden" />                  
-                  <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true"/>
+                  <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true" placeholder={"Texto referencial"}/>
                   {/* <Input name={'oc'} defaults={Object.keys(info).length > 0 && info.oc ? info.oc : null} title="NroOrden" type="text" />
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/> */}
                 </div>
                 <div className="flex gap-3">
-                  <InputSelect title={'Motivo'} name={"motivo"} data={
-                    [
-                      { indice: 'mst', option: 'MUESTRA', selected: true }, 
-                      { indice: 'ajt', option: 'AJUSTE' }, 
-                      { indice: 'acb', option: 'ACABADOS' },
-                      { indice: 'crt', option: 'CORTE' }
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.motivo : null} formref={form} 
-                  />
-                  {/* {
-                    motivo == 'crt' &&
-                  } */}
-                  <Input name={'id_orden'} defaults={Object.keys(info).length > 0 && info.id_orden ? info.id_orden : null} type="hidden" />
-                  <Input name={'modelo'} defaults={Object.keys(info).length > 0 && info.modelo ? info.modelo : null} title="Modelo" type="text" />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true"/>
+                  {
+                    tipo == 1 && <InputSelect title={'Motivo'} name={"motivo"} data={
+                      [
+                        { indice: 'ajt', option: 'AJUSTE', selected: true }, 
+                        { indice: 'prd', option: 'PRODUCCION' }
+                      ]} 
+                      df={Object.keys(info).length > 0 ? info.motivo : null} formref={form} 
+                      placeholder={"Texto referencial"}
+                    />
+                  }
+                  {
+                    tipo == 0 && <InputSelect title={'Motivo'} name={"motivo"} data={
+                      [
+                        { indice: 'ajt', option: 'AJUSTE', selected: true }, 
+                      ]} 
+                      df={Object.keys(info).length > 0 ? info.motivo : null} formref={form} 
+                      placeholder={"Texto referencial"}
+                    />
+                  }
+                  {
+                    motivo !== 'ajt' &&
+                    <>
+                      <Input name={'id_orden'} defaults={Object.keys(info).length > 0 && info.id_orden ? info.id_orden : null} type="hidden" verify="true"/>
+                      <Input name={'producto'} defaults={Object.keys(info).length > 0 && info.producto ? info.producto : null} title="Producto" type="text" verify="true" action={listaordenes} mode={'static'} placeholder={"Texto referencial"}/>
+                    </>
+                  }
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true" placeholder={"Texto referencial"}/>
                   {/* <div className="w-[500px]">
                     <Input name={'Suc_Tienda'} defaults={Object.keys(info).length > 0 ? info.Suc_Tienda : null} type="hidden" />                  
                     <Input name={'almacen'} title="Almacen" defaults={Object.keys(info).length > 0 ? info.almacen : null} type="text" action={nuevatienda} mode={'static'} verify="true"/>
                   </div> */}
                 </div>
-                <div>
-                  <span className="flex flex-row items-center gap-2">
-                    Detalle
-                  </span>                  
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/> 
+                <div>                 
                   <div className="h-[370px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
@@ -468,9 +693,18 @@ export default function NewMovimiento(){
                           <th className="lg:table-cell">Color</th>
                           <th className="lg:table-cell">Talla</th>
                           <th className="lg:table-cell">Lote</th>
-                          <th className="lg:table-cell">SN/Lote</th>
+                          {/* <th className="lg:table-cell">SN/Lote</th> */}
                           <th className="lg:table-cell">Rollos</th>
-                          <th className="lg:table-cell">Metros</th>
+                          <th className="lg:table-cell">Peso</th>
+                          {
+                            motivo == 'prd' &&
+                            <>
+                              <th className="lg:table-cell">Comprometido</th>
+                              <th className="lg:table-cell">Entregado</th>
+                              <th className="lg:table-cell">Pendiente</th>
+                            </>
+                          }
+                          <th className="lg:table-cell">Stock</th>
                           <th className="lg:table-cell">Despacho</th>
                           <th className="lg:table-cell">Acciones</th>
                         </tr>
@@ -492,11 +726,25 @@ export default function NewMovimiento(){
                               <td className="text-center">{row.talla}</td>
                               <td className="text-center">{row.num_lote}</td>
                               {/* <td className="w-[120px]"><input type="number" onChange={editvalue} data-position={key} data-name="lote" value={row.lote} /></td> */}
-                              <td className="text-center"><input type="checkbox" id="sinlote" onChange={editvalue} data-position={key} data-name="sinlote" checked={row.sinlote} /></td>
-                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} step={'0.01'} /></td>
-                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="metros" value={row.metros} step={'0.01'} /></td>
-                              <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="Cant_despacho_DET" value={row.Cant_despacho_DET} step={'0.01'} /></td>
-                              <td className="w-[250px]">
+                              {/* <td className="text-center"><input type="checkbox" id="sinlote" onChange={editvalue} data-position={key} data-name="sinlote" checked={row.sinlote} /></td> */}
+                              <td className="w-[100px] text-center">{row.rollos}</td>
+                              <td className="w-[100px] text-center">{row.peso}</td>
+                              {
+                                motivo == 'prd' && <>
+                                  <td className="w-[100px] text-center">{row.comprometido ?? 0}</td>
+                                  <td className="w-[100px] text-center">{row.entregado ?? 0}</td>
+                                  <td className="w-[100px] text-center">{(row?.comprometido ?? 0) - (row?.entregado ?? 0)}</td>
+                                </>
+                              }
+                              <td className="w-[100px] text-center">{row.stock}</td>
+                              {
+                                almacen == 508
+                                ? <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="Cant_despacho_DET" value={row.Cant_despacho_DET} step={'0.01'} /></td>
+                                : <td className="w-[100px] text-center">{row.Cant_despacho_DET}</td>
+                              }
+                              {/* <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="Cant_despacho_DET" value={row.Cant_despacho_DET} step={'0.01'} /></td> */}
+                              
+                              <td className="w-[200px]">
                                 <ul className="flex flex-row justify-end">
                                   <li>
                                     <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
@@ -509,17 +757,7 @@ export default function NewMovimiento(){
                                     </div>
                                   </li>
                                   <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-position={key}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                     </div>
                                   </li>
@@ -540,6 +778,13 @@ export default function NewMovimiento(){
                           <td className="text-center">-</td>
                           <td className="text-center">0</td>
                           <td className="text-center">0</td>
+                          {
+                            motivo == 'prd' && <>
+                              <td className="text-center">0</td>
+                              <td className="text-center">0</td>
+                              <td className="text-center">0</td>
+                            </>
+                          }
                           <td className="text-center">0</td>
                           {/* <td className="text-center"></td> */}
                           {/* <td className="text-center text-[14px] font-bold">
@@ -548,9 +793,9 @@ export default function NewMovimiento(){
                           <td></td>
                         </tr>
                         <tr>
-                          <td colSpan={10} >
+                          <td colSpan={13} >
                             <div className="flex flex-row justify-center gap-2">
-                              <div onClick={tipo ? searchproductoEgreso : searchproductoIngreso} className={`${tipo ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer `}>
+                              <div onClick={tipo ? searchproductoEgreso : searchproducto} className={`${tipo ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer `}>
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                               </div>
                               {/* <div onClick={searchproducto} className="bg-blue-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
@@ -576,7 +821,7 @@ export default function NewMovimiento(){
             </form>
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }

@@ -4,7 +4,8 @@ import { Consulta } from "../../utils/utils"
 
 const colorfase = {
   'TELAS':'bg-orange-500',
-  'AVIOS':'bg-violet-500'
+  'AVIOS':'bg-violet-500',
+  'ADICIONALES':'bg-green-500'
 }
 export default function Pedidos(children){
   let {actions = ()=>{}} = children

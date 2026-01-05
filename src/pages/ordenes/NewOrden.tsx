@@ -14,6 +14,106 @@ import { InputTest } from "../../components/Atoms/Input/InputTest";
 import Productos from "../../components/Common/Productos";
 import Recetas from "../../components/Common/Recetas";
 import Colores from "../../components/Common/Colores";
+import Marca from "../../components/Common/Marca";
+
+
+function CombosInsumos(children){
+  const {actions,closemodal,insumos = [],c_insumos=[],setcorte,position_corte,position_combo,info} = children
+  const [insu,setInsu] = useState(c_insumos)
+  
+  console.log('Los insumos de los combos son:',c_insumos,info)
+  const onclickinsumos = (e)=>{
+    const action = e.target.dataset.action
+    const id = parseInt(e.target.dataset.id)
+    console.log("La vena es:",action,id)
+    switch (action) {
+      case 'select':
+        setInsu(row=>row.includes(id) ? row.filter(item=>item !== id) : [...row,id])
+        setcorte(corte=>corte.map((row,key)=>{
+          // console.log("Ajaummmm!!",row,id)
+          return {
+            ...row,
+            combos: (
+              key == position_corte 
+              ? row.combos.map((row2,key2)=>(
+                key2 == position_combo 
+                ? {...row2,insumos: (row2.insumos.includes(id) ? row2.insumos.filter(item=>item !== id) : [...row2.insumos,id]) }
+                : row2
+              ))
+              : row.combos
+            )
+          }
+        }))
+        break;
+    
+      default:
+        break;
+    }
+  }
+  return(
+    <>
+      <div className='h-[650px] w-[1100px] flex flex-col overflow-hidden'>
+        <hr />
+        <div className="flex-1 scrollbar-special rounded-md overflow-y-scroll bg-gray-200 mb-2">
+          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-green-200">
+            <thead className="text-left sticky top-0 bg-white">
+              <tr>
+                <th className="lg:table-cell">Id</th>
+                <th className="lg:table-cell">Articulo</th>
+                <th className="lg:table-cell">Unidad</th>
+                <th className="lg:table-cell">Color</th>
+                <th className="lg:table-cell">Talla</th>
+                <th className="lg:table-cell ">Comprometido</th>
+                <th className="lg:table-cell">Stock</th>
+                <th className="lg:table-cell">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                insumos.length > 0 && insumos.map((row,key)=>(
+                  <tr key={key} className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_select]:text-center [&_select]:p-[2px] [&_select]:w-full [&_select]:bg-transparent focus-visible:[&select]:outline-[0px] focus-visible:[&select]:bg-gray-200 focus-visible:[&select]:border-black focus-visible:[&select]:bg-transparent focus:[&_select]:outline-none
+                    ${insu && (insu.includes(parseInt(row.id_subprod_CAB)) ? 'selected' : '' )}
+                  `}>
+                    <td className="text-center">{row.id_subprod_CAB}</td>
+                    <td className="text-center">{row.producto}</td>
+                    <td className="text-center">-</td>
+                    <td className="text-center">{row.color}</td>
+                    <td className="text-center">{row.talla}</td>
+                    <td className="text-center">{row.cantidad}</td>
+                    <td className="text-center">{row.stock ?? 0}</td>
+                    <td className="w-[150px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={()=>{}} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review" onClick={onclickinsumos} data-position={key}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="select" onClick={onclickinsumos} data-position={key} data-id={row.id_subprod_CAB}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+        {/* <div className="flex flex-row justify-end gap-3 mt-3">
+          <Button action={()=>{}} type={'button'} tipo={'default'}>Cancelar</Button>
+          <Button action={updateinsumos} type={'button'} tipo={'default'}>Aceptar</Button>
+        </div> */}
+      </div>
+    </>
+  )
+}
 
 function InsumosCombos({orden,setorden,insumo,actions}){
   const [info,setInfo] = useState(orden)
@@ -31,7 +131,7 @@ function InsumosCombos({orden,setorden,insumo,actions}){
       setInfo(cc=>[{...cc[0],combos:cc[0].combos.map((row,key)=>key == parseInt(position) ? ({...row,insumos:(row.insumos && row.insumos.length > 0) ? row.insumos.filter(ids=>parseInt(ids) !== parseInt(insumo)) : [] }) : row)}])
     }else{
       // console.log("Dentro de false",info)
-      setInfo(cc=>[{...cc[0],combos:cc[0].combos.map((row,key)=>key == parseInt(position) ? {...row,insumos:( (row.insumos && row.insumos.length > 0)? [...row.insumos,insumo] : [insumo] )} : row)}])  
+      setInfo(cc=>[{...cc[0],combos:cc[0].combos.map((row,key)=>key == parseInt(position) ? {...row,insumos:( (row.insumos && row.insumos.length > 0)? [...row.insumos,parseInt(insumo)] : [parseInt(insumo)] )} : row)}])  
     }
   }
   const updatecombos = ()=>{
@@ -40,12 +140,13 @@ function InsumosCombos({orden,setorden,insumo,actions}){
   console.log("La informacion de info vinculo recibida es:",info,insumo)
   return(
     <>
-      <div className='h-[500px] w-[1000px] flex flex-col'>
-        <div className="flex-1">
+      <div className='h-[650px] w-[1100px] flex flex-col overflow-hidden'>
+        <div className="flex-1 scrollbar-special rounded-md overflow-y-scroll">
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr.selected:nth-child(n)]:bg-green-200 [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell w-[200px]">ColorCombo</th>  
+                <th className="lg:table-cell">S/T</th>
                 <th className="lg:table-cell">XS / 26</th>
                 <th className="lg:table-cell">S / 28</th>
                 <th className="lg:table-cell">M / 30</th>
@@ -59,10 +160,11 @@ function InsumosCombos({orden,setorden,insumo,actions}){
             <tbody>
               {
                 Object.keys(info[0]).length > 0 && info[0].combos && info[0].combos.map((row,key)=>(
-                  <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${(row.insumos && row.insumos.includes(insumo)) ? 'selected' : ''}`}>
+                  <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${(row.insumos && row.insumos.includes(parseInt(insumo))) ? 'selected' : ''}`}>
                   {/* <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${row.insumos.includes(insumo) ? 'selected' : ''}`}> */}
                     {/* <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td> */}
                     <td className="text-center w-[200px]">{row.color_combo}</td>
+                    <td>{row.st}</td>
                     <td>{row.xs}</td>
                     <td>{row.s}</td>
                     <td>{row.m}</td>
@@ -148,9 +250,10 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   )
 }
 
-function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
+function CuerpoCorte(children){
+  let {info,setcorte,position,quitar,form,setopen,openmodal,insumos} = children
   console.log("El chapuloin colorado 2: ",info)
-  const [active,setActive] = useState(-1)
+  const [active,setActive] = useState(1)
   const onclick = (e)=>{
     const position = e.target.dataset.position
     const id = e.target.dataset.id
@@ -166,8 +269,8 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
     console.log("La informacion del corte es:",info)
 
     let total = 0
-    if(['xs','s','m','l','xl','xxl'].includes(name)){
-      total = ['xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+    if(['st','xs','s','m','l','xl','xxl'].includes(name)){
+      total = ['st','xs','s','m','l','xl','xxl'].reduce((c,v)=>{
         if(v !== name){
           c += parseInt(info.combos[indice][v])
         }
@@ -221,7 +324,7 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
 
     const id = e.target.dataset.id
     setcorte(corte=>corte.reduce((c,v)=>{
-      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}] : v.combos})
+      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0,insumos:[]}] : v.combos})
       return c
     },[]))
 
@@ -229,6 +332,35 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
   const deletecorte = (e)=>{
     const position = e.target.dataset.position
     setcorte(corte=>corte.filter((row,key)=>key !== parseInt(position)))
+  }
+  const add_insumo = (e)=>{
+    const c_insumos = e.target.dataset.insumos ?? []
+    const position_combo = e.target.dataset.position ?? -1
+    openmodal({
+      open:true,
+      content: <CombosInsumos actions={(items)=>{  
+        console.log("Informacion de los insumos:",items)
+        // const id = e.target.dataset.id
+        // setcorte(corte=>corte.reduce((c,v)=>{
+        //   c.push({...v,combos:v.idx == id ? [...v.combos,...items.filter(item=>!v.combos.map(combo=>combo.idx_color).includes(item.idx)).map(item=>({id_hojacorte_CAB:'',idx_color:item.idx,color_combo:item.nom,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0}))] : v.combos})
+        //   return c
+        // },[]))
+        // setopen(false)
+      }}
+        closemodal={()=>setopen(false)}
+        insumos={insumos}
+        c_insumos={JSON.parse(c_insumos)}
+        info={info}
+        setcorte={setcorte}
+        position_combo={position_combo}
+        position_corte={position}
+      />,
+      controls: true,
+      header: false,
+      action:async ()=>{
+      }
+    })
+
   }
   return <>
     <div key={position}>
@@ -268,6 +400,7 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
               <thead className="text-left sticky top-0 bg-white">
                 <tr>
                   <th className="lg:table-cell w-[500px]">ColorCombo</th>  
+                  <th className="lg:table-cell">S/T</th>
                   <th className="lg:table-cell">XS / 26</th>
                   <th className="lg:table-cell">S / 28</th>
                   <th className="lg:table-cell">M / 30</th>
@@ -284,6 +417,7 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
                     <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                       <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
                       {/* <td className="text-center">{row.color_combo}</td> */}
+                      <td><input data-name="st" type="number" onChange={editvalue} data-position={key} value={row.st}/></td>
                       <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
                       <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
                       <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
@@ -304,8 +438,8 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
                             </div>
                           </li>
                           <li>
-                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                            <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={add_insumo} data-insumos={JSON.stringify(row.insumos)} data-position={key}>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-arrows-join"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7h5l3.5 5h9.5" /><path d="M3 17h5l3.495 -5" /><path d="M18 15l3 -3l-3 -3" /></svg>
                             </div>
                           </li>
                         </ul>
@@ -325,7 +459,7 @@ function CuerpoCorte({info,setcorte,position,quitar,form,setopen,openmodal}){
                 <tr>
                   <td colSpan={10} >
                     <div className="flex flex-row justify-center">
-                      <div onClick={agregarcombo} data-id={info.idx} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                      <div onClick={agregarcombo} data-id={info.idx} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-full text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                         +
                       </div>
                     </div>
@@ -360,13 +494,18 @@ function SeccionMateriales({info,orden}){
   </>
 }
 
-function SeccionCorte({info,setcorte,form,setopen,openmodal}){
+function SeccionCorte(children){
+  let {info,setcorte,form,setopen,openmodal,orden,insumos} = children
   // console.log("El chapuloin colorado : ",info)
   // useEffect(()=>{
   //   form.current.addEve
   // },[])
   const addcorte = ()=>{
-    setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:[]}]))
+    // setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:[]}]))
+    console.log("Tomate barraza:",orden)
+    console.log("Pecjepojkpep:",orden[0].combos)
+    // setcorte(orden[0].combos.map(row=>({idx:'',numnero_corte:''})))
+    setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:orden[0].combos }]) )
   }
   const deletecorte = ()=>{
     setcorte(corte=>corte.filter((row,key)=>key !== 0))
@@ -377,7 +516,7 @@ function SeccionCorte({info,setcorte,form,setopen,openmodal}){
   return <>
     <div className={`flex flex-col gap-3 pt-2`}>
       {
-        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form} setopen={setopen} openmodal={openmodal} />)
+        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form} setopen={setopen} openmodal={openmodal} insumos={insumos}/>)
         // info.length > 0 && info.map((row,key)=><div key={key} className="w-[100px] h-[80px] bg-red-300">
         //   <input type="text" value={Object.keys(row).length > 0 ? row.numero_corte : ''} />
         // </div>)
@@ -399,26 +538,49 @@ function SeccionMolde({info,orden}){
   console.log("Info molde:",orden)
   return <>
     <div className={`flex flex-col gap-3 pt-4`}>
-      <div className="flex gap-3">
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
+      </div>
+      <hr/>
+      <div className="flex gap-3 flex-col">
         <Input name={'idx'} defaults={info.length > 0 && info[0].idx ? info[0].idx : null}  type="hidden" />
         <Input name={'id_cab_orden'} defaults={orden ?? null}  type="hidden" />
-        <Input name={'responsable'} defaults={info.length > 0 && info[0].responsable ? info[0].responsable : null} title="Responsable" type="text" />
-        <Input name={'molde'} defaults={info.length > 0 && info[0].molde ? info[0].molde : null}  title="Molde" type="text" />
-        <Input name={'muestra'} defaults={info.length > 0 && info[0].muestra ? info[0].muestra : null} title="Muestra" type="text" />
-        <Input name={'lavado'} defaults={info.length > 0 && info[0].lavado ? info[0].lavado : null} title="Lavado" type="text" />
+        <div className="w-[450px]">
+          <Input name={'responsable'} defaults={info.length > 0 && info[0].responsable ? info[0].responsable : null} title="Responsable" type="text" placeholder={'Dato informativo opcional'}/>
+        </div>
+        <div className="w-[650px]">
+          <Input name={'molde'} defaults={info.length > 0 && info[0].molde ? info[0].molde : null}  title="Molde" type="text" placeholder={'Dato informativo opcional'}/>
+        </div>
+        <div className="w-[950px] flex gap-2">
+          <Input name={'muestra'} defaults={info.length > 0 && info[0].muestra ? info[0].muestra : null} title="Muestra" type="text" placeholder={'Dato informativo opcional'}/>
+          <Input name={'lavado'} defaults={info.length > 0 && info[0].lavado ? info[0].lavado : null} title="Lavado" type="text" placeholder={'Dato informativo opcional'}/>
+        </div>
+        {/* <div className="w-[450px]">
+        </div> */}
+        <div className="w-[550px]">
+          <Input name={'cliente_corte'} defaults={info.length > 0 && info[0].cliente_corte ? info[0].cliente_corte : null} title="Aprobación Cliente" type="text" placeholder={'Dato informativo opcional'}/>
+        </div>
       </div>
-      <div className="flex gap-3">
-        <Input name={'cliente_corte'} defaults={info.length > 0 && info[0].cliente_corte ? info[0].cliente_corte : null} title="Aprobación Cliente" type="text" />
-        {/* <Input name={'tizado'} defaults={info.length > 0 && info[0].tizado ? info[0].tizado : null} title="Tizado" type="text" /> */}
-        <InputSelect title={'Tizado'} name={"tizado"} data={
-          [
-            { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true  },
-            { indice: 'OBSERVADO', option: 'OBSERVADO' },
-            { indice: 'FINALIZADO', option: 'FINALIZADO' },
-          ]} 
-          df={Object.keys(info).length > 0 ? info[0].tizado : null} 
-        />
-        <InputSelect title={'Estado'} name={"estado_molde"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_molde : null} />
+      <div className="flex items-center gap-2">
+        <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+        <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
+      </div>
+      <hr/>
+      <div className="flex gap-3 flex-col">
+        <div className="w-[1050px] flex gap-2">
+          <InputSelect title={'Tizado'} name={"tizado"} data={
+            [
+              { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true  },
+              { indice: 'OBSERVADO', option: 'OBSERVADO' },
+              { indice: 'FINALIZADO', option: 'FINALIZADO' },
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].tizado : null} 
+            placeholder={'Dato informativo opcional'}
+          />
+          <InputSelect title={'Estado'} name={"estado_molde"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: '-', option: 'NO CORRESPONDE' }]} df={info.length > 0 ? info[0].estado_molde : null} placeholder={'Dato informativo opcional'}/>
+        </div>
+
       </div>
       <div>
         <TextArea title="Observaciones" name="observaciones_fase_molde" />
@@ -448,8 +610,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
     let total = 0
     console.log("La info cargada es la siguiente:",info)
 
-    if(['xs','s','m','l','xl','xxl'].includes(name)){
-      total = ['xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+    if(['st','xs','s','m','l','xl','xxl'].includes(name)){
+      total = ['st','xs','s','m','l','xl','xxl'].reduce((c,v)=>{
         if(v !== name){
           c += parseInt(info[0].combos[indice][v])
         }
@@ -465,9 +627,9 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
   const agregarcombo = ()=>{
     console.log("info combos:",info)
     if(!(info.length > 0) || !info[0].combos){
-      setorden([{combos: [{id_orden_CAB: null,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0}] }])
+      setorden([{combos: [{id_orden_CAB: null,st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0}] }])
     }else{
-      setorden(orden => ([{ ...orden[0], combos: [...orden[0].combos,{id_orden_CAB: null, color_combo: '',xs:0,s:0,m:0,l:0,xl:0,xxl:0, cantidad_combo: 0 }] }]))
+      setorden(orden => ([{ ...orden[0], combos: [...orden[0].combos,{id_orden_CAB: null, color_combo: '',st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0, cantidad_combo: 0 }] }]))
     }
   }
   const onclickinsumos = (e)=>{
@@ -521,7 +683,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       content: <Productos actions={(items)=>{  
         console.log("Informacion de los insumos:",items)
         setopen(false)
-        setinsumos([...insumos,...items.map(row=>({id_producto_CAB:row.id_producto_CAB,id_subprod_CAB:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0}))])
+        setinsumos([...insumos,...items.map(row=>({id_producto_CAB:row.id_producto_CAB,id_subprod_CAB:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0,stock:row.stock}))])
       }}
         // closemodal={()=>setopen(false)}
       />,
@@ -610,7 +772,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
 
         // setorden([{...info[0],id_receta:items[0].id_producto_CAB,producto:(items[0].rubro + ' ' + items[0].presentacion + ' ' + items[0].modelo),tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro}])
 
-        setorden([{...info[0],id_receta:items[0].id_producto_CAB,tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,marca:items[0].marca,modelos:items[0].modelo,base:items[0].base,estilo:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro,producto:(items[0].rubro + ' ' + items[0].presentacion + ' ' + items[0].modelo)}])
+        setorden([{...info[0],id_receta:items[0].id_producto_CAB,tipo_produccion:items[0].tipoProduccion,tipo_fabricacion:items[0].tipoFabricacion,modelos:items[0].modelo,base:items[0].base,estilo:items[0].estilo,presentacion:items[0].presentacion,rubro:items[0].rubro,producto:(items[0].rubro + ' ' + items[0].presentacion + ' ' + items[0].modelo)}])
 
         // setinsumos([...insumos,...items.map(row=>({id_producto:row.id_producto_CAB,id_subprod:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0}))])
       }}
@@ -621,6 +783,21 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       action:async ()=>{
       }
     })
+  }
+  const nuevamarca = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Marca actions={(item)=>{
+        setorden(orden=>([{...orden[0],marca:item.nom}]))
+        setopen(false)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openmodal(params_modal)
   }
   const translateClasses = ['', 'translate-x-[100%]', 'translate-x-[200%]', 'translate-x-[300%]'];
   return <>
@@ -714,7 +891,11 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             </>
           } */}
         </div>
-        
+        <div className="flex gap-3">
+          <div className="w-[30%]">
+            <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" action={nuevamarca} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          </div>
+        </div>
         <div className="flex items-center gap-2">
           <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
           <span className="inline-block align-middle text-[12px]">Info de la prenda</span>
@@ -749,12 +930,12 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
           </div> */}
         </div>
         <div className="flex gap-3">
-          <div className="w-[350px]">
+          <div className="w-[450px]">
             <Input name={'rubro'} defaults={info.length > 0 ? info[0].rubro : null} title="Articulo" type="text" placeholder={'Numero de la orden'} readonly={true}/>
           </div>
-          <div className="w-[350px]">
+          {/* <div className="w-[350px]">
             <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" placeholder={'Numero de la orden'} readonly={true}/>
-          </div>
+          </div> */}
         <div className="w-[450px]">
             <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" placeholder={'Numero de la orden'} readonly={true}/>
           </div>  
@@ -822,6 +1003,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell w-[500px]">Color</th>
+                <th className="lg:table-cell">S/T</th>
                 <th className="lg:table-cell">XS / 26</th>
                 <th className="lg:table-cell">S / 28</th>
                 <th className="lg:table-cell">M / 30</th>
@@ -837,6 +1019,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                 info.length > 0 && info[0].combos && info[0].combos.length > 0 && info[0].combos.map((row,key)=>(
                   <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                     <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
+                    <td><input data-name="st" type="number" onChange={editvalue} data-position={key} value={row.st}/></td>
                     <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
                     <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
                     <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
@@ -880,19 +1063,20 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             <tfoot className="sticky bottom-0">
               <tr className="h-[45px] bg-white">
                 <td className="font-bold text-center text-[14px]">TOTAL</td>
+                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.st),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xs),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.s),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.m),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.l),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xl),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xxl),0) : 0) : 0}</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0) : 0) : 0}</td>
+                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.st)+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0) : 0) : 0}</td>
                 <td className="font-bold text-center text-[14px]"></td>
               </tr>
               <tr className="bg-white">
                 <td colSpan={10} >
                   <div className="flex flex-row justify-center">
-                    <div onClick={agregarcombo} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                    <div onClick={agregarcombo} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                       +
                     </div>
                   </div>
@@ -918,7 +1102,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                 <th className="lg:table-cell w-[150px]">Consumo</th>
                 <th className="lg:table-cell w-[150px]">Comprometido</th>
                 <th className="lg:table-cell">Stock</th>
-                <th className="lg:table-cell">PorLlegar</th>
+                {/* <th className="lg:table-cell">PorLlegar</th> */}
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
@@ -929,16 +1113,6 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                     <td className="text-center">{row.id_subprod_CAB}</td>
                     <td className="text-center">{row.producto}</td>
                     <td className="text-center">
-                      {/* <InputSelect title={'MotivoProduccion'} name={"motivo"} data={
-                        [
-                          { indice: 'REPO', option: 'REPOSICION', selected: true },
-                          { indice: 'CAMP', option: 'CAMPAÑA'},
-                          { indice: 'TMPO', option: 'TEMPORADA' },
-                          { indice: 'COLC', option: 'COLECCION' },
-                          { indice: 'OTRS', option: 'OTROS' },
-                        ]} 
-                        df={Object.keys(info).length > 0 ? info[0].mnotivo : null} 
-                      /> */}
                       <select onChange={editvalueinsumos} data-name="fases" data-position={key} defaultValue={row.tipodoc}>
                         {
                           fases.map(fs=>
@@ -957,15 +1131,15 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                       {
                         info[0].combos 
                         ? info[0].combos.reduce((c,v) =>{
-                            c = c + ((v.insumos && v.insumos.includes(row.id_subprod_CAB)) ? parseFloat(v.cantidad_combo)*parseFloat(row.cantidad) : 0)
+                            c = c + ((v.insumos && v.insumos.includes(parseInt(row.id_subprod_CAB))) ? parseFloat(v.cantidad_combo)*parseFloat(row.cantidad) : 0)
                             return c
                           },0) 
                         : 0
                       }
                     </td>
                     {/* <td className="text-center">{JSON.stringify(info[0].combos.map(row=>row.cantidad_combo))}</td> */}
-                    <td className="text-center">0</td>
-                    <td className="text-center">0</td>
+                    <td className="text-center">{row.stock ?? 0}</td>
+                    {/* <td className="text-center">0</td> */}
                     <td className="w-[250px]">
                       <ul className="flex flex-row justify-end">
                         <li>
@@ -992,18 +1166,20 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
             </tbody>
             <tfoot className="sticky bottom-0">
               <tr className="h-[45px] bg-white">
+                <td className="font-bold text-center text-[14px]"></td>
+                <td className="font-bold text-center text-[14px]"></td>
                 <td className="font-bold text-center text-[14px]">TOTAL</td>
                 <td className="font-bold text-center text-[14px]"></td>
                 <td className="font-bold text-center text-[14px]"></td>
                 <td className="font-bold text-center text-[14px]"></td>
-                {/* <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0) : 0) : 0}</td> */}
+                <td className="font-bold text-center text-[14px]"></td>
                 <td className="font-bold text-center text-[14px]">{insumos.length > 0 ? insumos.reduce((c,v)=>c+parseFloat(v.cantidad),0) : 0}</td>
                 <td className="font-bold text-center text-[14px]"></td>
               </tr>
               <tr className="bg-white">
                 <td colSpan={11} >
                   <div className="flex flex-row justify-center">
-                    <div onClick={agregarinsumos} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                    <div onClick={agregarinsumos} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                       +
                     </div>
                   </div>
@@ -1075,7 +1251,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
               <tr className="bg-white">
                 <td colSpan={10} >
                   <div className="flex flex-row justify-center">
-                    <div onClick={agregarpedido} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                    <div onClick={agregarpedido} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                       +
                     </div>
                   </div>
@@ -1189,7 +1365,7 @@ export function NewOrden() {
         })
         .then(resp => {
           if(resp.ok){
-            navigate("/main/ordenes/")
+            // navigate("/main/ordenes/")
             toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.mensaje, { theme: "colored" })
@@ -1380,7 +1556,7 @@ export function NewOrden() {
   }
   return (
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
 
           <div className="flex flex-col gap-2">
@@ -1434,7 +1610,7 @@ export function NewOrden() {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
                 }
                 {
-                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form} setopen={setOpen} openmodal={openModal}/>
+                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form} setopen={setOpen} openmodal={openModal} orden={orden} insumos={insumos}/>
                 }
                 {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
@@ -1448,7 +1624,7 @@ export function NewOrden() {
             </form>
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }

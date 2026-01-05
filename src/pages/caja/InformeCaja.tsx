@@ -211,18 +211,19 @@ export default function InformeCaja(){
 
   return(
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
-        <div className="flex flex-col flex-1 pl-2 pr-2 pt-2 h-full">
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
+        <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Informe Caja</h2>
-              <div className="w-[500px]">
+              <div className="w-[500px] mb-1">
                 <Search config={{ width: '200px' }} action={busquedaglobal} />
               </div>
             </div>
           </div>
+          <div className="w-full h-[1px] bg-gray-200"></div>
           <div className="mt-2">
-            <hr />
+            {/* <hr /> */}
             <div className="mt-2 mb-2">
               <form ref={form} className="w-full flex gap-2" onChange={onchange}>
               {
@@ -634,7 +635,7 @@ export default function InformeCaja(){
             </div>
           </div >
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }

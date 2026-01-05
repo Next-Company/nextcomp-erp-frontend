@@ -131,8 +131,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       open:true,
       content: <Rubros actions={(item)=>{  
         setorden(orden=>([{...orden[0],RUBROS:item.idx,rubro:item.nom}]))
-        setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
-        setnom(item.nom + form.current.elements['estilo'].value + ' ' + form.current.elements['modelo'].value)
+        // setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
+        setnom(item.nom + form.current.elements['base'].value + ' ' + form.current.elements['modelo'].value)
         setopen(false)
       }}/>,
       controls: true,
@@ -163,7 +163,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       open:true,
       content: <Estilos actions={(item)=>{
           setorden(orden=>([{...orden[0],estilo:item.nom}]))
-          setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
+          // setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
           setopen(false)
         }}
         filters={form.current.elements['RUBROS'].value ?? ''}
@@ -181,6 +181,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       open:true,
       content: <Bases actions={(item)=>{
           setorden(orden=>([{...orden[0],base:item.nom}]))
+          setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
           setopen(false)
         }}
         filters={form.current.elements['RUBROS'].value ?? ''}
@@ -307,7 +308,9 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
                 { indice: 'PT', option: 'PUNTO', selected: true  },
                 { indice: 'PL', option: 'PLANO' },
                 { indice: 'FT', option: 'FANTASIA' },
-                { indice: 'PC', option: 'PLANO COMPLEMENTO' }
+                { indice: 'PC', option: 'PLANO COMPLEMENTO' },
+                { indice: 'AC', option: 'ACCESORIOS' },
+                { indice: 'HI', option: 'HILOS' }
               ]} 
               df={Object.keys(info).length > 0 ? info[0].tipoFabricacion : null} placeholder={'Seleccione el rubro correpondiente al producto.'}
             />
@@ -337,11 +340,11 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
       </div>
       <hr/>
       <div className="flex flex-col gap-3">
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
           <div className="w-[30%]">
             <Input name={'marca'} title="Marca" defaults={info.length > 0 ? info[0].marca : null} type="text" action={nuevamarca} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
           </div>
-        </div>
+        </div> */}
         <div className="w-[35%]">
           <Input name={'presentacion'} title="TipoTela" defaults={info.length > 0 ? info[0].presentacion : null} type="text" action={nuevapresentacion} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
@@ -370,10 +373,10 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dat
         <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : 10} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         {/* <div className="w-[25%]">
         </div> */}
-        <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+        {/* <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         <div className="w-[45%]">
           <Input name={'proveedor'} title="Proveedor" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        </div>
+        </div> */}
         <div className="w-[35%]">
           <InputSelect title={'Estado'} name={"activo"} formref={form} data={
             [
@@ -635,8 +638,9 @@ export function NewReceta() {
     }
     const articulo = form.current.elements['rubro'].value
     const estilo = form.current.elements['estilo'].value
+    const base = form.current.elements['base'].value
     const modelo = form.current.elements['modelo'].value
-    setNom(articulo + ' ' + estilo + ' ' + modelo)
+    setNom(articulo + ' ' + base + ' ' + modelo)
   }
   const cancelarcreacion = ()=>{
     openModal({
@@ -676,7 +680,7 @@ export function NewReceta() {
   // }
   return (
     <>
-      <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white">
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
@@ -721,7 +725,7 @@ export function NewReceta() {
             </form>
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }
