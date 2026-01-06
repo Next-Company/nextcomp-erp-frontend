@@ -137,21 +137,29 @@ function InsumosCombos({orden,setorden,insumo,actions}){
           <Button action={()=>{}} type={'button'} tipo={'default'}>Cancelar</Button>
           <Button action={updatecombos} type={'button'} tipo={'default'}>Aceptar</Button>
         </div>
-      </div>
+      </div>  
     </>
   )
 }
 
-export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dataimg,setDataimg,setinsumos,insumos,requerimientos,setrequerimientos}){
+export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dataimg,setDataimg,setinsumos,insumos,requerimientos,setrequerimientos,tallaslist,settallaslist}){
+  console.log("Reenderizado del componente SeccionOrden",tallaslist)
   const [tipopedido,setTipopedido] = useState(1)
   const [panelactive,setPanelActive] = useState(0)
   // const [dataimg,setDataimg] = useState([])
   useEffect(()=>{
     const handleSalamandra = (event) => {
-      setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
+      switch(event.detail.name){
+        case 'tipopedido':
+          setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
+          break;
+        case 'tallaslist':
+          settallaslist(info=>info.map(row=> ({...row,selected: row.idx == event.detail.indice ? true : false }) ))
+          break;
+      }
     };
     form.current.addEventListener("salamandra", handleSalamandra);
-  },[])
+  },[])  
 
   const onclick = (e)=>{
     const position = e.target.dataset.position
@@ -163,8 +171,10 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
     let total = 0
     console.log("La info cargada es la siguiente:",info)
 
-    if(['st','xs','s','m','l','xl','xxl'].includes(name)){
-      total = ['st','xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+    if(tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').includes(name)){
+    // if(['st','xs','s','m','l','xl','xxl'].includes(name)){
+      // total = ['st','xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+      total = tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').reduce((c,v)=>{
         if(v !== name){
           c += parseInt(info[0].combos[indice][v])
         }
@@ -179,10 +189,16 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
   }
   const agregarcombo = ()=>{
     console.log("info combos:",info)
+    const initialcombos = tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').reduce((c,v)=>{
+      c[v] = 0
+      return c
+    },{})
     if(!(info.length > 0) || !info[0].combos){
-      setorden([{combos: [{id_orden_CAB: null,st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0}] }])
+      // setorden([{combos: [{id_orden_CAB: null,st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0}] }])
+      setorden([{combos: [{id_orden_CAB: null,...initialcombos, color_combo: '', cantidad_combo: 0}] }])
     }else{
-      setorden(orden => ([{ ...orden[0], combos: [...orden[0].combos,{id_orden_CAB: null, color_combo: '',st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0, cantidad_combo: 0 }] }]))
+      // setorden(orden => ([{ ...orden[0], combos: [...orden[0].combos,{id_orden_CAB: null, color_combo: '',st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0, cantidad_combo: 0 }] }]))
+      setorden(orden => ([{ ...orden[0], combos: [...orden[0].combos,{id_orden_CAB: null, color_combo: '',...initialcombos, cantidad_combo: 0 }] }]))
     }
   }
   const onclickinsumos = (e)=>{
@@ -431,18 +447,6 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
             ]} 
             df={Object.keys(info).length > 0 ? info[0].modalidad_pedido : null} placeholder={'Numero de la orden'}
           />
-          {/* {
-            tipopedido
-            ?
-            <>
-              <Input name={'id_pedido_origen'} defaults={info.length > 0 ? info[0].id_pedido_origen : null} type="hidden"/>
-              <Input name={'nro_pedido_origen'} title={'NroPedido'} defaults={info.length > 0 ? info[0].nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} />
-            </>
-            :
-            <>
-              <Input name={'nro_pedido_adi'} title={'DocReferencia'} defaults={info.length > 0 ? info[0].nro_pedido_adi : null} type="text" />
-            </>
-          } */}
         </div>
         <div className="flex gap-3">
           <div className="w-[30%]">
@@ -466,29 +470,13 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
             <Input name={'presentacion'} defaults={info.length > 0 ? info[0].presentacion : null} title="TipoTela" type="text" placeholder={'Numero de la orden'} readonly={true}/>
             <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" placeholder={'Numero de la orden'} readonly={true}/>
             <Input name={'estilo'} defaults={info.length > 0 ? info[0].estilo : null} title="Estilo" type="text" placeholder={'Estilo de la prenda'} readonly={true}/>
-
             <Input name={'tipo_fabricacion'} defaults={info.length > 0 ? info[0].tipo_fabricacion : null} title="TipoFabricacion" type="text" placeholder={'Tipo de fabricacion'} readonly={true}/>
-            {/* <InputSelect title={'TipoFabricacion'} name={"tipo_fabricacion"} formref={form} data={
-              [
-                { indice: 'PT', option: 'PUNTO', selected: true  },
-                { indice: 'PL', option: 'PLANO' },
-                { indice: 'FT', option: 'FANTASIA' }
-              ]} 
-              df={Object.keys(info).length > 0 ? info[0].tipo_fabricacion : null} placeholder={'Numero de la orden'} 
-            /> */}
-
           </div>
-          {/* <div className="w-[580px]">
-            <Input name={'base'} defaults={info.length > 0 ? info[0].base : null} title="Base" type="text" />
-          </div> */}
         </div>
         <div className="flex gap-3">
           <div className="w-[450px]">
             <Input name={'rubro'} defaults={info.length > 0 ? info[0].rubro : null} title="Articulo" type="text" placeholder={'Numero de la orden'} readonly={true}/>
           </div>
-          {/* <div className="w-[350px]">
-            <Input name={'marca'} defaults={info.length > 0 ? info[0].marca : null} title="Marca" type="text" placeholder={'Numero de la orden'} readonly={true}/>
-          </div> */}
         <div className="w-[450px]">
             <Input name={'modelos'} defaults={info.length > 0 ? info[0].modelos : null} title="Modelo" type="text" placeholder={'Numero de la orden'} readonly={true}/>
           </div>  
@@ -500,21 +488,17 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
         <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
       </div>
       <hr/>
-      {/* <div className="flex gap-3 flex-wrap"> */}
       <div className="flex flex-col gap-3">
-        {/* <div className="w-[200px]">
-          <Input name={'curva'} defaults={info.length > 0 ? info[0].curva : null} title="Curva" type="text" placeholder={'Numero de la orden'}/>
-        </div> */}
         <div className="flex-1 min-w-[300px] flex flex-row gap-3">
           <Input name={'curva'} defaults={info.length > 0 ? info[0].curva : null} title="Curva" type="text" placeholder={'Numero de la orden'}/>
           <Input name={'precio'} defaults={info.length > 0 ? info[0].precio : null} title="Precio" type="number" placeholder={'Numero de la orden'}/>
-          {/* <div className="flex-1 min-w-[500px]">
+          <div className="w-[400px]">
             {
-              fases.length > 0
-              ? <InputMultiSelect title={'Ruta'} name={"ruta_proceso"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} df={info.length > 0 ? info[0].ruta_proceso : null} />
+              tallaslist.length > 0
+              ? <InputSelect title={'TallasFormato'} name={"tallaslist"} data={tallaslist.map(row=>({indice:row.idx,option:row.tallasformateado}))} df={info.length > 0 ? info[0].tallastemplate : null} formref={form} />
               : <Input name={''} defaults={null} title="Ruta" type="text" />
             }
-          </div> */}
+          </div>
           <div className="flex-1 min-w-[400px]">
             {
               materiales.length > 0
@@ -556,13 +540,11 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell w-[500px]">Color</th>
-                <th className="lg:table-cell">S/T</th>
-                <th className="lg:table-cell">XS / 26</th>
-                <th className="lg:table-cell">S / 28</th>
-                <th className="lg:table-cell">M / 30</th>
-                <th className="lg:table-cell">L / 32</th>
-                <th className="lg:table-cell">XL / 34</th>
-                <th className="lg:table-cell">XXL / 36</th>  
+                {
+                  tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map((talla,key)=>(
+                    <th key={key} className="lg:table-cell text-center">{talla.toUpperCase()}</th>
+                  ))
+                }
                 <th className="lg:table-cell">CantidadTotal</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
@@ -572,13 +554,13 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
                 info.length > 0 && info[0].combos && info[0].combos.length > 0 && info[0].combos.map((row,key)=>(
                   <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                     <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
-                    <td><input data-name="st" type="number" onChange={editvalue} data-position={key} value={row.st}/></td>
-                    <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
-                    <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
-                    <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
-                    <td><input data-name="l" type="number" onChange={editvalue} data-position={key} value={row.l}/></td>
-                    <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} value={row.xl}/></td>
-                    <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl}/></td>
+                    { 
+                      tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').map((talla_split,key_talla)=>(
+                        <td key={key_talla}>
+                          <input type="number" onChange={(editvalue)} data-name={talla_split.trim()} data-position={key} value={row[talla_split.trim()]} />
+                        </td>
+                      ))
+                    }
                     <td><input data-name="cantidad_combo" type="number" onChange={(editvalue)} data-position={key} value={row.cantidad_combo}/></td>
                     <td className="w-[250px]">
                       <ul className="flex flex-row justify-end">
@@ -616,14 +598,36 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
             <tfoot className="sticky bottom-0">
               <tr className="h-[45px] bg-white">
                 <td className="font-bold text-center text-[14px]">TOTAL</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.st),0) : 0) : 0}</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xs),0) : 0) : 0}</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.s),0) : 0) : 0}</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.m),0) : 0) : 0}</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.l),0) : 0) : 0}</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xl),0) : 0) : 0}</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.xxl),0) : 0) : 0}</td>
-                <td className="font-bold text-center text-[14px]">{info.length > 0 ? (info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v.st)+parseInt(v.xs)+parseInt(v.s)+parseInt(v.m)+parseInt(v.l)+parseInt(v.xl)+parseInt(v.xxl),0) : 0) : 0}</td>
+                {
+                  tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map((talla,key_talla)=>(
+                    <td key={key_talla} className="font-bold text-center text-[14px]">
+                      {
+                        info.length > 0 
+                        ? info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v[talla.trim()]),0) : 0 
+                        : 0
+                      }
+                    </td>
+                  ))
+                }
+                <td className="font-bold text-center text-[14px]">
+                  {
+                    info.length > 0 
+                    ? 
+                      (
+                        info[0].combos 
+                        ? info[0].combos.reduce((c,v)=>{
+                            const acumulado = tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').reduce((acc,talla_split)=>{
+                              acc = acc + parseInt(v[talla_split.trim()]) 
+                              return acc
+                            },0)
+                            c = c + acumulado
+                            return c
+                          },0) 
+                        : 0
+                      ) 
+                    : 0
+                  }
+                </td>
                 <td className="font-bold text-center text-[14px]"></td>
               </tr>
               <tr className="bg-white">
@@ -638,10 +642,10 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
             </tfoot>
           </table>
         </div>
-                {/* /////////////////////////////
+        {/* /////////////////////////////
         SECCION INSUMOS DE LA PRODUCCION
         ////////////////////////////////
-        // */}
+        // /*/}
         <div className={`h-[500px] flex-1 scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2 ${panelactive !== 1 && 'hidden'}`}>
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
