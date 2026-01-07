@@ -20,6 +20,10 @@
   text-align: center;
 }
 
+div.Toastify__toast-container{
+	width: fit-content;
+}
+
 .scrollbar-special::-webkit-scrollbar {
   width: 6px;
   height: 6px;

@@ -84,6 +84,7 @@ export function NewOrden() {
       data = new FormData()
       data.append('info',JSON.stringify(corte))
       data.append('id',urlparams.id)
+      data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-')))
     }
     if(position == 4){
       console.log("Info de matariales :",materiales)
@@ -155,7 +156,7 @@ export function NewOrden() {
             setMaterialesRef(resp[5])
             setInsumos(resp[6])
             setRequerimientos(resp[7])
-
+            setTallaslist(resp[8])
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -317,7 +318,7 @@ export function NewOrden() {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
                 }
                 {
-                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form} setopen={setOpen} openmodal={openModal} orden={orden} insumos={insumos}/>
+                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form} setopen={setOpen} openmodal={openModal} orden={orden} insumos={insumos} tallaslist={tallaslist}/>
                 }
                 {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>

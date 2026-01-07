@@ -5,7 +5,7 @@ import './App.css'
 // import { Home } from './pages/Home'
 // import { Home2 } from './Home'
 // import { Login } from './Login'
-import { Dasboard } from './Dasboard'
+// import { Dasboard } from './Dasboard'
 // import { Config } from './Config'
 // import Authorization from './Authorization.tsx'
 // import { Directory } from './Directory.tsx'
@@ -33,9 +33,9 @@ import { Dasboard } from './Dasboard'
 // import Informe from './pages/informes/Informe.tsx'
 // import ListaPagos from './pages/pagos/ListaPagos.tsx'
 // import LayoutPagos from './pages/pagos/LayoutPagos.tsx'
-import LayoutMuestras from './pages/muestras/LayoutMuestras.tsx'
-import ListaMuestras from './pages/muestras/ListaMuestras.tsx'
-import NewMuestra from './pages/muestras/NewMuestra.tsx'
+// import LayoutMuestras from './pages/muestras/LayoutMuestras.tsx'
+// import ListaMuestras from './pages/muestras/ListaMuestras.tsx'
+// import NewMuestra from './pages/muestras/NewMuestra.tsx'
 // import { LayoutLetras } from './pages/letras/LayoutLetras.tsx'
 // import ListaLetras from './pages/letras/ListaLetras.tsx'
 // import NewLetraV2 from './pages/letras/NewLetrav2.tsx'
@@ -77,6 +77,7 @@ import NewMuestra from './pages/muestras/NewMuestra.tsx'
 // import LayoutRecetas from './pages/recetas/LayoutRecetas.tsx'
 // import ListaRecetas from './pages/recetas/ListaRecetas.tsx'
 // import { NewReceta } from './pages/recetas/NewReceta.tsx'
+// import LayoutProveedores from './pages/proveedores/LayoutProveedores.tsx'
 // import ListaProveedores from './pages/proveedores/ListaProveedores.tsx'
 // import { NewProveedor } from './pages/proveedores/NewProveedor.tsx'
 // import LayoutMantenimiento from './pages/mantenimiento/LayoutMantenimiento.tsx'
@@ -91,7 +92,7 @@ import NewMuestra from './pages/muestras/NewMuestra.tsx'
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const Home2 = lazy(() => import('./Home').then(module => ({ default: module.Home2 })));
 const Login = lazy(() => import('./Login').then(module => ({ default: module.Login })));
-// const Dasboard = lazy(() => import('./Dasboard').then(module => ({ default: module.Dasboard })));
+const Dasboard = lazy(() => import('./Dasboard').then(module => ({ default: module.Dasboard })));
 const Config = lazy(() => import('./Config').then(module => ({ default: module.Config })));
 const Authorization = lazy(() => import('./Authorization.tsx'));
 const Directory = lazy(() => import('./Directory.tsx').then(module => ({ default: module.Directory })));
@@ -119,9 +120,9 @@ const LayoutInforme = lazy(() => import('./pages/informes/LayoutInforme.tsx'));
 const Informe = lazy(() => import('./pages/informes/Informe.tsx'));
 const ListaPagos = lazy(() => import('./pages/pagos/ListaPagos.tsx'));
 const LayoutPagos = lazy(() => import('./pages/pagos/LayoutPagos.tsx'));
-// const LayoutMuestras = lazy(() => import('./pages/muestras/LayoutMuestras.tsx'));
-// const ListaMuestras = lazy(() => import('./pages/muestras/ListaMuestras.tsx'));
-// const NewMuestra = lazy(() => import('./pages/muestras/NewMuestra.tsx'));
+const LayoutMuestras = lazy(() => import('./pages/muestras/LayoutMuestras.tsx'));
+const ListaMuestras = lazy(() => import('./pages/muestras/ListaMuestras.tsx'));
+const NewMuestra = lazy(() => import('./pages/muestras/NewMuestra.tsx'));
 const LayoutLetras = lazy(() => import('./pages/letras/LayoutLetras.tsx').then(module => ({ default: module.LayoutLetras })));
 const ListaLetras = lazy(() => import('./pages/letras/ListaLetras.tsx'));
 const NewLetraV2 = lazy(() => import('./pages/letras/NewLetrav2.tsx'));
@@ -187,7 +188,7 @@ const routes = [
   },
   {
     path: "/main",
-    element: <Dasboard />,
+    element: <Suspense><Dasboard /></Suspense>,
     children: [
       {
         path: "unauthorized", element: <Unauthorized />
@@ -244,7 +245,7 @@ const routes = [
       },
       {
         path: "ordenes",
-        element: <Suspense><PrivateRoute><LayoutOrden /></PrivateRoute></Suspense>,
+        element: <PrivateRoute><LayoutOrden /></PrivateRoute>,
         children: [
           { path: "", element: <ListaOrdenes /> },
           { path: "nuevo", element: <NewOrden />, error: <ErrorController/> },

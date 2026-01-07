@@ -153,7 +153,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
         case 'tipopedido':
           setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
           break;
-        case 'tallaslist':
+        case 'tallasbase':
           settallaslist(info=>info.map(row=> ({...row,selected: row.idx == event.detail.indice ? true : false }) ))
           break;
       }

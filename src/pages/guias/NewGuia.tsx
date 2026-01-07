@@ -230,6 +230,7 @@ export default function NewGuia(){
   const [reprogramacion,setReprogramacion] = useState([])
   const [fases,setFases] = useState([])
   const [distribucion,setDistribucion] = useState('TLL')
+  const [tallasbase,setTallasbase] = useState([])
   // const [infop,setInfop] = useState([])
   const [servicio,setServicio] = useState('CONFECCION')
   const navigate = useNavigate()
@@ -279,7 +280,7 @@ export default function NewGuia(){
         .then(resp => {
           console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          navigate('/main/guias/')
+          // navigate('/main/guias/')
           if(resp.ok){
             toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{
@@ -430,7 +431,7 @@ export default function NewGuia(){
     let params_modal = null
     params_modal = {
       open:true,
-      content: <Ordenes actions={(item)=>{
+      content: <Ordenes mode={1} actions={(item)=>{
         console.log("INfor de la orden es:",item)
         setOpen(false)
         setOpenloader(true)

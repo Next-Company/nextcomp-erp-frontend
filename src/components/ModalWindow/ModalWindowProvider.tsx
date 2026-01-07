@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { ModalWindow } from "./ModalWindow"
 import { ModalWindowContext } from "./ModalWindowContext"
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { LoadingWindow } from "../LoadingWindow/LoadingWindow";
 
 export function ModalWindowProvider({ children }) {
