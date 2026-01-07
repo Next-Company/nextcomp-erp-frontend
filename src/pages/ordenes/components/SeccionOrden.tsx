@@ -171,15 +171,15 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
     let total = 0
     console.log("La info cargada es la siguiente:",info)
 
-    if(tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').includes(name)){
+    if(tallaslist.filter(talla=>talla.selected)[0]?.tallasformateado.split('-').includes(name)){
     // if(['st','xs','s','m','l','xl','xxl'].includes(name)){
       // total = ['st','xs','s','m','l','xl','xxl'].reduce((c,v)=>{
-      total = tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').reduce((c,v)=>{
+      total = tallaslist.filter(talla=>talla.selected)[0]?.tallasformateado.split('-').reduce((c,v)=>{
         if(v !== name){
           c += parseInt(info[0].combos[indice][v])
         }
         return c
-      },0)
+      },0) ?? 0
       total += parseInt(e.target.value)
       console.log("El total es el siguiente:",total)
       setorden(orden => ([{...orden[0], combos: orden[0].combos.map((row,key)=>key == indice ? {...row,[e.target.dataset.name]:e.target.value,cantidad_combo:total} : row) }]))
@@ -189,10 +189,10 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
   }
   const agregarcombo = ()=>{
     console.log("info combos:",info)
-    const initialcombos = tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').reduce((c,v)=>{
+    const initialcombos = tallaslist.filter(talla=>talla.selected)[0]?.tallasformateado.split('-').reduce((c,v)=>{
       c[v] = 0
       return c
-    },{})
+    },{}) ?? {}
     if(!(info.length > 0) || !info[0].combos){
       // setorden([{combos: [{id_orden_CAB: null,st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0, color_combo: '', cantidad_combo: 0}] }])
       setorden([{combos: [{id_orden_CAB: null,...initialcombos, color_combo: '', cantidad_combo: 0}] }])
@@ -495,7 +495,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
           <div className="w-[400px]">
             {
               tallaslist.length > 0
-              ? <InputSelect title={'TallasFormato'} name={"tallaslist"} data={tallaslist.map(row=>({indice:row.idx,option:row.tallasformateado}))} df={info.length > 0 ? info[0].tallastemplate : null} formref={form} />
+              ? <InputSelect title={'TallasFormato'} name={"tallasbase"} data={tallaslist.map(row=>({indice:row.idx,option:row.tallasformateado}))} df={info.length > 0 ? info[0].tallastemplate : null} formref={form} />
               : <Input name={''} defaults={null} title="Ruta" type="text" />
             }
           </div>
@@ -541,7 +541,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
               <tr>
                 <th className="lg:table-cell w-[500px]">Color</th>
                 {
-                  tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map((talla,key)=>(
+                  tallaslist.length > 0 && tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map((talla,key)=>(
                     <th key={key} className="lg:table-cell text-center">{talla.toUpperCase()}</th>
                   ))
                 }
@@ -555,7 +555,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
                   <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                     <td><input type="text" onChange={(editvalue)} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
                     { 
-                      tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').map((talla_split,key_talla)=>(
+                      tallaslist.length > 0 && tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').map((talla_split,key_talla)=>(
                         <td key={key_talla}>
                           <input type="number" onChange={(editvalue)} data-name={talla_split.trim()} data-position={key} value={row[talla_split.trim()]} />
                         </td>
@@ -599,7 +599,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
               <tr className="h-[45px] bg-white">
                 <td className="font-bold text-center text-[14px]">TOTAL</td>
                 {
-                  tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map((talla,key_talla)=>(
+                  tallaslist.length > 0 && tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map((talla,key_talla)=>(
                     <td key={key_talla} className="font-bold text-center text-[14px]">
                       {
                         info.length > 0 
@@ -616,10 +616,10 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
                       (
                         info[0].combos 
                         ? info[0].combos.reduce((c,v)=>{
-                            const acumulado = tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').reduce((acc,talla_split)=>{
+                            const acumulado = tallaslist.filter(row=>row.selected)[0]?.tallasformateado.split('-').reduce((acc,talla_split)=>{
                               acc = acc + parseInt(v[talla_split.trim()]) 
                               return acc
-                            },0)
+                            },0) ?? 0
                             c = c + acumulado
                             return c
                           },0) 

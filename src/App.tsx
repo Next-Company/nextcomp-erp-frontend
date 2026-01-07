@@ -5,7 +5,7 @@ import './App.css'
 // import { Home } from './pages/Home'
 // import { Home2 } from './Home'
 // import { Login } from './Login'
-// import { Dasboard } from './Dasboard'
+import { Dasboard } from './Dasboard'
 // import { Config } from './Config'
 // import Authorization from './Authorization.tsx'
 // import { Directory } from './Directory.tsx'
@@ -33,9 +33,9 @@ import './App.css'
 // import Informe from './pages/informes/Informe.tsx'
 // import ListaPagos from './pages/pagos/ListaPagos.tsx'
 // import LayoutPagos from './pages/pagos/LayoutPagos.tsx'
-// import LayoutMuestras from './pages/muestras/LayoutMuestras.tsx'
-// import ListaMuestras from './pages/muestras/ListaMuestras.tsx'
-// import NewMuestra from './pages/muestras/NewMuestra.tsx'
+import LayoutMuestras from './pages/muestras/LayoutMuestras.tsx'
+import ListaMuestras from './pages/muestras/ListaMuestras.tsx'
+import NewMuestra from './pages/muestras/NewMuestra.tsx'
 // import { LayoutLetras } from './pages/letras/LayoutLetras.tsx'
 // import ListaLetras from './pages/letras/ListaLetras.tsx'
 // import NewLetraV2 from './pages/letras/NewLetrav2.tsx'
@@ -91,7 +91,7 @@ import './App.css'
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const Home2 = lazy(() => import('./Home').then(module => ({ default: module.Home2 })));
 const Login = lazy(() => import('./Login').then(module => ({ default: module.Login })));
-const Dasboard = lazy(() => import('./Dasboard').then(module => ({ default: module.Dasboard })));
+// const Dasboard = lazy(() => import('./Dasboard').then(module => ({ default: module.Dasboard })));
 const Config = lazy(() => import('./Config').then(module => ({ default: module.Config })));
 const Authorization = lazy(() => import('./Authorization.tsx'));
 const Directory = lazy(() => import('./Directory.tsx').then(module => ({ default: module.Directory })));
@@ -119,9 +119,9 @@ const LayoutInforme = lazy(() => import('./pages/informes/LayoutInforme.tsx'));
 const Informe = lazy(() => import('./pages/informes/Informe.tsx'));
 const ListaPagos = lazy(() => import('./pages/pagos/ListaPagos.tsx'));
 const LayoutPagos = lazy(() => import('./pages/pagos/LayoutPagos.tsx'));
-const LayoutMuestras = lazy(() => import('./pages/muestras/LayoutMuestras.tsx'));
-const ListaMuestras = lazy(() => import('./pages/muestras/ListaMuestras.tsx'));
-const NewMuestra = lazy(() => import('./pages/muestras/NewMuestra.tsx'));
+// const LayoutMuestras = lazy(() => import('./pages/muestras/LayoutMuestras.tsx'));
+// const ListaMuestras = lazy(() => import('./pages/muestras/ListaMuestras.tsx'));
+// const NewMuestra = lazy(() => import('./pages/muestras/NewMuestra.tsx'));
 const LayoutLetras = lazy(() => import('./pages/letras/LayoutLetras.tsx').then(module => ({ default: module.LayoutLetras })));
 const ListaLetras = lazy(() => import('./pages/letras/ListaLetras.tsx'));
 const NewLetraV2 = lazy(() => import('./pages/letras/NewLetrav2.tsx'));
@@ -222,7 +222,7 @@ const routes = [
       },
       {
         path: "muestras",
-        element: <Suspense><PrivateRoute><LayoutMuestras /></PrivateRoute></Suspense>,
+        element: <PrivateRoute><LayoutMuestras /></PrivateRoute>,
         children: [
           { path: "", element: <ListaMuestras /> },
           { path: "nuevo", element: <NewMuestra />, error: <ErrorController/> },

@@ -108,7 +108,7 @@ export function NewOrden() {
         })
         .then(resp => {
           if(resp.ok){
-            navigate("/main/ordenes/")
+            // navigate("/main/ordenes/")
             toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.mensaje, { theme: "colored" })
@@ -176,11 +176,13 @@ export function NewOrden() {
       ])
       .then(resp=>{
         console.log("El resultado de la consulta es:",resp)
+        setTallaslist(resp[3])
+        // setTallaslist(resp[3].map((item,key)=>key == 0 ? {...item,selected:true} : item))
         setFases(resp[0])
         setMaterialesRef(resp[1])
         setOrden([{oc:resp[2].resp}])
         // setTallaslist(resp[3])
-        setTallaslist(resp[3].map((item,key)=>key == 0 ? {...item,selected:true} : item))
+        
         // console.log("El correlativo actual es:",resp[2])
       })
       .catch(err=>{
@@ -309,7 +311,7 @@ export function NewOrden() {
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
-                  position == 0 && tallaslist.length > 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materialesref} dataimg={dataimg} setDataimg={setDataimg} setinsumos={setInsumos} insumos={insumos} requerimientos={requerimientos} setrequerimientos={setRequerimientos} tallaslist={tallaslist} settallaslist={setTallaslist}/>
+                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materialesref} dataimg={dataimg} setDataimg={setDataimg} setinsumos={setInsumos} insumos={insumos} requerimientos={requerimientos} setrequerimientos={setRequerimientos} tallaslist={tallaslist} settallaslist={setTallaslist}/>
                 }
                 {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
