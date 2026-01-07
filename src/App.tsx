@@ -77,8 +77,8 @@ import ListaRecetas from './pages/recetas/ListaRecetas.tsx'
 import { NewReceta } from './pages/recetas/NewReceta.tsx'
 import ListaProveedores from './pages/proveedores/ListaProveedores.tsx'
 import { NewProveedor } from './pages/proveedores/NewProveedor.tsx'
-import LayoutGps from './pages/gps/LayoutGps.tsx'
-import TrackWorkers from './pages/gps/TrackWorkers.tsx'
+import LayoutLocales from './pages/locales/LayoutLocales.tsx'
+import TrackWorkers from './pages/locales/TrackWorkers.tsx'
 
 const routes = [
   {
@@ -305,8 +305,8 @@ const routes = [
         ]
       },
       {
-        path: "gps",
-        element: <PrivateRoute><LayoutGps/></PrivateRoute>,
+        path: "locales",
+        element: <PrivateRoute><LayoutLocales/></PrivateRoute>,
         children: [
           { path: "tracker",element: <TrackWorkers />, error: <ErrorController/> },
         ]

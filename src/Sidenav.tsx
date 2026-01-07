@@ -294,7 +294,7 @@ export function Sidenav() {
               </div>
             </NavLink>
             <NavLink
-              to="gps/tracker/"
+              to="locales/tracker/"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "active" : "default"
               }

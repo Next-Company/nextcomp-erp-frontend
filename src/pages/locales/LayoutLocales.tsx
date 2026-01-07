@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-export default function LayoutGps(){
+export default function LayoutLocales(){
   return(
     <>
       <Outlet/>
