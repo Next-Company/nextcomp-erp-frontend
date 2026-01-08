@@ -169,7 +169,7 @@ const DetailResultContextBox = ({setshowdetail})=>{
     setshowdetail(false)
   }
   useEffect(()=>{
-    // Consulta({url:'locales/getInfoLocal'})
+    Consulta({url:'locales/getprocesosencurso/' + 22})
   },[])
   return(
     <>
@@ -291,8 +291,8 @@ const ResultContentBox = ({result,changepositionmap})=>{
                 <div className='flex flex-row gap-2 pointer-events-none'>
                   <div className='flex-1 text-left'>
                     <div className='capitalize text-[16px] font-bold text-wrap'>{row.nom}</div>
-                    <div></div>
-                    <div></div>
+                    <div>{row.idx}</div>
+                    <div>{JSON.stringify(row)}</div>
                     <div></div>
                   </div>
                   <div className='bg-gray-200 rounded-lg w-[80px] h-[80px]'></div>
@@ -328,7 +328,7 @@ const ControlsMap = ({talleres,settalleres})=>{
     console.log("Dentro de los clickactions!")
     setLoading(true)
     try {
-      await Consulta({url: 'locales/getinfo/' + search})
+      await Consulta({url: 'locales/getlocalesseguimiento/' + search})
       .then((resp)=>{
         settalleres(resp)
         setShowresultbox(true)
