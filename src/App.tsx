@@ -5,7 +5,7 @@ import './App.css'
 // import { Home } from './pages/Home'
 // import { Home2 } from './Home'
 // import { Login } from './Login'
-// import { Dasboard } from './Dasboard'
+import { Dasboard } from './Dasboard'
 // import { Config } from './Config'
 // import Authorization from './Authorization.tsx'
 // import { Directory } from './Directory.tsx'
@@ -92,7 +92,7 @@ import './App.css'
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const Home2 = lazy(() => import('./Home').then(module => ({ default: module.Home2 })));
 const Login = lazy(() => import('./Login').then(module => ({ default: module.Login })));
-const Dasboard = lazy(() => import('./Dasboard').then(module => ({ default: module.Dasboard })));
+// const Dasboard = lazy(() => import('./Dasboard').then(module => ({ default: module.Dasboard })));
 const Config = lazy(() => import('./Config').then(module => ({ default: module.Config })));
 const Authorization = lazy(() => import('./Authorization.tsx'));
 const Directory = lazy(() => import('./Directory.tsx').then(module => ({ default: module.Directory })));

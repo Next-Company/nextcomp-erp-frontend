@@ -9,6 +9,7 @@ import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import { InputTest } from "../../components/Atoms/Input/InputTest"
+import Ordenes from "../../components/Common/Ordenes"
 
 export default function NewMuestra(){
   const [estampado,setEstampado] = useState([])
@@ -144,6 +145,22 @@ export default function NewMuestra(){
     }
     openModal(params_modal)
   }
+  const busquedaOrdenProduccion = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Ordenes actions={(item)=>{
+        console.log("INfor de la orden es:",item)
+        setInfo(info=>({...info,id_orden:item.idx,orden:item.oc}))
+        setOpen(false)
+      }}/>,
+      controls: true,
+      header: false,
+      action:()=>{
+      }
+    }
+    openModal(params_modal)
+  }
   useEffect(()=>{
     console.log("Los valores del nuevo registro son:",registros)
   },[registros])
@@ -166,17 +183,19 @@ export default function NewMuestra(){
             <hr />
           </div>
           <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
-
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden h-full">
-              <div className={` flex-col gap-3 flex flex-1 overflow-y-scroll scrollbar-special`}>
-                <div className="flex gap-3">
+              <div className={`flex-col gap-3 flex flex-1 overflow-y-scroll scrollbar-special`}>
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Información principal de la guia</span>
+                </div>
+                <hr/>
+                <div className="flex flex-col gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  {/* <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" /> */}
                   <div className="w-[320px]">
                     <InputSelect title={'Tipo'} name={"tipo"} data={
                       [
-                        { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true }, 
-                        // { indice: 'ACABADOS', option: 'ACABADOS' },
+                        { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true },
                         { indice: 'REPARACION', option: 'REPARACION' },
                         { indice: 'PRESTAMO', option: 'PRESTAMO' },
                         { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },
@@ -185,34 +204,35 @@ export default function NewMuestra(){
                       df={Object.keys(info).length > 0 ? info.tipo : null} 
                       placeholder={'Info referencial'}
                     />
-                    
                   </div>
-                  {/* <InputSelect title={'Servicio'} name={"servicio"} data={
-                    [
-                      { indice: 'CONFECCION', option: 'CONFECCION', selected: true }, 
-                      { indice: 'OJAL', option: 'OJAL' }, 
-                      { indice: 'ESTAMPADO', option: 'ESTAMPADO' },
-                      { indice: 'LAVANDERIA', option: 'LAVANDERIA' },
-                      { indice: 'BORDADO', option: 'BORDADO' },
-                      { indice: 'ACABADOS', option: 'ACABADOS' },
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.servicio : null} 
-                  /> */}
-                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  <div className="flex flex-row gap-3 w-[45%]">
+                    <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
+                    <Input name={'id_orden'} defaults={Object.keys(info).length > 0 ? info.id_orden : null} type="hidden" />
+                    <Input name={'orden'} title="OrdenProducción" defaults={Object.keys(info).length > 0 ? info.orden : null} type="text" verify="true" action={busquedaOrdenProduccion} mode={'static'} placeholder={'Info referencial'}/>
+                    <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  </div>
+                  <div className="flex flex-row gap-3 w-[60%]">
+                    <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                    <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Info referencial'}/>
+                  </div>
                 </div>
-                <div className="flex flex-row gap-3">
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Info referencial'}/>
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Información principal de la guia</span>
+                </div>
+                <hr/>
+                <div className="flex gap-3 w-[58%]">
                   <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" placeholder={'Info referencial'}/>
-                  <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" placeholder={'Info referencial'}/>
+                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true" placeholder={'Info referencial'}/>                                   
                 </div>
-                <div className="flex flex-row gap-3">
+                <div className="flex flex-row gap-3 w-[80%]">
+                  <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" placeholder={'Info referencial'}/>
                   <Input name={'destino'} title="Destino" defaults={Object.keys(info).length > 0 ? info.destino : null} type="text" verify="true" placeholder={'Info referencial'}/>
                   <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" placeholder={'Info referencial'}/>
+                </div>
+                <div className="flex flex-row gap-3 w-[55%]">
                   <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" verify="true" placeholder={'Info referencial'}/>
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
@@ -224,9 +244,14 @@ export default function NewMuestra(){
                     placeholder={'Info referencial'}
                   />
                 </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de los artículos</span>
+                </div>
+                {/* <hr/> */}
                 <div>
-                  <span>Artículos:</span>
-                  <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
+                  {/* <span>Artículos:</span> */}
+                  <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-1"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>

@@ -131,20 +131,20 @@ export default function ListaGuias() {
                 method: 'DELETE'
               }
             })
-              .then(resp => {
-                // setOrdenes(resp)
-                toast.success('Guia eliminado con éxito!', { theme: "colored" })
-                // setRefresh(true)
-                recargarinfo()
-                setOpenloader(false)
-              })
-              .catch(() => {
-                setOpenloader(false)
-                // logout()
-              })
-              .finally(() => {
-                setOpenloader(false)
-              })
+            .then(resp => {
+              // setOrdenes(resp)
+              toast.success('Guia eliminado con éxito!', { theme: "colored" })
+              // setRefresh(true)
+              recargarinfo()
+              setOpenloader(false)
+            })
+            .catch(() => {
+              setOpenloader(false)
+              // logout()
+            })
+            .finally(() => {
+              setOpenloader(false)
+            })
           }
         }
         // openModal(params_modal)
