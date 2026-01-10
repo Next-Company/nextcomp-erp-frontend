@@ -18,6 +18,7 @@ export default function NewMuestra(){
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros,setRegistros] = useState([])
+  const [tallasbase,setTallasbase] = useState(['st','xs','s','m','l','xl','xxl'])
   const navigate = useNavigate()
 
   const onsubmit = (e)=>{
@@ -56,7 +57,7 @@ export default function NewMuestra(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/muestras/')
+          // navigate('/main/muestras/')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
@@ -81,6 +82,7 @@ export default function NewMuestra(){
             console.log("info guia :",resp)
             setInfo(resp[0])
             setRegistros(resp[1])
+            setTallasbase(resp[2].tallas.map(row=>row.desc))
             setOpenloader(false)
             console.log("Opportynity never die!!!!",resp)
           })
@@ -98,23 +100,24 @@ export default function NewMuestra(){
 
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
-    setRegistros([...registros,{item:0,articulo:'',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
+    const tallasinit = tallasbase.reduce((c,v)=>{
+      c[v] = 0
+      return c
+    },[])
+    setRegistros([...registros,{item:0,articulo:'',...tallasinit,cantidad:0}])
   }
 
   const onclick = (e)=>{
     const action = e.target.dataset.action
     const position = e.target.dataset.position
     switch(action){
-
       case 'delete':
         setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
         console.log("Eliminado registros de la fila ",position)
         break;
       default :
     }
-
     console.log("La accion seleccionada es la siguiente:",action)
-
   }
   const editvalue = (e)=>{
     let column = e.target.dataset.name
@@ -149,9 +152,10 @@ export default function NewMuestra(){
     let params_modal = null
     params_modal = {
       open:true,
-      content: <Ordenes actions={(item)=>{
+      content: <Ordenes mode={1} actions={(item)=>{
         console.log("INfor de la orden es:",item)
-        setInfo(info=>({...info,id_orden:item.idx,orden:item.oc}))
+        setInfo(info=>({...info,id_orden_CAB:item.idx,orden_ref:item.oc,modelo:item.modelos,marca:item.marca,producto:item.producto}))
+        setTallasbase(item.tallasbase.map(row=>row.desc))
         setOpen(false)
       }}/>,
       controls: true,
@@ -207,8 +211,8 @@ export default function NewMuestra(){
                   </div>
                   <div className="flex flex-row gap-3 w-[45%]">
                     <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                    <Input name={'id_orden'} defaults={Object.keys(info).length > 0 ? info.id_orden : null} type="hidden" />
-                    <Input name={'orden'} title="OrdenProducción" defaults={Object.keys(info).length > 0 ? info.orden : null} type="text" verify="true" action={busquedaOrdenProduccion} mode={'static'} placeholder={'Info referencial'}/>
+                    <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" />
+                    <Input name={'orden_ref'} title="OrdenProducción" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" verify="true" action={busquedaOrdenProduccion} mode={'static'} placeholder={'Info referencial'}/>
                     <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true" placeholder={'Info referencial'}/>
                   </div>
                   <div className="flex flex-row gap-3 w-[60%]">
@@ -256,12 +260,17 @@ export default function NewMuestra(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell w-[500px]">Descripcion</th>  
-                          <th className="lg:table-cell">XS / 26</th>
+                          {
+                            tallasbase.map(talla=>
+                              <th className="lg:table-cell">{talla.toUpperCase()}</th>
+                            )
+                          }
+                          {/* <th className="lg:table-cell">XS / 26</th>
                           <th className="lg:table-cell">S / 28</th>
                           <th className="lg:table-cell">M / 30</th>
                           <th className="lg:table-cell">L / 32</th>
                           <th className="lg:table-cell">XL / 34</th>
-                          <th className="lg:table-cell">XXL / 36</th>
+                          <th className="lg:table-cell">XXL / 36</th> */}
                           <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Adicional</th>
                           <th className="lg:table-cell">Acciones</th>
@@ -272,12 +281,20 @@ export default function NewMuestra(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
-                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xs}/></td>
+
+                              {
+                                tallasbase.map(talla=>
+                                  <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} step={0.01} value={row[talla]}/></td>    
+                                )
+                              }
+
+                              {/* <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xs}/></td>
                               <td><input data-name="s" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.s}/></td>
                               <td><input data-name="m" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.m}/></td>
                               <td><input data-name="l" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.l}/></td>
                               <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xl}/></td>
-                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xxl}/></td>
+                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xxl}/></td> */}
+                              
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" step={0.01} value={row.cantidad} /></td>
                               <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
                               <td className="w-[250px]">
@@ -315,7 +332,7 @@ export default function NewMuestra(){
                       </tbody>
                       <tfoot className="sticky bottom-0">
                         <tr>
-                          <td colSpan={10} >
+                          <td colSpan={11} >
                             <div className="flex flex-row justify-center">
                               <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
