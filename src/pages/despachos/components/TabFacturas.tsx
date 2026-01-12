@@ -1,0 +1,114 @@
+import { useContext } from "react"
+import DespachosContext from "../context/DespachosContexto"
+
+export default function TabFacturas(){
+  const {facturas,nuevoregistro,setFacturas} = useContext(DespachosContext)
+  const editfacturas = (e) => {
+    const column = e.target.dataset.name
+    const position = e.target.dataset.position
+    // console.log("Los nuevos registros son:",[...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
+    // setFacturas([...facturas.map((item, key) => position == key ? { ...item, [column]: (column == 'isprototipo' ? e.target.checked : e.target.value) } : item)])
+    setFacturas([...facturas.map((item, key) => position == key ? { ...item, [column]: e.target.value } : item)])
+  }
+  const onclick = (e) => {
+    const action = e.target.dataset.action
+    const position = e.target.dataset.position
+    switch (action) {
+      case 'delete':
+        setFacturas(facturas.filter((row, key) => key !== parseInt(position)))
+        break;
+    }
+  }
+  return(
+    <div className="flex-1 h-[100%] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
+      <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+        <thead className="text-left sticky top-0 bg-white">
+          <tr>
+            <th className="lg:table-cell">TipoDoc</th>
+            <th className="lg:table-cell">Moneda</th>
+            <th className="lg:table-cell">Serie</th>
+            <th className="lg:table-cell">Numero</th>
+            <th className="lg:table-cell">FecEmisión</th>
+            <th className="lg:table-cell">TotalUnidades</th>
+            <th className="lg:table-cell">ImporteBruto</th>
+            <th className="lg:table-cell">BaseImponible</th>
+            <th className="lg:table-cell">MontoInafecto</th>
+            <th className="lg:table-cell">Igv</th>
+            <th className="lg:table-cell">MontoTotal</th>
+            <th className="lg:table-cell">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            facturas.length > 0 && facturas.map((row, key) => (
+              <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center [&_select]:text-center [&_select]:p-[2px] [&_select]:w-full [&_select]:bg-transparent focus-visible:[&select]:outline-[0px] focus-visible:[&select]:bg-gray-200 focus-visible:[&select]:border-black focus-visible:[&select]:bg-transparent focus:[&_select]:outline-none">
+                <td>
+                  <select onChange={editfacturas} data-name="tipodoc" data-position={key} defaultValue={row.tipodoc}>
+                    <option value="1" selected={row.tipodoc == '1' && true}>FACTURA</option>
+                    <option value="2" selected={row.tipodoc == '2' && true}>NOTA CREDITO</option>
+                    <option value="3" selected={row.tipodoc == '3' && true}>NOTA DEBITO</option>
+                  </select>
+                </td>
+                <td className="w-[100px]">
+                  <select onChange={editfacturas} data-name="moneda" data-position={key} defaultValue={row.moneda}>
+                    <option value="MN" selected={row.tipodoc == 'MN' && true}>SOLES</option>
+                    <option value="USD" selected={row.tipodoc == 'USD' && true}>DOLARES</option>
+                  </select>
+                </td>
+                <td><input type="text" onChange={editfacturas} data-name="serie" data-position={key} defaultValue={row.serie} /></td>
+                <td><input type="text" onChange={editfacturas} data-position={key} data-name="numero" defaultValue={row.numero} /></td>
+                <td><input type="date" onChange={editfacturas} data-position={key} data-name="fec_emision" defaultValue={row.fec_emision} /></td>
+                <td><input type="number" onChange={editfacturas} data-position={key} data-name="unidades" defaultValue={row.unidades} /></td>
+                <td><input type="number" onChange={editfacturas} data-position={key} data-name="importe_bruto" step={0.01} defaultValue={row.importe_bruto} /></td>
+                <td><input type="number" onChange={editfacturas} data-position={key} data-name="base_imponible" step={0.01} defaultValue={row.base_imponible} /></td>
+                <td><input type="number" onChange={editfacturas} data-position={key} data-name="monto_inafecto" step={0.01} defaultValue={row.monto_inafecto} /></td>
+                <td><input type="number" onChange={editfacturas} data-position={key} data-name="igv" step={0.01} defaultValue={row.igv} /></td>
+                <td><input type="number" onChange={editfacturas} data-position={key} data-name="importe_total" step={0.01} defaultValue={row.importe_total} /></td>
+                <td className="w-[250px]">
+                  <ul className="flex flex-row justify-end">
+                    <li>
+                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={() => { }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}} data-position={key}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                      </div>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+        <tfoot className="sticky bottom-0">
+          <tr>
+            <td colSpan={12} >
+              <div className="flex flex-row justify-center">
+                <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                  +
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  )
+}

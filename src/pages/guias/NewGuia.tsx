@@ -252,7 +252,7 @@ export default function NewGuia(){
         console.log("El input problematico es :",element)
         toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
         return 0
-      }
+        }
     }
     openModal({
       open: true,
@@ -280,7 +280,7 @@ export default function NewGuia(){
         .then(resp => {
           console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          // navigate('/main/guias/')
+          navigate('/main/guias/')
           if(resp.ok){
             toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{

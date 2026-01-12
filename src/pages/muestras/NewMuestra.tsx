@@ -57,7 +57,7 @@ export default function NewMuestra(){
         }})
         .then(resp => {
           setOpenloader(false)
-          // navigate('/main/muestras/')
+          navigate('/main/muestras/')
           toast.success('Estampado guardado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
