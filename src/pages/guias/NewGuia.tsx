@@ -430,7 +430,7 @@ export default function NewGuia(){
     let params_modal = null
     params_modal = {
       open:true,
-      content: <Ordenes actions={(item)=>{
+      content: <Ordenes mode={1} actions={(item)=>{
         console.log("INfor de la orden es:",item)
         setOpen(false)
         setOpenloader(true)
