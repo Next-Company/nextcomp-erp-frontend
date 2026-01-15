@@ -377,7 +377,8 @@ export default function NewMovimiento(){
             unidad:row.unidad,
             peso:0,
             rollos:0,
-            tipo:row.tipo
+            tipo:row.tipo,
+            stock:row.stock
           }))
         ])
       }}
