@@ -5,119 +5,20 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
-import { colorfase } from "../../utils/utils";
 
-const apiUrl = import.meta.env.VITE_API_URL
-// const colorfase = {
-//   'CONFECCION':'bg-purple-500',
-//   'ESTAMPADO':'bg-gray-500',
-//   'ACABADOS':'bg-red-500',
-//   'LAVANDERIA':'bg-green-500',
-//   'MOLDES':'bg-orange-500',
-//   'OJAL BOTON':'bg-blue-500',
-//   'CORTE':'bg-rose-400',
-//   'BORDADO':'bg-yellow-500',
-// }
-const CuerpoInforme_ = ({ cuerpo }) => {
-  return (
-    <>
-      <iframe src="http://192.168.18.20:4000/produccion/showinformeservicio/16" className="w-[60vw] h-[60vh]"></iframe>
-      {/* <div dangerouslySetInnerHTML={{ __html: cuerpo }} /> */}
-    </>
-  )
-}
-const CuerpoInforme = ({ servicioid }) => {
-  const [ruta, setRuta] = useState("")
-  useEffect(() => {
-    const crear = async () => {
-      await Consulta({
-        url: `produccion/showinformeservicio/${servicioid}`, params: {
-          method: 'GET'
-        }
-      })
-        .then(resp => {
-          const binaryString = window.atob(resp.data);
-          const binaryLen = binaryString.length;
-          const bytes = new Uint8Array(binaryLen);
-          for (let i = 0; i < binaryLen; i++) {
-            const ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
-          }
-          const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-          setRuta(file)
-        })
-        .catch((err) => {
-        })
-    }
-    // crear()
-  }, [])
-  return (
-    <>
-      <div>
-        <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
-	{/*
-        <iframe src={`http://192.168.18.20:4002/produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
-	*/}
-	{/*
-        <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
-	*/}
-        <div className="flex flex-row justify-center gap-2 mt-2">
-          <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
-          <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
-        </div>
-      </div>
-    </>
-  )
-}
-export default function ListaGuias() {
+// const apiUrl = import.meta.env.VITE_API_URL
+export default function ListaServicios() {
   const lista = useRef(null)
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
   const [estado, setEstado] = useState('PENDIENTE')
   const navigate = useNavigate()
-  const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  const { openModal, setOpenloader } = useContext(ModalWindowContext)
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id
-    const distribucion = e.target.dataset.distribucion
     let params_modal = null
     switch (action) {
-      case 'anulate':
-        params_modal = {
-          open: true,
-          content: <div>Desea anular el servicio seleccionado?. Tenga en cuenta de que el <br /> proceso no es reversible.</div>,
-          controls: true,
-          header: false,
-          action: () => {
-            setOpenloader(true)
-            Consulta({
-              // url: (distribucion == 'PQT' ? 'produccion/anularguiaxpq/' : 'produccion/anularguia/') + id, params: {
-              url: {'PQT':'produccion/anularguiaxpq/','TLL':'produccion/anularguia/','GLB':'produccion/anularguiaglb/',}[distribucion] + id, params: {
-                method: 'DELETE'
-              }
-            })
-              .then(resp => {
-                // setOrdenes(resp)
-                setOpenloader(false)
-                if(resp.ok){
-                  toast.success('Guia anulada con éxito!', { theme: "colored" })
-                  // setRefresh(true)
-                  recargarinfo()
-                }else{
-                  toast.error(resp.message, { theme: "colored" })
-                }
-              })
-              .catch(() => {
-                setOpenloader(false)
-                // logout()
-              })
-              .finally(() => {
-                setOpenloader(false)
-              })
-          }
-        }
-        openModal(params_modal)
-        break;
       case 'delete':
         params_modal = {
           open: true,
@@ -127,24 +28,20 @@ export default function ListaGuias() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: distribucion == 'PQT' ? 'produccion/borrarguiaxpq' : 'produccion/borrarguia/' + id, params: {
+              url: 'servicios/deleteServicio' + id, params: {
                 method: 'DELETE'
               }
             })
-              .then(resp => {
-                // setOrdenes(resp)
-                toast.success('Guia eliminado con éxito!', { theme: "colored" })
-                // setRefresh(true)
-                recargarinfo()
-                setOpenloader(false)
-              })
-              .catch(() => {
-                setOpenloader(false)
-                // logout()
-              })
-              .finally(() => {
-                setOpenloader(false)
-              })
+            .then(resp => {
+              toast.success('Guia eliminado con éxito!', { theme: "colored" })
+              recargarinfo()
+            })
+            .catch(() => {
+              // logout()
+            })
+            .finally(() => {
+              setOpenloader(false)
+            })
           }
         }
         // openModal(params_modal)
@@ -152,38 +49,31 @@ export default function ListaGuias() {
       case 'download':
         params_modal = {
           open: true,
-          content: <div>Desea continuar con la descarga de la guia de traslado interno?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+          content: <div>Desea continuar con la descarga de la orden de servicio seleccionada?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
           controls: true,
           header: false,
           action: () => {
             const desc = async () => {
               setOpenloader(true)
-
-              Consulta({
-                url: "produccion/exportguia/" + id + "/1", params: {
-                  method: 'GET'
+              Consulta({url: "servicios/printServicio/" + id + "/1"})
+              .then(resp => {
+                setOpenloader(false)
+                const binaryString = window.atob(resp.data);
+                const binaryLen = binaryString.length;
+                const bytes = new Uint8Array(binaryLen);
+                for (let i = 0; i < binaryLen; i++) {
+                  const ascii = binaryString.charCodeAt(i);
+                  bytes[i] = ascii;
                 }
+                const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+                window.open(file,'_blank')
               })
-                .then(resp => {
-                  setOpenloader(false)
-                  const binaryString = window.atob(resp.data);
-                  const binaryLen = binaryString.length;
-                  const bytes = new Uint8Array(binaryLen);
-                  for (let i = 0; i < binaryLen; i++) {
-                    const ascii = binaryString.charCodeAt(i);
-                    bytes[i] = ascii;
-                  }
-                  const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-                  window.open(file,'_blank')
-                  // const link = document.createElement('a')
-                  // link.href = file
-                  // link.target = 'blank'
-                  // link.click()
-                })
-                .catch((err) => {
-                  setOpenloader(false)
-                  toast.error('Se produjo un error!!', { theme: "colored" })
-                })
+              .catch((err) => {
+                toast.error('Se produjo un error!!', { theme: "colored" })
+              })
+              .finally(()=>{
+                setOpenloader(false)
+              })
             }
             desc()
           }
@@ -191,50 +81,30 @@ export default function ListaGuias() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/guias/nuevo/" + id)
+        navigate("/main/servicios/nuevo/" + id)
         break;
-      case 'seguimiento':
-        navigate("/main/guias/seguimiento/" + id)
-        break;
-      case 'review':
-        params_modal = {
-          open: true,
-          content: <CuerpoInforme servicioid={id} />,
-          controls: false,
-          header: false,
-          action: () => { }
-        }
-        openModal(params_modal)
-        break;
-
       default:
         break;
     }
   }
 
   useEffect(() => {
-    const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaGuias/' + estado, params: {
-        method: 'GET'
-      }
+      url: 'servicios/getServicios/' + estado
     })
       .then(resp => {
         console.log(resp)
-        setOpenloader(false)
         setInfo(resp)
-        setInfoestado(resp)
+        // setInfoestado(resp)
         // setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
       })
       .catch((error) => {
-        console.log("El mnesaje de error es:", error)
-        // logout()
-        // toast.error('Error en la consulta de base', { theme: "colored" })
+        // console.log("El mnesaje de error es:", error)
+        toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
-        console.log("Horror en la consulta de base de datos")
-        // setOpenloader(false)
+        setOpenloader(false)
       })
   }, [])
 
@@ -243,82 +113,47 @@ export default function ListaGuias() {
     console.log("El estado es:", estado)
     setOpenloader(true)
     const pp = async () => {
-      await Consulta({
-        url: 'produccion/getListaGuias/' + estado, params: {
-          method: 'GET'
-        }
-      })
-        .then(resp => {
-          console.log(resp)
-          setOpenloader(false)
-          // lista.current.querySelector('button.active').classList.remove('active')
-          // e.target.classList.add('active')
-          // console.log("EL filt4ro 1 es:",resp.filter(row=>row.cantidad_servicio <= row.ingresos))
-          setInfoestado(resp)
-          // if (estado == 1) {
-          //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-          // }
-          // if (estado == 2) {
-          //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-          // }
-          // if (estado == 3) {
-          //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-          // }
-          setEstado(estado)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-        .finally(() => {
-          setOpenloader(false)
-        })
-    }
-    pp()
-  }
-
-  const recargarinfo = () => {
-    const data = new FormData()
-    setOpenloader(true)
-    Consulta({
-      url: 'produccion/getListaGuias/' +  estado, params: {
-        method: 'GET'
-      }
-    })
+      await Consulta({url: 'produccion/getListaGuias/' + estado})
       .then(resp => {
-        console.log("Resultado lista de guias:", resp)
+        console.log(resp)
         setOpenloader(false)
-        setInfo(resp)
         setInfoestado(resp)
+        setEstado(estado)
       })
       .catch((error) => {
         console.log(error)
-        // logout()
-        // toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
-        console.log("Horror en la consulta de base de datos")
-        // setOpenloader(false)
+        setOpenloader(false)
+      })
+    }
+    pp()
+  }
+  const recargarinfo = () => {
+    setOpenloader(true)
+    Consulta({
+      url: 'produccion/getServicios/' +  estado
+    })
+      .then(resp => {
+        console.log("Resultado lista de guias:", resp)
+        setInfo(resp)
+        // setInfoestado(resp)
+      })
+      .catch((error) => {
+        // logout()
+        toast.error('Error en la consulta de base', { theme: "colored" })
+      })
+      .finally(() => {
+        setOpenloader(false)
       })
   }
   const nuevoservicio = () => {
-    navigate('/main/guias/nuevo')
+    navigate('/main/servicios/nuevo')
   }
-  // const showinforme = async ()=>{
-
-  //   const params_modal = {
-  //     open:true,
-  //     content: <CuerpoInforme cuerpo={""} />,
-  //     controls: true,
-  //     header: false,
-  //     action:async ()=>{
-  //     }
-  //   }
-  //   openModal(params_modal)
-  // }
   const busquedaglobal = async (input) => {
     Consulta({
       // url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value ), params: {
-      url: 'produccion/getListaGuias/' + (input.value + ` ${estado}`).trim(), params: {
+      url: 'produccion/getServicios/' + (input.value + ` ${estado}`).trim(), params: {
         method: 'GET'
       }
     })
@@ -326,17 +161,6 @@ export default function ListaGuias() {
         console.log(resp)
         setOpenloader(false)
         setInfoestado(resp)
-        // setInfo(resp)
-        // if (estado == 1) {
-        //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-        // }
-        // if (estado == 2) {
-        //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-        // }
-        // if (estado == 3) {
-        //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-        // }
-        // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -352,8 +176,7 @@ export default function ListaGuias() {
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px] flex flex-row">Ordenes Servicio</h2>
-              {/* <div className="rounded-l-full rounded-r-full w-[200px] bg-gray-500 text-white">GUIAS</div> */}
+              <h2 className="font-medium text-[16px] flex flex-row">Ordenes de servicio</h2>
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
               </div>
@@ -390,20 +213,13 @@ export default function ListaGuias() {
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">IdOrden</th>
-                    <th className="lg:table-cell">Hoja de Corte</th>
+                    {/* <th className="lg:table-cell">IdOrden</th> */}
                     <th className="lg:table-cell">Servicio</th>
                     <th className="lg:table-cell">Proveedor</th>
-                    <th className="lg:table-cell">Producto</th>
-                    <th className="lg:table-cell">Marca</th>
-                    <th className="lg:table-cell">Modelo</th>
                     <th className="lg:table-cell">FechaEmisión</th>
                     <th className="lg:table-cell">FechaRetorno</th>
-                    {/* <th className="lg:table-cell">Costo</th> */}
                     <th className="lg:table-cell">TiempoProd</th>
                     <th className="lg:table-cell">DiasPendientes</th>
-                    <th className="lg:table-cell">Cantidad</th>
-                    <th className="lg:table-cell">Ingresos</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -413,22 +229,19 @@ export default function ListaGuias() {
                       ? infoestado.map((row, key) => (
                         <tr key={key}>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.id_orden_CAB}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
-                          {/* <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td> */}
-                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${row.identificador}`}>{row.servicio}</div></td>
+                          {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.id_orden_CAB}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td> */}
+                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${row.identificador}`}>{row.tipo}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
+                          {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td> */}
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision_guia}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_retorno_guia}</td>
-                          {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.costo}</td> */}
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.tiempo_produccion}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
-                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.cantidad_servicio}</td>
-                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.ingresos}</td>
-                          {/* <td>{row.estado == 'PENDIENTE' ? <div className={`w-[5px] h-[5px] bg-red-600 rounded-full`}></div> : 'hola'}</td> */}
+                          {/* <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.cantidad_servicio}</td> */}
+                          {/* <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.ingresos}</td> */}
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
@@ -464,7 +277,6 @@ export default function ListaGuias() {
                       <tr className="h-[40px]"><td colSpan={14} className="text-center"><span>Datos no encontrados</span></td></tr>
                   }
                 </tbody>
-                {/* <tfoot className="absolute bottom-0 w-full bg-yellow-300"> */}
                 <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
                   <tr>
                     <td className="h-[45px] border-t border-t-gray-600" colSpan={15}>
@@ -492,7 +304,6 @@ export default function ListaGuias() {
                 <Button action={nuevoservicio} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
-
           </div>
         </div>
       {/* </div> */}

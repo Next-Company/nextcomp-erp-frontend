@@ -55,12 +55,12 @@ const CuerpoInforme = ({ servicioid }) => {
     <>
       <div>
         <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
-	{/*
+  {/*
         <iframe src={`http://192.168.18.20:4002/produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
-	*/}
-	{/*
+  */}
+  {/*
         <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
-	*/}
+  */}
         <div className="flex flex-row justify-center gap-2 mt-2">
           <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
           <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
@@ -69,7 +69,7 @@ const CuerpoInforme = ({ servicioid }) => {
     </>
   )
 }
-export default function ListaGuias() {
+export default function ListaTransformaciones() {
   const lista = useRef(null)
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
@@ -352,7 +352,7 @@ export default function ListaGuias() {
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px] flex flex-row">Ordenes Servicio</h2>
+              <h2 className="font-medium text-[16px] flex flex-row">Transformaciones</h2>
               {/* <div className="rounded-l-full rounded-r-full w-[200px] bg-gray-500 text-white">GUIAS</div> */}
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
