@@ -165,11 +165,17 @@ export function TrackWorkers_1(){
 
 const DetailResultContextBox = ({setshowdetail})=>{
   const [tabposition,setTabposition] = useState('1')
+  const [procesos,setProcesos] = useState([])
   const closeDetailResult = ()=>{
     setshowdetail(false)
   }
   useEffect(()=>{
-    Consulta({url:'locales/getprocesosencurso/' + 22})
+    const pp = Consulta({url:'locales/getprocesosencurso/1'})
+    pp.then(resp=>{
+      console.log("aasdffd",resp)
+      setProcesos(resp)
+    })
+    console.log("asfas",pp)
   },[])
   return(
     <>
@@ -246,8 +252,22 @@ const DetailResultContextBox = ({setshowdetail})=>{
                   </div>
                 }
                 {
-                  tabposition == '2' && <div className='h-[800px] w-full'>
-                    Contenido2
+                  tabposition == '2' && <div className='h-[800px] w-full p-2 flex flex-col gap-2'>
+                    {
+                      procesos[0].map(row=>
+                        <div className='rounded-2xl bg-gray-400'>
+                          <span>{row.tipo}</span><br/>
+                          <span>{row.estado}</span><br/>
+                          <span>{row.fec_emision}</span><br/>
+                          <span>{row.fec_retorno}</span><br/>
+                          <span>{row.proveedor}</span><br/>
+                          <span>{row.responsable}</span><br/>
+                          <span>{row.costo}</span><br/>
+                          <span>{row.orden_ref}</span><br/>
+                          {/* {JSON.stringify(row)} */}
+                        </div>
+                      )
+                    }
                   </div>
                 }
                 {
