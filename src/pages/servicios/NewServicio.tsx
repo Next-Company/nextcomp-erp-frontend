@@ -14,24 +14,24 @@ import ServicePanelAdicionales from "./componentes/ServicePanelAdicionales"
 
 const TRANSLATE_CLASSES = ['', 'translate-x-[100%]', 'translate-x-[200%]', 'translate-x-[300%]'];
 const CuerpoInforme = ({info,tipo})=>{
-  let [ruta,setRuta] = useState("")
+  const [ruta,setRuta] = useState("")
   useEffect(()=>{
     console.log("El tipo de pedido es:",tipo)
-    let crear = async ()=>{
+    const crear = async ()=>{
       await Consulta({url: `${tipo ? 'produccion/vistarapidapedidoavios/download' : 'produccion/vistapreviapedido/telas' }`,params:{
         method:'POST',
         body:info
       }})
       .then(resp => {
         console.log("La info del reporte es:",resp)
-        let binaryString = window.atob(resp.data);
-        let binaryLen = binaryString.length;
-        let bytes = new Uint8Array(binaryLen);
+        const binaryString = window.atob(resp.data);
+        const binaryLen = binaryString.length;
+        const bytes = new Uint8Array(binaryLen);
         for (let i = 0; i < binaryLen; i++) {
-            let ascii = binaryString.charCodeAt(i);
+            const ascii = binaryString.charCodeAt(i);
             bytes[i] = ascii;
         }
-        let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+        const file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
         // console.log("La ruta es:",file)
         setRuta(file)
       })
@@ -68,7 +68,7 @@ export default function NewServicio(){
   const onsubmit = (e)=>{
     e.preventDefault()
     console.log("El de talle de fracciones :",registros)
-    for(let element of form.current.querySelectorAll("input[verify='true']")){
+    for(const element of form.current.querySelectorAll("input[verify='true']")){
       if(element && element.value == ''){
         toast.error('Alguno de los campos del formulario son obligatorios. Por favor verifique.', { theme: "colored" })
         return
@@ -313,7 +313,7 @@ export default function NewServicio(){
                   </div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={() => navigate('/main/pedidos/')} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={() => navigate('/main/servicios/')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>  
               </div>

@@ -100,7 +100,7 @@ export default function ListaServicios() {
         // setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
       })
       .catch((error) => {
-        // console.log("El mnesaje de error es:", error)
+        console.log("El mnesaje de error es:", error)
         toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
@@ -132,7 +132,7 @@ export default function ListaServicios() {
   const recargarinfo = () => {
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getServicios/' +  estado
+      url: 'servicios/getServicios/' +  estado
     })
       .then(resp => {
         console.log("Resultado lista de guias:", resp)
@@ -141,7 +141,8 @@ export default function ListaServicios() {
       })
       .catch((error) => {
         // logout()
-        toast.error('Error en la consulta de base', { theme: "colored" })
+        console.log(error)
+        toast.error('Prueba error', { theme: "colored" })
       })
       .finally(() => {
         setOpenloader(false)

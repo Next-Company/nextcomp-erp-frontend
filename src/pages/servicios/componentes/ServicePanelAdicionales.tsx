@@ -4,7 +4,7 @@ import ServiceContext from "../contexto/ServicioContext"
 export default function ServicePanelAdicionales(){
   const { panelactive, adicionales, setAdicionales } = useContext(ServiceContext)
   const nuevoregistro = ()=>{
-    setAdicionales([...adicionales,{item:0,id_servicio_CAB:'',servicio:'',cantidad:0,unidad:'KG',precio:0}])
+    setAdicionales([...adicionales,{id_servicio_CAB:'',servicio:'',cantidad:0,unidad:'KG',precio:0}])
   }
   const onclick = (e)=>{
     const action = e.target.dataset.action
