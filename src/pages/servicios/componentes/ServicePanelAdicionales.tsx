@@ -4,15 +4,14 @@ import ServiceContext from "../contexto/ServicioContext"
 export default function ServicePanelAdicionales(){
   const { panelactive, adicionales, setAdicionales } = useContext(ServiceContext)
   const nuevoregistro = ()=>{
-    setAdicionales([...adicionales,{id_servicio_CAB:'',servicio:'',cantidad:0,unidad:'KG',precio:0}])
+    setAdicionales([...adicionales,{id_servicio_CAB:'',descripcion:'',cantidad:0,unidad:'UND',costo:0}])
   }
   const onclick = (e)=>{
     const action = e.target.dataset.action
     const position = e.target.dataset.position
     switch(action){
       case 'delete':
-        setAdicionales(adicionales.filter((row,key)=>key !== parseInt(position) ))
-        console.log("Eliminado registros de la fila ",position)
+        setAdicionales(adicionales.filter((row,key)=>key !== parseInt(position)))
         break;
       case 'clone':
         let copia = adicionales.filter((row,key)=>key == parseInt(position))[0]
@@ -24,7 +23,7 @@ export default function ServicePanelAdicionales(){
   const editvalue = (e)=>{
     let column = e.target.dataset.name
     let position = e.target.dataset.position
-    setAdicionales([...adicionales.map((item,key)=> position == key ? {...item,[column]: (column == 'anulado' ? e.target.checked : e.target.value)}:item)])
+    setAdicionales([...adicionales.map((item,key)=> position == key ? {...item,[column]: e.target.value} : item)])
     // if(tipo == 0){
     //   if(column == 'color'){
     //     setAdicionales([...adicionales.map((item,key)=> position == key ? {...item, color: e.target.value, idx_color:'', id_producto_CAB:''}:item)])
@@ -57,11 +56,11 @@ export default function ServicePanelAdicionales(){
           {
             adicionales.length > 0 && adicionales.map((row,key)=>(
               <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.descripcion} /></td>
+                <td><input type="text" onChange={editvalue} data-position={key} data-name="descripcion" value={row.descripcion} /></td>
                 <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
                 <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
-                <td><input type="number" onChange={editvalue} data-position={key} step=".001" data-name="precio" value={row.precio} /></td>
-                <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(3)} /></td>
+                <td><input type="number" onChange={editvalue} data-position={key} step=".001" data-name="costo" value={row.costo} /></td>
+                <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.costo).toFixed(3)} /></td>
                 <td className="w-[250px]">
                   <ul className="flex flex-row justify-end">
                     <li>
@@ -99,10 +98,10 @@ export default function ServicePanelAdicionales(){
             <td className="text-center">-</td>
             <td className="text-center">-</td>
             <td className="text-center text-[14px] font-bold">
-              {adicionales.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(3)}
+              {adicionales.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.costo)),0).toFixed(3)}
             </td>
             <td></td>
-            <td></td>
+            {/* <td></td> */}
           </tr>
           <tr>
             <td colSpan={12} >

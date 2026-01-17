@@ -11,6 +11,7 @@ import Proveedores from "../../components/Common/Proveedores"
 import Productos from "../../components/Common/Productos"
 import ServiceContext from "./contexto/ServicioContext"
 import ServicePanelAdicionales from "./componentes/ServicePanelAdicionales"
+import Ordenes from "../../components/Common/Ordenes"
 
 const TRANSLATE_CLASSES = ['', 'translate-x-[100%]', 'translate-x-[200%]', 'translate-x-[300%]'];
 const CuerpoInforme = ({info,tipo})=>{
@@ -61,6 +62,7 @@ export default function NewServicio(){
   const [registros,setRegistros] = useState([])
   const [panelactive,setPanelActive] = useState(0)
   const [adicionales,setAdicionales] = useState([])
+  const [condicionpago,setCondicionPago] = useState(1)
   const navigate = useNavigate()
 
   console.log("Los search params recibidos:",searchParams.get('nombre'))
@@ -74,19 +76,11 @@ export default function NewServicio(){
         return
       }
     }
-    if(registros.length == 0 || adicionales.length == 0){
+    console.log("INfo adicionales:",adicionales,registros,adicionales.length,registros.length)
+    if(registros.length == 0 && adicionales.length == 0){
       toast.error('Debe ingresar al menos un registro!!', { theme: "colored" })
       return
     }
-    // if(tipo == 1 && registros.filter(row=>parseFloat(row.cantidad) == 0 ).length > 0){
-    //   toast.error('Debe ingresar la cantidad y el precio del articulo.', { theme: "colored" })
-    //   return
-    // }
-    // if(tipo == 1 && (registros.filter(row=>parseFloat(row.conversion) == 0).length > 0)){
-    //   toast.error('Debe ingresar el valor de conversión para los articulos ingresados.', { theme: "colored" })
-    //   return
-    // }
-
     openModal({
       open: true,
       header: false,
@@ -102,7 +96,7 @@ export default function NewServicio(){
         console.log("Detalle de la lista de articuos :",registros)
         setOpenloader(true)
         // await Consulta({url:['produccion/guardarpedidotelas/','produccion/guardarpedidoavios/','produccion/guardarpedidoadicionales/'][tipo],params:{
-        await Consulta({url: urlparams.id ? 'servicios/updateservicio/' : 'servicios/saveservicio/',params:{
+        await Consulta({url: urlparams.id ? 'servicios/updateServicio/' +  urlparams.id : 'servicios/saveServicio/',params:{
           method: urlparams.id ? 'PUT' : 'POST',
           body:data
         }})
@@ -145,8 +139,11 @@ export default function NewServicio(){
       pp()
     }
     const handleInputChange = (event) => {
-      console.log("Hola Ivon",event.detail.valor)
-      setTipo(event.detail.valor == 'PRODUCCION' ? 0 : 1)
+      console.log("Hola Ivon",event.detail)
+      if(event.detail.name == 'condicion_pago'){
+        setCondicionPago(event.detail.indice)
+        // setTipo(event.detail.valor == 'PRODUCCION' ? 0 : 1)
+      }
     };
     form.current.addEventListener("salamandra", handleInputChange);
     return () => {
@@ -169,21 +166,21 @@ export default function NewServicio(){
     }
     openModal(params_modal)
   }
-  const vistaprevia = async ()=>{
-    const data = new FormData()
-    console.log("INfo form",Object.fromEntries(new FormData(form.current)))
-    data.append('info',JSON.stringify(Object.fromEntries(new FormData(form.current))))
-    data.append('detalle',JSON.stringify(registros))
-
-    const params_modal = {
+  const listaordenes = ()=>{
+    let params_modal = null
+    params_modal = {
       open:true,
-      content: <CuerpoInforme info={data} tipo={tipo} />,
-      controls: false,
+      content: <Ordenes mode={1} actions={(item)=>{
+        console.log("INfor de la orden es:",item)
+        setInfo(info=>({...info,id_orden_CAB:item.idx,orden_ref:item.oc}))
+        setOpen(false)
+      }}/>,
+      controls: true,
       header: false,
-      action:async ()=>{
+      action:()=>{
       }
     }
-    openModal(params_modal)   
+    openModal(params_modal)
   }
   const changepanel = (position)=>{
     setPanelActive(position)
@@ -211,17 +208,20 @@ export default function NewServicio(){
                 <hr/> 
                 <div className="flex flex-col gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="hidden" />
-                  <div className="w-[350px]">
+                  <div className="w-[40%] flex gap-3">
                     <InputSelect title={'TipoServicio'} formref={form} name={"tipo"} data={
                       [
                         { indice: 'PRODUCCION', option: 'PRODUCCION', selected: true }, 
-                        { indice: 'TRANSFORMACION', option: 'VALOR AGREGADO' },
+                        { indice: 'TRANSFORMACION', option: 'TRANSFORMACIÓN' },
                       ]} 
                       df={Object.keys(info).length > 0 ? info.tipo : null} 
                       placeholder={'Info referencial'}
                     />
+                    <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" verify="true" />
+                    <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true" placeholder={'Info referencial'}/>
                   </div>
+                  {/* <div>
+                  </div> */}
                   <div className="w-[75%] flex gap-3">
                     <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                     <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
@@ -229,19 +229,46 @@ export default function NewServicio(){
                     <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true" placeholder="Texto complementario"/>
                     <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" verify="true" placeholder="Texto complementario"/>
                   </div>
+                  <div className="w-[40%]">
+                    <Input name={'destino'} defaults={Object.keys(info).length > 0 && info.destino ? info.destino : null} title="Destino" type="text" verify="true" placeholder={'Info referencial'}/>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
                   <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
                 </div>
                 <hr/> 
-                <div className="flex gap-3 w-[40%]">
-                  <div className="w-[60%]">
-                    <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" verify="true" placeholder={'Info referencial'}/>
+                <div className="flex gap-3">
+                  <div className="w-[450px]">
+                    <InputSelect title={'CondiciónPago'} formref={form} name={"condicion_pago"} data={
+                      [
+                        { indice: 1, option: 'PAGO CONTRA ENTREGA', selected: true }, 
+                        { indice: 2, option: 'PAGO PROGRAMADO' },
+                        { indice: 3, option: 'PAGO SEMANAL' },
+                        { indice: 4, option: 'PAGO CON ADELANTO + PROGRAMACION' },
+                      ]} 
+                      df={Object.keys(info).length > 0 ? info.condicion_pago : null} 
+                      placeholder={'Info referencial'}
+                    />
                   </div>
-                  
+                  {
+                    condicionpago == 4 && <div className="w-[300px]"><Input name={'porcentaje_adelanto'} defaults={Object.keys(info).length > 0 && info.porcentaje_adelanto ? info.porcentaje_adelanto : null} title="PorcentajeAdelanto(%)" type="number" verify="true" placeholder={'Info referencial'}/></div>
+                  }
+                  {
+                    [2,4].includes(condicionpago) && <div className="w-[300px]"><Input name={'programacion'} defaults={Object.keys(info).length > 0 && info.programacion ? info.programacion : null} title="Programacion(Dias)" type="number" verify="true" placeholder={'Info referencial'}/></div>
+                  }
                 </div>
-                <div className="flex gap-3 w-[65%]">
+                <div className="flex gap-3 ">
+                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" verify="true" placeholder={'Info referencial'}/>
+                  <InputSelect title={'IGV(18%)'} name={"igv"} data={
+                    [
+                      { indice: '0', option: 'APLICA', selected: true }, 
+                      { indice: '1', option: 'NO APLICA' }, 
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.igv : null} 
+                    placeholder={'Info referencial'}
+                  />
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true" placeholder={'Info referencial'}/>
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
                       { indice: 'S', option: 'SOLES', selected: true }, 
@@ -250,6 +277,8 @@ export default function NewServicio(){
                     df={Object.keys(info).length > 0 ? info.moneda : null} 
                     placeholder={"Nuevo tipo de moneda"}
                   />
+                </div>
+                <div className="flex gap-3 w-[45%]">
                   <InputSelect title={'AfectoRetención'} name={"afec_retencion"} data={
                     [
                       { indice: '0', option: 'NO APLICA', selected: true }, 
@@ -258,22 +287,7 @@ export default function NewServicio(){
                     df={Object.keys(info).length > 0 ? info.afec_retencion : null} 
                     placeholder={'Info referencial'}
                   />
-                  <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" verify="true" placeholder={'Info referencial'}/>
-                </div>
-                <div className="flex gap-3 w-[45%]">
-                  <InputSelect title={'IGV'} name={"igv"} data={
-                    [
-                      { indice: '0', option: 'INAFECTO', selected: true }, 
-                      { indice: '1', option: 'AFECTO' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.igv : null} 
-                    placeholder={'Info referencial'}
-                  />
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true" placeholder={'Info referencial'}/>
-                  
-                </div>
-                <div className="flex gap-3 w-[30%]">
-                  <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} placeholder={'Info referencial'}/>
+                    <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} placeholder={'Info referencial'}/>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
@@ -307,9 +321,9 @@ export default function NewServicio(){
               <div className="flex justify-between gap-2 mt-2 p-1">
                 <div className="flex flex-row gap-2">
                   <div>
-                    <Button action={vistaprevia} type={'button'} tipo={'accept'}>
+                    {/* <Button action={vistaprevia} type={'button'} tipo={'accept'}>
                       <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
                 <div className="flex justify-end gap-2">
