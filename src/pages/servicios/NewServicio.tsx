@@ -123,7 +123,7 @@ export default function NewServicio(){
     if(urlparams.id){
       setOpenloader(true)
       const pp = async () => {
-        await Consulta({url: 'servicios/getservicio/' + urlparams.id,})
+        await Consulta({url: 'servicios/getServicioById/' + urlparams.id,})
           .then(resp => {
             setInfo(resp[0])
             setRegistros(resp[1])

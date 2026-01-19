@@ -283,6 +283,47 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tal
   </>
 }
 
+function SeccionAdicionales(children){
+  const {lista,setLista} = children
+  // const [lista,setLista] = useState([])
+  const deleteimage = (e)=>{
+    const position = parseInt(e.target.dataset.position)
+    setLista(lista.filter((row,key)=>key!==position))
+  }
+  const cargafile = (e)=>{
+    console.log("Comienza la carga de imagenes",e.target.files)
+    setLista([...lista,e.target.files[0]])
+    e.target.value = ""
+    // e.target.images
+  }
+  return(
+    <>
+      <div className="flex flex-col gap-2 h-full">
+        <div className="w-full h-full rounded-2xl pt-2 relative overflow-hidden flex flex-col gap-0">
+          <div className="flex-1 rounded-t-2xl bg-gray-100 p-4 flex gap-4 flex-wrap justify-start items-baseline">
+            {
+              lista.map((row,key)=>
+                <div className="w-[150px] h-[150px] bg-gray-200 rounded-xl relative">
+                  <img src={URL.createObjectURL(row)} className="w-full h-full rounded-xl" />
+                  <div className="absolute w-7 h-7 rounded-full shadow-md flex justify-center items-center right-[-6px] top-[-6px] bg-white cursor-pointer hover:bg-gray-300" onClick={deleteimage} data-position={key}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                  </div>
+                </div>
+              )
+            }
+          </div>
+          <div className="rounded-b-2xl bg-gray-200 p-3 flex justify-between items-center">
+            <input type="file" name="imagen" onChange={cargafile} />
+            <Button type={'button'} tipo="default">
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eraser"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3" /><path d="M18 13.3l-6.3 -6.3" /></svg>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 export function NewProducto() {
   const form = useRef()
   const urlparams = useParams()
@@ -291,30 +332,35 @@ export function NewProducto() {
   const [orden, setOrden] = useState([{tipo:'I'}])
   const [combos, setCombos] = useState([])
   const [tallas, setTallas] = useState([])
+  const [listaimg,setListaimg] = useState([])
   const navigate = useNavigate()
 
   console.log("Reenderizado del componente producto")
 
   const onsubmit = async (e) => {
     e.preventDefault()
+    const count = 1
     let url_save = '', method = 'GET'
     let data = undefined
 
-    for(let element of form.current.querySelectorAll("input[verify='true']")){
+    for(const element of form.current.querySelectorAll("input[verify='true']")){
       console.log("El input a verificar es:",element)
       if(element.value == ''){
         toast.error('Debe ingresar los datos del input' + element.name, { theme: "colored" })
         return 0
       }
     }
-
-    if(position == 0){
-      console.log("Los combos a registrar son:",combos)
-      url_save = urlparams.id ? 'productos/updateProducto' : 'productos/generateProducto'
-      method = urlparams.id ? 'PUT' : 'POST'
-      data = new FormData(e.target)
-      data.append('combos',JSON.stringify(combos))
+    console.log("Los combos a registrar son:",combos)
+    url_save = urlparams.id ? 'productos/updateProducto' : 'productos/generateProducto'
+    method = urlparams.id ? 'PUT' : 'POST'
+    data = new FormData(e.target)
+    data.append('combos',JSON.stringify(combos))
+    for(const file of [...listaimg]){
+      data.append('filenext',file)
     }
+
+    // if(position == 0){
+    // }
     const PARAMS_MODAL = {
       open: true,
       header: false,
@@ -322,6 +368,7 @@ export function NewProducto() {
       content: <div>Desea continuar con el registro de los datos ingresados?</div>,
       action: async () => {
         setOpenloader(true)
+        console.log("La ruta s la siguei:",url_save)
         await Consulta({
           url: url_save,
           params: {
@@ -359,19 +406,6 @@ export function NewProducto() {
     };
     form.current.addEventListener("salamandra", handleSalamandra);
 
-    // const handleSalamandra = (event) => {
-    //   console.log("INof origen del select:",event.detail,event.detail.target.closest('div#cuerpo_ingresos'))
-    //   if(event.detail.name == 'estado_corte'){
-    //     const padre = event.detail.target.closest('div#cuerpo_ingresos')
-    //     const indice = padre.dataset.position
-    //     setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,['estado_corte']:event.detail.valor} : row))
-    //   }
-    //   if(event.detail.name == 'tipo'){
-    //     setOrden(orden => ([{ ...orden[0], tipo: event.detail.indice}]))
-    //   }
-    // };
-    // form.current.addEventListener("salamandra", handleSalamandra);
-
     if(urlparams.id){
       setOpenloader(true)
       Promise.all([
@@ -390,23 +424,6 @@ export function NewProducto() {
       .finally(()=>{
         setOpenloader(false)
       })
-
-      // const pp = async () => {
-      //   await Consulta({url: 'productos/searchproductobyid/' + urlparams.id,})
-      //     .then(resp => {
-      //       console.log("Mostrando informacion :",resp)
-      //       setOrden(resp)
-      //       setCombos(resp[1].map(row=>({idcolor:row.idcolor,color:row.color,talla:JSON.stringify(row.tallas)})))
-      //     })
-      //     .catch((err)=>{
-      //       setOpenloader(false)
-      //       toast.error('Se produjo un error!!', { theme: "colored" })
-      //     })
-      //     .finally(()=>{
-      //       setOpenloader(false)
-      //     })
-      // }
-      // pp()
     }else{
       Consulta({url: 'mantenimiento/getlistatallas/'})
       .then(resp=>{
@@ -481,7 +498,7 @@ export function NewProducto() {
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group flex-row items-center gap-1 ${position == 2 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(2)} data-estado="FNLZ">
+              <button className={`group flex-row items-center gap-1 ${position == 1 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(1)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Datos adicionales
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -493,6 +510,9 @@ export function NewProducto() {
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
                   position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} combos={combos} setcombos={setCombos} tallas={tallas} />
+                }
+                {
+                  position == 1 && <SeccionAdicionales lista={listaimg} setLista={setListaimg}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">

@@ -226,19 +226,16 @@ export default function ListaServicios() {
                 </thead>
                 <tbody>
                   {
-                    infoestado.length > 0
-                      ? infoestado.map((row, key) => (
+                    info.length > 0
+                      ? info.map((row, key) => (
                         <tr key={key}>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
                           {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.id_orden_CAB}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td> */}
                           <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${row.identificador}`}>{row.tipo}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>
-                          {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td> */}
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision_guia}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_retorno_guia}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_retorno}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.tiempo_produccion}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
                           {/* <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.cantidad_servicio}</td> */}
