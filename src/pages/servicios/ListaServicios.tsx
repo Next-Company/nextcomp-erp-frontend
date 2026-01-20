@@ -55,7 +55,7 @@ export default function ListaServicios() {
           action: () => {
             const desc = async () => {
               setOpenloader(true)
-              Consulta({url: "servicios/printServicio/" + id + "/1"})
+              Consulta({url: "servicios/printServicio/" + id + "/download",params: {method: 'POST', responseType: 'blob'}})
               .then(resp => {
                 setOpenloader(false)
                 const binaryString = window.atob(resp.data);
@@ -153,22 +153,20 @@ export default function ListaServicios() {
   }
   const busquedaglobal = async (input) => {
     Consulta({
-      // url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value ), params: {
-      url: 'produccion/getServicios/' + (input.value + ` ${estado}`).trim(), params: {
+      url: 'servicios/getServicios/' + (input.value + ` ${estado}`).trim(), params: {
         method: 'GET'
       }
     })
-      .then(resp => {
-        console.log(resp)
-        setOpenloader(false)
-        setInfoestado(resp)
-      })
-      .catch((error) => {
-        console.log("El mnesaje de error es:", error)
-      })
-      .finally(() => {
-        console.log("Horror en la consulta de base de datos")
-      })
+    .then(resp => {
+      setOpenloader(false)
+      setInfo(resp)
+    })
+    .catch((error) => {
+      console.log("El mnesaje de error es:", error)
+    })
+    .finally(() => {
+      console.log("Horror en la consulta de base de datos")
+    })
   }
 
   return (

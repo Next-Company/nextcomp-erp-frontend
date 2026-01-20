@@ -15,7 +15,7 @@ import Colores from "../../components/Common/Colores";
 import { InputMultiSelect } from "../../components/Atoms/Input/InputMultiSelect";
 import { InputTest } from "../../components/Atoms/Input/InputTest";
 
-function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tallas}){
+function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tallas,position}){
   console.log("Reenderizado de la seccion orden")
   const [tipopedido,setTipopedido] = useState(1)
   // const [dataimg,setDataimg] = useState([])
@@ -151,7 +151,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tal
   }
 
   return <>
-    <div className={`flex flex-col gap-3 pt-3`}>
+    <div className={`flex flex-col gap-3 pt-3 ${position !== 0 && 'hidden'}`}>
       <div className="flex items-center gap-2">
         <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
         <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
@@ -159,6 +159,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tal
       <hr/>
       <div className="flex flex-col gap-3">
         <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
+        {/* <Input name={'imageslist'} defaults={info.length > 0 ? info[0].imageslist : null} type="hidden" /> */}
         {/* <div className="flex flex-col">
         </div> */}
         <div className="w-[400px]">
@@ -223,7 +224,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tal
             <Input name={'minimo'} title="StockMinimo" defaults={info.length > 0 ? info[0].minimo : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
           </div>
         </div>
-        <Input name={'costo'} title="Costo" defaults={0} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'}/>
+        {/* <Input name={'costo'} title="Costo" defaults={0} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'}/> */}
         {/* <div className="w-[25%]">
           <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div> */}
@@ -233,7 +234,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tal
             <Input name={'proveedor'} title="Proveedor" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
           </div>
           <div className="w-[20%]">
-            <Input name={'precio'} title="Precio" defaults={info.length > 0 ? info[0].precio : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+            {/* <Input name={'precio'} title="CostoPromedio" defaults={info.length > 0 ? info[0].precio : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/> */}
+            <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : null} type="number" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
           </div>
         </div>
       </div>
@@ -284,27 +286,31 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tal
 }
 
 function SeccionAdicionales(children){
-  const {lista,setLista} = children
+  const {lista,setLista, setOrden, orden, position} = children
   // const [lista,setLista] = useState([])
+  console.log("Reenderizado de la seccion adicionales",orden)
   const deleteimage = (e)=>{
     const position = parseInt(e.target.dataset.position)
     setLista(lista.filter((row,key)=>key!==position))
   }
   const cargafile = (e)=>{
     console.log("Comienza la carga de imagenes",e.target.files)
+    // setOrden(info=> ({...info, imageslist: [...info.imageslist, e.target.files[0].fileName]}))
+    // if(e.target.files[0] instanceof File){
+    //   console.log("File validado como instancia de file")
+    // }
     setLista([...lista,e.target.files[0]])
     e.target.value = ""
-    // e.target.images
   }
   return(
     <>
-      <div className="flex flex-col gap-2 h-full">
+      <div className={`flex flex-col gap-2 h-full ${position !== 1 && 'hidden'}`}>
         <div className="w-full h-full rounded-2xl pt-2 relative overflow-hidden flex flex-col gap-0">
           <div className="flex-1 rounded-t-2xl bg-gray-100 p-4 flex gap-4 flex-wrap justify-start items-baseline">
             {
               lista.map((row,key)=>
                 <div className="w-[150px] h-[150px] bg-gray-200 rounded-xl relative">
-                  <img src={URL.createObjectURL(row)} className="w-full h-full rounded-xl" />
+                  <img src={ (row instanceof File) ? URL.createObjectURL(row) : 'https://jsjfact.com/facturador/imagenez/' + row} className="w-full h-full rounded-xl" />
                   <div className="absolute w-7 h-7 rounded-full shadow-md flex justify-center items-center right-[-6px] top-[-6px] bg-white cursor-pointer hover:bg-gray-300" onClick={deleteimage} data-position={key}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                   </div>
@@ -344,7 +350,7 @@ export function NewProducto() {
     let data = undefined
 
     for(const element of form.current.querySelectorAll("input[verify='true']")){
-      console.log("El input a verificar es:",element)
+      // console.log("El input a verificar es:",element)
       if(element.value == ''){
         toast.error('Debe ingresar los datos del input' + element.name, { theme: "colored" })
         return 0
@@ -355,8 +361,10 @@ export function NewProducto() {
     method = urlparams.id ? 'PUT' : 'POST'
     data = new FormData(e.target)
     data.append('combos',JSON.stringify(combos))
+    console.log("Filtro de imagenes:",listaimg.filter(row=> !(row instanceof File)))
+    listaimg.length > 0 && data.append('imageslist',JSON.stringify(listaimg.filter(row=> !(row instanceof File))))
     for(const file of [...listaimg]){
-      data.append('filenext',file)
+      if(file instanceof File) data.append('filenext',file)
     }
 
     // if(position == 0){
@@ -396,7 +404,6 @@ export function NewProducto() {
   }
 
   useEffect(()=>{
-
     const handleSalamandra = (event) => {
       // setTipopedido(event.detail.valor == 'ORDEN' ? 1 : 0)
       console.log("La info del multiselect es:",event.detail)
@@ -416,6 +423,8 @@ export function NewProducto() {
         setOrden(resp[0])
         setCombos(resp[0][1].map(row=>({idcolor:row.idcolor,color:row.color,talla:JSON.stringify(row.tallas)})))
         setTallas(resp[1])
+        console.log("La lista de imagenes es la siguiente:",resp[0][0].imageslist ? resp[0][0].imageslist : [])
+        setListaimg(resp[0][0].imageslist ? resp[0][0].imageslist : [])
       })
       .catch((err)=>{
         setOpenloader(false)
@@ -498,7 +507,7 @@ export function NewProducto() {
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
-              <button className={`group flex-row items-center gap-1 ${position == 1 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(1)} data-estado="FNLZ">
+              <button className={`group flex-row items-center gap-1 ${position == 1 && 'active'}`} onClick={() => setPosition(1)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Datos adicionales
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -508,12 +517,16 @@ export function NewProducto() {
             <hr />
             <form ref={form} onSubmit={onsubmit} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
-                {
-                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} combos={combos} setcombos={setCombos} tallas={tallas} />
+                <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} combos={combos} setcombos={setCombos} tallas={tallas} position={position}/>
+                <SeccionAdicionales lista={listaimg} setLista={setListaimg} orden={orden} setOrden={setOrden} position={position}/>
+
+
+                {/* {
+                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} combos={combos} setcombos={setCombos} tallas={tallas} position={position}/>
                 }
                 {
-                  position == 1 && <SeccionAdicionales lista={listaimg} setLista={setListaimg}/>
-                }
+                  position == 1 && <SeccionAdicionales lista={listaimg} setLista={setListaimg} orden={orden} setOrden={setOrden} position={position}/>
+                } */}
               </div>
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={cancelarcreacion} type={'button'} tipo={'default'}>Cancelar</Button>

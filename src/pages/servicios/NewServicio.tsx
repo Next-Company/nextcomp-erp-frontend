@@ -103,7 +103,7 @@ export default function NewServicio(){
         .then(resp => {
           setOpenloader(false)
           if(resp.ok){
-            // navigate('/main/servicios/')
+            navigate('/main/servicios/')
             toast.success('Nueva orden de servicio guardado con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })
