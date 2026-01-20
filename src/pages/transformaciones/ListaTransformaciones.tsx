@@ -55,12 +55,12 @@ const CuerpoInforme = ({ servicioid }) => {
     <>
       <div>
         <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
-	{/*
+  {/*
         <iframe src={`http://192.168.18.20:4002/produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
-	*/}
-	{/*
+  */}
+  {/*
         <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
-	*/}
+  */}
         <div className="flex flex-row justify-center gap-2 mt-2">
           <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
           <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
@@ -69,7 +69,7 @@ const CuerpoInforme = ({ servicioid }) => {
     </>
   )
 }
-export default function ListaGuias() {
+export default function ListaTransformaciones() {
   const lista = useRef(null)
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
@@ -352,7 +352,7 @@ export default function ListaGuias() {
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px] flex flex-row"><strong>Guias de traslado</strong></h2>
+              <h2 className="font-medium text-[16px] flex flex-row">Transformaciones</h2>
               {/* <div className="rounded-l-full rounded-r-full w-[200px] bg-gray-500 text-white">GUIAS</div> */}
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
@@ -360,7 +360,7 @@ export default function ListaGuias() {
             </div>
           </div>
           <div className="w-full h-[1px] bg-gray-200"></div>
-          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-hidden mt-2">
+          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             {/* <hr /> */}
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
@@ -391,7 +391,7 @@ export default function ListaGuias() {
                   <tr>
                     <th className="lg:table-cell">Id</th>
                     <th className="lg:table-cell">IdOrden</th>
-                    <th className="lg:table-cell">#Corte</th>
+                    <th className="lg:table-cell">Hoja de Corte</th>
                     <th className="lg:table-cell">Servicio</th>
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">Producto</th>

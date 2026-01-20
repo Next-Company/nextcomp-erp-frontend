@@ -223,7 +223,7 @@ export default function NewPrestamo() {
   }
   const nuevoregistro = () => {
 
-    let formatDate = (date)=>{
+    const formatDate = (date)=>{
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
@@ -274,6 +274,11 @@ export default function NewPrestamo() {
           <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
             <form ref={form} onSubmit={onsubmit} onKeyUp={onkeyup}>
               <div className={` flex-col gap-3 flex`}>
+                <div className="flex items-center mt-2 gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/> 
                 <div className="flex flex-row gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   

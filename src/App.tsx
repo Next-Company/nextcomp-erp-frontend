@@ -85,6 +85,12 @@ import EmpaquetadoVistaGeneral from './pages/empaquetado/EmpaquetadoVistaGeneral
 import LayoutEmpaquedado from './pages/empaquetado/LayoutEmpaquetado.tsx'
 import EmpaqueadoRecepcion from './pages/empaquetado/EmpaquetadoRecepcion.tsx'
 import EmpaqueadoDistribucion from './pages/empaquetado/EmpaquetadoDistribucion.tsx'
+import LayoutServicios from './pages/servicios/LayoutServicios.tsx'
+import ListaServicios from './pages/servicios/ListaServicios.tsx'
+import NewServicio from './pages/servicios/NewServicio.tsx'
+import LayoutTransformacion from './pages/transformaciones/LayoutTransformacion.tsx'
+import ListaTransformaciones from './pages/transformaciones/ListaTransformaciones.tsx'
+import NewTransformacion from './pages/transformaciones/NewTransformacion.tsx'
 
 
 
@@ -214,6 +220,15 @@ const routes = [
           { path: "nuevo", element: <NewGuia />, error: <ErrorController/> },
           { path: "nuevo/:id", element: <NewGuia />, error: <ErrorController/> },
           { path: "seguimiento/:id", element: <SeguimientoGuia />, error: <ErrorController/> },
+        ]
+      },
+      {
+        path: "servicios",
+        element: <PrivateRoute><LayoutServicios /></PrivateRoute>,
+        children: [
+          { path: "", element: <Suspense fallback={"Cargando informacion....."}><ListaServicios /></Suspense> },
+          { path: "nuevo", element: <NewServicio />, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <NewServicio />, error: <ErrorController/> }
         ]
       },
       {

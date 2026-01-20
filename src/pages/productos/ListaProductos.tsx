@@ -85,47 +85,18 @@ export default function ListaProductos() {
         }
         // openModal(params_modal)
         break;
-      case 'download':
+      case 'review':
         params_modal = {
           open: true,
-          content: <div>Desea continuar con la descarga del pedido de insumos?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
-          controls: true,
-          header: false,
-          action: () => {
-            const desc = async () => {
-              const data = new FormData()
-              data.append('id', id)
-              const tipo = info.filter(row => row.idx == id)[0].tipo
+          content: <div>
 
-              setOpenloader(true)
-              Consulta({
-                url: tipo == 'TELAS' ? 'reports/vistapreviaretiro/TELAS' : 'produccion/vistarapidapedidoavios/download', params: {
-                  method: 'POST',
-                  body: data
-                }
-              })
-                .then(resp => {
-                  setOpenloader(false)
-                  const binaryString = window.atob(resp.data);
-                  const binaryLen = binaryString.length;
-                  const bytes = new Uint8Array(binaryLen);
-                  for (let i = 0; i < binaryLen; i++) {
-                    const ascii = binaryString.charCodeAt(i);
-                    bytes[i] = ascii;
-                  }
-                  const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-                  const link = document.createElement('a')
-                  link.href = file
-                  link.target = 'blank'
-                  link.click()
-                })
-                .catch((err) => {
-                  setOpenloader(false)
-                  toast.error('Se produjo un error!!', { theme: "colored" })
-                })
-            }
-            desc()
-          }
+
+            
+
+          </div>,
+          controls: false,
+          header: false,
+          action: () => {}
         }
         openModal(params_modal)
         break;
@@ -218,9 +189,7 @@ export default function ListaProductos() {
   return (
     <>
       {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
-
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
-
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-[16px]">Listado de productos</h2>
@@ -230,7 +199,7 @@ export default function ListaProductos() {
             </div>
           </div>
           <div className="w-full h-[1px] bg-gray-200"></div>
-          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
+          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-hidden">
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
                 <button className={`group ${estado == 'INSUMO' && 'active'}`} data-tipo="INSUMO" onClick={filtrarestado}>
@@ -287,14 +256,13 @@ export default function ListaProductos() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" onClick={()=>{}} data-id={row.idx}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                 </div>
                               </li>
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={() => { }}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                  {/* <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg> */}
                                 </div>
                               </li>
                               <li>
