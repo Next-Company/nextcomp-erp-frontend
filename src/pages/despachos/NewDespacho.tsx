@@ -639,6 +639,11 @@ export default function NewDespacho() {
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2 overflow-x-hidden">
             <form ref={form} onSubmit={onsubmit} onChange={() => { }} onInputCapture={onchange}>
               <div className={` flex-col gap-3 flex`}>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/> 
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'distribucion'} defaults={Object.keys(info).length > 0 ? info.distribucion : null} type="hidden" />

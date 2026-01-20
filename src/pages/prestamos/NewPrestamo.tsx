@@ -291,9 +291,9 @@ export default function NewPrestamo() {
                     df={Object.keys(info).length > 0 ? info.origen : null}
                   /> */}
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                  <Input name={'proveedor'} title="Acreedor(Prestamista)" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
-                  <Input name={'id_cliente_CAB'} defaults={Object.keys(info).length > 0 ? info.id_cliente_CAB : null} type="hidden" />
-                  <Input name={'cliente'} title="Deudor(Prestatario)" defaults={Object.keys(info).length > 0 ? info.cliente : null} type="text" action={nuevocliente} mode={'static'} />
+                  <Input name={'proveedor'} title="Acreedor(Prestamista)" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Informacion descriptiva'}/>
+                  <Input name={'id_cliente_CAB'} defaults={Object.keys(info).length > 0 ? info.id_cliente_CAB : null} type="hidden"/>
+                  <Input name={'cliente'} title="Deudor(Prestatario)" defaults={Object.keys(info).length > 0 ? info.cliente : null} type="text" action={nuevocliente} mode={'static'} placeholder={'Informacion descriptiva'}/>
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
                       { indice: 'PEN', option: 'SOLES', selected: true },
@@ -301,20 +301,21 @@ export default function NewPrestamo() {
                     ]}
                     df={Object.keys(info).length > 0 ? info.moneda : null}
                     formref={form}
+                    placeholder={'Informacion descriptiva'}
                   />
                   {/* <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" /> */}
-                  <Input name={'tcea'} title="TCEA" defaults={Object.keys(info).length > 0 ? info.tcea : null} type="text" />
-                  <Input name={'plazo_pago'} title="PlazoPago" defaults={Object.keys(info).length > 0 ? info.plazo_pago : null} type="text" />
+                  <Input name={'tcea'} title="TCEA" defaults={Object.keys(info).length > 0 ? info.tcea : null} type="text" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'plazo_pago'} title="PlazoPago" defaults={Object.keys(info).length > 0 ? info.plazo_pago : null} type="text" placeholder={'Informacion descriptiva'}/>
 
 
                 </div>
                 <div className="flex flex-row gap-3">
-                  <Input name={'numero_cuotas'} title="NumeroCuotas" defaults={Object.keys(info).length > 0 ? info.numero_cuotas : null} type="number" />
-                  <Input name={'fec_solicitud'} title="FecSolicitud" defaults={Object.keys(info).length > 0 ? info.fec_solicitud : null} type="date" />
-                  <Input name={'fec_ultimo_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_ultimo_vencimiento : null} type="date" />
-                  <Input name={'monto_capital'} title="Capital" defaults={Object.keys(info).length > 0 ? info.monto_capital : null} type="number" />
-                  <Input name={'monto_intereses'} title="Intereses" defaults={Object.keys(info).length > 0 ? info.monto_intereses : null} type="number" />
-                  <Input name={'monto_prestamo'} title="ImporteTotal" defaults={Object.keys(info).length > 0 ? info.monto_prestamo : null} type="number" />
+                  <Input name={'numero_cuotas'} title="NumeroCuotas" defaults={Object.keys(info).length > 0 ? info.numero_cuotas : null} type="number" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'fec_solicitud'} title="FecSolicitud" defaults={Object.keys(info).length > 0 ? info.fec_solicitud : null} type="date" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'fec_ultimo_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_ultimo_vencimiento : null} type="date" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'monto_capital'} title="Capital" defaults={Object.keys(info).length > 0 ? info.monto_capital : null} type="number" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'monto_intereses'} title="Intereses" defaults={Object.keys(info).length > 0 ? info.monto_intereses : null} type="number" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'monto_prestamo'} title="ImporteTotal" defaults={Object.keys(info).length > 0 ? info.monto_prestamo : null} type="number" placeholder={'Informacion descriptiva'}/>
                   <InputSelect title={'Estado'} name={"estado_prestamo"} data={
                     [
                       { indice: 'EMIT', option: 'PENDIENTE', selected: true },
@@ -322,8 +323,14 @@ export default function NewPrestamo() {
                       { indice: 'ANUL', option: 'ANULADO' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.estado : null}
+                    placeholder={'Informacion descriptiva'}
                   />
                 </div>
+                <div className="flex items-center mt-2 gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Lista detalle</span>
+                </div>
+                {/* <hr/>  */}
                 <div>
                   {/* <div className="flex justify-start items-center">
                     <h2 className="font-medium text-[16px]">Prestamos /</h2>
@@ -332,7 +339,8 @@ export default function NewPrestamo() {
                     </span>
                   </div> */}
                   {/* <span className="font-bold">Artículos:</span> */}
-                  <h2 className="font-medium text-[16px]">Artículos:</h2>
+                  {/* <h2 className="font-medium text-[16px]">Artículos:</h2> */}
+
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-yellow-200">
                       <thead className="text-left sticky top-0 bg-white">
@@ -421,7 +429,7 @@ export default function NewPrestamo() {
                         <tr>
                           <td colSpan={7} >
                             <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+                              <div onClick={nuevoregistro} className="bg-green-500 w-[350px] h-[20px] flex flex-row justify-center items-center text-center rounded-2xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
                               </div>
                             </div>

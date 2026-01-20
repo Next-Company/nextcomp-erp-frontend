@@ -252,17 +252,18 @@ export default function NewLetraV2() {
                       { indice: 'PEDIDO', option: 'PEDIDO' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.origen : null}
+                    placeholder={'Informacion descriptiva'}
                   />
                   <div className="w-[350px]">
-                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Informacion descriptiva'}/>
                   </div>
                   <div className="w-[350px]">
-                    <Input name={'aceptante'} title="Aceptante" defaults={Object.keys(info).length > 0 ? info.aceptante : null} type="text" />
+                    <Input name={'aceptante'} title="Aceptante" defaults={Object.keys(info).length > 0 ? info.aceptante : null} type="text" placeholder={'Informacion descriptiva'} />
                   </div>
                   {/* <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" /> */}
-                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
-                  <Input name={'fec_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_vencimiento : null} type="date" />
-                  <Input name={'num_letra'} title="NumeroLetra" defaults={Object.keys(info).length > 0 ? info.num_letra : null} type="text" />
+                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'fec_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_vencimiento : null} type="date" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'num_letra'} title="NumeroLetra" defaults={Object.keys(info).length > 0 ? info.num_letra : null} type="text" placeholder={'Informacion descriptiva'}/>
                 </div>
                 <div className="flex flex-row gap-3">
                   <InputSelect title={'Moneda'} name={"moneda"} data={
@@ -271,24 +272,26 @@ export default function NewLetraV2() {
                       { indice: 'USD', option: 'DOLARES' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.moneda : null}
+                    placeholder={'Informacion descriptiva'}
                   />
                   {
                     origen == 'PEDIDO'
                       ? <>
                         {/* <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" action={listafacturas} mode={'static'} /> */}
-                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
+                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" placeholder={'Informacion descriptiva'}/>
                       </>
                       : <>
-                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
+                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" placeholder={'Informacion descriptiva'} />
                       </>
                   }
-                  <Input name={'importe'} title="Importe" defaults={Object.keys(info).length > 0 ? info.importe : null} type="number" />
+                  <Input name={'importe'} title="Importe" defaults={Object.keys(info).length > 0 ? info.importe : null} type="number" placeholder={'Informacion descriptiva'}/>
 		  <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
                     [
                       { indice: 'VINC', option: 'VINCULANTE', selected: true },
                       { indice: 'NVINC', option: 'NO VINCULANTE'},
                     ]}
                     df={Object.keys(info).length > 0 ? info.estado : null}
+                    placeholder={'Informacion descriptiva'}
                   />
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
@@ -297,6 +300,7 @@ export default function NewLetraV2() {
                       { indice: 'ANUL', option: 'ANULADO' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.estado : null}
+                    placeholder={'Informacion descriptiva'}
                   />
                 </div>
                 <div>

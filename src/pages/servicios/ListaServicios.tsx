@@ -113,11 +113,10 @@ export default function ListaServicios() {
     console.log("El estado es:", estado)
     setOpenloader(true)
     const pp = async () => {
-      await Consulta({url: 'produccion/getListaGuias/' + estado})
+      await Consulta({url: 'servicios/getServicios/' + estado})
       .then(resp => {
-        console.log(resp)
         setOpenloader(false)
-        setInfoestado(resp)
+        setInfo(resp)
         setEstado(estado)
       })
       .catch((error) => {
@@ -182,7 +181,7 @@ export default function ListaServicios() {
             </div>
           </div>
           <div className="w-full h-[1px] bg-gray-200"></div>
-          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
+          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-hidden">
             {/* <hr /> */}
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
@@ -213,12 +212,12 @@ export default function ListaServicios() {
                   <tr>
                     <th className="lg:table-cell">Id</th>
                     {/* <th className="lg:table-cell">IdOrden</th> */}
-                    <th className="lg:table-cell">Servicio</th>
+                    <th className="lg:table-cell">TipoServicio</th>
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">FechaEmisión</th>
                     <th className="lg:table-cell">FechaRetorno</th>
-                    <th className="lg:table-cell">TiempoProd</th>
-                    <th className="lg:table-cell">DiasPendientes</th>
+                    <th className="lg:table-cell text-center">TiempoProd</th>
+                    <th className="lg:table-cell text-center">DiasPendientes</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -230,12 +229,12 @@ export default function ListaServicios() {
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
                           {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.id_orden_CAB}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td> */}
-                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${row.identificador}`}>{row.tipo}</div></td>
+                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full bg-gray-400`}>{row.tipo}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_retorno}</td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.tiempo_produccion}</td>
-                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'} text-center`}>{row.tiempo_produccion}</td>
+                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold text-center`}>{row.dias_pendientes}</td>
                           {/* <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.cantidad_servicio}</td> */}
                           {/* <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.ingresos}</td> */}
                           <td className="w-[250px]">
