@@ -85,7 +85,7 @@ function VentanaIngresosTable({position,data,setregistros,registros,tallasbase})
             <td>SALDO:</td>
             {
               tallasbase.map(talla=>
-                <td>{(data.fracciones.filter(row=>row.talla == talla)[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == talla)[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0) ,0) : 0)}</td>    
+                <td>{(data.fracciones.filter(row=>row.talla == talla)[0]?.cantidad ?? 0) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == talla)[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0) ,0) : 0)}</td>    
               )
             }
             <td>{data.fracciones.reduce((c,v)=>c+v.cantidad,0) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + ( v1.fracciones.length > 0 ? v1.fracciones.reduce((c,v)=>c + v.caidos + v.despachos + v.incompletos,0) : 0 ),0) : 0)}</td>
@@ -94,7 +94,7 @@ function VentanaIngresosTable({position,data,setregistros,registros,tallasbase})
             <td>DIFERENCIA:</td>
             {
               tallasbase.map(talla=>
-                <td>{(data.fracciones.filter(row=>row.talla == talla)[0].cantidad) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == talla)[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v[talla] ?? 0),0)}</td>
+                <td>{(data.fracciones.filter(row=>row.talla == talla)[0]?.cantidad ?? 0) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? Object.values(v1.fracciones.filter(row=>row.talla == talla)[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+parseInt(v[talla] ?? 0),0)}</td>
               )
             }
             <td>{data.fracciones.reduce((c,v)=>c+v.cantidad,0) - (data.despachos.length > 0 ? data.despachos.reduce((c1,v1)=>c1 + (v1.fracciones.length > 0 ? v1.fracciones.reduce((c,v)=>c + v.caidos + v.despachos + v.incompletos,0) : 0),0) : 0) - ingreso.fracciones_despacho.reduce((c,v)=>c+tallasbase.reduce((cc,vv)=>cc+parseInt(v[vv] ?? 0),0),0)}</td>

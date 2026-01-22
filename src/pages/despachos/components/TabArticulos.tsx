@@ -4,7 +4,7 @@ import VentanaIngresos from "./VentanaIngresos"
 
 export default function TabArticulos(){
   const {tipo,registros,urlparams,setRegistros,colorfase,setOpen,openModal,tallasbase} = useContext(DespachosContext)
-  console.log("Nuevo reendierizado aidicional",tallasbase,registros)
+  console.log("Nuevo reendierizado aidicional",tallasbase,registros,tallasbase)
   const editvalue = (e) => {
     const column = e.target.dataset.name
     console.log("El campo afectado es el siguiente :", column, "SDSDF : ", e.target.checked)
