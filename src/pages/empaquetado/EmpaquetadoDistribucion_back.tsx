@@ -8,7 +8,20 @@ import { Input } from "../../components/Atoms/Input/Input"
 import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
-import Ordenes from "../../components/Common/Ordenes"
+import Guias from "../../components/Common/Guias"
+import Pedidos from "../../components/Common/Pedidos"
+import ReviewEstampado from "../estampado/ReviewEstampado"
+
+const colorfase = {
+  'CONFECCION': 'bg-purple-500',
+  'ESTAMPADO': 'bg-gray-500',
+  'ACABADOS': 'bg-red-500',
+  'LAVANDERIA': 'bg-green-500',
+  'MOLDES': 'bg-orange-500',
+  'OJAL BOTON': 'bg-blue-500',
+  'CORTE': 'bg-rose-400',
+  'BORDADO': 'bg-yellow-500',
+}
 
 const model = {fracciones_despacho:[
     {concepto:'INGRESO',xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0},
@@ -241,7 +254,7 @@ function CuerpoIngresosXPQ({registros,setregistros,setopen}){
       console.log("Enoelmaiz :",kk)
 
     setregistros(reg=>reg.map((row,key)=>{
-      return row.id_combo == kk[0].id_combo ? kk[0] : row 
+      return row.id_item == kk[0].id_item ? kk[0] : row 
     }))
     setopen(false)
   }
@@ -262,11 +275,11 @@ function CuerpoIngresosXPQ({registros,setregistros,setopen}){
   )
 }
 
-export default function EmpaqueadoRecepcion() {
+export default function EmpaqueadoDistribucion() {
   // const [estampado,setEstampado] = useState([])
   const [tipo, setTipo] = useState(2)
   const urlparams = useParams()
-  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '', facturado:'1', fase:'1', distribucion: 'TLL', subtipo:'', id_orden_origen: '', nro_orden_origen:'' })
+  const [info, setInfo] = useState({ idx: null, tipo: '', fec_despacho: '', fec_emision_guia: '', ruc: '', id_pedido_origen: '', nro_pedido_origen: '', id_guia_origen: '', nro_guia_origen: '', id_proveedor_CAB: '', proveedor: '', responsable: '', nro_guia: '', facturado:'1', fase:'1', distribucion: 'TLL', subtipo:'' })
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
   const form = useRef()
   const [registros, setRegistros] = useState([])
@@ -281,7 +294,6 @@ export default function EmpaqueadoRecepcion() {
     console.log("Los datos del formulario son:", registros)
     // console.log("El estado de la fase es:",form.current.elements.fase.value)
 
-    console.log("Papaya salada")
     if(registros.length > 0 && tipo == 2 && fase == 0){
       if(registros.filter(row=>row.fracciones_despacho.length > 0).length > 0){
         toast.error('Si piensa registrar algún despacho seleccione primero la fase de despacho.', { theme: "colored" })
@@ -313,10 +325,8 @@ export default function EmpaqueadoRecepcion() {
         return 0
       }
     }
-
-    console.log("Papaya salada:",registros.reduce((c,v)=>c + (v.despacho ?? 0),0),registros.reduce((c,v)=>c + (v.incompleto ?? 0),0))
-    if(!(registros.reduce((c,v)=>c + (v.despacho ?? 0),0) > 0 || registros.reduce((c,v)=>c + (v.incompleto ?? 0),0) > 0 || registros.reduce((c,v)=>c + (v.caidos ?? 0),0) > 0)){
-      toast.error("Debe registrar el ingreso de despacho, caidos o incompletos",{theme:"colored"})
+    if(form.current.elements.facturado.value == 1 && !facturas.length > 0){
+      toast.error(`No ha ingresado ningun registro referenta a la factura del proveedor. Por favor verifique.`, { theme: "colored" })
       return 0
     }
     
@@ -331,34 +341,35 @@ export default function EmpaqueadoRecepcion() {
         urlparams.id && data.append('id', urlparams.id)
         data.append('info', JSON.stringify(Object.fromEntries(new FormData(form.current))))
         data.append('detalle', fase ? JSON.stringify(registros.filter(row => (row.despacho ?? 0) > 0 || (row.caidos ?? 0) > 0 || (row.incompletos ?? 0) > 0)) : JSON.stringify(registros))
+        data.append('facturas', JSON.stringify(facturas))
+        data.append('subtipo', info.subtipo)
 
-        const ruta = urlparams.id ? 'produccion/updateRecepcionAcabados' : 'produccion/saveRecepcionAcabados'
-        const method = urlparams.id ? 'PUT' : 'POST'
-        console.log("Los paramaetros de consulta son:", ruta, method)
+        // const ruta = tipo == 1 ? 'produccion/guardardespachopedido/' : (info.distribucion !== 'PQT' ? 'produccion/guardardespachoguia/' : 'produccion/guardardespachoguiaxpq/')
+        const ruta = (tipo == 1 ? 'produccion/guardardespachopedido/' : {'PQT':'produccion/guardardespachoguia/','TLL':'produccion/guardardespachoguia/','GLB':'produccion/guardardespachoguiaglb/'}[info.distribucion])
         await Consulta({
+          // url: 'produccion/guardardespacho/', params: {
           url: ruta, params: {
-            method: method,
+            method: 'PUT',
             body: data
           }
         })
-        .then(resp => {
-          console.log("Info respues:",resp)
-          setOpenloader(false)
-          if(resp.ok){
-            navigate('/main/empaquetado/recepcion/')
-            toast.success(resp.message, { theme: "colored" })
-          }else{
-            console.log("Denteo de rror")
-            toast.error(resp.message, { theme: "colored" })  
-          }
-        })
-        .catch((err) => {
-          setOpenloader(false)
-          toast.error('Se produjo un error!!', { theme: "colored" })
-        })
-        .finally(() => {
-          setOpenloader(false)
-        })
+          .then(resp => {
+            console.log("Info respues:",resp)
+            setOpenloader(false)
+            if(resp.ok){
+              navigate('/main/despachos/')
+              toast.success(resp.message, { theme: "colored" })
+            }else{
+              toast.error(resp.message, { theme: "colored" })  
+            }
+          })
+          .catch((err) => {
+            setOpenloader(false)
+            // toast.error('Se produjo un error!!', { theme: "colored" })
+          })
+          .finally(() => {
+            setOpenloader(false)
+          })
       }
     })
   }
@@ -378,15 +389,14 @@ export default function EmpaqueadoRecepcion() {
   useEffect(() => {
     if (urlparams.id) {
       setOpenloader(true)
-      // console.log("La ruta a consutlar es la siguiente:", 'produccion/getInfoEmpaquetado/' + urlparams.id)
       const pp = async () => {
-        await Consulta({ url: 'produccion/getInfoEmpaquetado/' + urlparams.id, })
+        await Consulta({ url: 'produccion/despacho/' + urlparams.id, })
           .then(resp => {
             console.log("Los datos del despacho son:", resp)
             setInfo(resp[0])
             setRegistros(resp[1])
-            // resp[2] && setFacturas(resp[2])
-            // setTipo(resp[0].tipo == 'PEDIDOS' ? 1 : (resp[0].tipo == 'SERVICIOS' ? 2 : 0))
+            resp[2] && setFacturas(resp[2])
+            setTipo(resp[0].tipo == 'PEDIDOS' ? 1 : (resp[0].tipo == 'SERVICIOS' ? 2 : 0))
             setOpenloader(false)
           })
           .catch((err) => {
@@ -398,9 +408,41 @@ export default function EmpaqueadoRecepcion() {
       }
       pp()
     }
+    if (urlparams.idmuestra) {
+      setOpenloader(true)
+      Consulta({ url: 'produccion/guia/' + urlparams.idmuestra })
+        .then(resp => {
+          setOpenloader(false)
+          console.log("Despacho directo:", resp)
+          // setInfo(resp[0])
+          setTipo(resp[0].tipo)
+          setInfo(info => ({ ...info,tipo:resp[0].tipo, id_guia_origen: resp[0].idx, nro_guia_origen: resp[0].idx, id_proveedor_CAB: resp[0].id_proveedor_CAB, proveedor: resp[0].proveedor }))
+          // setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+          //   row = { ...row, id_item: row.idx }
+          //   Reflect.deleteProperty(row, 'idx')
+          //   return row
+          // })])
+          setRegistros(resp[1].map(row => {
+            row = { ...row, id_item: row.idx }
+            Reflect.deleteProperty(row, 'idx')
+            return row
+          }))
+        })
+        .catch((err) => {
+          // setOpenloader(false)
+        })
+        .finally(() => {
+          // setOpenloader(false)
+        })
+    }
   }, [setOpenloader, urlparams])
 
+  const nuevoregistro = () => {
+    setFacturas([...facturas, { tipodoc: 1, moneda: 'MN', serie: '', numero: '', fec_emision: '', unidades: 0, importe_bruto: 0, base_imponible: 0, monto_inafecto: 0, igv: 0, importe_total: 0 }])
+  }
+
   const onclick = (e) => {
+
     const action = e.target.dataset.action
     const position = e.target.dataset.position
     switch (action) {
@@ -408,6 +450,7 @@ export default function EmpaqueadoRecepcion() {
         setFacturas(facturas.filter((row, key) => key !== parseInt(position)))
         break;
       case 'edit':
+
         console.log("Los registros enviados a la modal son lo siguientes:", registros[position])
         openModal({
           open: true,
@@ -419,12 +462,22 @@ export default function EmpaqueadoRecepcion() {
         break;
       default:
     }
+
     console.log("La accion seleccionada es la siguiente:", action)
+
+  }
+  const editfacturas = (e) => {
+    const column = e.target.dataset.name
+    const position = e.target.dataset.position
+    // console.log("Los nuevos registros son:",[...registros.map((item,key)=> position == key ? {...item,[column]: (column == 'isprototipo' ? e.target.checked : e.target.value)}:item)])
+    // setFacturas([...facturas.map((item, key) => position == key ? { ...item, [column]: (column == 'isprototipo' ? e.target.checked : e.target.value) } : item)])
+    setFacturas([...facturas.map((item, key) => position == key ? { ...item, [column]: e.target.value } : item)])
   }
   const editvalue = (e) => {
     const column = e.target.dataset.name
     console.log("El campo afectado es el siguiente :", column, "SDSDF : ", e.target.checked)
     const position = e.target.dataset.position
+    // let articulo = registros[parseInt(e.target.dataset.position)]
     console.log("Los nuevos registros son:", [...registros.map((item, key) => position == key ? { ...item, [column]: (column == 'isprototipo' ? e.target.checked : e.target.value) } : item)])
     setRegistros([...registros.map((item, key) => position == key ? { ...item, [column]: (column == 'isprototipo' ? e.target.checked : e.target.value) } : item)])
   }
@@ -445,26 +498,65 @@ export default function EmpaqueadoRecepcion() {
     }
     openModal(params_modal)
   }
-  const busquedaOrden = () => {
+  const searchguia = () => {
     let params_modal = null
     params_modal = {
       open: true,
-      content: <Ordenes mode={0} actions={(item)=>{
-        console.log("El pedidos seleccionado matemia es :",item)
-        setInfo(row=>({...row,id_orden_origen:item.idx,nro_orden_origen:item.oc,modelo:item.modelos,base:item.base,presentacion:item.estilo,tela:item.presentacion}))
+      content: <Guias actions={(item) => {
+        // console.log("El item seleccionado es: ",item)
         setOpenloader(true)
         setOpen(false)
-        Consulta({ url: 'produccion/getAcabadosDisponible/' + item.idx })
-        .then(resp=>{
-          setOpenloader(false)
-          setRegistros(resp)
-        })
-        .catch(err=>{
-
-        })
-        .finally(()=>{
-
-        })
+        Consulta({ url: 'produccion/guia/' + item.idx })
+          .then(resp => {
+            // console.log("PPPDPDPDPDPDPDPPD:",resp)
+            setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor, distribucion: item.distribucion }))
+            console.log("Los registros de la guia son:", resp[1])
+            // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
+            setRegistros(resp[1].map(row => {
+              row = { ...row, id_item: row.idx, despacho: 0, caidos: 0, incompletos: 0 }
+              Reflect.deleteProperty(row, 'idx')
+              return row
+            }))
+            // setRegistros(resp[1])
+          })
+          .catch((err) => {
+            setOpenloader(false)
+          })
+          .finally(() => {
+            setOpenloader(false)
+          })
+      }} />,
+      controls: false,
+      header: false,
+      action: () => {
+      }
+    }
+    openModal(params_modal)
+  }
+  const searchmuestra = () => {
+    let params_modal = null
+    params_modal = {
+      open: true,
+      content: <Guias tipo={tipo == 2 ? 'SERVICIOS' : 'MUESTRA_PROTOTIPO'} actions={(item) => {
+        console.log("La informacion del encabezado es: ",item)
+        setOpenloader(true)
+        setOpen(false)
+        Consulta({ url: 'produccion/guia/' + item.idx })
+          .then(resp => {
+            setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
+            // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))
+            setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+              row = { ...row, id_item: row.idx }
+              Reflect.deleteProperty(row, 'idx')
+              return row
+            })])
+          })
+          .catch((err) => {
+            setOpenloader(false)
+          })
+          .finally(() => {
+            setOpenloader(false)
+          })
       }} />,
       controls: true,
       header: false,
@@ -473,24 +565,63 @@ export default function EmpaqueadoRecepcion() {
     }
     openModal(params_modal)
   }
+  const searchpedido = () => {
+    let params_modal = null
+    params_modal = {
+      open: true,
+      content: <Pedidos actions={(item) => {
+        console.log("El pedidos seleccionado matemia es :",item)
+        setOpenloader(true)
+        setOpen(false)
+        Consulta({ url: 'produccion/pedido/' + item.idx })
+          .then(resp => {
+            console.log("Respuesta info pedido:",resp)
+            // setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
+            setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor,subtipo:resp[0].tipo}))
+
+            // setRegistros([...registros, ...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+            //   row = { ...row, id_item: row.idx }
+            //   Reflect.deleteProperty(row, 'idx')
+            //   return row
+            // })])
+            if((info.id_pedido_origen ?? 0) !== item.idx){
+              setRegistros(resp[1].map(row => {
+                row = { ...row, id_item: row.idx }
+                Reflect.deleteProperty(row, 'idx')
+                return row
+              }))
+            }else{
+              setRegistros([...resp[1].filter(row => !registros.map(rr => rr.id_item).includes(row.idx)).map(row => {
+                row = { ...row, id_item: row.idx }
+                Reflect.deleteProperty(row, 'idx')
+                return row
+              })])
+            }
+
+          })
+          .catch((err) => {
+            setOpenloader(false)
+          })
+          .finally(() => {
+            setOpenloader(false)
+          })
+      }} />,
+      controls: true,
+      header: false,
+      action: () => {
+      }
+    }
+    openModal(params_modal)
+  }
+
   const onchange = (e) => {
     console.log("Cambiando tipo de pedido")
+    // console.log("VA o neleet")
+    // console.log("Otros cambios adicionales")
   }
   const changepanel = (e) => {
     const position = parseInt(e.target.dataset.position)
     setPanelActive(position)
-  }
-  const cancelarempaquetado = () => {
-    openModal({
-      open: true,
-      header: false,
-      controls: true,
-      content: <div>¿Está seguro de cancelar el registro de recepción de empaquetado?<br/> Se perderán los datos ingresados.</div>,
-      action: async () => {
-        // regresar()
-        navigate(-1)
-      }
-    })
   }
   useEffect(() => {
     console.log("Los items ingresados son:", registros)
@@ -502,30 +633,75 @@ export default function EmpaqueadoRecepcion() {
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
               <h2 className="font-medium text-[16px]">Empaquetado /</h2>
-              <span className="text-blue-500 font-bold">Nueva distrbución</span>
+              <span className="text-blue-500 font-bold">Nueva distribución</span>
             </div>
             <hr />
           </div>
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2 overflow-x-hidden">
             <form ref={form} onSubmit={onsubmit} onChange={() => { }} onInputCapture={onchange}>
               <div className={` flex-col gap-3 flex`}>
-                <div className="flex items-center gap-2">
-                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
-                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
-                </div>
-                <hr />
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionDespacho" type="date" placeholder="Texto complementario"/>
-                  <Input name={'id_orden_origen'} defaults={Object.keys(info).length > 0 ? info.id_orden_origen : null} type="hidden" placeholder="Texto complementario"/>
-                  <Input name={'nro_orden_origen'} title='NroOrden' defaults={Object.keys(info).length > 0 ? info.nro_orden_origen : null} type="text" action={busquedaOrden} mode={'static'} placeholder="Texto complementario"/>
-                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" placeholder="Texto complementario"/>
+                  <Input name={'distribucion'} defaults={Object.keys(info).length > 0 ? info.distribucion : null} type="hidden" />
+                  <InputSelect title={'OrigenDespacho'} formref={form} name={"tipo"} data={
+                    [
+                      { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true },
+                      { indice: 'PEDIDOS', option: 'PEDIDOS' },
+                      { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO' },
+                    ]}
+                    df={Object.keys(info).length > 0 ? info.tipo : null}
+                    placeholder="Texto complementario"
+                  />
+                  <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionIngreso" type="date" placeholder="Texto complementario"/>
+                  <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" placeholder="Texto complementario"/>
+                  <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
+                  {
+                    tipo == 1
+                      ?
+                      <>
+                        <Input name={'id_pedido_origen'} defaults={Object.keys(info).length > 0 ? info.id_pedido_origen : null} type="hidden" placeholder="Texto complementario"/>
+                        <Input name={'nro_pedido_origen'} title={`${tipo == 1 ? 'IdPedido' : (tipo == 2 ? 'IdServicio' : 'IdMuestra')}`} defaults={Object.keys(info).length > 0 ? info.nro_pedido_origen : null} type="text" action={searchpedido} mode={'static'} placeholder="Texto complementario"/>
+                      </>
+                      :
+                      <>
+                        <Input name={'id_guia_origen'} defaults={Object.keys(info).length > 0 ? info.id_guia_origen : null} type="hidden" />
+                        {
+                          tipo == 2
+                            ?
+                            <>
+                              <Input name={'nro_guia_origen'} title={`${tipo == 2 ? 'IdServicio' : 'IdMuestra'}`} defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchguia} mode={'static'} />
+                            </>
+                            :
+                            <>
+                              <Input name={'nro_guia_origen'} title={`${tipo == 2 ? 'IdServicio' : 'IdMuestra'}`} defaults={Object.keys(info).length > 0 ? info.nro_guia_origen : null} type="text" action={searchmuestra} mode={'static'} />
+                            </>
+                        }
+                      </>
+                  }
                 </div>
                 <div className="flex gap-3">
-                  <Input name={'modelo'} defaults={Object.keys(info).length > 0 && info.modelo ? info.modelo : null} title="Modelo" type="text" placeholder="Texto complementario"/>
-                  <Input name={'base'} defaults={Object.keys(info).length > 0 && info.base ? info.base : null} title="Base" type="text" placeholder="Texto complementario"/>
-                  <Input name={'presentacion'} defaults={Object.keys(info).length > 0 && info.presentacion ? info.presentacion : null} title="Presentación" type="text" placeholder="Texto complementario"/>
-                  <Input name={'tela'} defaults={Object.keys(info).length > 0 && info.tela ? info.tela : null} title="Tela" type="text" placeholder="Texto complementario"/>
+                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
+                  <div className="w-[500px]">
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder="Texto complementario"/>
+                  </div>
+                  <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="Recepcionado Por" type="text" placeholder="Texto complementario"/>
+                  <Input name={'nro_guia'} defaults={Object.keys(info).length > 0 && info.nro_guia ? info.nro_guia : null} title="NroGuiaReferencia" type="text" placeholder="Texto complementario"/>
+                  <InputSelect title={'EsFacturado'} name={"facturado"} data={
+                    [
+                      { indice: '1', option: 'SI', selected: true },
+                      { indice: '0', option: 'NO' },
+                    ]}
+                    df={Object.keys(info).length > 0 ? info.facturado : null}
+                    placeholder="Texto complementario"
+                  />
+                  <InputSelect title={'Fase'} name={"fase"} data={
+                    [
+                      { indice: '1', option: 'INGRESO', selected: true },
+                      { indice: '0', option: 'CONTEO' },
+                    ]}
+                    df={Object.keys(info).length > 0 ? info.fase : null}
+                    placeholder="Texto complementario"
+                  />
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
@@ -534,47 +710,115 @@ export default function EmpaqueadoRecepcion() {
                 <div>
                   <div className={`w-[100%] h-[400px] ${panelactive && 'translate-x-[-50%]'} flex flex-row transition-all overflow-hidden`}>
                     {/* PANEL ARTICULOS */}
-                    <div className="flex-1 h-[100%] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px]">
+                    <div className="flex-1 h-[100%] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
                       <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                         <thead className="text-left sticky top-0 bg-white">
                           <tr>
-                            <th className="lg:table-cell">OrdenRef</th>
-                            <th className="lg:table-cell">Descripción</th>
-                            <th className="lg:table-cell">XS / 26</th>
-                            <th className="lg:table-cell">S / 28</th>
-                            <th className="lg:table-cell">M / 30</th>
-                            <th className="lg:table-cell">L / 32</th>
-                            <th className="lg:table-cell">XL / 34</th>
-                            <th className="lg:table-cell">XXL / 36</th>
-                            <th className="lg:table-cell">Cantidad</th>
-                            <th className="lg:table-cell">Saldo</th>
-                            <th className="lg:table-cell">Ingreso</th>
-                            <th className="lg:table-cell">Caidos</th>
-                            <th className="lg:table-cell">Incompletos</th>
-                            <th className="lg:table-cell">Acciones</th>
+                            {
+                              tipo !== 1
+                                ?
+                                <>
+                                  <th className="lg:table-cell">Id</th>
+                                  <th className="lg:table-cell">Servicio</th>
+                                  <th className="lg:table-cell">Descripción</th>
+                                  <th className="lg:table-cell">Modelo</th>
+                                  <th className="lg:table-cell">XS / 26</th>
+                                  <th className="lg:table-cell">S / 28</th>
+                                  <th className="lg:table-cell">M / 30</th>
+                                  <th className="lg:table-cell">L / 32</th>
+                                  <th className="lg:table-cell">XL / 34</th>
+                                  <th className="lg:table-cell">XXL / 36</th>
+                                  <th className="lg:table-cell">Cantidad</th>
+                                  {
+                                    registros.length > 0 && registros[0].despachos.map((row) => <th className="lg:table-cell"><span className="font-extrabold">{row.fec_despacho}</span></th>)
+                                  }
+                                  <th className="lg:table-cell">Saldo</th>
+                                  <th className="lg:table-cell">Ingreso</th>
+                                  <th className="lg:table-cell">Caidos</th>
+                                  <th className="lg:table-cell">Incompletos</th>
+                                  <th className="lg:table-cell">Acciones</th>
+                                </>
+                                :
+                                <>
+                                  <th className="lg:table-cell w-[350px]">Descripción</th>
+                                  <th className="lg:table-cell w-[100px]">Color</th>
+                                  <th className="lg:table-cell">Rollos</th>
+                                  <th className="lg:table-cell">Cantidad</th>
+                                  <th className="lg:table-cell">Unidad</th>
+                                  <th className="lg:table-cell">Conversion</th>
+                                  <th className="lg:table-cell">Precio</th>
+                                  {/* <th className="lg:table-cell">Entregado</th> */}
+                                  {
+                                    registros.length > 0 && !urlparams.id && registros[0].despachos.map((row) => <th className="lg:table-cell w-[80px]"><span className="font-extrabold">{row.fec_despacho}</span></th>)
+                                  }
+                                  <th className="lg:table-cell w-[100px]">Pendiente</th>
+                                  <th className="lg:table-cell w-[60px]">Ingreso</th>
+                                  <th className="lg:table-cell">Acciones</th>
+                                </>
+                            }
+
                           </tr>
                         </thead>
                         <tbody>
                           {
                             registros.length > 0 && registros.map((row, key) => (
                               <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent [&_td]:text-center">
-                                <td>{row.orden_ref}</td>
-                                <td>{row.articulo}</td>
-                                <td>{row.xs}</td>
-                                <td>{row.s}</td>
-                                <td>{row.m}</td>
-                                <td>{row.l}</td>
-                                <td>{row.xl}</td>
-                                <td>{row.xxl}</td>
-                                <td>{row.cantidad}</td>
                                 {
-                                  !urlparams.id
-                                  ? <td>{row.cantidad -(row.despacho ?? 0) - (row.caidos ?? 0) - (row.incompletos ?? 0)}</td>
-                                  : <td>{row.cantidad - (row.despacho ?? 0) - (row.caidos ?? 0) - (row.incompletos ?? 0)}</td>
+                                  tipo !== 1
+                                    ?
+                                    <>
+                                      <td>{row.idx}</td>
+                                      <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td>
+                                      <td>{row.articulo}</td>
+                                      <td>{row.modelo}</td>
+                                      <td>{row.xs}</td>
+                                      <td>{row.s}</td>
+                                      <td>{row.m}</td>
+                                      <td>{row.l}</td>
+                                      <td>{row.xl}</td>
+                                      <td>{row.xxl}</td>
+                                      <td>{row.cantidad}</td>
+                                      {
+                                        row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho + item.cantidad_caidos + item.cantidad_incompletos}</td>)
+                                      }
+                                      {
+                                        !urlparams.id
+                                        ? <td>{row.cantidad - row.despachos.reduce((carry,item)=>{
+                                          carry += parseFloat(item.cantidad_despacho) + parseFloat(item.cantidad_caidos) + parseFloat(item.cantidad_incompletos)
+                                          return carry
+                                        },0) - row.despacho - row.caidos - row.incompletos}</td>
+                                        : <td>{row.cantidad - row.despachos.reduce((carry,item)=>{
+                                          carry += parseFloat(item.cantidad_despacho) + parseFloat(item.cantidad_caidos) + parseFloat(item.cantidad_incompletos)
+                                          return carry
+                                        },0) - row.despacho - row.caidos - row.incompletos}</td>
+                                      }
+                                      <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho ?? 0} /></td>
+                                      <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" value={row.caidos ?? 0} /></td>
+                                      <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="incompletos" value={row.incompletos ?? 0} /></td>
+                                    </>
+                                    :
+                                    <>
+                                      <td><input type="text" onChange={editvalue} data-name="producto" data-position={key} defaultValue={row.producto} /></td>
+                                      <td><input type="text" onChange={editvalue} data-position={key} data-name="color" defaultValue={row.color} /></td>
+                                      <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" defaultValue={row.rollos} /></td>
+                                      <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" defaultValue={row.cantidad} /></td>
+                                      <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" defaultValue={row.unidad} /></td>
+                                      <td><input type="text" onChange={editvalue} data-position={key} data-name="conversion" defaultValue={row.conversion} /></td>
+                                      <td><input type="number" onChange={editvalue} data-position={key} data-name="precio" defaultValue={row.precio} /></td>
+                                      {
+                                        !urlparams.id && row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho + item.cantidad_caidos + item.cantidad_incompletos}</td>)
+                                      }
+                                      {/* <td>{row.ingresos}</td> */}
+                                      {
+                                        !urlparams.id ? <td>{(row.cantidad*parseFloat(row.conversion ?? 1) - (row.despachos.length > 0 ? row.despachos.reduce((c,v)=>(c+v.cantidad_despacho),0) : 0)).toFixed(2)
+                                        }</td>
+                                        : <td>0</td>
+                                      }
+                                      
+                                      {/* <td>0</td> */}
+                                      <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
+                                    </>
                                 }
-                                <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="despacho" value={row.despacho ?? 0} /></td>
-                                <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="caidos" value={row.caidos ?? 0} /></td>
-                                <td className="w-[100px]"><input type="number" onChange={editvalue} data-position={key} data-name="incompletos" value={row.incompletos ?? 0} /></td>
                                 <td className="w-[150px]">
                                   <ul className="flex flex-row justify-end">
                                     <li>
@@ -598,46 +842,77 @@ export default function EmpaqueadoRecepcion() {
                             ))
                           }
                         </tbody>
-                        {/* <tfoot className="sticky bottom-0">
+                        <tfoot className="sticky bottom-0">
                           <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
-                            <td className="text-center" colSpan={tipo == 1 ? 2 : 9}></td>
-                            <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
-                            <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                              return carry + parseFloat(value.cantidad)
-                            }, 0).toFixed(2)}</td>
+                            {/* <td className="text-center" colSpan={tipo !== 1 ? 9 : 4}></td> */}
                             {
-                              !urlparams.id && registros.length > 0 && registros[0].despachos.map((item,key) => <td className="text-center text-[16px] italic text-blue-600 font-black">{registros.reduce((carry,value)=>{
-                                carry += parseFloat(value.despachos[key].cantidad_despacho) + parseFloat(value.despachos[key].cantidad_caidos) + parseFloat(value.despachos[key].cantidad_incompletos)
-                                // carry += 22
-                                return carry
-                              },0)}</td>)
+                              tipo !== 1
+                              ?
+                              <>
+                                <td className="text-center" colSpan={tipo == 1 ? 2 : 9}></td>
+                                <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
+                                <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                  return carry + parseFloat(value.cantidad)
+                                }, 0).toFixed(2)}</td>
+                                {
+                                  !urlparams.id && registros.length > 0 && registros[0].despachos.map((item,key) => <td className="text-center text-[16px] italic text-blue-600 font-black">{registros.reduce((carry,value)=>{
+                                    carry += parseFloat(value.despachos[key].cantidad_despacho) + parseFloat(value.despachos[key].cantidad_caidos) + parseFloat(value.despachos[key].cantidad_incompletos)
+                                    // carry += 22
+                                    return carry
+                                  },0)}</td>)
+                                }
+                                {
+                                  !urlparams.id
+                                  ? <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                    return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despachos.reduce((carry,item)=>{
+                                      carry += parseFloat(item.cantidad_despacho) + parseFloat(item.cantidad_caidos) + parseFloat(item.cantidad_incompletos)
+                                      return carry
+                                    },0)) - parseFloat(value.despacho ?? 0) - parseFloat(value.caidos ?? 0) - parseFloat(value.incompletos ?? 0)
+                                  }, 0)}</td>
+                                  : <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                    return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despacho ?? 0) - parseFloat(value.caidos ?? 0) - parseFloat(value.incompletos ?? 0)
+                                  }, 0)}</td>
+                                }
+                                <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                  return carry + parseFloat(value.despacho  ?? 0)
+                                }, 0)}</td>
+                                <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                  return carry + parseFloat(value.caidos  ?? 0)
+                                }, 0)}</td>
+                                <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                  return carry + parseFloat(value.incompletos ?? 0)
+                                }, 0)}</td>
+                                {/* <td className="text-center text-[16px] italic">0</td> */}
+                                <td className="text-center"></td>
+                                {/* <td className="text-center"></td> */}
+                              </>
+                              :
+                              <>
+                                <td className="text-center" colSpan={tipo == 1 ? 2 : 9}></td>
+                                <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
+                                <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                  return carry + parseFloat(value.cantidad)
+                                }, 0).toFixed(2)}</td>
+                                <td className="text-center text-[16px] italic">-</td>
+                                <td className="text-center text-[16px] italic">-</td>
+                                <td className="text-center text-[16px] italic">-</td>
+                                {/* <td className="text-center text-[16px] italic">-</td> */}
+                                {
+                                  !urlparams.id && (registros[0]?.despachos?.map(row=><td className="text-center">-</td>) ?? '')
+                                }
+                                <td className="text-center">-</td>
+                                <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
+                                  return carry + parseFloat(value.despacho  ?? 0)
+                                }, 0)}</td>
+                                <td className="text-center"></td>
+                              </>
                             }
-                            {
-                              !urlparams.id
-                              ? <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                                return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despachos.reduce((carry,item)=>{
-                                  carry += parseFloat(item.cantidad_despacho) + parseFloat(item.cantidad_caidos) + parseFloat(item.cantidad_incompletos)
-                                  return carry
-                                },0)) - parseFloat(value.despacho ?? 0) - parseFloat(value.caidos ?? 0) - parseFloat(value.incompletos ?? 0)
-                              }, 0)}</td>
-                              : <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                                return carry + parseFloat(value.cantidad ?? 0) - parseFloat(value.despacho ?? 0) - parseFloat(value.caidos ?? 0) - parseFloat(value.incompletos ?? 0)
-                              }, 0)}</td>
-                            }
-                            <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                              return carry + parseFloat(value.despacho  ?? 0)
-                            }, 0)}</td>
-                            <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                              return carry + parseFloat(value.caidos  ?? 0)
-                            }, 0)}</td>
-                            <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
-                              return carry + parseFloat(value.incompletos ?? 0)
-                            }, 0)}</td>
-                            <td className="text-center"></td>
                           </tr>
-                        </tfoot> */}
+                        </tfoot>
                       </table>
                     </div>
+                    {/* PANEL FACTURAS */}
+
                   </div>
                 </div>
                 <div>
@@ -648,7 +923,7 @@ export default function EmpaqueadoRecepcion() {
                 <div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button action={cancelarempaquetado} type={'button'} tipo={'default'}>Cancelar</Button>
+                  <Button action={() => navigate('/main/despachos/')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>
               </div>

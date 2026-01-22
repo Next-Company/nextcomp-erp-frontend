@@ -99,8 +99,8 @@ function CombosInsumos(children){
 }
 
 function CuerpoCorte(children){
-  let {info,setcorte,position,quitar,form,setopen,openmodal,insumos} = children
-  console.log("El chapuloin colorado 2: ",info)
+  let {info,setcorte,position,quitar,form,setopen,openmodal,insumos,tallaslist} = children
+  console.log("El chapuloin colorado 2: ",info,tallaslist)
   const [active,setActive] = useState(1)
   const onclick = (e)=>{
     const position = e.target.dataset.position
@@ -117,8 +117,10 @@ function CuerpoCorte(children){
     console.log("La informacion del corte es:",info)
 
     let total = 0
-    if(['st','xs','s','m','l','xl','xxl'].includes(name)){
-      total = ['st','xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+    // if(['st','xs','s','m','l','xl','xxl'].includes(name)){
+    if(tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').includes(name)){
+      // total = ['st','xs','s','m','l','xl','xxl'].reduce((c,v)=>{
+      total = tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').reduce((c,v)=>{
         if(v !== name){
           c += parseInt(info.combos[indice][v])
         }
@@ -140,7 +142,12 @@ function CuerpoCorte(children){
   const agregarcombo = (e)=>{
     const id = e.target.dataset.id
     setcorte(corte=>corte.reduce((c,v)=>{
-      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0,insumos:[]}] : v.combos})
+      const initialcombos = tallaslist.filter(talla=>talla.selected)[0]?.tallasformateado.split('-').reduce((c,v)=>{
+        c[v] = 0
+        return c
+      },{}) ?? {}
+      // c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',st:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad_combo:0,insumos:[]}] : v.combos})
+      c.push({...v,combos:v.idx == id ? [...v.combos,{id_hojacorte_CAB:'',color_combo:'',...initialcombos,cantidad_combo:0,insumos:[]}] : v.combos})
       return c
     },[]))
 
@@ -216,13 +223,18 @@ function CuerpoCorte(children){
               <thead className="text-left sticky top-0 bg-white">
                 <tr>
                   <th className="lg:table-cell w-[500px]">ColorCombo</th>  
-                  <th className="lg:table-cell">S/T</th>
+                  {
+                    tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
+                      <th className="lg:table-cell">{talla.toUpperCase()}</th>
+                    )
+                  }
+                  {/* <th className="lg:table-cell">S/T</th>
                   <th className="lg:table-cell">XS / 26</th>
                   <th className="lg:table-cell">S / 28</th>
                   <th className="lg:table-cell">M / 30</th>
                   <th className="lg:table-cell">L / 32</th>
                   <th className="lg:table-cell">XL / 34</th>
-                  <th className="lg:table-cell">XXL / 36</th>
+                  <th className="lg:table-cell">XXL / 36</th> */}
                   <th className="lg:table-cell">CantidadCombo</th>
                   <th className="lg:table-cell">Acciones</th>
                 </tr>
@@ -233,13 +245,18 @@ function CuerpoCorte(children){
                     <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                       <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td>
                       {/* <td className="text-center">{row.color_combo}</td> */}
-                      <td><input data-name="st" type="number" onChange={editvalue} data-position={key} value={row.st}/></td>
+                      {
+                        tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
+                          <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla]}/></td>    
+                        )
+                      }
+                      {/* <td><input data-name="st" type="number" onChange={editvalue} data-position={key} value={row.st}/></td>
                       <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs}/></td>
                       <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s}/></td>
                       <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m}/></td>
                       <td><input data-name="l" type="number" onChange={editvalue} data-position={key} value={row.l}/></td>
                       <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} value={row.xl}/></td>
-                      <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl}/></td>
+                      <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl}/></td> */}
                       <td><input data-name="cantidad_combo" type="number" onChange={(editvalue)} data-position={key} value={row.cantidad_combo}/></td>
                       <td className="w-[250px]">
                         <ul className="flex flex-row justify-end">
@@ -294,7 +311,7 @@ function CuerpoCorte(children){
 }
 
 export default function SeccionCorte(children){
-  let {info,setcorte,form,setopen,openmodal,orden,insumos} = children
+  let {info,setcorte,form,setopen,openmodal,orden,insumos,tallaslist} = children
   // console.log("El chapuloin colorado : ",info)
   // useEffect(()=>{
   //   form.current.addEve
@@ -315,17 +332,10 @@ export default function SeccionCorte(children){
   return <>
     <div className={`flex flex-col gap-3 pt-2`}>
       {
-        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form} setopen={setopen} openmodal={openmodal} insumos={insumos}/>)
-        // info.length > 0 && info.map((row,key)=><div key={key} className="w-[100px] h-[80px] bg-red-300">
-        //   <input type="text" value={Object.keys(row).length > 0 ? row.numero_corte : ''} />
-        // </div>)
-        // info.length > 0 && info.map((row,key)=><Test info={row} position={key} />)
-
-        // info.length > 0 && info.map((row,key)=><InputTest name={'numero_corte'} defaults={Object.keys(row).length > 0 && row.numero_corte ? row.numero_corte : null} title="#HojaCorte" type="text" />)
+        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form} setopen={setopen} openmodal={openmodal} insumos={insumos} tallaslist={tallaslist}/>)
       }
       <div className="sticky bottom-0">
         <div className="flex gap-3 flex-wrap justify-end">
-          {/* <Button type="button" tipo="default" action={deletecorte}>Eliminar</Button> */}
           <Button type="button" tipo="default" action={addcorte}>Agregar nuevo corte</Button>
         </div>
       </div>

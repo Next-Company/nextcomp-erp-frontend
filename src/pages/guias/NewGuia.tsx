@@ -230,6 +230,7 @@ export default function NewGuia(){
   const [reprogramacion,setReprogramacion] = useState([])
   const [fases,setFases] = useState([])
   const [distribucion,setDistribucion] = useState('TLL')
+  const [tallasbase,setTallasbase] = useState([])
   // const [infop,setInfop] = useState([])
   const [servicio,setServicio] = useState('CONFECCION')
   const navigate = useNavigate()
@@ -251,7 +252,7 @@ export default function NewGuia(){
         console.log("El input problematico es :",element)
         toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
         return 0
-      }
+        }
     }
     openModal({
       open: true,
@@ -313,7 +314,7 @@ export default function NewGuia(){
 	          setReprogramacion(resp[5])
             setServicio(resp[0].servicio ?? 'CONFECCION')
             setOpenloader(false)
-
+            setTallasbase(resp[6].tallas.map(row=>row.desc))
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -354,13 +355,20 @@ export default function NewGuia(){
     };
   },[])
 
-  
   const nuevoregistro = ()=>{
     console.log("Registros actuales :",registros)
-    setRegistros([...registros,{item:0,articulo:'',disponible_total:0,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
+    const tallasinit = tallasbase.reduce((c,v)=>{
+      c[v] = 0
+      return c
+    },{})
+    setRegistros([...registros,{item:0,articulo:'',disponible_total:0,...tallasinit,cantidad:0}])
   }
   const nuevopaquete= ()=>{
-    setPaquetes([...paquetes,{item:0,articulo: (info.producto ?? '') + ' ' + (info.modelo ?? '') + ` PAQUETE ${paquetes.length + 1}`,xs:0,s:0,m:0,l:0,xl:0,xxl:0,cantidad:0}])
+    const tallasinit = tallasbase.reduce((c,v)=>{
+      c[v] = 0
+      return c
+    },{})
+    setPaquetes([...paquetes,{item:0,articulo: (info.producto ?? '') + ' ' + (info.modelo ?? '') + ` PAQUETE ${paquetes.length + 1}`,...tallasinit,cantidad:0}])
   }
 
   const onclick = (e)=>{
@@ -387,7 +395,8 @@ export default function NewGuia(){
     let total = 0
     console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
     const position = e.target.dataset.position
-    const tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+    // const tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+    const tallas = tallasbase.filter(row=>row !== column)
 
     if(column !== 'isprototipo'){
       total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
@@ -402,7 +411,7 @@ export default function NewGuia(){
   const editpaquete = (e)=>{
     const column = e.target.dataset.name
     const position = e.target.dataset.position
-    const tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+    const tallas = tallasbase.filter(row=>row !== column)
     const total = Object.entries(paquetes[position]).filter(row=>tallas.includes(row[0])).reduce((carry,row)=>{
       carry+=parseInt(row[1]);
       return carry;
@@ -434,6 +443,7 @@ export default function NewGuia(){
         console.log("INfor de la orden es:",item)
         setOpen(false)
         setOpenloader(true)
+        setTallasbase(item.tallasbase.map(row=>row.desc))
         Consulta({url:'ordenes/extraeritemscaja/' + item.idx + '/' + item.id_corte})
         .then((resp)=>{
           console.log("Los registros de la orden son :",resp)
@@ -504,7 +514,6 @@ export default function NewGuia(){
     <>
       {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-[500px]">
-
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
               <h2 className="font-medium text-[16px]">Guias /</h2>
@@ -512,7 +521,7 @@ export default function NewGuia(){
             </div>
             <hr />
           </div>
-
+          
           <div className="text-left  h-full flex flex-col flex-1 pt-2 overflow-hidden">
             <form ref={form} onSubmit={onsubmit} className="overflow-y-scroll scrollbar-special">
               <div className={` flex-col gap-3 h-full flex`}>
@@ -569,6 +578,10 @@ export default function NewGuia(){
                     placeholder={'Info referencial'}
                   />
                 </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Detalle de los artículos</span>
+                </div>
                 <div className={`${distribucion == 'PQT' && 'hidden'}`}>
                   <div className="flex items-center gap-2 mt-2">
                     <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
@@ -580,14 +593,17 @@ export default function NewGuia(){
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell w-[500px]">Descripcion</th>
-                          {/* {!urlparams.id && <th className="lg:table-cell">Disponible</th>} */}
-                          <th className="lg:table-cell">Disponible</th>
-                          <th className="lg:table-cell">XS / 26</th>
-                          <th className="lg:table-cell">S / 28</th>
-                          <th className="lg:table-cell">M / 30</th>
-                          <th className="lg:table-cell">L / 32</th>
-                          <th className="lg:table-cell">XL / 34</th>
-                          <th className="lg:table-cell">XXL / 36</th>
+                          <th className="lg:table-cell">Disponibles</th>
+                          {/* {
+                            registros.length > 0 && registros[0].tallasbase.map(talla=>
+                              <th className="lg:table-cell">{talla.toUpperCase()}</th>    
+                            )
+                          } */}
+                          {
+                            tallasbase.length > 0 && tallasbase.map(talla=>
+                              <th className="lg:table-cell">{talla.toUpperCase()}</th>    
+                            )
+                          }
                           <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Adicional</th>
                           <th className="lg:table-cell">Acciones</th>
@@ -598,14 +614,12 @@ export default function NewGuia(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
-                              {/* {!urlparams.id && <td className="text-center w-[150px]">{row.disponible_total}</td>} */}
                               <td className="text-center w-[150px]">{urlparams.id ? (row.disponible_total + row.cantidad) : row.disponible_total}</td>
-                              <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} value={row.xs} className="fracciones"/></td>
-                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} value={row.s} className="fracciones"/></td>
-                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} value={row.m} className="fracciones"/></td>
-                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} value={row.l} className="fracciones"/></td>
-                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} value={row.xl} className="fracciones"/></td>
-                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} value={row.xxl} className="fracciones"/></td>
+                              {
+                                tallasbase.map(talla=>
+                                  <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla]} className="fracciones"/></td>    
+                                ) 
+                              }
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} className="fracciones"/></td>
                               <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo} className="fracciones"/></td>
                               <td className="w-[250px]">
@@ -643,11 +657,10 @@ export default function NewGuia(){
                       </tbody>
                       <tfoot className="sticky bottom-0">
                         <tr>
-                          <td colSpan={11} >
+                          <td colSpan={12} >
                             <div className="flex flex-row justify-center">
                               <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                                 +
-                                {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg> */}
                               </div>
                             </div>
                           </td>

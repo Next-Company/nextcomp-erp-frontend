@@ -27,6 +27,7 @@ export function NewOrden() {
   const [materialesref,setMaterialesRef] = useState([])
   const [insumos,setInsumos] = useState([])
   const [requerimientos,setRequerimientos] = useState([])
+  const [tallaslist,setTallaslist] = useState([])
   
   console.log("Info del corte :",orden)
 
@@ -83,6 +84,7 @@ export function NewOrden() {
       data = new FormData()
       data.append('info',JSON.stringify(corte))
       data.append('id',urlparams.id)
+      data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-')))
     }
     if(position == 4){
       console.log("Info de matariales :",materiales)
@@ -107,7 +109,7 @@ export function NewOrden() {
         })
         .then(resp => {
           if(resp.ok){
-            navigate("/main/ordenes/")
+            // navigate("/main/ordenes/")
             toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.mensaje, { theme: "colored" })
@@ -154,7 +156,7 @@ export function NewOrden() {
             setMaterialesRef(resp[5])
             setInsumos(resp[6])
             setRequerimientos(resp[7])
-
+            setTallaslist(resp[8])
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -170,13 +172,18 @@ export function NewOrden() {
       Promise.all([
         Consulta({url:'ordenes/getfasesproduccion'}),
         Consulta({url:'ordenes/getmaterialesproduccion'}),
-        Consulta({url:'ordenes/getCorrelativoProduccionPreview/ORDEN'})
+        Consulta({url:'ordenes/getCorrelativoProduccionPreview/ORDEN'}),
+        Consulta({url:'ordenes/getPlantillasTallas'})
       ])
       .then(resp=>{
         console.log("El resultado de la consulta es:",resp)
+        setTallaslist(resp[3])
+        // setTallaslist(resp[3].map((item,key)=>key == 0 ? {...item,selected:true} : item))
         setFases(resp[0])
         setMaterialesRef(resp[1])
         setOrden([{oc:resp[2].resp}])
+        // setTallaslist(resp[3])
+        
         // console.log("El correlativo actual es:",resp[2])
       })
       .catch(err=>{
@@ -218,44 +225,6 @@ export function NewOrden() {
     //   acumulador += element.value == '' ? 0 : parseInt(element.value)
     // }
     // form.current.querySelector("input[name='acumulado']").value = acumulador
-  }
-
-  const printpedido = (e)=>{
-    const desc = async ()=>{
-      setOpenloader(true)
-      await fetch("http://192.168.18.20:4000/produccion/export",{
-        method:'POST',
-        credentials: 'include'
-      })
-      .then(resp=>{
-        return resp.json()
-      })
-      .then(resp=>{
-        setOpenloader(false)
-        // console.log("El verdadero",resp)
-
-        const binaryString = window.atob(resp.data);
-        // console.log(binaryString)
-        const binaryLen = binaryString.length;
-        const bytes = new Uint8Array(binaryLen);
-        for (let i = 0; i < binaryLen; i++) {
-            const ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
-        }
-        const file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
-
-        const link = document.createElement('a')
-        link.href = file
-        link.target = 'blank'
-        link.click()
-      })
-      .catch((err)=>{
-        setOpenloader(false)
-        toast.error('Se produjo un error!!', { theme: "colored" })
-      })
-
-    }
-    desc()
   }
   const cancelarorden = ()=>{
     openModal({
@@ -343,13 +312,13 @@ export function NewOrden() {
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
-                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materialesref} dataimg={dataimg} setDataimg={setDataimg} setinsumos={setInsumos} insumos={insumos} requerimientos={requerimientos} setrequerimientos={setRequerimientos}/>
+                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materialesref} dataimg={dataimg} setDataimg={setDataimg} setinsumos={setInsumos} insumos={insumos} requerimientos={requerimientos} setrequerimientos={setRequerimientos} tallaslist={tallaslist} settallaslist={setTallaslist}/>
                 }
                 {
                   position == 2 && <SeccionMolde info={molde} orden={urlparams.id} />
                 }
                 {
-                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form} setopen={setOpen} openmodal={openModal} orden={orden} insumos={insumos}/>
+                  position == 3 && <SeccionCorte info={corte} setcorte={setCorte} form={form} setopen={setOpen} openmodal={openModal} orden={orden} insumos={insumos} tallaslist={tallaslist}/>
                 }
                 {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
@@ -357,7 +326,6 @@ export function NewOrden() {
               </div>
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button>
-                {/* <Button action={() => printpedido()} type={'button'} tipo={'default'}>Print</Button> */}
                 <Button type={'submit'} tipo={'success'}>Guardar</Button>
               </div>
             </form>

@@ -1,6 +1,6 @@
 import { Input } from "../../components/Atoms/Input/Input";
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import 'react-toastify/dist/ReactToastify.css';
 
 export function Settings() {
   const notify = () => toast("Wow so easy!");

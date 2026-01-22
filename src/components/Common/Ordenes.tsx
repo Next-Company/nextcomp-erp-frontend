@@ -18,13 +18,16 @@ const colorfase = {
 
 export default function Ordenes(children){
   const { logout } = useContext(AuthPermitions)
+  const [ispending,setIspending] = useState(false)
   let {actions = ()=>{}, closemodal = ()=>{}, mode = 0} = children
   let [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
+      setIspending(true)
       await Consulta({url: mode ? 'ordenes/getordenescorte/' : 'ordenes/getordenesfull/'})
       .then(resp => {
         setLista(resp)
+        // setLista(resp)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -39,6 +42,7 @@ export default function Ordenes(children){
       })
       .finally(()=>{
         // setOpenloader(false)
+        setIspending(false)
       })
     }
     buscarproveedor()
@@ -101,18 +105,28 @@ export default function Ordenes(children){
               </tr>
             </thead>
             <tbody>
-              {lista.length > 0 && lista.map((row,key)=>(
-                <tr key={key} data-position={key} data-action="add" onClick={onclick}>
-                  <td className="h-[50px]">{row.oc}</td>
-                  <td>{row.id_corte}</td>
-                  <td>{row.numero_corte}</td>
-                  <td><strong>{row.cliente.substr(0,30)}</strong></td>
-                  <td>{row.marca}</td>
-                  <td>{row.producto}</td>
-                  <td>{row.modelos}</td>
-                  <td><div className={`min-w-[40px] text-white text-center text-[8px] rounded-l-full text-nowrap px-2 rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status] ?? 'bg-gray-400'}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
+              {
+                ispending
+                ?
+                <tr>
+                  <td colSpan={8} className="text-center p-4">
+                    <span className="loading loading-spinner loading-lg">Loading...</span>
+                  </td>
                 </tr>
-              ))}
+                :
+                lista.length > 0 && lista.map((row,key)=>(
+                  <tr key={key} data-position={key} data-action="add" onClick={onclick}>
+                    <td className="h-[50px]">{row.oc}</td>
+                    <td>{row.id_corte}</td>
+                    <td>{row.numero_corte}</td>
+                    <td><strong>{row.cliente.substr(0,30)}</strong></td>
+                    <td>{row.marca}</td>
+                    <td>{row.producto}</td>
+                    <td>{row.modelos}</td>
+                    <td><div className={`min-w-[40px] text-white text-center text-[8px] rounded-l-full text-nowrap px-2 rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status] ?? 'bg-gray-400'}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
+                  </tr>
+                ))
+              }
             </tbody>
           </table>
         </div>
