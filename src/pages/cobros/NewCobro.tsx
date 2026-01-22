@@ -235,16 +235,22 @@ export default function NewCobro(){
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
             <form ref={form} onSubmit={onsubmit} onChange={()=>{}} onInputCapture={onchange}>
               <div className={` flex-col gap-3 flex`}>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/>
                 <div className="flex flex-row gap-3">
                   <Input name={'idx'} title="" defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'cliente'} title="Cliente" defaults={Object.keys(info).length > 0 ? info.cliente : null} type="text" />
-                  <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" />
+                  <Input name={'cliente'} title="Cliente" defaults={Object.keys(info).length > 0 ? info.cliente : null} type="text" placeholder={'Información descriptiva'}/>
+                  <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" placeholder={'Información descriptiva'}/>
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
                       { indice: 'S', option: 'SOLES', selected: true },
                       { indice: 'D', option: 'DOLARES'},
                     ]} 
                     df={Object.keys(info).length > 0 ? info.moneda : null} 
+                    placeholder={'Información descriptiva'}
                   />
                 </div>
                 <div className="flex flex-row gap-3">
@@ -256,8 +262,9 @@ export default function NewCobro(){
                       { indice: 'DEPOSITO', option: 'DEPOSITO'},
                     ]} 
                     df={Object.keys(info).length > 0 ? info.documento : null} 
+                    placeholder={'Información descriptiva'}
                   />
-                  <Input name={'documento_ref'} title="ReferenciaPago" defaults={Object.keys(info).length > 0 ? info.num_operacion : null} type="text" />
+                  <Input name={'documento_ref'} title="ReferenciaPago" defaults={Object.keys(info).length > 0 ? info.num_operacion : null} type="text" placeholder={'Información descriptiva'} />
                   <InputSelect title={'Entidad Bancaria'} name={"entidad_bancaria"} data={
                     [
                       { indice: 'MIBANCO', option: 'MIBANCO', selected: true },
@@ -281,11 +288,18 @@ export default function NewCobro(){
                       { indice: 'INBK', option: 'INTERBANK'} 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.entidad_bancaria : null} 
+                    placeholder={'Información descriptiva'}
                   />
                   <Input name={'id_cuenta_CAB'} defaults={Object.keys(info).length > 0 && info.id_cuenta_CAB ? info.id_cuenta_CAB : null} title="Cuenta Corriente" type="hidden"/>
-                  <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text" action={nuevacuenta} mode={'static'}/>
-                  <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="ImportePago" type="number"/>
+                  <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text" action={nuevacuenta} mode={'static'} placeholder={'Información descriptiva'}/>
+                  <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="ImportePago" type="number" placeholder={'Información descriptiva'}/>
                 </div>
+
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Informacion detalle</span>
+                </div>
+                {/* <hr/> */}
                 <div>
                   {/* <span>Artículos:</span> */}
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 

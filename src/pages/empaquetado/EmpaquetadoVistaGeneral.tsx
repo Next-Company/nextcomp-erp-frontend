@@ -388,7 +388,7 @@ export default function EmpaquetadoVistaGeneral() {
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Empaquetado</h2>
+              <h2 className="font-medium text-[16px]"><strong>Empaquetado</strong></h2>
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '200px' }} action={busquedaglobal} />
               </div>

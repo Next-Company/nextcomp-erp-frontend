@@ -238,6 +238,11 @@ export default function NewLetraV2() {
           <div className="text-left overflow-hidden scrollbar-special h-full flex flex-col flex-1 pt-2">
             <form ref={form} onSubmit={onsubmit} onKeyUp={onkeyup}>
               <div className={` flex-col gap-3 flex`}>
+                <div className="flex items-center gap-2 mt-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/> 
                 <div className="flex flex-row gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
@@ -247,17 +252,18 @@ export default function NewLetraV2() {
                       { indice: 'PEDIDO', option: 'PEDIDO' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.origen : null}
+                    placeholder={'Informacion descriptiva'}
                   />
                   <div className="w-[350px]">
-                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} />
+                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Informacion descriptiva'}/>
                   </div>
                   <div className="w-[350px]">
-                    <Input name={'aceptante'} title="Aceptante" defaults={Object.keys(info).length > 0 ? info.aceptante : null} type="text" />
+                    <Input name={'aceptante'} title="Aceptante" defaults={Object.keys(info).length > 0 ? info.aceptante : null} type="text" placeholder={'Informacion descriptiva'} />
                   </div>
                   {/* <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" /> */}
-                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" />
-                  <Input name={'fec_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_vencimiento : null} type="date" />
-                  <Input name={'num_letra'} title="NumeroLetra" defaults={Object.keys(info).length > 0 ? info.num_letra : null} type="text" />
+                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'fec_vencimiento'} title="FecVencimiento" defaults={Object.keys(info).length > 0 ? info.fec_vencimiento : null} type="date" placeholder={'Informacion descriptiva'}/>
+                  <Input name={'num_letra'} title="NumeroLetra" defaults={Object.keys(info).length > 0 ? info.num_letra : null} type="text" placeholder={'Informacion descriptiva'}/>
                 </div>
                 <div className="flex flex-row gap-3">
                   <InputSelect title={'Moneda'} name={"moneda"} data={
@@ -266,24 +272,26 @@ export default function NewLetraV2() {
                       { indice: 'USD', option: 'DOLARES' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.moneda : null}
+                    placeholder={'Informacion descriptiva'}
                   />
                   {
                     origen == 'PEDIDO'
                       ? <>
                         {/* <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" action={listafacturas} mode={'static'} /> */}
-                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
+                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" placeholder={'Informacion descriptiva'}/>
                       </>
                       : <>
-                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" />
+                        <Input name={'documentos_ref'} title="DocumentosRef" defaults={Object.keys(info).length > 0 ? info.documentos_ref : null} type="text" placeholder={'Informacion descriptiva'} />
                       </>
                   }
-                  <Input name={'importe'} title="Importe" defaults={Object.keys(info).length > 0 ? info.importe : null} type="number" />
+                  <Input name={'importe'} title="Importe" defaults={Object.keys(info).length > 0 ? info.importe : null} type="number" placeholder={'Informacion descriptiva'}/>
 		  <InputSelect title={'Tipo'} name={"tipo"} formref={form} data={
                     [
                       { indice: 'VINC', option: 'VINCULANTE', selected: true },
                       { indice: 'NVINC', option: 'NO VINCULANTE'},
                     ]}
                     df={Object.keys(info).length > 0 ? info.estado : null}
+                    placeholder={'Informacion descriptiva'}
                   />
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
@@ -292,10 +300,16 @@ export default function NewLetraV2() {
                       { indice: 'ANUL', option: 'ANULADO' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.estado : null}
+                    placeholder={'Informacion descriptiva'}
                   />
                 </div>
                 <div>
-                  <span>Artículos:</span>
+                  {/* <span>Artículos:</span> */}
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                    <span className="inline-block align-middle text-[12px]">Listado de artículos</span>
+                  </div>
+                  {/* <hr/>  */}
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2">
                     {/* <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-yellow-200"> */}
                     

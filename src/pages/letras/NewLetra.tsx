@@ -117,7 +117,7 @@ export default function NewLetra(){
         <div className="pl-2 pr-2 pt-2 flex flex-col flex-1 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-start items-center">
-              <h2 className="font-medium text-[16px]">Letras /</h2>
+              <h2 className="font-medium text-[16px]"><strong>Letras /</strong></h2>
               <span className="text-blue-500 font-bold">
                 Nueva Letra
               </span>

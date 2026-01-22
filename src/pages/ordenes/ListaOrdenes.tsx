@@ -630,7 +630,7 @@ export default function ListaOrdenes() {
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Producción</h2>
+              <h2 className="font-medium text-[16px]"><strong>Producción</strong></h2>
               <div className="w-[400px] mb-1">
                 <Search config={{ width: '200px' }} action={busqueda_search} />
               </div>

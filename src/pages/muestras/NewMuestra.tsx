@@ -24,7 +24,7 @@ export default function NewMuestra(){
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
     console.log("El de talle de fracciones :",registros)
 
-    for(let element of form.current.querySelectorAll("input[verify='true']")){
+    for(const element of form.current.querySelectorAll("input[verify='true']")){
       if(element.value == ''){
         console.log("El elmento culpable es el siguiente:",element)
         toast.error('Debe completar los campos obligatorios', { theme: "colored" })
@@ -116,11 +116,11 @@ export default function NewMuestra(){
 
   }
   const editvalue = (e)=>{
-    let column = e.target.dataset.name
+    const column = e.target.dataset.name
     console.log("El campo afectado es el siguiente :",column,"SDSDF : ",e.target.checked)
-    let position = e.target.dataset.position
-    let tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
-    let total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,value)=>{
+    const position = e.target.dataset.position
+    const tallas = ['xs','s','m','l','xl','xxl'].filter(row=>row !== column)
+    const total = Object.entries(registros[position]).filter(row=>tallas.includes(row[0])).reduce((carry,value)=>{
       carry+=parseFloat(value[1]);
       return carry;
     },0) + (column !== 'articulo' ? parseFloat(e.target.value) : 0)
@@ -169,6 +169,11 @@ export default function NewMuestra(){
 
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} className="flex flex-col flex-1 overflow-hidden h-full">
               <div className={` flex-col gap-3 flex flex-1 overflow-y-scroll scrollbar-special`}>
+                <div className="flex items-center gap-2 mt-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   {/* <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" /> */}
@@ -225,7 +230,10 @@ export default function NewMuestra(){
                   />
                 </div>
                 <div>
-                  <span>Artículos:</span>
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                    <span className="inline-block align-middle text-[12px]">Artículos</span>
+                  </div>
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">

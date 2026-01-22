@@ -217,7 +217,7 @@ const VentanaReprogramacion = ({idguia,reprogramacion,setreprogramacion})=>{
   )
 }
 
-export default function NewGuia(){
+export default function NewTransformacion(){
   const [estampado,setEstampado] = useState([])
   const urlparams = useParams()
   const [info,setInfo] = useState({id_proveedor_CAB:null,proveedor:''})
@@ -310,7 +310,7 @@ export default function NewGuia(){
             setPenalidades(resp[2])
             penalidadestipo.current = resp[3]
             setFases(resp[4])
-	          setReprogramacion(resp[5])
+            setReprogramacion(resp[5])
             setServicio(resp[0].servicio ?? 'CONFECCION')
             setOpenloader(false)
 
@@ -516,11 +516,6 @@ export default function NewGuia(){
           <div className="text-left  h-full flex flex-col flex-1 pt-2 overflow-hidden">
             <form ref={form} onSubmit={onsubmit} className="overflow-y-scroll scrollbar-special">
               <div className={` flex-col gap-3 h-full flex`}>
-                <div className="flex items-center gap-2 mt-2">
-                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
-                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
-                </div>
-                <hr/>
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" verify="true" />
@@ -570,11 +565,7 @@ export default function NewGuia(){
                   />
                 </div>
                 <div className={`${distribucion == 'PQT' && 'hidden'}`}>
-                  <div className="flex items-center gap-2 mt-2">
-                    <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
-                    <span className="inline-block align-middle text-[12px]">Artículos</span>
-                  </div>
-                  {/* <hr/> */}
+                  <span>Artículos:</span>
                   <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
@@ -741,7 +732,7 @@ export default function NewGuia(){
                     {
                       urlparams.id && <>
                         <Button type={'button'} tipo={'accept'} action={opendescuentos}>{`Configurar penalidades - Total: S/.${penalidades.length > 0 ? penalidades.reduce((carry,row)=>{carry += row.importe; return carry;},0).toFixed(2) : 0.00}`}</Button>
-			                  <Button type={'button'} tipo={'warning'} action={openreprogramacion}>{`Reprogramacion de despacho`}</Button>
+                        <Button type={'button'} tipo={'warning'} action={openreprogramacion}>{`Reprogramacion de despacho`}</Button>
                       </>                   
                     }
                   </div>

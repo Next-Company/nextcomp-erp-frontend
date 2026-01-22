@@ -5,28 +5,30 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
-// import { colortipomuestras } from "../../utils/utils";
+import { colorfase } from "../../utils/utils";
+
 const apiUrl = import.meta.env.VITE_API_URL
-const colorfase = {
-  'MUESTRA_PROTOTIPO': 'bg-purple-500',
-  // 'ACABADOS': 'bg-gray-500',
-  'REPARACION': 'bg-red-500',
-  'PRESTAMO': 'bg-green-500',
-  'COMPLEMENTO': 'bg-amber-500',
-  'INTERNO': 'bg-cyan-500'
-}
-// const CuerpoInforme_ = ({ cuerpo }) => {
-//   return (
-//     <>
-//       <iframe src="http://192.168.18.20:4000/produccion/showinformeservicio/16" className="w-[60vw] h-[60vh]"></iframe>
-//     </>
-//   )
+// const colorfase = {
+//   'CONFECCION':'bg-purple-500',
+//   'ESTAMPADO':'bg-gray-500',
+//   'ACABADOS':'bg-red-500',
+//   'LAVANDERIA':'bg-green-500',
+//   'MOLDES':'bg-orange-500',
+//   'OJAL BOTON':'bg-blue-500',
+//   'CORTE':'bg-rose-400',
+//   'BORDADO':'bg-yellow-500',
 // }
+const CuerpoInforme_ = ({ cuerpo }) => {
+  return (
+    <>
+      <iframe src="http://192.168.18.20:4000/produccion/showinformeservicio/16" className="w-[60vw] h-[60vh]"></iframe>
+      {/* <div dangerouslySetInnerHTML={{ __html: cuerpo }} /> */}
+    </>
+  )
+}
 const CuerpoInforme = ({ servicioid }) => {
   const [ruta, setRuta] = useState("")
-  console.log("Reenderizando el componente")
   useEffect(() => {
-    console.log("Ejecutando el efecto del componente CuerpoInforme")
     const crear = async () => {
       await Consulta({
         url: `produccion/showinformeservicio/${servicioid}`, params: {
@@ -34,56 +36,88 @@ const CuerpoInforme = ({ servicioid }) => {
         }
       })
         .then(resp => {
-	  // con.log("Dentro de generacion de la muestra :",resp)
-          /*const binaryString = window.atob(resp.data);
+          const binaryString = window.atob(resp.data);
           const binaryLen = binaryString.length;
           const bytes = new Uint8Array(binaryLen);
           for (let i = 0; i < binaryLen; i++) {
             const ascii = binaryString.charCodeAt(i);
             bytes[i] = ascii;
-          }*/
+          }
           const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
           setRuta(file)
         })
         .catch((err) => {
-	  console.log("El error producido es:",err)
         })
     }
     // crear()
-  }, [servicioid])
+  }, [])
   return (
     <>
       <div>
-        {/* 
-        <iframe src={`http://192.168.18.20:4000/produccion/showinformepedido/${pedidoid}`} className="w-[60vw] h-[70vh]"></iframe>
-	*/}
-        {/*<iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>*/}
-        {/*<iframe src={`http://192.168.18.20:4002/produccion/showinformeservicio/${servicioid}`} className="w-[60vw] h-[70vh]"></iframe>*/}
-	<div className="mb-4">
-          <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh] text-[20px]"></iframe>
-	</div>
-        <div className="flex flex-row justify-end gap-2 p-2 border-t-[1px]">
+        <iframe src={`${apiUrl}produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
+  {/*
+        <iframe src={`http://192.168.18.20:4002/produccion/exportguia/${servicioid}/0`} className="w-[60vw] h-[70vh]"></iframe>
+  */}
+  {/*
+        <iframe src={ruta} className="w-[60vw] h-[70vh]"></iframe>
+  */}
+        <div className="flex flex-row justify-center gap-2 mt-2">
           <Button action={() => { }} type="button" tipo="default">Cerrar</Button>
-	  {/*<Button action={() => { }} type="button" tipo="default">Imprimir</Button>*/}
+          <Button action={() => { }} type="button" tipo="default">Imprimir</Button>
         </div>
       </div>
     </>
   )
 }
-export default function ListaMuestras() {
+export default function ListaTransformaciones() {
   const lista = useRef(null)
   const [info, setInfo] = useState([])
   const [infoestado, setInfoestado] = useState([])
+  const [estado, setEstado] = useState('PENDIENTE')
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
-  const [estado, setEstado] = useState('PENDIENTE')
-  // const [refresh,setRefresh] = useState(false)
-  console.log("Rerenderizado!!!")
   const onclick = (e) => {
     const action = e.target.dataset.action
     const id = e.target.dataset.id
+    const distribucion = e.target.dataset.distribucion
     let params_modal = null
     switch (action) {
+      case 'anulate':
+        params_modal = {
+          open: true,
+          content: <div>Desea anular el servicio seleccionado?. Tenga en cuenta de que el <br /> proceso no es reversible.</div>,
+          controls: true,
+          header: false,
+          action: () => {
+            setOpenloader(true)
+            Consulta({
+              // url: (distribucion == 'PQT' ? 'produccion/anularguiaxpq/' : 'produccion/anularguia/') + id, params: {
+              url: {'PQT':'produccion/anularguiaxpq/','TLL':'produccion/anularguia/','GLB':'produccion/anularguiaglb/',}[distribucion] + id, params: {
+                method: 'DELETE'
+              }
+            })
+              .then(resp => {
+                // setOrdenes(resp)
+                setOpenloader(false)
+                if(resp.ok){
+                  toast.success('Guia anulada con éxito!', { theme: "colored" })
+                  // setRefresh(true)
+                  recargarinfo()
+                }else{
+                  toast.error(resp.message, { theme: "colored" })
+                }
+              })
+              .catch(() => {
+                setOpenloader(false)
+                // logout()
+              })
+              .finally(() => {
+                setOpenloader(false)
+              })
+          }
+        }
+        openModal(params_modal)
+        break;
       case 'delete':
         params_modal = {
           open: true,
@@ -93,7 +127,7 @@ export default function ListaMuestras() {
           action: () => {
             setOpenloader(true)
             Consulta({
-              url: 'produccion/borrarmuestra/' + id, params: {
+              url: distribucion == 'PQT' ? 'produccion/borrarguiaxpq' : 'produccion/borrarguia/' + id, params: {
                 method: 'DELETE'
               }
             })
@@ -124,12 +158,13 @@ export default function ListaMuestras() {
           action: () => {
             const desc = async () => {
               setOpenloader(true)
+
               Consulta({
                 url: "produccion/exportguia/" + id + "/1", params: {
                   method: 'GET'
                 }
               })
-                .then((resp) => {
+                .then(resp => {
                   setOpenloader(false)
                   const binaryString = window.atob(resp.data);
                   const binaryLen = binaryString.length;
@@ -145,44 +180,10 @@ export default function ListaMuestras() {
                   // link.target = 'blank'
                   // link.click()
                 })
-                .catch(error => {
-                  console.log(error)
+                .catch((err) => {
+                  setOpenloader(false)
+                  toast.error('Se produjo un error!!', { theme: "colored" })
                 })
-
-
-              // await fetch("http://192.168.18.20:4000/produccion/exportguia/" + id, {
-              //   method: 'POST',
-              //   credentials: 'include'
-              // })
-              //   .then(resp => {
-              //     if (resp.ok) {
-              //       return resp.json()
-              //     } else {
-              //       if (resp.status == 401) {
-              //         navigate('/')
-              //       }
-              //     }
-              //   })
-              //   .then(resp => {
-              //     setOpenloader(false)
-              //     const binaryString = window.atob(resp.data);
-              //     const binaryLen = binaryString.length;
-              //     const bytes = new Uint8Array(binaryLen);
-              //     for (let i = 0; i < binaryLen; i++) {
-              //       const ascii = binaryString.charCodeAt(i);
-              //       bytes[i] = ascii;
-              //     }
-              //     const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-
-              //     const link = document.createElement('a')
-              //     link.href = file
-              //     link.target = 'blank'
-              //     link.click()
-              //   })
-              //   .catch((err) => {
-              //     setOpenloader(false)
-              //     toast.error('Se produjo un error!!', { theme: "colored" })
-              //   })
             }
             desc()
           }
@@ -190,10 +191,12 @@ export default function ListaMuestras() {
         openModal(params_modal)
         break;
       case 'edit':
-        navigate("/main/muestras/nuevo/" + id)
+        navigate("/main/guias/nuevo/" + id)
+        break;
+      case 'seguimiento':
+        navigate("/main/guias/seguimiento/" + id)
         break;
       case 'review':
-        console.log("Dentro de la opcion review del modulo muestras")
         params_modal = {
           open: true,
           content: <CuerpoInforme servicioid={id} />,
@@ -203,9 +206,7 @@ export default function ListaMuestras() {
         }
         openModal(params_modal)
         break;
-      case 'register':
-        navigate("/main/despachos/load/" + id)
-        break;
+
       default:
         break;
     }
@@ -215,17 +216,16 @@ export default function ListaMuestras() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaMuestras' + '/PENDIENTE', params: {
+      url: 'produccion/getListaGuias/' + estado, params: {
         method: 'GET'
       }
     })
       .then(resp => {
-        console.log("Info muestas   ")
         console.log(resp)
         setOpenloader(false)
         setInfo(resp)
         setInfoestado(resp)
-        // setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
+        // setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -244,26 +244,27 @@ export default function ListaMuestras() {
     setOpenloader(true)
     const pp = async () => {
       await Consulta({
-        url: 'produccion/getListaMuestras/' + estado, params: {
+        url: 'produccion/getListaGuias/' + estado, params: {
           method: 'GET'
         }
       })
         .then(resp => {
           console.log(resp)
           setOpenloader(false)
-          lista.current.querySelector('button.active').classList.remove('active')
-          e.target.classList.add('active')
+          // lista.current.querySelector('button.active').classList.remove('active')
+          // e.target.classList.add('active')
+          // console.log("EL filt4ro 1 es:",resp.filter(row=>row.cantidad_servicio <= row.ingresos))
           setInfoestado(resp)
-          setEstado(estado)
           // if (estado == 1) {
-          //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && row.estado == 'PENDIENTE'))
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
           // }
           // if (estado == 2) {
-          //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos || row.estado == 'FINALIZADO'))
+          //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
           // }
           // if (estado == 3) {
           //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
           // }
+          setEstado(estado)
         })
         .catch((error) => {
           console.log(error)
@@ -279,7 +280,7 @@ export default function ListaMuestras() {
     const data = new FormData()
     setOpenloader(true)
     Consulta({
-      url: 'produccion/getListaMuestras', params: {
+      url: 'produccion/getListaGuias/' +  estado, params: {
         method: 'GET'
       }
     })
@@ -287,6 +288,7 @@ export default function ListaMuestras() {
         console.log("Resultado lista de guias:", resp)
         setOpenloader(false)
         setInfo(resp)
+        setInfoestado(resp)
       })
       .catch((error) => {
         console.log(error)
@@ -298,8 +300,8 @@ export default function ListaMuestras() {
         // setOpenloader(false)
       })
   }
-  const nuevamuestra = () => {
-    navigate('/main/muestras/nuevo')
+  const nuevoservicio = () => {
+    navigate('/main/guias/nuevo')
   }
   // const showinforme = async ()=>{
 
@@ -315,17 +317,26 @@ export default function ListaMuestras() {
   // }
   const busquedaglobal = async (input) => {
     Consulta({
-      // url: 'produccion/getListaMuestras/' + (input.value == '' ? '_' : input.value), params: {
-      url: 'produccion/getListaMuestras/' + (input.value + ` ${estado}`).trim(), params: {
+      // url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value ), params: {
+      url: 'produccion/getListaGuias/' + (input.value + ` ${estado}`).trim(), params: {
         method: 'GET'
       }
     })
       .then(resp => {
         console.log(resp)
         setOpenloader(false)
-        setInfo(resp)
         setInfoestado(resp)
-        // setInfoestado(resp.filter(row => row.estado == 'PENDIENTE'))
+        // setInfo(resp)
+        // if (estado == 1) {
+        //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
+        // }
+        // if (estado == 2) {
+        //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
+        // }
+        // if (estado == 3) {
+        //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
+        // }
+        // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
@@ -337,34 +348,35 @@ export default function ListaMuestras() {
 
   return (
     <>
-      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
+      {/* <div className="directory flex flex-col lg:p-4 sm:p-1 h-full rounded-md w-full relative bg-white"> */}
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]"><strong>Muestras y Complementos</strong></h2>
+              <h2 className="font-medium text-[16px] flex flex-row">Transformaciones</h2>
+              {/* <div className="rounded-l-full rounded-r-full w-[200px] bg-gray-500 text-white">GUIAS</div> */}
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
               </div>
             </div>
           </div>
           <div className="w-full h-[1px] bg-gray-200"></div>
-          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-hidden">
+          <div className="text-left scrollbar-special flex flex-col flex-1 overflow-scroll mt-2">
             {/* <hr /> */}
             <div>
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
-                <button className="group active" data-estado="PENDIENTE" onClick={filtrarestado}>
+                <button className={`group ${estado == 'PENDIENTE' ? 'active' : ''}`} data-estado="PENDIENTE" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Pendientes
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="FINALIZADO" onClick={filtrarestado}>
+                <button className={`group ${estado == 'FINALIZADO' ? 'active' : ''}`} data-estado="FINALIZADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Completados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
-                <button className="group" data-estado="ANULADO" onClick={filtrarestado}>
+                <button className={`group ${estado == 'ANULADO' ? 'active' : ''}`} data-estado="ANULADO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
                     Anulados
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
@@ -378,18 +390,20 @@ export default function ListaMuestras() {
                 <thead className="text-left sticky top-0 bg-white">
                   <tr>
                     <th className="lg:table-cell">Id</th>
-                    <th className="lg:table-cell">Tipo</th>
+                    <th className="lg:table-cell">IdOrden</th>
+                    <th className="lg:table-cell">Hoja de Corte</th>
+                    <th className="lg:table-cell">Servicio</th>
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">Producto</th>
                     <th className="lg:table-cell">Marca</th>
                     <th className="lg:table-cell">Modelo</th>
                     <th className="lg:table-cell">FechaEmisión</th>
                     <th className="lg:table-cell">FechaRetorno</th>
+                    {/* <th className="lg:table-cell">Costo</th> */}
                     <th className="lg:table-cell">TiempoProd</th>
                     <th className="lg:table-cell">DiasPendientes</th>
                     <th className="lg:table-cell">Cantidad</th>
                     <th className="lg:table-cell">Ingresos</th>
-                    {/* <th className="lg:table-cell">Estado</th> */}
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
                 </thead>
@@ -397,17 +411,20 @@ export default function ListaMuestras() {
                   {
                     infoestado.length > 0
                       ? infoestado.map((row, key) => (
-                        <tr key={key} className="">
+                        <tr key={key}>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
-                          <td><div className={`text-white text-center text-[8px] px-3 rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
-                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor ? row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor : row.responsable}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.id_orden_CAB}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.orden_ref}</td>
+                          {/* <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.servicio]}`}>{row.servicio}</div></td> */}
+                          <td><div className={`w-[80px] text-white text-center text-[8px] rounded-l-full rounded-r-full ${row.identificador}`}>{row.servicio}</div></td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{!row.proveedor ? '' : (row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor)}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.modelo}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_emision_guia}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.fec_retorno_guia}</td>
                           {/* <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.costo}</td> */}
-                          <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.tiempo_produccion}</td>
+                          <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.tiempo_produccion}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.dias_pendientes}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.cantidad_servicio}</td>
                           <td className={`${row.dias_pendientes < 0 ? 'text-red-600' : row.dias_pendientes > 0 && 'text-green-600'} font-extrabold`}>{row.ingresos}</td>
@@ -415,8 +432,8 @@ export default function ListaMuestras() {
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="anulate" onClick={onclick} data-id={row.idx} data-distribucion={row.distribucion}>
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-cancel"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M18.364 5.636l-12.728 12.728" /></svg>
                                 </div>
                               </li>
                               <li>
@@ -430,8 +447,8 @@ export default function ListaMuestras() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="register" onClick={onclick} data-id={row.idx}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-package-import"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12v9" /><path d="M12 12l-8 -4.5" /><path d="M22 18h-7" /><path d="M18 15l-3 3l3 3" /></svg>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="seguimiento" onClick={onclick} data-id={row.idx}>
+                                  <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-phone-ringing"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 4l-2 2" /><path d="M22 10.5l-2.5 -.5" /><path d="M13.5 2l.5 2.5" /><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2c-8.072 -.49 -14.51 -6.928 -15 -15a2 2 0 0 1 2 -2" /></svg>
                                 </div>
                               </li>
                               <li>
@@ -444,13 +461,13 @@ export default function ListaMuestras() {
                         </tr>
                       ))
                       :
-                      <tr className="h-[40px]"><td colSpan={13} className="text-center"><span>Datos no encontrados</span></td></tr>
+                      <tr className="h-[40px]"><td colSpan={14} className="text-center"><span>Datos no encontrados</span></td></tr>
                   }
                 </tbody>
                 {/* <tfoot className="absolute bottom-0 w-full bg-yellow-300"> */}
                 <tfoot className="sticky w-full bottom-0 bg-gray-100 ">
                   <tr>
-                    <td className="h-[45px] border-t border-t-gray-600" colSpan={14}>
+                    <td className="h-[45px] border-t border-t-gray-600" colSpan={15}>
                       <div className="flex flex-row justify-between items-center">
                         <div>
                           Showing 1 to 4 of 4 entries (filtered from 57 total entries)
@@ -472,7 +489,7 @@ export default function ListaMuestras() {
             <div className="flex flex-row justify-end">
               <div className="flex gap-2">
                 <Button action={recargarinfo} tipo={'default'}>Actualizar</Button>
-                <Button action={nuevamuestra} tipo={'accept'}>Nuevo</Button>
+                <Button action={nuevoservicio} tipo={'accept'}>Nuevo</Button>
               </div>
             </div >
 

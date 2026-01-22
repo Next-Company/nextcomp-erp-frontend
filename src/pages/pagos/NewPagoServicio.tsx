@@ -520,6 +520,11 @@ export default function NewPagoServicio(){
             {/* <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={()=>{}} onInputCapture={onchange}> */}
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey}>
               <div className={` flex-col gap-3 flex`}>
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/> 
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <InputSelect title={'Origen'} formref={form} name={"tipo"} data={
@@ -528,6 +533,7 @@ export default function NewPagoServicio(){
                       { indice: 'PEDD', option: 'PEDIDOS'},
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
+                    placeholder={'Descripcion informativa'}
                   />
                   <InputSelect title={'Entidad Bancaria'} name={"entidad_bancaria"} data={
                     [
@@ -552,10 +558,11 @@ export default function NewPagoServicio(){
                       { indice: 'INBK', option: 'INTERBANK'} 
                     ]} 
                     df={Object.keys(info).length > 0 ? info.entidad_bancaria : null} 
+                    placeholder={'Descripcion informativa'}
                   />
                   {/* <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionDespacho" type="date" /> */}
-                  <Input name={'id_cuenta_CAB'} defaults={Object.keys(info).length > 0 && info.id_cuenta_CAB ? info.id_cuenta_CAB : null} title="Cuenta Corriente" type="hidden"/>
-                  <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text" action={nuevacuenta} mode={'static'}/>
+                  <Input name={'id_cuenta_CAB'} defaults={Object.keys(info).length > 0 && info.id_cuenta_CAB ? info.id_cuenta_CAB : null} title="Cuenta Corriente" type="hidden" placeholder={'Descripcion informativa'}/>
+                  <Input name={'cuenta_corriente'} defaults={Object.keys(info).length > 0 && info.cuenta_corriente ? info.cuenta_corriente : null} title="Cuenta Corriente" type="text" action={nuevacuenta} mode={'static'} placeholder={'Descripcion informativa'}/>
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <InputSelect title={'Tipo Operación'} name={"tipo_operacion"} data={
                     [
@@ -565,6 +572,7 @@ export default function NewPagoServicio(){
                       { indice: 'EFECTIVO', option: 'EFECTIVO'},
                     ]} 
                     df={Object.keys(info).length > 0 ? info.tipo_operacion : null} 
+                    placeholder={'Descripcion informativa'}
                   />
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
                   <Input name="proveedor" title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text"/>
@@ -577,9 +585,10 @@ export default function NewPagoServicio(){
                       { indice: 'D', option: 'DOLARES'},
                     ]} 
                     df={Object.keys(info).length > 0 ? info.moneda : null} 
+                    placeholder={'Descripcion informativa'}
                   />
-                  <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" />
-                  <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="TotalPago" type="number"/>
+                  <Input name={'fec_pago'} defaults={Object.keys(info).length > 0 && info.fec_pago ? info.fec_pago : null} title="FechaPago" type="date" placeholder={'Descripcion informativa'}/>
+                  <Input name={'importe'} defaults={Object.keys(info).length > 0 && info.importe ? info.importe : null} title="TotalPago" type="number" placeholder={'Descripcion informativa'}/>
                   {/* {
                     urlparams.tipo
                     &&
@@ -590,6 +599,11 @@ export default function NewPagoServicio(){
                   } */}
                   
                 </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Información adicional</span>
+                </div>
+                {/* <hr/>  */}
                 <div>
                   {/* <span>Artículos:</span> */}
                   <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
