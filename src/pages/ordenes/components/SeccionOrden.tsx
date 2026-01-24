@@ -557,7 +557,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
                     { 
                       tallaslist.length > 0 && tallaslist.filter(talla=>talla.selected)[0].tallasformateado.split('-').map((talla_split,key_talla)=>(
                         <td key={key_talla}>
-                          <input type="number" onChange={(editvalue)} data-name={talla_split.trim()} data-position={key} value={row[talla_split.trim()]} />
+                          <input type="number" onChange={(editvalue)} data-name={talla_split.trim()} data-position={key} value={row[talla_split.trim()] ?? 0} />
                         </td>
                       ))
                     }
@@ -603,7 +603,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
                     <td key={key_talla} className="font-bold text-center text-[14px]">
                       {
                         info.length > 0 
-                        ? info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v[talla.trim()]),0) : 0 
+                        ? info[0].combos ? info[0].combos.reduce((c,v)=>c+parseInt(v[talla.trim()] ?? 0),0) : 0 
                         : 0
                       }
                     </td>
@@ -617,7 +617,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
                         info[0].combos 
                         ? info[0].combos.reduce((c,v)=>{
                             const acumulado = tallaslist.filter(row=>row.selected)[0]?.tallasformateado.split('-').reduce((acc,talla_split)=>{
-                              acc = acc + parseInt(v[talla_split.trim()]) 
+                              acc = acc + parseInt(v[talla_split.trim()] ?? 0) 
                               return acc
                             },0) ?? 0
                             c = c + acumulado

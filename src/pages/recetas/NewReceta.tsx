@@ -61,7 +61,7 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   )
 }
 
-function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dataimg,setDataimg,nom,setnom}){
+function DatosPrincipales({info,form,setorden,setopen,openmodal,fases,materiales,dataimg,setDataimg,nom,setnom}){
   const [tipopedido,setTipopedido] = useState(1)
   // const [dataimg,setDataimg] = useState([])
   useEffect(()=>{
@@ -579,11 +579,6 @@ export function NewReceta() {
 
             setOrden(resp)
             setNom(resp[0].nom)
-            // setMolde(resp[1])
-            // setCorte(resp[2])
-            // setMateriales(resp[3])
-            // setFases(resp[4])
-            // setMaterialesRef(resp[5])
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -653,31 +648,6 @@ export function NewReceta() {
       }
     })
   }
-  // const actualizarcombos = ()=>{
-  //   const pp = async () => {
-  //     setOpenloader(true)
-  //     await Consulta({url: 'ordenes/updatecombos/combos'})
-  //       .then(resp => {
-  //         console.log("Opportunity never die!!!!",resp)
-  //       })
-  //       .catch((err)=>{
-  //         setOpenloader(false)
-  //         toast.error('Se produjo un error!!', { theme: "colored" })
-  //       })
-  //       .finally(()=>{
-  //         setOpenloader(false)
-  //       })
-  //   }
-  //   openModal({
-  //     open: true,
-  //     header: false,
-  //     controls: true,
-  //     content: <div>Desea proceder con la actualizaion de los combos de la orden?.</div>,
-  //     action: ()=>{
-  //       pp()
-  //     }
-  //   })
-  // }
   return (
     <>
       {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
@@ -715,7 +685,7 @@ export function NewReceta() {
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
-                  position == 0 && <SeccionOrden info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materialesref} dataimg={dataimg} setDataimg={setDataimg} nom={nom} setnom={setNom}/>
+                  position == 0 && <DatosPrincipales info={orden} form={form} setorden={setOrden} setopen={setOpen} openmodal={openModal} fases={fases} materiales={materialesref} dataimg={dataimg} setDataimg={setDataimg} nom={nom} setnom={setNom}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">

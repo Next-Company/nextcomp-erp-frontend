@@ -6,6 +6,9 @@ import './App.css'
 // import { Home2 } from './Home'
 // import { Login } from './Login'
 import { Dasboard } from './Dasboard'
+// import LayoutServicios from './pages/servicios/LayoutServicios.tsx';
+// import ListaServicios from './pages/servicios/ListaServicios.tsx';
+// import NewServicio from './pages/servicios/NewServicio.tsx';
 // import { Config } from './Config'
 // import Authorization from './Authorization.tsx'
 // import { Directory } from './Directory.tsx'
@@ -173,6 +176,9 @@ const EmpaquetadoVistaGeneral = lazy(()=>import('./pages/empaquetado/Empaquetado
 const LayoutEmpaquedado = lazy(()=>import('./pages/empaquetado/LayoutEmpaquetado.tsx'))
 const EmpaqueadoRecepcion = lazy(()=>import('./pages/empaquetado/EmpaquetadoRecepcion.tsx'))
 const EmpaqueadoDistribucion = lazy(()=>import('./pages/empaquetado/EmpaquetadoDistribucion.tsx'))
+const LayoutServicios = lazy(()=>import('./pages/servicios/LayoutServicios.tsx'))
+const ListaServicios = lazy(()=>import('./pages/servicios/ListaServicios.tsx'))
+const NewServicio = lazy(()=>import('./pages/servicios/NewServicio.tsx'))
 
 const routes = [
   {

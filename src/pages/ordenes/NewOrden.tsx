@@ -8,6 +8,7 @@ import SeccionCorte from "./components/SeccionCorte";
 import SeccionMolde from "./components/SeccionMolde";
 import SeccionMateriales from "./components/SeccionMateriales";
 import SeccionOrden from "./components/SeccionOrden";
+import SeccionConfiguracion from "./components/SeccionConfiguracion";
 
 
 export function NewOrden() {
@@ -307,6 +308,12 @@ export function NewOrden() {
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
+              <button className={`group ${position == 5 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(5)} data-estado="FNLZ">
+                <span className="relative h-[100%] flex items-center pointer-events-none">
+                  Refactorizacion
+                  <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                </span>
+              </button>
             </ul>
             <hr />
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
@@ -322,6 +329,9 @@ export function NewOrden() {
                 }
                 {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
+                }
+                {
+                  position == 5 && <SeccionConfiguracion setopen={setOpen} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
