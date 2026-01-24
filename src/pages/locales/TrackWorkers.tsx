@@ -255,16 +255,29 @@ const DetailResultContextBox = ({setshowdetail})=>{
                   tabposition == '2' && <div className='h-[800px] w-full p-2 flex flex-col gap-2'>
                     {
                       procesos[0].map(row=>
-                        <div className='rounded-2xl bg-gray-400'>
-                          <span>{row.tipo}</span><br/>
-                          <span>{row.estado}</span><br/>
-                          <span>{row.fec_emision}</span><br/>
-                          <span>{row.fec_retorno}</span><br/>
-                          <span>{row.proveedor}</span><br/>
-                          <span>{row.responsable}</span><br/>
-                          <span>{row.costo}</span><br/>
-                          <span>{row.orden_ref}</span><br/>
-                          {/* {JSON.stringify(row)} */}
+                        <div className='rounded-2xl bg-gray-400 text-[12px] p-3 flex flex-col gap-2'>
+                          <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                            <div>Tipo</div>
+                            <div>{row.tipo}</div>
+                          </div>
+                          <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                            <div>Proveedor</div>
+                            <div>{row.proveedor.slice(0,45) + '...'}</div>
+                          </div>
+                          <div className='flex gap-3'>
+                            <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                              <div>FecEmision</div>
+                              <div>{row.fec_emision}</div>
+                            </div>
+                            <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                              <div>FecRetorno</div>
+                              <div>{row.fec_retorno}</div>
+                            </div>
+                            <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                              <div>Responsable</div>
+                              <div>{row.responsable}</div>
+                            </div>
+                          </div>
                         </div>
                       )
                     }
