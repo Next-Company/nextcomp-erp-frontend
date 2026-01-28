@@ -58,7 +58,7 @@ export default function ColoresBase(children){
     let action = e.target.dataset.action ?? e.currentTarget.dataset.action
     switch(action){
       case 'add':
-        // const item = lista[position]
+        const item = lista[position]
         // if(selected.find((row)=>parseInt(row.idx) == parseInt(item.idx))){
         //   setSelected([...selected.filter(row=>parseInt(row.idx) !== parseInt(item.idx))])
         // }else{
@@ -67,7 +67,7 @@ export default function ColoresBase(children){
         // console.log("Agregar color:",lista[position])
         // setColores([...colores,lista[position]])
 
-        actions(selected)
+        actions(item)
         closemodal()
         break;
       default:

@@ -29,6 +29,7 @@ export function NewOrden() {
   const [insumos,setInsumos] = useState([])
   const [requerimientos,setRequerimientos] = useState([])
   const [tallaslist,setTallaslist] = useState([])
+  const [modelos,setModelos] = useState([])
   
   console.log("Info del corte :",orden)
 
@@ -91,6 +92,13 @@ export function NewOrden() {
       console.log("Info de matariales :",materiales)
       url_save = 'ordenes/saveFaseMateriales'
       data = new FormData(e.target)
+      data.append('id',urlparams.id)
+    }
+    if(position == 5){
+      url_save = 'ordenes/saveFaseConfiguracion'
+      data = new FormData()
+      data.append('info',JSON.stringify(modelos))
+      data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-')))
       data.append('id',urlparams.id)
     }
     const PARAMS_MODAL = {
@@ -331,7 +339,7 @@ export function NewOrden() {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
                 }
                 {
-                  position == 5 && <SeccionConfiguracion setopen={setOpen} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader}/>
+                  position == 5 && <SeccionConfiguracion setopen={setOpen} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
