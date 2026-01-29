@@ -515,6 +515,19 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
             </Button>
           </div>
         </div>
+        <div className="w-[400px]">
+          <InputSelect 
+            title={'FraccionadoXModelo'}
+            name={"fraccionado"} 
+            data={
+              [
+                { indice: 0, option: 'NO' }, 
+                { indice: 1, option: 'SI' } 
+              ]
+            } 
+            df={info.length > 0 ? info[0].estado_orden : null} placeholder={'Numero de la orden'}
+          />
+        </div>
       </div>
       <div className="flex items-center gap-2">
         <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>

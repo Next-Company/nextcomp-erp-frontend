@@ -144,11 +144,14 @@ svg {
 #sidenav a.active{
   color: black;
   /* background-color: rgb(203, 203, 203); */
-  background-color: rgb(193, 193, 193);
+  /* background-color: rgb(193, 193, 193); */
+  /* background-color: rgb(214, 226, 255); */
+  background-color: #d3e3fd;
   /* box-shadow: 5px 5px 5px 5px; */
 }
 #sidenav a.default{
-  color: gray;
+  /* color: gray; */
+  color: rgb(72, 72, 72);
 }
 #sidenav a.default:hover{
   color: black;

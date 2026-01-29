@@ -98,7 +98,10 @@ export function NewOrden() {
       url_save = 'ordenes/saveFaseConfiguracion'
       data = new FormData()
       data.append('info',JSON.stringify(modelos))
-      data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-')))
+      // data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-')))
+      data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0]))
+      data.append('idreceta',orden[0]?.id_receta ?? '')
+      // data.append('orden',JSON.stringify(orden[0]))
       data.append('id',urlparams.id)
     }
     const PARAMS_MODAL = {
@@ -166,6 +169,7 @@ export function NewOrden() {
             setInsumos(resp[6])
             setRequerimientos(resp[7])
             setTallaslist(resp[8])
+            setModelos(resp[9])
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -318,7 +322,7 @@ export function NewOrden() {
               </button>
               <button className={`group ${position == 5 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(5)} data-estado="FNLZ">
                 <span className="relative h-[100%] flex items-center pointer-events-none">
-                  Refactorizacion
+                  Fraccionamiento
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>

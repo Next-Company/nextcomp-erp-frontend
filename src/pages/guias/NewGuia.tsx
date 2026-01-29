@@ -445,7 +445,8 @@ export default function NewGuia(){
         setOpenloader(true)
         setTallasbase(item.tallasbase.map(row=>row.desc))
         // Consulta({url:'ordenes/extraeritemscaja/' + item.idx + '/' + item.id_corte})
-        Consulta({url:'ordenes/extraermodelosdisponible/' + item.idx })
+        // Consulta({url:'ordenes/extraermodelosdisponible/' + item.idx })
+        Consulta({url:'ordenes/extraerdisponible/' + item.idx })
         .then((resp)=>{
           console.log("Los registros de la orden son :",resp)
           if(resp.length > 0){

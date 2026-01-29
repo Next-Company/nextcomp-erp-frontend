@@ -110,46 +110,30 @@ export default function SeccionConfiguracion(children:any) {
     }
   }
   const agregarmodelo = ()=>{
-    openmodal({
-      open:true,
-      content: <Recetas 
-        actions={(item)=>{  
-          console.log("Informacion de los insumos:",item)
-          setopen(false)
-          const initialcombos = tallaslist.filter(talla=>talla.selected)[0]?.tallasformateado.split('-').reduce((c,v)=>{
-            c[v] = 0
-            return c
-          },{}) ?? {}
-          setModelos([...modelos,{idprod:item[0].id_producto_CAB,articulo:item[0].producto,...initialcombos,cantidad_combo:0}])
-        }}
-        closemodal={()=>setopen(false)}
-      />,
-      controls: false,
-      header: false,
-      action:async ()=>{
-      }
-    })
-  }
-  const vincularcombo = async () => {
-    openmodal({
-      open:true,
-      content: <Recetas 
-        actions={(item)=>{  
-          console.log("Informacion de los insumos:",item)
-          setopen(false)
-          const initialcombos = tallaslist.filter(talla=>talla.selected)[0]?.tallasformateado.split('-').reduce((c,v)=>{
-            c[v] = 0
-            return c
-          },{}) ?? {}
-          setModelos([...modelos,{idprod:item[0].id_producto_CAB,articulo:item[0].producto,...initialcombos,cantidad_combo:0}])
-        }}
-        closemodal={()=>setopen(false)}
-      />,
-      controls: false,
-      header: false,
-      action:async ()=>{
-      }
-    })
+    const initialcombos = tallaslist.filter(talla=>talla.selected)[0]?.tallasformateado.split('-').reduce((c,v)=>{
+      c[v] = 0
+      return c
+    },{}) ?? {}
+    setModelos([...modelos,{idprod:'',articulo:'',...initialcombos,cantidad_combo:0}])
+    // openmodal({
+    //   open:true,
+    //   content: <Recetas 
+    //     actions={(item)=>{  
+    //       console.log("Informacion de los insumos:",item)
+    //       setopen(false)
+    //       const initialcombos = tallaslist.filter(talla=>talla.selected)[0]?.tallasformateado.split('-').reduce((c,v)=>{
+    //         c[v] = 0
+    //         return c
+    //       },{}) ?? {}
+    //       setModelos([...modelos,{idprod:item[0].id_producto_CAB,articulo:item[0].producto,...initialcombos,cantidad_combo:0}])
+    //     }}
+    //     closemodal={()=>setopen(false)}
+    //   />,
+    //   controls: false,
+    //   header: false,
+    //   action:async ()=>{
+    //   }
+    // })
   }
   const vincularcolores = async (e) => {
     const position = e.currentTarget.getAttribute('data-position')
@@ -158,10 +142,8 @@ export default function SeccionConfiguracion(children:any) {
       content: <ColoresBase 
         actions={(item)=>{  
           console.log("Camaron de la isla:",item)
-
-          // setModelos([...modelos.filter((modelo)=>modelo.idprod !== item.id_producto_CAB),{...item}])
-
           setModelos([...modelos.map((row,key)=>key == position ? {...row,color:item.nom,idcolor:item.idx} : row)])
+          // setModelos([...modelos.filter((modelo)=>modelo.idprod !== item.id_producto_CAB),{...item}])
           // console.log("Informacion de los insumos:",item)
           // setopen(false)
           // const initialcombos = tallaslist.filter(talla=>talla.selected)[0]?.tallasformateado.split('-').reduce((c,v)=>{
@@ -216,7 +198,8 @@ export default function SeccionConfiguracion(children:any) {
             {
               modelos && modelos.map((row,key)=>(
                 <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                  <td className="text-center whitespace-nowrap">{row.articulo}</td>
+                  <td><input data-name="articulo" type="text" onChange={editvalue} data-position={key} value={row.articulo}/></td>
+                  {/* <td className="text-center whitespace-nowrap">{row.articulo}</td> */}
                   <td className="text-center whitespace-nowrap">{row.color}</td>
                   {
                     tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
