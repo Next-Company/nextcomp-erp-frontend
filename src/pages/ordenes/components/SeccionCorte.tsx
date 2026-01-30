@@ -6,7 +6,7 @@ import { Input } from "../../../components/Atoms/Input/Input"
 
 function CombosInsumos(children){
   const {actions,closemodal,insumos = [],c_insumos=[],setcorte,position_corte,position_combo,info} = children
-  const [insu,setInsu] = useState(c_insumos)
+  const [insu,setInsu] = useState(c_insumos ?? [])
   
   console.log('Los insumos de los combos son:',c_insumos,info)
   const onclickinsumos = (e)=>{
@@ -17,14 +17,13 @@ function CombosInsumos(children){
       case 'select':
         setInsu(row=>row.includes(id) ? row.filter(item=>item !== id) : [...row,id])
         setcorte(corte=>corte.map((row,key)=>{
-          // console.log("Ajaummmm!!",row,id)
           return {
             ...row,
             combos: (
               key == position_corte 
               ? row.combos.map((row2,key2)=>(
                 key2 == position_combo 
-                ? {...row2,insumos: (row2.insumos.includes(id) ? row2.insumos.filter(item=>item !== id) : [...row2.insumos,id]) }
+                ? {...row2,insumos: ((row2.insumos ?? []).includes(id) ? (row2.insumos ?? []).filter(item=>item !== id) : [...(row2.insumos ?? []),id]) }
                 : row2
               ))
               : row.combos

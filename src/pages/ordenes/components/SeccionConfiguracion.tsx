@@ -68,27 +68,9 @@ const ListaCombos = (children) => {
 }
 
 export default function SeccionConfiguracion(children:any) {
-  const {openmodal,setOpenloader,tallaslist,orden,setopen,modelos,setModelos} = children
+  const {openmodal,setOpenloader,tallaslist,orden,setopen,modelos,setModelos,disponible} = children
   const info = []
 
-  // useEffect(() => {
-  //   setOpenloader(true)
-  //   Consulta({url:'ordenes/extraerdisponible/' + orden })
-  //   .then((resp)=>{
-  //     if(resp.length > 0){
-  //       setDisponible(resp)
-  //     }else{
-  //       toast.warning('No se encontraron datos disponibles.', { theme: "colored" })
-  //     }
-  //     console.log("Resultado del proceso de extraccion :",resp)
-  //   })
-  //   .catch((error)=>{
-  //     console.log("Error con la consulta",error)
-  //   })
-  //   .finally(()=>{
-  //     setOpenloader(false)
-  //   })
-  // },[])
   const editvalue = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const position = parseInt(e.target.dataset.position)
     const value = e.target.value
@@ -179,7 +161,7 @@ export default function SeccionConfiguracion(children:any) {
         <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
         <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
       </div>
-      <div className="h-[500px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] mt-2">
+      <div className="h-[500px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px]">
         <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
           <thead className="text-left sticky top-0 bg-white">
             <tr>
@@ -203,7 +185,7 @@ export default function SeccionConfiguracion(children:any) {
                   <td className="text-center whitespace-nowrap">{row.color}</td>
                   {
                     tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
-                      <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla]}/></td>    
+                      <td className="text-center"><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla]}/></td>    
                     )
                   }
                   <td className="text-center">{tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').reduce((c,talla)=>c+parseInt(row[talla]||0),0)}</td>
@@ -237,8 +219,40 @@ export default function SeccionConfiguracion(children:any) {
           </tbody>
           <tfoot className="sticky bottom-0 bg-white">
             <tr className="h-[50px]">
-              <td colSpan={8} className="text-right"></td>
-              <td className="text-center font-black">TOTAL</td>
+              <td></td>
+              <td className="text-center">DISPONIBLE</td>
+              {
+                Object.keys(disponible).map(talla=>
+                  <td className="text-center font-extrabold">{disponible[talla]}</td>
+                )
+              }
+              <td className="text-center font-extrabold">{Object.keys(disponible).reduce((c,v)=>c + (disponible[v] ?? 0),0)}</td>
+              <td></td>
+            </tr>
+            <tr className="h-[50px]">
+              <td></td>
+              <td className="text-center">SALDO</td>
+              {
+                Object.keys(disponible).map(talla=>
+                  <td className="text-center font-extrabold">{disponible[talla]}</td>
+                )
+              }
+              <td colSpan={2}></td>
+            </tr>
+            <tr className="h-[50px]">
+              <td></td>
+              <td className="text-center">TOTAL</td>
+              {
+                tallaslist.filter(r=>r.selected)[0].tallasformateado.split('-').map(talla=>
+                  <td className="text-center font-extrabold">
+                    {
+                      // modelos.reduce((c,v))
+                    }
+                  </td>
+                )
+              }
+              
+              {/* <td className="text-center font-black">TOTAL</td>
               <td className="text-center">
                 {
                   modelos.reduce((c,row)=>{
@@ -247,7 +261,7 @@ export default function SeccionConfiguracion(children:any) {
                     return c
                   },0)
                 }
-              </td>
+              </td> */}
               <td className="text-center"></td>
             </tr>
             <tr>

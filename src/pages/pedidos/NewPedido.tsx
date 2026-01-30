@@ -350,7 +350,11 @@ export default function NewPedido(){
 
             <form ref={form} onSubmit={onsubmit} onChange={()=>{}} onInputCapture={onchange}>
               <div className={` flex-col gap-3 flex`}>
-
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/> 
                 <div className="flex gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
                   <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="hidden" />
@@ -415,9 +419,7 @@ export default function NewPedido(){
                   <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
                   <span className="inline-block align-middle text-[12px]">Datos de los artículos a solicitar</span>
                 </div>
-                <hr/> 
                 <div>
-                  {/* <span>Artículos</span> */}
                   <div className="h-[370px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">

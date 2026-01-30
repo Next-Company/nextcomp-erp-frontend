@@ -585,12 +585,7 @@ export default function NewGuia(){
                   <span className="inline-block align-middle text-[12px]">Detalle de los artículos</span>
                 </div>
                 <div className={`${distribucion == 'PQT' && 'hidden'}`}>
-                  <div className="flex items-center gap-2 mt-2">
-                    <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
-                    <span className="inline-block align-middle text-[12px]">Artículos</span>
-                  </div>
-                  {/* <hr/> */}
-                  <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
+                  <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-1"> 
                     <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>

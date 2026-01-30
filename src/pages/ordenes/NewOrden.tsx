@@ -30,6 +30,7 @@ export function NewOrden() {
   const [requerimientos,setRequerimientos] = useState([])
   const [tallaslist,setTallaslist] = useState([])
   const [modelos,setModelos] = useState([])
+  let disponible = useRef(null)
   
   console.log("Info del corte :",orden)
 
@@ -95,7 +96,7 @@ export function NewOrden() {
       data.append('id',urlparams.id)
     }
     if(position == 5){
-      url_save = 'ordenes/saveFaseConfiguracion'
+      url_save = 'ordenes/saveFaseFraccionamiento'
       data = new FormData()
       data.append('info',JSON.stringify(modelos))
       // data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-')))
@@ -156,10 +157,6 @@ export function NewOrden() {
       const pp = async () => {
         await Consulta({url: 'produccion/getordenesbyid/' + urlparams.id,})
           .then(resp => {
-            // console.log(resp)
-            // setOpenloader(false)
-            console.log("Mostrando informacion :",resp)
-
             setOrden(resp[0])
             setMolde(resp[1])
             setCorte(resp[2])
@@ -170,6 +167,7 @@ export function NewOrden() {
             setRequerimientos(resp[7])
             setTallaslist(resp[8])
             setModelos(resp[9])
+            disponible.current = resp[10]
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -343,7 +341,7 @@ export function NewOrden() {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
                 }
                 {
-                  position == 5 && <SeccionConfiguracion setopen={setOpen} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos}/>
+                  position == 5 && <SeccionConfiguracion setopen={setOpen} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
