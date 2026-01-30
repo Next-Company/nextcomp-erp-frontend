@@ -51,10 +51,14 @@ function SeccionOrden({info,form,setorden}){
   return <>
     <div className={`flex flex-col gap-3 pt-3`}>
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col">
-          <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
+        {/* <div className="flex flex-col">
+        </div> */}
+        <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
+        <div className="flex items-center gap-2">
+          <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+          <span className="inline-block align-middle text-[12px]">Datos principales del proveedor</span>
         </div>
-
+        <hr/> 
         <div className="flex flex-col gap-3">
           <div className="flex flex-row gap-3 align-top justify-start items-start">
             <div className="w-[15%]">

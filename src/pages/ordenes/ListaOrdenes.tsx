@@ -438,9 +438,10 @@ export default function ListaOrdenes() {
         break;
     } 
   }
-  const busqueda_search = async (e)=>{
+  const busqueda_search = async (e,setDisabled)=>{
     console.log('El comando presionado es :',e.code,'-',e.keyCode)
     setOpenloader(true)
+    setDisabled(true)
     Consulta({
       url: 'ordenes/getordenes/' + e.value + ` ${estado}`
     })
@@ -448,6 +449,8 @@ export default function ListaOrdenes() {
       console.log('Resultado de busqueda de orden:',resp)
       setOrdenes(resp)
       setOpenloader(false)
+      setDisabled(false)
+      return 'hola juan'
     })
     .catch((error) => {
       console.log(error)

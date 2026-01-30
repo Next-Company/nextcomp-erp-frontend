@@ -98,11 +98,15 @@ export function NewOrden() {
     if(position == 5){
       url_save = 'ordenes/saveFaseFraccionamiento'
       data = new FormData()
+      const validacion = Object.keys(disponible.current).reduce((c,v)=>c + (disponible.current[v] ?? 0),0) - modelos.reduce((c,v)=>c + tallaslist.filter(r=>r.selected)[0].tallas.reduce((c,v2)=>c + parseInt(v[v2.desc] ?? 0),0),0)
+
+      if(validacion !== 0) {
+        toast.error('El saldo pendiente debe queda en 0. Por favor verifique.', { theme: "colored" })
+        return 0
+      }
       data.append('info',JSON.stringify(modelos))
-      // data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-')))
       data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0]))
       data.append('idreceta',orden[0]?.id_receta ?? '')
-      // data.append('orden',JSON.stringify(orden[0]))
       data.append('id',urlparams.id)
     }
     const PARAMS_MODAL = {

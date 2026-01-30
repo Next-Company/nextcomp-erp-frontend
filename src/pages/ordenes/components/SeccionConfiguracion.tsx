@@ -218,9 +218,9 @@ export default function SeccionConfiguracion(children:any) {
             }
           </tbody>
           <tfoot className="sticky bottom-0 bg-white">
-            <tr className="h-[50px]">
+            <tr className="h-[50px] text-[14px]">
               <td></td>
-              <td className="text-center">DISPONIBLE</td>
+              <td className="text-center font-extrabold">DISPONIBLE</td>
               {
                 Object.keys(disponible).map(talla=>
                   <td className="text-center font-extrabold">{disponible[talla]}</td>
@@ -229,40 +229,24 @@ export default function SeccionConfiguracion(children:any) {
               <td className="text-center font-extrabold">{Object.keys(disponible).reduce((c,v)=>c + (disponible[v] ?? 0),0)}</td>
               <td></td>
             </tr>
-            <tr className="h-[50px]">
+            <tr className="h-[50px] text-[14px]">
               <td></td>
-              <td className="text-center">SALDO</td>
-              {
-                Object.keys(disponible).map(talla=>
-                  <td className="text-center font-extrabold">{disponible[talla]}</td>
-                )
-              }
-              <td colSpan={2}></td>
-            </tr>
-            <tr className="h-[50px]">
-              <td></td>
-              <td className="text-center">TOTAL</td>
+              <td className="text-center font-extrabold">TOTAL</td>
               {
                 tallaslist.filter(r=>r.selected)[0].tallasformateado.split('-').map(talla=>
-                  <td className="text-center font-extrabold">
+                  <td className={`text-center font-extrabold ${disponible[talla] - modelos.reduce((c,v)=>c + parseInt((v[talla] ?? 0)),0) < 0 ? 'text-red-600' : ''}`}>
                     {
-                      // modelos.reduce((c,v))
+                      disponible[talla] - modelos.reduce((c,v)=>c + parseInt((v[talla] ?? 0)),0)
                     }
                   </td>
                 )
               }
-              
-              {/* <td className="text-center font-black">TOTAL</td>
-              <td className="text-center">
+              {/* <td className="text-center font-extrabold">{Object.values(disponible).reduce((c,v)=>c + v,0) - 10}</td> */}
+              <td className={`text-center font-extrabold ${Object.keys(disponible).reduce((c,v)=>c + (disponible[v] ?? 0),0) - modelos.reduce((c,v)=>c + tallaslist.filter(r=>r.selected)[0].tallas.reduce((c,v2)=>c + parseInt(v[v2.desc] ?? 0),0),0) < 0 ? 'text-red-600' : ''}`}>
                 {
-                  modelos.reduce((c,row)=>{
-                    const listatallas = tallaslist.filter(r=>r.selected)[0].tallasformateado.split('-')
-                    c = c + listatallas.reduce((cc,talla)=>cc + parseInt(row[talla] || 0),0)
-                    return c
-                  },0)
+                  Object.keys(disponible).reduce((c,v)=>c + (disponible[v] ?? 0),0) - modelos.reduce((c,v)=>c + tallaslist.filter(r=>r.selected)[0].tallas.reduce((c,v2)=>c + parseInt(v[v2.desc] ?? 0),0),0)
                 }
-              </td> */}
-              <td className="text-center"></td>
+              </td>
             </tr>
             <tr>
               <td colSpan={11} >

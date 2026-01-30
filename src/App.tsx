@@ -194,7 +194,7 @@ const routes = [
   },
   {
     path: "/main",
-    element: <Suspense><Dasboard /></Suspense>,
+    element: <Dasboard />,
     children: [
       {
         path: "unauthorized", element: <Unauthorized />
@@ -222,14 +222,14 @@ const routes = [
         element: <Suspense><PrivateRoute><LayoutGuia /></PrivateRoute></Suspense>,
         children: [
           { path: "", element: <Suspense fallback={"Cargando informacion....."}><ListaGuias /></Suspense> },
-          { path: "nuevo", element: <NewGuia />, error: <ErrorController/> },
-          { path: "nuevo/:id", element: <NewGuia />, error: <ErrorController/> },
+          { path: "nuevo", element: <Suspense><NewGuia /></Suspense>, error: <ErrorController/> },
+          { path: "nuevo/:id", element: <Suspense><NewGuia /></Suspense>, error: <ErrorController/> },
           { path: "seguimiento/:id", element: <SeguimientoGuia />, error: <ErrorController/> },
         ]
       },
       {
         path: "servicios",
-        element: <PrivateRoute><LayoutServicios /></PrivateRoute>,
+        element: <Suspense><PrivateRoute><LayoutServicios /></PrivateRoute></Suspense>,
         children: [
           { path: "", element: <Suspense fallback={"Cargando informacion....."}><ListaServicios /></Suspense> },
           { path: "nuevo", element: <NewServicio />, error: <ErrorController/> },
@@ -238,7 +238,7 @@ const routes = [
       },
       {
         path: "muestras",
-        element: <PrivateRoute><LayoutMuestras /></PrivateRoute>,
+        element: <Suspense><PrivateRoute><LayoutMuestras /></PrivateRoute></Suspense>,
         children: [
           { path: "", element: <ListaMuestras /> },
           { path: "nuevo", element: <NewMuestra />, error: <ErrorController/> },
@@ -260,7 +260,7 @@ const routes = [
       },
       {
         path: "ordenes",
-        element: <PrivateRoute><LayoutOrden /></PrivateRoute>,
+        element: <Suspense><PrivateRoute><LayoutOrden /></PrivateRoute></Suspense>,
         children: [
           { path: "", element: <ListaOrdenes /> },
           { path: "nuevo", element: <NewOrden />, error: <ErrorController/> },
