@@ -495,7 +495,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
           <div className="w-[400px]">
             {
               tallaslist.length > 0
-              ? <InputSelect title={'TallasFormato'} name={"tallasbase"} data={tallaslist.map(row=>({indice:row.idx,option:row.tallasformateado}))} df={info.length > 0 ? info[0].tallastemplate : null} formref={form} />
+              ? <InputSelect title={'TallasFormato'} name={"tallasbase"} data={tallaslist.map(row=>({indice:row.idx,option:row.tallasformateado}))} df={info.length > 0 ? info[0].tallasbase : null} formref={form} />
               : <Input name={''} defaults={null} title="Ruta" type="text" />
             }
           </div>

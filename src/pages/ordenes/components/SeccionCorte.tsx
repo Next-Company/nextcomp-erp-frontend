@@ -246,7 +246,7 @@ function CuerpoCorte(children){
                       {/* <td className="text-center">{row.color_combo}</td> */}
                       {
                         tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
-                          <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla]}/></td>    
+                          <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla] ?? 0}/></td>    
                         )
                       }
                       {/* <td><input data-name="st" type="number" onChange={editvalue} data-position={key} value={row.st}/></td>

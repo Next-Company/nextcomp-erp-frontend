@@ -280,7 +280,7 @@ export default function NewGuia(){
         .then(resp => {
           console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          navigate('/main/guias/')
+          // navigate('/main/guias/')
           if(resp.ok){
             toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{
@@ -446,7 +446,7 @@ export default function NewGuia(){
         setTallasbase(item.tallasbase.map(row=>row.desc))
         // Consulta({url:'ordenes/extraeritemscaja/' + item.idx + '/' + item.id_corte})
         // Consulta({url:'ordenes/extraermodelosdisponible/' + item.idx })
-        Consulta({url:'ordenes/extraerdisponible/' + item.idx })
+        Consulta({url:'ordenes/extraerdisponible/' + item.idx + '/' + item.id_corte })
         .then((resp)=>{
           console.log("Los registros de la orden son :",resp)
           if(resp.length > 0){
@@ -614,7 +614,7 @@ export default function NewGuia(){
                               <td className="text-center w-[150px]">{urlparams.id ? (row.disponible_total + row.cantidad) : row.disponible_total}</td>
                               {
                                 tallasbase.map(talla=>
-                                  <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla]} className="fracciones"/></td>    
+                                  <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla] ?? 0} className="fracciones"/></td>    
                                 ) 
                               }
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} className="fracciones"/></td>
