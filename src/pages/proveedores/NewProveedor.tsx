@@ -51,14 +51,12 @@ function SeccionOrden({info,form,setorden}){
   return <>
     <div className={`flex flex-col gap-3 pt-3`}>
       <div className="flex flex-col gap-3">
-        {/* <div className="flex flex-col">
-        </div> */}
         <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
         <div className="flex items-center gap-2">
           <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
           <span className="inline-block align-middle text-[12px]">Datos principales del proveedor</span>
         </div>
-        <hr/> 
+        <hr/>
         <div className="flex flex-col gap-3">
           <div className="flex flex-row gap-3 align-top justify-start items-start">
             <div className="w-[15%]">
@@ -72,36 +70,59 @@ function SeccionOrden({info,form,setorden}){
         <div className="w-[45%]">
           <Input name={'nom'} title="RazonSocial" defaults={info.length > 0 ? info[0].nom : null} type="text" verify="true" placeholder={'Nombre completo del producto a crear.'}/>
         </div>
-        <div className="w-[20%]">
-          <Input name={'giro'} title="Giro" defaults={info.length > 0 ? info[0].giro : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
-        </div>
-        <div className="w-[60%]">
+        <div className="w-[70%] flex flex-row gap-3">
           <Input name={'direccion'} title="Direccion" defaults={info.length > 0 ? info[0].direccion : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
+          <Input name={'representante'} title="Representante" defaults={info.length > 0 ? info[0].representante : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
         </div>
-        <hr className="m-0"/>
+        {/* <div className="w-[30%]">
+          <Input name={'representante'} title="Representante" defaults={info.length > 0 ? info[0].representante : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
+        </div> */}
+        <div className="flex items-center gap-2">
+          <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+          <span className="inline-block align-middle text-[12px]">Datos adicionales del proveedor</span>
+        </div>
+        <hr/>
+        {/* <hr className="m-0"/> */}
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
+            <div className="w-[20%]">
+              <Input name={'giro'} title="Giro" defaults={info.length > 0 ? info[0].giro : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
+            </div>
             <div className="w-[20%]">
               <Input name={'telefono'} title="Telefono" defaults={info.length > 0 ? info[0].telefono : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
             </div>
             <div className="w-[35%]">
               <Input name={'correo'} title="Correo" defaults={info.length > 0 ? info[0].correo : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
             </div>
-            <div className="w-[40%]">
-              <Input name={'web'} title="Web" defaults={info.length > 0 ? info[0].web : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
-            </div>
           </div>
+        </div>
+        <div className="">
+          <div className="w-[40%]">
+            <Input name={'web'} title="Web" defaults={info.length > 0 ? info[0].web : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
+          </div>
+        </div>
+        <div className="w-[30%]">
+          <Input name={'cuenta_corriente'} title="CuentaCorriente" defaults={info.length > 0 ? info[0].cuenta_corriente : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
         </div>
         <div className="w-[60%]">
           <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
         </div>
-        <div className="w-[400px]">
-          <InputSelect title={'Categoria'} name={"cat"} data={
+        <div className="w-[25%] flex flex-row gap-3">
+          {/* <InputSelect title={'Categoria'} name={"cat"} data={
             [
               { indice: '0', option: 'NINGUNO', selected: true  },
               { indice: '1', option: 'TRANSPORTISTA' },
             ]} 
             df={Object.keys(info).length > 0 ? info[0].cat : null} placeholder={'Seleccione el tipo de producto a registrar.'} 
+          /> */}
+          <InputSelect title={'Clase'} name={"clase"} data={
+            [
+              { indice: 'OTROS', option: 'OTROS', selected: true },
+              { indice: 'SERVICIOS', option: 'SERVICIOS' },
+              { indice: 'TELAS', option: 'TELAS' },
+              { indice: 'AVIOS', option: 'AVIOS' }
+            ]} 
+            df={Object.keys(info).length > 0 ? info[0].clase : null} placeholder={'Seleccione el tipo de producto a registrar.'} 
           />
         </div>
         <hr className="m-0"/>
@@ -153,7 +174,7 @@ export function NewProveedor() {
           console.log("La informacion recibida es:",resp)
           if(resp.ok){
             toast.success(resp.message, { theme: "colored" })
-            navigate("/main/proveedores/")
+            // navigate("/main/proveedores/")
           }else{
             toast.error(resp.message, { theme: "colored" })
           }

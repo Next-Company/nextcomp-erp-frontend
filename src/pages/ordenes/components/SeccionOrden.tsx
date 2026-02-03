@@ -9,6 +9,7 @@ import { Input } from "../../../components/Atoms/Input/Input";
 import { InputSelect } from "../../../components/Atoms/Input/InputSelect";
 import { InputMultiSelect } from "../../../components/Atoms/Input/InputMultiSelect";
 import { TextArea } from "../../../components/Atoms/Input/TextArea";
+import Insumos from "../../../components/Common/Insumos";
 
 function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   const image = useRef(null)
@@ -249,7 +250,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
   const agregarinsumos = ()=>{
     openmodal({
       open:true,
-      content: <Productos actions={(items)=>{  
+      content: <Insumos actions={(items)=>{  
         console.log("Informacion de los insumos:",items)
         setopen(false)
         setinsumos([...insumos,...items.map(row=>({id_producto_CAB:row.id_producto_CAB,id_subprod_CAB:row.idxsub,producto:row.producto,color:row.color,idx_color:row.idx_color,talla:row.talla,idx_talla:row.idx_talla,cantidad:0,stock:row.stock}))])
