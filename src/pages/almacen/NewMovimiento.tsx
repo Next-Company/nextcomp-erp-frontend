@@ -155,7 +155,7 @@ export default function NewMovimiento(){
           console.log("Habner por donde esta yendo:",resp)
           setOpenloader(false)
           if(resp.ok){
-            navigate('/main/pedidos/')
+            navigate('/almacen/movimientos/')
             toast.success('Movimiento de inventario generado con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })

@@ -175,6 +175,24 @@ function DatosPrincipales({info,form,setorden,setopen,openmodal,fases,materiales
     }
     openmodal(params_modal)
   }
+  const nuevacoleccion = ()=>{
+    let params_modal = null
+    params_modal = {
+      open:true,
+      content: <Estilos actions={(item)=>{
+          setorden(orden=>([{...orden[0],estilo:item.nom}]))
+          // setnom(form.current.elements['rubro'].value + ' ' + item.nom + ' ' + form.current.elements['modelo'].value)
+          setopen(false)
+        }}
+        filters={form.current.elements['RUBROS'].value ?? ''}
+      />,
+      controls: false,
+      header: false,
+      action:()=>{
+      }
+    }
+    openmodal(params_modal)
+  }
   const nuevabase = ()=>{
     let params_modal = null
     params_modal = {
@@ -260,7 +278,7 @@ function DatosPrincipales({info,form,setorden,setopen,openmodal,fases,materiales
         </div>
         <div className="w-[50%]">
           {/* <Input name={'nom'} title="Nombre" defaults={info.length > 0 ? info[0].nom : null} type="text" verify="true" placeholder={'Nombre completo del producto a crear.'} readonly={true} /> */}
-          <Input name={'nom'} title="Nombre" defaults={nom} type="text" verify="true" placeholder={'Nombre completo del producto a crear.'} readonly={true} />
+          <Input name={'nom'} title="SubClase" defaults={nom} type="text" verify="true" placeholder={'Nombre completo del producto a crear.'} readonly={true} />
         </div>
         {/* <div className="w-[60%]">
           <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" verify="true" placeholder={'Descripcion adicional del producto a crear.'}/>
@@ -276,17 +294,19 @@ function DatosPrincipales({info,form,setorden,setopen,openmodal,fases,materiales
       <div className="flex flex-col gap-3">
         <Input name={'RUBROS'} defaults={info.length > 0 ? info[0].RUBROS : null} type="hidden" verify="true"/>
         <div className="w-[35%]">
-          <Input name={'rubro'} title="Artículo" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'rubro'} title="Clase" defaults={info.length > 0 ? info[0].rubro : null} type="text" action={nuevorubro} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         <div className="w-[20%]">
           <Input name={'codUnidadMedida'} title="Medida" defaults={info.length > 0 ? info[0].codUnidadMedida : null} type="text" action={nuevaunidad} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         <div className="flex gap-3">
           <div className="w-[24%]">
-            <InputSelect title={'Plan'} name={"tipoPlan"} formref={form} data={
+            <InputSelect title={'TipoDeModelo'} name={"tipoPlan"} formref={form} data={
               [
                 { indice: 'CLA', option: 'CLASICO', selected: true  },
                 { indice: 'MOD', option: 'MODA' },
+                { indice: 'BAS', option: 'BASICO' },
+                { indice: 'APS', option: 'APUESTA' },
               ]} 
               df={Object.keys(info).length > 0 ? info[0].tipoPlan : null} placeholder={'Seleccione el rubro correpondiente al producto.'} 
             />
@@ -354,10 +374,10 @@ function DatosPrincipales({info,form,setorden,setopen,openmodal,fases,materiales
           <Input name={'modelo'} title="Modelo" defaults={info.length > 0 ? info[0].modelo : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         <div className="w-[20%]">
-          <Input name={'base'} title="Base" defaults={info.length > 0 ? info[0].base : null} type="text" action={nuevabase} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'base'} title="Fit" defaults={info.length > 0 ? info[0].base : null} type="text" action={nuevabase} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         <div className="w-[20%]">
-          <Input name={'estilo'} title="Estilo" defaults={info.length > 0 ? info[0].estilo : null} type="text" action={nuevoestilo} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+          <Input name={'estilo'} title="Caracteristicas" defaults={info.length > 0 ? info[0].estilo : null} type="text" action={nuevoestilo} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         </div>
         {/* <div className="w-[18%]">
           <InputSelect title={'Es Fraccionable'} name={"fraccionable"} formref={form} data={
@@ -370,14 +390,13 @@ function DatosPrincipales({info,form,setorden,setopen,openmodal,fases,materiales
         </div> */}
       </div>
       <div className="flex flex-col gap-3">
-        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : 10} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        {/* <div className="w-[25%]">
-        </div> */}
-        {/* <Input name={'PROVEEDORES'} defaults={info.length > 0 ? info[0].PROVEEDORES : null} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        <div className="w-[45%]">
-          <Input name={'proveedor'} title="Proveedor" defaults={info.length > 0 ? info[0].proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
-        </div> */}
-        <div className="w-[35%]">
+        <div className="w-[20%]">
+          <Input name={'coleccion'} title="Coleccion" defaults={info.length > 0 ? info[0].precio : null} type="text" placeholder={'Seleccione el rubro correpondiente al producto.'} action={nuevacoleccion} verify="true"/>
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].coleccion : 10} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+        <div className="w-[25%]">
           <InputSelect title={'Estado'} name={"activo"} formref={form} data={
             [
               { indice: '1', option: 'ACTIVO', selected: true  },
