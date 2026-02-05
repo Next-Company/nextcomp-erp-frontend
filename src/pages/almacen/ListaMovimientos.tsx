@@ -311,6 +311,7 @@ export default function ListaMovimientosAlmacen() {
                     <th className="lg:table-cell">RucProveedor</th>
                     <th className="lg:table-cell">Proveedor</th>
                     <th className="lg:table-cell">Observaciones</th>
+                    <th className="lg:table-cell">Almacen</th>
                     <th className="lg:table-cell">FechaSys</th>
                     <th className="lg:table-cell text-center">Accciones</th>
                   </tr>
@@ -322,12 +323,12 @@ export default function ListaMovimientosAlmacen() {
                         <tr key={key} className="">
                           <td>{row.id_CAB}</td>
                           <td className="w-[120px]"><div className={`w-full text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.cod_comprobante]}`}>{row.cod_comprobante}</div></td>
-                          {/* <td>{row.cod_comprobante}</td> */}
                           <td>{row.serie_DOC}</td>
                           <td>{row.num_doc_CDP}</td>
                           <td>{row.Nro_Doc_Prov}</td>
                           <td>{row.Raz_social_DOC}</td>
                           <td>{row.observaciones}</td>
+                          <td><div className="bg-gray-500 text-white text-center text-[8px] rounded-2xl px-4">{row.almacen}</div></td>
                           <td>{row.fecha_sys}</td>
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
