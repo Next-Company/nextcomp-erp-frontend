@@ -6,9 +6,9 @@ import { AuthPermitions } from "../../contexts/contexts"
 
 export default function Insumos(children){
   const { logout} = useContext(AuthPermitions)
-  let {actions = ()=>{}, closemodal} = children
-  let [lista,setLista] = useState([])
-  let [selected,setSelected] = useState([])
+  const {actions = ()=>{}, closemodal} = children
+  const [lista,setLista] = useState([])
+  const [selected,setSelected] = useState([])
   // let [selected,setSelected] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
@@ -70,18 +70,20 @@ export default function Insumos(children){
   // }
   const onclick = (e)=>{
     // actions(lista[e.target.dataset.position])
-    let position = e.target.dataset.position ?? e.currentTarget.dataset.position
-    let action = e.target.dataset.action ?? e.currentTarget.dataset.action
+    const position = e.target.dataset.position ?? e.currentTarget.dataset.position
+    const action = e.target.dataset.action ?? e.currentTarget.dataset.action
     // console.log("La informacion es:",lista,lista[position])
     switch(action){
-      case 'add':
+      case 'add': {
         const item = lista[position]
-        if(selected.find((row)=>parseInt(row.idxsub) == parseInt(item.idxsub) && parseInt(row.id_producto_CAB) == parseInt(item.id_producto_CAB))){
-          setSelected([...selected.filter(row=>parseInt(row.idxsub) !== parseInt(item.idxsub) && parseInt(row.id_producto_CAB) !== parseInt(item.id_producto_CAB))])
+        console.log("El item seleccionado es el siguiente:",item,selected.filter(row=>!(parseInt(row.lote) == parseInt(item.lote) && parseInt(row.idxsub) == parseInt(item.idxsub))))
+        if(selected.find((row)=>parseInt(row.lote) == parseInt(item.lote) && parseInt(row.idxsub) == parseInt(item.idxsub) && parseInt(row.id_producto_CAB) == parseInt(item.id_producto_CAB))){
+          setSelected([...selected.filter(row=>!(parseInt(row.lote) == parseInt(item.lote) && parseInt(row.idxsub) == parseInt(item.idxsub) && parseInt(row.id_producto_CAB) == parseInt(item.id_producto_CAB)))])
         }else{
           setSelected([...selected,lista[position]])
         }    
         break;
+      }
       default:
         break;
     }
@@ -131,7 +133,7 @@ export default function Insumos(children){
             </thead>
             <tbody>
               {lista.length > 0 && lista.map((row,key)=>(
-                <tr className={`${selected.find((item)=>item.idxsub == row.idxsub && item.id_producto_CAB == row.id_producto_CAB) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
+                <tr className={`${selected.find((item)=>item.idxsub == row.idxsub && item.lote == row.lote && item.id_producto_CAB == row.id_producto_CAB) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
                   <td>{row.idxsub}</td>
                   <td>{row.cod_producto}</td>
                   <td>{row.producto}</td>
