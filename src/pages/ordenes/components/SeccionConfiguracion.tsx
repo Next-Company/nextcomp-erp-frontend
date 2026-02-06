@@ -222,9 +222,16 @@ export default function SeccionConfiguracion(children:any) {
               <td></td>
               <td className="text-center font-extrabold">DISPONIBLE</td>
               {
-                Object.keys(disponible).map(talla=>
-                  <td className="text-center font-extrabold">{disponible[talla]}</td>
+                tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
+                // Object.keys({...tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').reduce((c,v)=>{c[v] = 0; return c},{}),...disponible}).map(talla=>
+                  // <td className="text-center font-extrabold">{disponible[talla]}</td>
+                  <td className="text-center font-extrabold">{
+                    {...tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').reduce((c,v)=>{c[v] = 0; return c},{}),...disponible}[talla]
+                  }</td>
                 )
+                // Object.keys(disponible).map(talla=>
+                //   <td className="text-center font-extrabold">{disponible[talla]}</td>
+                // )
               }
               <td className="text-center font-extrabold">{Object.keys(disponible).reduce((c,v)=>c + (disponible[v] ?? 0),0)}</td>
               <td></td>
@@ -236,7 +243,8 @@ export default function SeccionConfiguracion(children:any) {
                 tallaslist.filter(r=>r.selected)[0].tallasformateado.split('-').map(talla=>
                   <td className={`text-center font-extrabold ${disponible[talla] - modelos.reduce((c,v)=>c + parseInt((v[talla] ?? 0)),0) < 0 ? 'text-red-600' : ''}`}>
                     {
-                      disponible[talla] - modelos.reduce((c,v)=>c + parseInt((v[talla] ?? 0)),0)
+                      // disponible[talla] - modelos.reduce((c,v)=>c + parseInt((v[talla] ?? 0)),0)
+                      {...tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').reduce((c,v)=>{c[v] = 0; return c},{}),...disponible}[talla] - modelos.reduce((c,v)=>c + parseInt((v[talla] ?? 0)),0)
                     }
                   </td>
                 )
