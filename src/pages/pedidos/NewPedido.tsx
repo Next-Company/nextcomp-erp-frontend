@@ -106,7 +106,7 @@ export default function NewPedido(){
         .then(resp => {
           setOpenloader(false)
           if(resp.ok){
-            navigate('/main/pedidos/')
+            // navigate('/main/pedidos/')
             toast.success('Nuevo pedido guardado con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })

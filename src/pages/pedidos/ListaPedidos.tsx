@@ -207,7 +207,43 @@ export default function ListaPedidos() {
         }
         openModal(params)
         break;
-
+      case 'cuadre':
+        params_modal = {
+          open: true,
+          content: <div>Desea continuar con la descarga del cuadre de telas?.<br />  Tenga en cuenta de que el proceso puede tardar unos minutos.</div>,
+          controls: true,
+          header: false,
+          action: () => {
+            const desc = async () => {
+              // const data = new FormData()
+              // data.append('id', id)
+              // const tipo = info.filter(row => row.idx == id)[0].tipo
+              setOpenloader(true)
+              Consulta({
+                url: `produccion/vistarapidacuadretelas/${id}/download`
+              })
+                .then(resp => {
+                  setOpenloader(false)
+                  const binaryString = window.atob(resp.data);
+                  const binaryLen = binaryString.length;
+                  const bytes = new Uint8Array(binaryLen);
+                  for (let i = 0; i < binaryLen; i++) {
+                    const ascii = binaryString.charCodeAt(i);
+                    bytes[i] = ascii;
+                  }
+                  const file = window.URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
+                  window.open(file,'_blank')
+                })
+                .catch((err) => {
+                  setOpenloader(false)
+                  toast.error('Se produjo un error!!', { theme: "colored" })
+                })
+            }
+            desc()
+          }
+        }
+        openModal(params_modal)
+        break;
       default:
         break;
     }
@@ -442,7 +478,7 @@ export default function ListaPedidos() {
                                 </div>
                               </li>
                               <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={() => { }}>
+                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="cuadre" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                                   {/* <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg> */}
                                 </div>
