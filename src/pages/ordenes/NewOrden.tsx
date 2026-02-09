@@ -9,6 +9,7 @@ import SeccionMolde from "./components/SeccionMolde";
 import SeccionMateriales from "./components/SeccionMateriales";
 import SeccionOrden from "./components/SeccionOrden";
 import SeccionConfiguracion from "./components/SeccionConfiguracion";
+import SeccionPrecios from "./components/SeccionPrecios";
 
 
 export function NewOrden() {
@@ -30,7 +31,8 @@ export function NewOrden() {
   const [requerimientos,setRequerimientos] = useState([])
   const [tallaslist,setTallaslist] = useState([])
   const [modelos,setModelos] = useState([])
-  let disponible = useRef(null)
+  const disponible = useRef(null)
+
   
   console.log("Info del corte :",orden)
 
@@ -100,13 +102,19 @@ export function NewOrden() {
       data = new FormData()
       const validacion = Object.keys(disponible.current).reduce((c,v)=>c + (disponible.current[v] ?? 0),0) - modelos.reduce((c,v)=>c + tallaslist.filter(r=>r.selected)[0].tallas.reduce((c,v2)=>c + parseInt(v[v2.desc] ?? 0),0),0)
 
-      if(validacion !== 0) {
-        toast.error('El saldo pendiente debe queda en 0. Por favor verifique.', { theme: "colored" })
+      if(validacion < 0) {
+        toast.error('El saldo pendiente no puede ser menor a 0. Por favor verifique.', { theme: "colored" })
         return 0
       }
       data.append('info',JSON.stringify(modelos))
       data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0]))
       data.append('idreceta',orden[0]?.id_receta ?? '')
+      data.append('id',urlparams.id)
+    }
+    if(position == 6){
+      url_save = 'ordenes/saveFasePrecios'
+      data = new FormData()
+      data.append('info',JSON.stringify(orden))
       data.append('id',urlparams.id)
     }
     const PARAMS_MODAL = {
@@ -120,7 +128,6 @@ export function NewOrden() {
           url: url_save,
           params: {
             method: urlparams.id ? 'PUT' : 'POST', 
-            // method: 'POST', 
             body: data
           }
         })
@@ -328,6 +335,12 @@ export function NewOrden() {
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
+              <button className={`group ${position == 6 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(6)} data-estado="FNLZ">
+                <span className="relative h-[100%] flex items-center pointer-events-none">
+                  Precios
+                  <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                </span>
+              </button>
             </ul>
             <hr />
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
@@ -346,6 +359,9 @@ export function NewOrden() {
                 }
                 {
                   position == 5 && <SeccionConfiguracion setopen={setOpen} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current}/>
+                }
+                {
+                  position == 6 && <SeccionPrecios orden={orden} setorden={setOrden}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
