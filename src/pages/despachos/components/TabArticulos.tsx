@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import DespachosContext from "../context/DespachosContexto"
 import VentanaIngresos from "./VentanaIngresos"
+import { VentanaRollos } from "./VentanaRollos"
 
 export default function TabArticulos(){
   const {tipo,registros,urlparams,setRegistros,colorfase,setOpen,openModal,tallasbase} = useContext(DespachosContext)
@@ -18,14 +19,36 @@ export default function TabArticulos(){
     const position = e.target.dataset.position
     switch (action) {
       case 'edit':
-        console.log("Los registros enviados a la modal son lo siguientes:", registros[position])
-        openModal({
-          open: true,
-          header: false,
-          controls: false,
-          content: <VentanaIngresos registros={[registros[position]]} setregistros={setRegistros} setopen={setOpen} tallasbase={tallasbase}/>,
-          action: async () => {}
-        })
+        if(tipo == 2) {
+          console.log("Los registros enviados a la modal son lo siguientes:", registros[position])
+          openModal({
+            open: true,
+            header: false,
+            controls: false,
+            content: <VentanaIngresos registros={[registros[position]]} setregistros={setRegistros} setopen={setOpen} tallasbase={tallasbase}/>,
+            action: async () => {}
+          })
+        } else {
+          let params_modal = null
+          params_modal = {
+            open:true,
+            content: <VentanaRollos 
+              actions={(info)=>{  
+                console.log("La informacion de la lista es:",position,info,registros)
+                // setRegistros(row=>[...row.map((v,p)=>p==position ? {...v,info_rollos:info,rollo:60,peso:info.reduce((c,v)=>c+v,0)} : v)])
+                setRegistros([...registros.map((v,p)=> p == parseInt(position) ? {...v,info_rollos:info,rollos:info.length,peso:info.reduce((c,v)=>c+parseFloat(v.peso),0),despacho:info.reduce((c,v)=>c+parseFloat(v.cantidad),0).toFixed(2)} : v)])
+                setOpen(false)
+              }}
+              // info={registros[position]?.info_rollos ?? []}
+              info={registros[position]?.info_rollos ?? []}
+            />,
+            controls: false,
+            header: false,
+            action:()=>{
+            }
+          }
+          openModal(params_modal)
+        }
         break;
       default:
     }
@@ -149,7 +172,8 @@ export default function TabArticulos(){
                       }
                       
                       {/* <td>0</td> */}
-                      <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td>
+                      {/* <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td> */}
+                      <td className="w-[150px]">{row.despacho ?? 0}</td>
                     </>
                 }
                 <td className="w-[150px]">
@@ -165,7 +189,7 @@ export default function TabArticulos(){
                       </div>
                     </li>
                     <li>
-                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={tipo == 2 ? onclick : ()=>{}} data-position={key} data-combo={row.id_combo}>
+                      <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={onclick} data-position={key} data-combo={row.id_combo}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                       </div>
                     </li>
