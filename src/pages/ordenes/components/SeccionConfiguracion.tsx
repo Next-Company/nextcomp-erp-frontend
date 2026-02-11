@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import Recetas from "../../../components/Common/Recetas";
 import Colores from "../../../components/Common/Colores";
 import ColoresBase from "./ColoresBase";
+import { InputSelect } from "../../../components/Atoms/Input/InputSelect";
 
 const ListaCombos = (children) => {
   const {combos,tallaslist} = children
@@ -155,7 +156,19 @@ export default function SeccionConfiguracion(children:any) {
         <div className="w-[500px]">
           <Input name={'oc'} title="OP" defaults={info.length > 0 ? info[0].oc : null} type="text" verify="true" placeholder={'Numero de la orden'}/>
         </div>
-        <Input name={'id_cliente_CAB'} defaults={info.length > 0 ? info[0].id_cliente_CAB : null} type="hidden" verify="true"/>
+        <div className="w-[400px]">
+          <InputSelect 
+            title={'UsaReceta'}
+            name={"condicion"} 
+            data={
+              [
+                { indice: 0, option: 'NO' }, 
+                { indice: 1, option: 'SI' } 
+              ]
+            } 
+            df={info.length > 0 ? info[0].estado_orden : null} placeholder={'Numero de la orden'}
+          />
+        </div>
       </div>
       <div className="flex items-center gap-2">
         <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
@@ -223,15 +236,10 @@ export default function SeccionConfiguracion(children:any) {
               <td className="text-center font-extrabold">DISPONIBLE</td>
               {
                 tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
-                // Object.keys({...tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').reduce((c,v)=>{c[v] = 0; return c},{}),...disponible}).map(talla=>
-                  // <td className="text-center font-extrabold">{disponible[talla]}</td>
                   <td className="text-center font-extrabold">{
                     {...tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').reduce((c,v)=>{c[v] = 0; return c},{}),...disponible}[talla]
                   }</td>
                 )
-                // Object.keys(disponible).map(talla=>
-                //   <td className="text-center font-extrabold">{disponible[talla]}</td>
-                // )
               }
               <td className="text-center font-extrabold">{Object.keys(disponible).reduce((c,v)=>c + (disponible[v] ?? 0),0)}</td>
               <td></td>
