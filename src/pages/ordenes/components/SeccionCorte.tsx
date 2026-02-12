@@ -282,12 +282,12 @@ function CuerpoCorte(children){
               </tbody>
               <tfoot className="sticky bottom-0 bg-white">
                 <tr>
-                  <td colSpan={6} className="text-right"></td>
+                  <td colSpan={tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').length} className="text-right"></td>
                   <td className="text-center font-black">TOTAL</td>
                   {/* <td className="text-center text-[15px] font-black">{info.combos.reduce((c,v)=>c + (v.cantidad_combo ?? 0),0)}</td> */}
                   <td className="text-center text-[15px] font-black">{info.combos.reduce((c,v)=>parseInt(c) + (parseInt(v.cantidad_combo) ?? 0),0)}</td>
                   <td></td>
-                  <td></td>
+                  {/* <td></td> */}
                 </tr>
                 <tr>
                   <td colSpan={10} >

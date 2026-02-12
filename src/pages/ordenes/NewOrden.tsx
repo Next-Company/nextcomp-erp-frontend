@@ -32,7 +32,7 @@ export function NewOrden() {
   const [tallaslist,setTallaslist] = useState([])
   const [modelos,setModelos] = useState([])
   const disponible = useRef(null)
-
+  const disponible_detalle = useRef(null)
   
   console.log("Info del corte :",orden)
 
@@ -179,6 +179,7 @@ export function NewOrden() {
             setTallaslist(resp[8])
             setModelos(resp[9])
             disponible.current = resp[10]
+            disponible_detalle.current = resp[11]
           })
           .catch((err)=>{
             setOpenloader(false)
@@ -358,10 +359,10 @@ export function NewOrden() {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
                 }
                 {
-                  position == 5 && <SeccionConfiguracion setopen={setOpen} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current}/>
+                  position == 5 && <SeccionConfiguracion corte={corte} setopen={setOpen} info={orden} setorden={setOrden} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current} disponible_detalle={disponible_detalle.current}/>
                 }
                 {
-                  position == 6 && <SeccionPrecios orden={orden} setorden={setOrden}/>
+                  position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} />
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
