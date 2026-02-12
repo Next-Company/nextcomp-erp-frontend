@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { Button } from "../../../components/Atoms/Button/Button"
 
-export default function TallasCombos({tallasbase,actions}){
-  const [info,setInfo] = useState([])
+export default function TallasCombos({tallasbase,data,actions}){
+  const [info,setInfo] = useState(data.listatallas ?? [])
   console.log("Reenderizado del componente InsumosCombos")
   const addcombos = (e)=>{
     const valor = e.target.dataset.talla

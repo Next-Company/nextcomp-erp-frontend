@@ -134,6 +134,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
         openmodal({
           open:true,
           content: <InsumosCombos orden={info} setorden={setorden} insumo={valor} actions={(combos)=>{  
+            console.log("Info combos:",combos)
             setorden(combos)
             // console.log("Informacion de los insumos:",items)
             setopen(false)
@@ -150,8 +151,9 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
       case 'tallas':
         openmodal({
           open:true,
-          content: <TallasCombos tallasbase={tallaslist.find(row=>row.selected)} actions={(info)=>{  
-            setinsumos(insumos.map(row=>({...row,'listatallas':info,'combostalla':info.join(',')})))
+          content: <TallasCombos tallasbase={tallaslist.find(row=>row.selected)} data={insumos.filter((row,key)=>key == position)[0]} actions={(info)=>{  
+            // setinsumos(insumos.map(row=>({...row,'listatallas':info,'combostalla':info.join(',')})))
+            setinsumos(insumos.map((row,key)=>key == position ? {...row,'listatallas':info,'combostalla':info.map(talla=>talla.toUpperCase()).join(',')} : row))
             setopen(false)
           }}
           />,
@@ -633,7 +635,12 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
                       {
                         info[0].combos 
                         ? info[0].combos.reduce((c,v) =>{
-                            c = c + ((v.insumos && v.insumos.includes(parseInt(row.id_subprod_CAB))) ? parseFloat(v.cantidad_combo)*parseFloat(row.cantidad) : 0)
+                            c = c + 
+                              (
+                                (v.insumos && v.insumos.includes(parseInt(row.id_subprod_CAB))) 
+                                  ? (row.listatallas?.length > 0 ? row.listatallas.reduce((c,t)=>c+v[t],0) : parseFloat(v.cantidad_combo)) * parseFloat(row.cantidad) 
+                                  : 0
+                              )
                             return c
                           },0) 
                         : 0
