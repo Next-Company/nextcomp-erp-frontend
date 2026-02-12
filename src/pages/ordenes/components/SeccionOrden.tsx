@@ -133,7 +133,7 @@ export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases
       case 'edit':
         openmodal({
           open:true,
-          content: <InsumosCombos orden={info} setorden={setorden} insumo={valor} actions={(combos)=>{  
+          content: <InsumosCombos tallasbase={tallaslist.find(row=>row.selected)} orden={info} setorden={setorden} insumo={valor} actions={(combos)=>{  
             console.log("Info combos:",combos)
             setorden(combos)
             // console.log("Informacion de los insumos:",items)

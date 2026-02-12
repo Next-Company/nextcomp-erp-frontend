@@ -208,11 +208,14 @@ export default function NewMuestra(){
                       df={Object.keys(info).length > 0 ? info.tipo : null} 
                       placeholder={'Info referencial'}
                     />
+
+                    <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" />
+                    <Input name={'orden_ref'} title="OrdenProducción" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" verify="true" action={busquedaOrdenProduccion} mode={'static'} placeholder={'Info referencial'}/>
+                    
                   </div>
                   <div className="flex flex-row gap-3 w-[45%]">
                     <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                    <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" />
-                    <Input name={'orden_ref'} title="OrdenProducción" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" verify="true" action={busquedaOrdenProduccion} mode={'static'} placeholder={'Info referencial'}/>
+                    
                     <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true" placeholder={'Info referencial'}/>
                   </div>
                   <div className="flex flex-row gap-3 w-[60%]">

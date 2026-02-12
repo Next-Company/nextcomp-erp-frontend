@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button } from "../../../components/Atoms/Button/Button"
 
-export default function InsumosCombos({orden,setorden,insumo,actions}){
+export default function InsumosCombos({tallasbase,orden,setorden,insumo,actions}){
   const [info,setInfo] = useState(orden)
   console.log("Reenderizado del componente InsumosCombos")
   const addcombos = (e)=>{
@@ -29,13 +29,9 @@ export default function InsumosCombos({orden,setorden,insumo,actions}){
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell w-[200px]">ColorCombo</th>  
-                <th className="lg:table-cell">S/T</th>
-                <th className="lg:table-cell">XS / 26</th>
-                <th className="lg:table-cell">S / 28</th>
-                <th className="lg:table-cell">M / 30</th>
-                <th className="lg:table-cell">L / 32</th>
-                <th className="lg:table-cell">XL / 34</th>
-                <th className="lg:table-cell">XXL / 36</th>
+                {
+                  tallasbase && tallasbase.tallas.map(row=><th className="lg:table-cell">{row.desc.toUpperCase()}</th>)
+                }
                 <th className="lg:table-cell">Cantidad</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
@@ -47,13 +43,9 @@ export default function InsumosCombos({orden,setorden,insumo,actions}){
                   {/* <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${row.insumos.includes(insumo) ? 'selected' : ''}`}> */}
                     {/* <td><input type="text" onChange={editvalue} data-name="color_combo" data-position={key} value={row.color_combo} /></td> */}
                     <td className="text-center w-[200px]">{row.color_combo}</td>
-                    <td>{row.st}</td>
-                    <td>{row.xs}</td>
-                    <td>{row.s}</td>
-                    <td>{row.m}</td>
-                    <td>{row.l}</td>
-                    <td>{row.xl}</td>
-                    <td>{row.xxl}</td>
+                    {
+                      tallasbase && tallasbase.tallas.map(talla=><td>{row[talla.desc] ?? 0}</td>)
+                    }
                     <td>{row.cantidad_combo}</td>
                     <td className="w-[150px]">
                       <ul className="flex flex-row justify-end">
