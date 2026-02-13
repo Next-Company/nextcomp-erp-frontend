@@ -395,7 +395,7 @@ function DatosPrincipales({info,form,setorden,setopen,openmodal,fases,materiales
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].coleccion : 10} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
+        <Input name={'costo'} title="Costo" defaults={info.length > 0 ? info[0].costo : 10} type="hidden" placeholder={'Seleccione el rubro correpondiente al producto.'} verify="true"/>
         <div className="w-[25%]">
           <InputSelect title={'Estado'} name={"activo"} formref={form} data={
             [

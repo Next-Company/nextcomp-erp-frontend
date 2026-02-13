@@ -362,7 +362,7 @@ export function NewOrden() {
                   position == 5 && <SeccionConfiguracion corte={corte} setopen={setOpen} info={orden} setorden={setOrden} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current} disponible_detalle={disponible_detalle.current}/>
                 }
                 {
-                  position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} />
+                  position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
