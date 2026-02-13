@@ -39,7 +39,7 @@ export default function SeccionPrecios(children:any) {
         <hr/>
         <div className="flex flex-row gap-3">
           <Input name={'idx'} defaults={orden.length > 0 ? orden[0].idx : null} type="hidden" />
-          <Input name={'precio1_a'} dataset={[{origen:'precio1'},{position:0}]} title="Hangta(S/)" defaults={orden.length > 0 ? orden[0].precios?.precio1[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio hantag'}/>
+          <Input name={'precio1_a'} dataset={[{origen:'precio1'},{position:0}]} title="Hangta(S/)" defaults={orden.length > 0 ? orden[0].precios?.precio1?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio hantag'}/>
           <Input name={'precio2_a'} dataset={[{origen:'precio2'},{position:0}]} title="Retail(S/)" defaults={orden.length > 0 ? orden[0].precios?.precio2?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio retail'}/>
           <Input name={'precio3_a'} dataset={[{origen:'precio3'},{position:0}]} title="Promo(S/)" defaults={orden.length > 0 ? orden[0].precios?.precio3?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio retail'}/>
           <Input name={'precio4_a'} dataset={[{origen:'precio4'},{position:0}]} title="Unidad(S/)" defaults={orden.length > 0 ? orden[0].precios?.precio4?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio retail'}/>
@@ -47,8 +47,6 @@ export default function SeccionPrecios(children:any) {
           <Input name={'precio6_a'} dataset={[{origen:'precio6'},{position:0}]} title="Distribuidor(S/)" defaults={orden.length > 0 ? orden[0].precios?.precio6?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio retail'}/>
         </div>
       </div>
-      {/* <div>{JSON.stringify(orden[0])}</div>
-      <div>{orden[0].precios?.precio2?.[0] ?? 'otro'}</div> */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>

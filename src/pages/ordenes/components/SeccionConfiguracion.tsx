@@ -4,7 +4,13 @@ import ColoresBase from "./ColoresBase";
 import { InputSelect } from "../../../components/Atoms/Input/InputSelect";
 
 function FraccionadoByModelo(children:any){
-  const {tallaslist,modelos,editvalue,onclick,disponible,agregarmodelo} = children
+  const {tallaslist,modelos,editvalue,onclick,disponible,agregarmodelo,orden,setmodelos} = children
+  const onchange = (e)=>{
+    const position = e.target.dataset.position
+    const checked = e.target.checked
+    setmodelos(modelos.map((modelo,key)=>key == position ? {...modelo,idreceta: (checked ? orden[0].id_receta : null), articulo: (checked ? orden[0].modelos : '')} : modelo))
+    // console.log("HOla jupiter",orden,position,e.target.checked)
+  }
   return(
     <>
       <div className="h-[500px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px]">
@@ -12,7 +18,8 @@ function FraccionadoByModelo(children:any){
           <thead className="text-left sticky top-0 bg-white">
             <tr>
               <th className="lg:table-cell min-w-[300px]">Modelo</th>  
-              <th className="lg:table-cell min-w-[300px]">Color</th>  
+              <th className="lg:table-cell min-w-[200px]">Color</th>
+              <th className="lg:table-cell min-w-[100px]">UsaReceta</th>
               {
                 tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
                   <th className="lg:table-cell">{talla.toUpperCase()}</th>
@@ -29,6 +36,9 @@ function FraccionadoByModelo(children:any){
                   <td><input data-name="articulo" type="text" onChange={editvalue} data-position={key} value={row.articulo}/></td>
                   {/* <td className="text-center whitespace-nowrap">{row.articulo}</td> */}
                   <td className="text-center whitespace-nowrap">{row.color}</td>
+                  <td className="text-center ">
+                    <input type="checkbox" onChange={onchange} data-position={key}/>
+                  </td>
                   {
                     tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
                       <td className="text-center"><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla]}/></td>    
@@ -66,6 +76,7 @@ function FraccionadoByModelo(children:any){
           <tfoot className="sticky bottom-0 bg-white">
             <tr className="h-[50px] text-[14px]">
               <td></td>
+              <td></td>
               <td className="text-center font-extrabold">DISPONIBLE</td>
               {
                 tallaslist.filter(row=>row.selected)[0].tallasformateado.split('-').map(talla=>
@@ -78,6 +89,7 @@ function FraccionadoByModelo(children:any){
               <td></td>
             </tr>
             <tr className="h-[50px] text-[14px]">
+              <td></td>
               <td></td>
               <td className="text-center font-extrabold">TOTAL</td>
               {
@@ -98,7 +110,7 @@ function FraccionadoByModelo(children:any){
               </td>
             </tr>
             <tr>
-              <td colSpan={11} >
+              <td colSpan={12} >
                 <div className="flex flex-row justify-center">
                   <div onClick={agregarmodelo} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-full text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
                     +
@@ -359,7 +371,7 @@ export default function SeccionConfiguracion(children:any) {
       {
         usareceta
         ? <FraccionadoByReceta tallaslist={tallaslist} modelos={modelos} editvalue={editvalue} onclick={onclick} disponible={disponible} disponible_detalle={disponible_detalle} />
-        : <FraccionadoByModelo tallaslist={tallaslist} modelos={modelos} editvalue={editvalue} onclick={onclick} disponible={disponible} agregarmodelo={agregarmodelo} />
+        : <FraccionadoByModelo tallaslist={tallaslist} modelos={modelos} editvalue={editvalue} onclick={onclick} disponible={disponible} orden={info} agregarmodelo={agregarmodelo} setmodelos={setModelos}/>
       }
       
     </div>
