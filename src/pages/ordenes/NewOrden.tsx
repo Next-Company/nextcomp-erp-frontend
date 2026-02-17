@@ -114,7 +114,18 @@ export function NewOrden() {
     if(position == 6){
       url_save = 'ordenes/saveFasePrecios'
       data = new FormData()
+      console.log("Lalista de precios es:",orden[0].precios)
+      if(modelos.filter(row=>!Object.keys(row).includes('pricemodel')).length > 0){
+        toast.error('Existen modelos que no tienen vinculado un modelo de precios. Por favor verifique.',{theme:'colored'})
+        return 0;
+      }
+      
+      if(!(orden[0].precios && orden[0].precios.length > 1)){
+        toast.error('No ha ingresado ningun precio. Por favor verifique.',{theme:'colored'})
+        return 0;
+      }
       data.append('info',JSON.stringify(orden))
+      data.append('modelos',JSON.stringify(modelos))
       data.append('id',urlparams.id)
     }
     const PARAMS_MODAL = {
@@ -362,7 +373,7 @@ export function NewOrden() {
                   position == 5 && <SeccionConfiguracion corte={corte} setopen={setOpen} info={orden} setorden={setOrden} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current} disponible_detalle={disponible_detalle.current}/>
                 }
                 {
-                  position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos}/>
+                  position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos} setmodelos={setModelos}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
