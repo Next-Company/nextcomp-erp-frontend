@@ -8,7 +8,7 @@ import { InputSelect } from "../../../components/Atoms/Input/InputSelect";
 
 
 export default function SeccionImpresiones(children:any) {
-  const { idprod } = children;
+  const { idprod, modelos } = children;
   const [info,setInfo] =  useState({oc:'0000000',producto:'PANTALON MEGA',estilo:'CLASICO',tela:'DENIM',base:'BAGGY',color:'NEGRO',talla:'S/T',precio_oferta:'149.90',precio_original:'149.90'});
   const [moneda,setMoneda] = useState('PEN')
   const [colores,setColores] = useState([])
@@ -135,7 +135,7 @@ export default function SeccionImpresiones(children:any) {
                 <Input name={'orden_ref'} title="OP/OC" defaults={''} type="text" action={()=>{}} mode={'static'} verify="true" placeholder={'Info referencial'}/>
               </div> */}
               {/* <Input name={'orden_ref'} title="Almacen" defaults={''} type="text" action={()=>{}} mode={'static'} verify="true" placeholder={'Info referencial'}/> */}
-              <InputSelect title={'OrigenTienda'} name={"origentienda"} data={
+              {/* <InputSelect title={'OrigenTienda'} name={"origentienda"} data={
                 [
                   { indice: '1', option: 'MALL Y GAMARRA', selected: true }, 
                   { indice: '0', option: 'AGUAS VERDES' }, 
@@ -143,22 +143,23 @@ export default function SeccionImpresiones(children:any) {
                 df={moneda} 
                 placeholder={'Info referencial'}
                 formref={form.current}
-              />
-              <Input name={'cantidad'} title="Cantidad" defaults={0} type="number" verify="true" placeholder={'Info referencial'}/>
-              <Input name={'cantidad'} title="Cantidad" defaults={0} type="number" verify="true" placeholder={'Info referencial'}/>
-              <div className="w-[300px] text-left">
-                <InputSelect title={'TipoDistribucion'} name={"distribucion"} data={
+              /> */}
+              <div className="w-[400px] text-left">
+                <InputSelect title={'Distribucion'} name={"distribucion"} data={
                   [
-                    { indice: 'PEN', option: 'SOLES', selected: true }, 
-                    { indice: 'USD', option: 'DOLARES' }, 
+                    { indice: 1, option: 'HOJA DE CORTE', selected: true }, 
+                    { indice: 2, option: 'PERSONALIZADO' }, 
                   ]} 
-                  df={moneda} 
+                  df={1} 
                   placeholder={'Info referencial'}
                   formref={form.current}
                 />
               </div>
-              <div className="w-[300px] text-left">
-                <InputSelect title={'Modelos'} name={"modelos"} data={
+              <div className="w-[400px] text-left">
+                <Input name={'cantidad'} title="Cantidad" defaults={0} type="number" verify="true" placeholder={'Info referencial'}/>
+              </div>
+              <div className="w-[400px] text-left">
+                <InputSelect title={'MonedaOrigen'} name={"moneda"} data={
                   [
                     { indice: 'PEN', option: 'SOLES', selected: true }, 
                     { indice: 'USD', option: 'DOLARES' }, 
@@ -170,18 +171,23 @@ export default function SeccionImpresiones(children:any) {
               </div>
             </div>
           </div>
+          <div className="flex items-center gap-2">
+            <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+            <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
+          </div>
+          <hr/>
           <div className="flex-1 flex flex-row gap-4 mb-2">
             <div className="flex-1 flex-row justify-between ">
-              <div className="[&_div]:h-[30px] h-[500px] [&_div]:border [&_div]:cursor-pointer scrollbar-special [&_div:hover]:bg-gray-500 selected:[&_div]:bg-gray-500 [&_div:hover]:text-white [&_div]:border-b-1 overflow-y-scroll">
+              <div className="h-[500px] [&_div]:cursor-pointer scrollbar-special [&_div:hover]:bg-gray-100 selected:[&_div]:bg-gray-500 [&_div]:border-b-1 overflow-y-scroll flex flex-col border-x p-4 gap-1">
+                <h2 className="font-bold text-[16px]">Lista de modelos</h2>
                 {
-                  tallas && tallas.map((talla,index)=>(
-                    <div key={index} onClick={()=>seleccionarTalla(talla)} className={`${talla.selected ? 'bg-gray-500 text-white' : ''}`}>{talla.nom}</div>
+                  modelos && modelos.map((modelo,index)=>(
+                    <div key={index} onClick={()=>seleccionarTalla(talla)} className={`px-4 py-5 text-[12px] rounded-lg ${modelo.selected ? 'bg-gray-500 text-white' : ''}`}>{modelo.articulo}</div>
                   ))
                 }
               </div>
             </div>
             <div>
-              <div>d</div>
               <div className="relative border border-gray-300 rounded-lg overflow-hidden w-[450px] shadow-xl shadow-black/40">
                 <div className="text-left px-[2rem] pt-[2rem] pb-[1.5rem] text-[12px]">
                   <div className="text-[1.2rem] font-bold">OP:{info?.oc ?? ''}</div>
