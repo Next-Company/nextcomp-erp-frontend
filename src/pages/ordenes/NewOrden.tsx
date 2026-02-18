@@ -10,6 +10,8 @@ import SeccionMateriales from "./components/SeccionMateriales";
 import SeccionOrden from "./components/SeccionOrden";
 import SeccionConfiguracion from "./components/SeccionConfiguracion";
 import SeccionPrecios from "./components/SeccionPrecios";
+import { ButtonLoader } from "../../components/Atoms/Button/ButtonLoader";
+import SeccionImpresiones from "./components/SeccionImpresiones";
 
 
 export function NewOrden() {
@@ -296,6 +298,9 @@ export function NewOrden() {
       }
     })
   }
+  const imprimiretiquetas = ()=>{
+    console.log("Imprimiendo etiquetas.....")
+  }
   return (
     <>
       {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
@@ -353,6 +358,12 @@ export function NewOrden() {
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
               </button>
+              <button className={`group ${position == 7 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPosition(7)} data-estado="FNLZ">
+                <span className="relative h-[100%] flex items-center pointer-events-none">
+                  Impresiones
+                  <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                </span>
+              </button>
             </ul>
             <hr />
             <form ref={form} onSubmit={onsubmit} onKeyUp={testkey} onChange={testkey2} className="flex flex-col flex-1 overflow-hidden">
@@ -375,10 +386,18 @@ export function NewOrden() {
                 {
                   position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos} setmodelos={setModelos}/>
                 }
+                {
+                  position == 7 && <SeccionImpresiones orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos}/>
+                }
               </div>
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button>
-                <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                {
+                  position == 7
+                  ? <ButtonLoader type={'submit'} tipo={'accept'} loading={true}>Imprimir</ButtonLoader>
+                  // ? <ButtonLo action={imprimiretiquetas} type={'button'} tipo={'accept'}>Imprimir</Button>
+                  : <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                }
               </div>
             </form>
           </div>
