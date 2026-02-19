@@ -192,7 +192,7 @@ export default function ListaProductos() {
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Listado de productos</h2>
+              <h2 className="text-[16px] font-bold">Listado de productos</h2>
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '200px' }} action={busquedaproducto} />
               </div>

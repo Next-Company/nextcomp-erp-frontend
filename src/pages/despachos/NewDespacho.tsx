@@ -286,6 +286,9 @@ export default function NewDespacho() {
         Consulta({ url: 'produccion/pedido/' + item.idx })
           .then(resp => {
             console.log("Respuesta info pedido:",resp)
+            if(!resp[1].length){
+              toast.error('Se detectan inconsistencias con el pedidos seleccionado. Por favor verifique.',{theme:'colored'})
+            }
             // setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
             setInfo(info => ({ ...info, id_pedido_origen: item.idx, nro_pedido_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor,subtipo:resp[0].tipo}))
 
@@ -433,6 +436,7 @@ export default function NewDespacho() {
                     </div>
                   </div>
                   <div className={`w-[200%] h-[400px] ${panelactive && 'translate-x-[-50%]'} flex flex-row transition-all overflow-hidden`}>
+                    {/* <div>{JSON.stringify(registros)}</div> */}
                     <TabArticulos/>
                     <TabFacturas/>
                   </div>

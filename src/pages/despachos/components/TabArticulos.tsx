@@ -11,7 +11,7 @@ export default function TabArticulos(){
     console.log("El campo afectado es el siguiente :", column, "SDSDF : ", e.target.checked)
     const position = e.target.dataset.position
     // let articulo = registros[parseInt(e.target.dataset.position)]
-    console.log("Los nuevos registros son:", [...registros.map((item, key) => position == key ? { ...item, [column]: (column == 'isprototipo' ? e.target.checked : e.target.value) } : item)])
+    console.log("Los nuevos registros son:", [...(registros ?? []).map((item, key) => position == key ? { ...item, [column]: (column == 'isprototipo' ? e.target.checked : e.target.value) } : item)])
     setRegistros([...registros.map((item, key) => position == key ? { ...item, [column]: (column == 'isprototipo' ? e.target.checked : e.target.value) } : item)])
   }
   const onclick = (e)=> {
@@ -71,13 +71,6 @@ export default function TabArticulos(){
                       <th className="lg:table-cell">{talla.toUpperCase()}</th>
                     )
                   }
-                  {/* <th className="lg:table-cell">XS / 26</th>
-                  <th className="lg:table-cell">S / 28</th>
-                  <th className="lg:table-cell">M / 30</th>
-                  <th className="lg:table-cell">L / 32</th>
-                  <th className="lg:table-cell">XL / 34</th>
-                  <th className="lg:table-cell">XXL / 36</th> */}
-
                   <th className="lg:table-cell">Cantidad</th>
                   {
                     registros.length > 0 && registros[0].despachos.map((row) => <th className="lg:table-cell"><span className="font-extrabold">{row.fec_despacho}</span></th>)
@@ -97,16 +90,14 @@ export default function TabArticulos(){
                   <th className="lg:table-cell">Unidad</th>
                   <th className="lg:table-cell">Conversion</th>
                   <th className="lg:table-cell">Precio</th>
-                  {/* <th className="lg:table-cell">Entregado</th> */}
                   {
                     registros.length > 0 && !urlparams.id && registros[0].despachos.map((row) => <th className="lg:table-cell w-[80px]"><span className="font-extrabold">{row.fec_despacho}</span></th>)
                   }
                   <th className="lg:table-cell w-[100px]">Pendiente</th>
                   <th className="lg:table-cell w-[60px]">Ingreso</th>
-                  <th className="lg:table-cell">Acciones</th>
+                  <th className="lg:table-cell">Acciones{registros.length}</th>
                 </>
             }
-
           </tr>
         </thead>
         <tbody>
@@ -126,13 +117,6 @@ export default function TabArticulos(){
                           <td>{row[talla]}</td>
                         )
                       }
-                      {/* <td>{row.xs}</td>
-                      <td>{row.s}</td>
-                      <td>{row.m}</td>
-                      <td>{row.l}</td>
-                      <td>{row.xl}</td>
-                      <td>{row.xxl}</td> */}
-
                       <td>{row.cantidad}</td>
                       {
                         row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho + item.cantidad_caidos + item.cantidad_incompletos}</td>)
@@ -164,15 +148,11 @@ export default function TabArticulos(){
                       {
                         !urlparams.id && row.despachos.map(item=><td className="text-blue-600 font-black">{item.cantidad_despacho + item.cantidad_caidos + item.cantidad_incompletos}</td>)
                       }
-                      {/* <td>{row.ingresos}</td> */}
                       {
                         !urlparams.id ? <td>{(row.cantidad*parseFloat(row.conversion ?? 1) - (row.despachos.length > 0 ? row.despachos.reduce((c,v)=>(c+v.cantidad_despacho),0) : 0)).toFixed(2)
                         }</td>
                         : <td>0</td>
                       }
-                      
-                      {/* <td>0</td> */}
-                      {/* <td className="w-[150px]"><input type="number" onChange={editvalue} data-position={key} step={0.01} data-name="despacho" defaultValue={row.despacho ?? 0} /></td> */}
                       <td className="w-[150px]">{row.despacho ?? 0}</td>
                     </>
                 }
@@ -201,7 +181,6 @@ export default function TabArticulos(){
         </tbody>
         <tfoot className="sticky bottom-0">
           <tr className={`focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent bg-white`}>
-            {/* <td className="text-center" colSpan={tipo !== 1 ? 9 : 4}></td> */}
             {
               tipo !== 1
               ?
@@ -239,9 +218,7 @@ export default function TabArticulos(){
                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                   return carry + parseFloat(value.incompletos ?? 0)
                 }, 0)}</td>
-                {/* <td className="text-center text-[16px] italic">0</td> */}
                 <td className="text-center"></td>
-                {/* <td className="text-center"></td> */}
               </>
               :
               <>
@@ -253,7 +230,6 @@ export default function TabArticulos(){
                 <td className="text-center text-[16px] italic">-</td>
                 <td className="text-center text-[16px] italic">-</td>
                 <td className="text-center text-[16px] italic">-</td>
-                {/* <td className="text-center text-[16px] italic">-</td> */}
                 {
                   !urlparams.id && (registros[0]?.despachos?.map(row=><td className="text-center">-</td>) ?? '')
                 }

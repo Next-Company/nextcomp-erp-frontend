@@ -138,7 +138,8 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tal
     openmodal({
       open:true,
       content: <Colores actions={(items)=>{  
-        setcombos([...combos,{idcolor:items[0].idx,color:items[0].nom,talla:'["XS","S","M","L","XL","XXL"]'}])
+        // setcombos([...combos,{idcolor:items[0].idx,color:items[0].nom,talla:'["ST","S","M","L","XL","XXL"]'}])
+        setcombos([...combos,{idcolor:items[0].idx,color:items[0].nom,talla:'["ST"]'}])
         setopen(false)
       }}
         closemodal={()=>setopen(false)}
@@ -272,7 +273,7 @@ function SeccionOrden({info,form,setorden,setopen,openmodal,combos,setcombos,tal
           ))
         }
         <div className="flex flex-row justify-center mt-3">
-          <div onClick={agregarfila} className="bg-green-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
+          <div onClick={agregarfila} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
             +
           </div>
         </div>
@@ -386,7 +387,7 @@ export function NewProducto() {
         .then(resp => {
           console.log("La informacion recibida es:",resp)
           if(resp.ok){
-            // navigate("/main/ordenes/")
+            navigate("/main/productos")
             toast.success('Los datos ingresados fueron registrados con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })

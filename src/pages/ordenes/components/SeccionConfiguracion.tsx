@@ -13,8 +13,8 @@ function FraccionadoByModelo(children:any){
   }
   return(
     <>
-      <div className="h-[500px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px]">
-        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+      <div className="h-[500px] scrollbar-special overflow-y-scroll border-t-[.2px] border rounded-xl bg-gray-300" style={{}}>
+        <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr:nth-child(2n)]:bg-white">
           <thead className="text-left sticky top-0 bg-white">
             <tr>
               <th className="lg:table-cell min-w-[300px]">Modelo</th>  
@@ -53,11 +53,6 @@ function FraccionadoByModelo(children:any){
                         </div>
                       </li>
                       <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                        </div>
-                      </li>
-                      <li>
                         <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="divie" onClick={()=>{}} data-insumos={JSON.stringify(row.insumos)} data-position={key}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-vector-spline"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 4a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -2" /><path d="M3 18a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -2" /><path d="M17 5c-6.627 0 -12 5.373 -12 12" /></svg>
                         </div>
@@ -65,6 +60,11 @@ function FraccionadoByModelo(children:any){
                       <li>
                         <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="vincular" onClick={onclick} data-position={key}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-color-swatch"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 3h-4a2 2 0 0 0 -2 2v12a4 4 0 0 0 8 0v-12a2 2 0 0 0 -2 -2" /><path d="M13 7.35l-2 -2a2 2 0 0 0 -2.828 0l-2.828 2.828a2 2 0 0 0 0 2.828l9 9" /><path d="M7.3 13h-2.3a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h12" /><path d="M17 17l0 .01" /></svg>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="add" onClick={agregarmodelo}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
                         </div>
                       </li>
                     </ul>
@@ -108,8 +108,9 @@ function FraccionadoByModelo(children:any){
                   Object.keys(disponible).reduce((c,v)=>c + (disponible[v] ?? 0),0) - modelos.reduce((c,v)=>c + tallaslist.filter(r=>r.selected)[0].tallas.reduce((c,v2)=>c + parseInt(v[v2.desc] ?? 0),0),0)
                 }
               </td>
+              <td></td>
             </tr>
-            <tr>
+            {/* <tr>
               <td colSpan={12} >
                 <div className="flex flex-row justify-center">
                   <div onClick={agregarmodelo} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-full text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
@@ -117,7 +118,7 @@ function FraccionadoByModelo(children:any){
                   </div>
                 </div>
               </td>
-            </tr>
+            </tr> */}
           </tfoot>
         </table>
       </div>
@@ -224,7 +225,8 @@ function FraccionadoByReceta(children:any){
 }
 
 export default function SeccionConfiguracion(children:any) {
-  const {openmodal,setOpenloader,info,tallaslist,orden,setopen,setorden,modelos,setModelos,disponible,corte,disponible_detalle} = children
+  const {openmodal,setOpenloader,info,tallastemplate,orden,setopen,setorden,modelos,setModelos,disponible,corte,disponible_detalle} = children
+  const [tallaslist,setTallasList] = useState(tallastemplate)
   const [usareceta,setUsaReceta] = useState(0)
   const contenedor = useRef(null)
 
@@ -336,6 +338,13 @@ export default function SeccionConfiguracion(children:any) {
         <hr/>
         <div className="flex flex-row gap-3">
           <Input name={'idx'} defaults={info.length > 0 ? info[0].idx : null} type="hidden" />
+          <div className="w-[400px]">
+            {
+              tallaslist.length > 0
+              ? <InputSelect title={'TallasFormato'} name={"tallasbase"} data={tallaslist.map(row=>({indice:row.idx,option:row.tallasformateado}))} df={info.length > 0 ? info[0].tallasbase : null} />
+              : <Input name={''} defaults={null} title="Ruta" type="text" />
+            }
+          </div>
           {/* <div className="w-[400px]" ref={contenedor}>
             <InputSelect 
               title={'FraccionadoXModelo'}

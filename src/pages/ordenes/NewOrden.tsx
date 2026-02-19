@@ -381,7 +381,7 @@ export function NewOrden() {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
                 }
                 {
-                  position == 5 && <SeccionConfiguracion corte={corte} setopen={setOpen} info={orden} setorden={setOrden} openmodal={openModal} tallaslist={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current} disponible_detalle={disponible_detalle.current}/>
+                  position == 5 && <SeccionConfiguracion corte={corte} setopen={setOpen} info={orden} setorden={setOrden} openmodal={openModal} tallastemplate={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current} disponible_detalle={disponible_detalle.current}/>
                 }
                 {
                   position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos} setmodelos={setModelos}/>
