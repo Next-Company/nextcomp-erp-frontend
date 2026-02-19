@@ -193,7 +193,7 @@ export default function ListaPedidos() {
       case 'edit':
         navigate("/main/pedidos/nuevo/" + id + '?nombre=MIGUEL')
         break;
-      case 'review':
+      case 'review':{
         // navigate("/main/estampado/review/"+ id)
         const tipo = info.filter(row => row.idx == id)[0].tipo
         const params = {
@@ -207,6 +207,7 @@ export default function ListaPedidos() {
         }
         openModal(params)
         break;
+      }
       case 'cuadre':
         params_modal = {
           open: true,
@@ -380,7 +381,7 @@ export default function ListaPedidos() {
 
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]">Requerimientos</h2>
+              <h2 className="text-[16px] font-bold">Requerimientos</h2>
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '200px' }} action={filtrarpedidos} />
               </div>

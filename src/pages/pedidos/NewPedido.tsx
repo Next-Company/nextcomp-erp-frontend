@@ -11,10 +11,10 @@ import Proveedores from "../../components/Common/Proveedores"
 import Productos from "../../components/Common/Productos"
 
 const CuerpoInforme = ({info,tipo})=>{
-  let [ruta,setRuta] = useState("")
+  const [ruta,setRuta] = useState("")
   useEffect(()=>{
     console.log("El tipo de pedido es:",tipo)
-    let crear = async ()=>{
+    const crear = async ()=>{
       // await Consulta({url: `${tipo ? 'produccion/vistapreviapedido/avios' : 'produccion/vistapreviapedido/telas'}`,params:{
       // await Consulta({url: `${tipo ? 'produccion/vistapreviapedidoavios/avios' : 'produccion/vistapreviapedido/telas' }`,params:{
       await Consulta({url: `${tipo ? 'produccion/vistarapidapedidoavios/download' : 'produccion/vistapreviapedido/telas' }`,params:{
@@ -23,14 +23,14 @@ const CuerpoInforme = ({info,tipo})=>{
       }})
       .then(resp => {
         console.log("La info del reporte es:",resp)
-        let binaryString = window.atob(resp.data);
-        let binaryLen = binaryString.length;
-        let bytes = new Uint8Array(binaryLen);
+        const binaryString = window.atob(resp.data);
+        const binaryLen = binaryString.length;
+        const bytes = new Uint8Array(binaryLen);
         for (let i = 0; i < binaryLen; i++) {
-            let ascii = binaryString.charCodeAt(i);
+            const ascii = binaryString.charCodeAt(i);
             bytes[i] = ascii;
         }
-        let file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
+        const file = window.URL.createObjectURL(new Blob([bytes], {type: "application/pdf"}))
         // console.log("La ruta es:",file)
         setRuta(file)
       })
@@ -65,7 +65,7 @@ export default function NewPedido(){
     e.preventDefault()
     // let condiciones = [{name:'',altura:0,color:'magenta'},{name:'',altura:0,color:'magenta'}]
     console.log("El de talle de fracciones :",registros)
-    for(let element of form.current.querySelectorAll("input[verify='true']")){
+    for(const element of form.current.querySelectorAll("input[verify='true']")){
       if(element && element.value == ''){
         toast.error('Alguno de los campos del formulario son obligatorios. Por favor verifique.', { theme: "colored" })
         return
@@ -104,6 +104,7 @@ export default function NewPedido(){
           body:data
         }})
         .then(resp => {
+          console.log("La respuestad del servidor es:",resp)
           setOpenloader(false)
           if(resp.ok){
             // navigate('/main/pedidos/')
@@ -159,7 +160,7 @@ export default function NewPedido(){
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
       console.log("Hola Ivon",event.detail.valor)
       setTipo(event.detail.valor == 'TELAS' ? 0 : (event.detail.valor == 'AVIOS' ? 1 : 2))
-      // setRegistros([])
+      setRegistros([])
     };
     form.current.addEventListener("salamandra", handleInputChange);
 
@@ -253,17 +254,20 @@ export default function NewPedido(){
         setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
         console.log("Eliminado registros de la fila ",position)
         break;
-      case 'clone':
-        let copia = registros.filter((row,key)=>key == parseInt(position))[0]
-        // setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
-        setRegistros([...registros,copia])
+      case 'clone':{
+        if(tipo == 0){
+          const copia = registros.filter((row,key)=>key == parseInt(position))[0]
+          // setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
+          setRegistros([...registros,copia])
+        }
         break;
+      }
       default :
     }
   }
   const editvalue = (e)=>{
-    let column = e.target.dataset.name
-    let position = e.target.dataset.position
+    const column = e.target.dataset.name
+    const position = e.target.dataset.position
   
     if(tipo == 0){
       if(column == 'color'){
