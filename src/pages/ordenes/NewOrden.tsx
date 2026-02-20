@@ -109,8 +109,13 @@ export function NewOrden() {
         toast.error('El saldo pendiente no puede ser menor a 0. Por favor verifique.', { theme: "colored" })
         return 0
       }
-      console.log("La info de modelos es:",modelos)
+      if(modelos.filter(row=>!Object.keys(row).includes('idcolor')).length > 0) {
+        toast.error('Existen modelos sin color asignado. Por favor verifique.', { theme: "colored" })
+        return 0
+      }
+      // console.log("La info  de modelos es:",modelos)
       data.append('info',JSON.stringify(modelos))
+      data.append('tallasoriginal',JSON.stringify(tallaslist.filter(row=>row.selected)[0]))
       data.append('tallasbase',JSON.stringify(tallasfracciones.filter(row=>row.selected)[0]))
       data.append('idreceta',orden[0]?.id_receta ?? '')
       data.append('id',urlparams.id)
@@ -123,7 +128,6 @@ export function NewOrden() {
         toast.error('Existen modelos que no tienen vinculado un modelo de precios. Por favor verifique.',{theme:'colored'})
         return 0;
       }
-      
       if(!(orden[0].precios && orden[0].precios.length > 1)){
         toast.error('No ha ingresado ningun precio. Por favor verifique.',{theme:'colored'})
         return 0;
@@ -397,7 +401,7 @@ export function NewOrden() {
                 <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button>
                 {
                   position == 7
-                  ? <ButtonLoader type={'submit'} tipo={'accept'} loading={true}>Imprimir</ButtonLoader>
+                  ? <ButtonLoader type={'submit'} tipo={'accept'} loading={false}>Imprimir</ButtonLoader>
                   // ? <ButtonLo action={imprimiretiquetas} type={'button'} tipo={'accept'}>Imprimir</Button>
                   : <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 }

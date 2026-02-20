@@ -76,9 +76,9 @@ export function ModalWindow() {
             </div> */}
           </div>
         :
-        // OE PENDEJO LA CLASE "other" ES EL QUE LE DA EL EFECTO DE MOVIMIENTO A LA MODAL EN EL EJE Y, LO ENCUENTRAR EN EL ARCHIVO index.css
+        // OE LA CLASE "other" ES EL QUE LE DA EL EFECTO DE MOVIMIENTO A LA MODAL EN EL EJE Y, LO ENCUENTRAR EN EL ARCHIVO index.css
         <div ref={modalref} className={`absolute ${open ? 'z-[100] bg-black/50' : 'z-[-1] other'} flex justify-center items-center opacity-[1] top-0 left-0 w-[100vw] h-[100vh] transition-all text-[14px]`} onClick={actionBackground} tabIndex={-1}>
-          <div id="conc" onAnimationEnd={onanimationend} className="sm:min-w-[100vw] sm:min-h-[40vh] xl:min-w-[500px] xl:min-h-[250px] p-[5px] bg-white rounded-md flex flex-col justify-between transition-all" onClick={onclick}>
+          <div id="conc" onAnimationEnd={onanimationend} className="sm:min-w-[100vw] sm:min-h-[40vh] xl:min-w-[500px] xl:min-h-[250px] p-[5px] bg-white rounded-xl flex flex-col justify-between transition-all" onClick={onclick}>
             {
               (config.header && true)
                 ? <header className={`h-[45px] bg-green-400/0 ${(config.header ?? true) ? 'block' : 'hidden'} rounded-t-md flex justify-between items-center border-b-[1px] border-gray-200`}>

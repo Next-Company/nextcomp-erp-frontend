@@ -1,11 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { Input } from "../../../components/Atoms/Input/Input";
 import { toast } from "react-toastify";
-import { Button } from "../../../components/Atoms/Button/Button";
 import { Consulta } from "../../../utils/utils";
-import { ButtonLoader } from "../../../components/Atoms/Button/ButtonLoader";
 import { InputSelect } from "../../../components/Atoms/Input/InputSelect";
 
+const INITIAL_MODELS = [
+  {idx:1,articulo:'PANTALON MEGA',selected:true},
+  {idx:2,articulo:'PANTALON MEGA 2'},
+  {idx:3,articulo:'PANTALON MEGA 3'},
+  {idx:4,articulo:'PANTALON MEGA 2'},
+  {idx:5,articulo:'PANTALON MEGA 3'},
+  {idx:6,articulo:'PANTALON MEGA 2'},
+  {idx:7,articulo:'PANTALON MEGA 3'},
+  {idx:8,articulo:'PANTALON MEGA 2'},
+  {idx:9,articulo:'PANTALON MEGA 3'},
+  {idx:10,articulo:'PANTALON MEGA 2'},
+  {idx:11,articulo:'PANTALON MEGA 3'}
+]
 
 export default function SeccionImpresiones(children:any) {
   const { idprod, modelos } = children;
@@ -15,7 +26,11 @@ export default function SeccionImpresiones(children:any) {
   const [tallas,setTallas] = useState([])
   const [data,setData] = useState([])
   const [loading,setLoading] = useState(false)
-  const form = useRef()
+  const [distribucion,setDistribucion] = useState(1)
+  // const [modelosimpresion,setModelosimpresion] = useState(modelos?.length ? modelos : INITIAL_MODELS)
+  const [modelosimpresion,setModelosimpresion] = useState(INITIAL_MODELS)
+  const form = useRef(null)
+
   useEffect(()=>{
     Consulta({url:'almacen/getinfoetiqueta/' + idprod})
     .then((resp)=>{
@@ -41,17 +56,13 @@ export default function SeccionImpresiones(children:any) {
 
     const handleInputChange = (event) => {
       console.log("Hola Ivon",event.detail.valor,event.detail)
-      // if(event.detail.name == 'servicio'){
-      //   setServicio(event.detail.valor)
-      // }
-      // if(event.detail.name == 'distribucion'){
-      //   // setDistribucion(event.detail.valor == 'PAQUETES' ? 'PQT' : 'TLL')
-      //   setDistribucion({GLOBALES:'GLB',TALLAS:'TLL',PAQUETES:'PQT'}[event.detail.valor])
-      // }
+      if(event.detail.name == 'distribucion'){
+        setDistribucion(event.detail.indice)
+      }
     };
     form?.current?.addEventListener("salamandra", handleInputChange);
     return () => {
-      // if (form.current) form.current.removeEventListener("salamandra", handleInputChange);
+      form.current?.removeEventListener("salamandra", handleInputChange);
     };
   },[])
   const seleccionarTalla = (talla) => {
@@ -94,11 +105,11 @@ export default function SeccionImpresiones(children:any) {
         const traduccion = window.atob(info)
         // Creamos un contenedor de cajas con un numero de cajas igual a la longitud de la traduccion
         const nuevo_contenedor = new Uint8Array(traduccion.length);
-        // Llenamos el contenedor con los valores en codigo ASCII de cada letra
+        // Obtenemos el codigo ASCII de cada letra usando el metodo charCodeAt() y lo guardamos en cada caja del contenedor
         for (let i = 0; i < traduccion.length; i++) {
           nuevo_contenedor[i] = traduccion.charCodeAt(i);
         }
-        // Etiquetamos el contenedor como un archivo PDF
+        // Envolvemos el contenedor en otro contenedor del tipo Blob, que es un contenedor de archivos que se puede abrir en el navegador, y le decimos que es un PDF
         const blob = new Blob([nuevo_contenedor], { type: 'application/pdf' });
         // Generamos una URL temporal para abrir el PDF en una nueva pestaña
         const url = URL.createObjectURL(blob);
@@ -117,7 +128,10 @@ export default function SeccionImpresiones(children:any) {
     } finally {
       setLoading(false)
     }
-    console.log("Imprimiendo etiquetas con la siguiente info:")
+  }
+  const actualizarModelos = (event) => {
+    const position = parseInt(event.target.dataset.position)
+    setModelosimpresion(prev=>prev.map((m,index)=>({...m,selected:index == position ? (m.selected ? 0 : 1) : (m?.selected ?? 0)})))
   }
   return(
     <>
@@ -130,20 +144,7 @@ export default function SeccionImpresiones(children:any) {
           </div>
           <hr/>
           <div className="flex gap-2">
-            <div ref={form.current} className="flex flex-row gap-4 w-full">
-              {/* <div className="w-[300px] text-left">
-                <Input name={'orden_ref'} title="OP/OC" defaults={''} type="text" action={()=>{}} mode={'static'} verify="true" placeholder={'Info referencial'}/>
-              </div> */}
-              {/* <Input name={'orden_ref'} title="Almacen" defaults={''} type="text" action={()=>{}} mode={'static'} verify="true" placeholder={'Info referencial'}/> */}
-              {/* <InputSelect title={'OrigenTienda'} name={"origentienda"} data={
-                [
-                  { indice: '1', option: 'MALL Y GAMARRA', selected: true }, 
-                  { indice: '0', option: 'AGUAS VERDES' }, 
-                ]} 
-                df={moneda} 
-                placeholder={'Info referencial'}
-                formref={form.current}
-              /> */}
+            <div ref={form} className="flex flex-row gap-4 w-full">
               <div className="w-[400px] text-left">
                 <InputSelect title={'Distribucion'} name={"distribucion"} data={
                   [
@@ -152,11 +153,8 @@ export default function SeccionImpresiones(children:any) {
                   ]} 
                   df={1} 
                   placeholder={'Info referencial'}
-                  formref={form.current}
+                  formref={form}
                 />
-              </div>
-              <div className="w-[400px] text-left">
-                <Input name={'cantidad'} title="Cantidad" defaults={0} type="number" verify="true" placeholder={'Info referencial'}/>
               </div>
               <div className="w-[400px] text-left">
                 <InputSelect title={'MonedaOrigen'} name={"moneda"} data={
@@ -169,6 +167,12 @@ export default function SeccionImpresiones(children:any) {
                   formref={form.current}
                 />
               </div>
+              {
+                distribucion == 2 &&
+                <div className="w-[400px] text-left">
+                  <Input name={'cantidad'} title="Cantidad" defaults={0} type="number" verify="true" placeholder={'Info referencial'}/>
+                </div>
+              }
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -176,18 +180,45 @@ export default function SeccionImpresiones(children:any) {
             <span className="inline-block align-middle text-[12px]">Datos adicionales</span>
           </div>
           <hr/>
-          <div className="flex-1 flex flex-row gap-4 mb-2">
-            <div className="flex-1 flex-row justify-between ">
-              <div className="h-[500px] [&_div]:cursor-pointer scrollbar-special [&_div:hover]:bg-gray-100 selected:[&_div]:bg-gray-500 [&_div]:border-b-1 overflow-y-scroll flex flex-col border-x p-4 gap-1">
-                <h2 className="font-bold text-[16px]">Lista de modelos</h2>
-                {
-                  modelos && modelos.map((modelo,index)=>(
-                    <div key={index} onClick={()=>seleccionarTalla(talla)} className={`px-4 py-5 text-[12px] rounded-lg ${modelo.selected ? 'bg-gray-500 text-white' : ''}`}>{modelo.articulo}</div>
-                  ))
-                }
+          <div className="flex-1 flex flex-row gap-[30px] mb-2">
+            <div className="flex-1 flex-row overflow-hidden rounded-xl bg-gray-100">
+              <div className="h-[500px] [&_div.model]:cursor-pointer scrollbar-special [&_div.model:hover]:bg-gray-100 [&_div.model.selected:hover]:bg-indigo-100 [&_div.model]:border-b-1 overflow-y-scroll flex flex-col border rounded-xl">
+                <div className="sticky top-0 px-4 py-3 flex flex-row justify-between items-center bg-gray-100">
+                  <h2 className="font-bold text-[16px]">Lista de modelos</h2>
+                  <div>
+                    <ul className="flex w-[150px] flex-row justify-end rounded-full gap-2 [&_div]:cursor-pointer [&_div:hover]:bg-gray-200">
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:text-red-600 transition-colors flex justify-center items-center" data-action="clear">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eraser"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3" /><path d="M18 13.3l-6.3 -6.3" /></svg>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="rounded-full w-9 h-9 transition-colors flex justify-center items-center" data-action="add">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="px-4 py-1 lista flex flex-col gap-2">
+                  {
+                    modelosimpresion && modelosimpresion.map((modelo,index)=>(
+                      <div key={index} onClick={actualizarModelos} data-position={index} className={`model flex flex-row justify-between px-4 py-5 text-[12px] rounded-lg ${modelo.selected ? 'bg-indigo-100 outline-indigo-300 outline outline-[1px] text-indigo-500 selected' : 'text-gray-400'}`}>
+                        <span>{modelo.articulo}</span>
+                        {
+                          modelo.selected
+                          ?
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-circle-dot"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 6.66a2 2 0 0 0 -1.977 1.697l-.018 .154l-.005 .149l.005 .15a2 2 0 1 0 1.995 -2.15z" /></svg>
+                          :
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /></svg>
+                        }
+                      </div>
+                    ))
+                  }
+                </div>
               </div>
             </div>
-            <div>
+            <div className="">
               <div className="relative border border-gray-300 rounded-lg overflow-hidden w-[450px] shadow-xl shadow-black/40">
                 <div className="text-left px-[2rem] pt-[2rem] pb-[1.5rem] text-[12px]">
                   <div className="text-[1.2rem] font-bold">OP:{info?.oc ?? ''}</div>
@@ -212,21 +243,49 @@ export default function SeccionImpresiones(children:any) {
                 <div className="absolute w-[25px] h-[100px] bg-blue-500 top-0"></div>
                 <div className="absolute w-[25px] h-[290px] bg-blue-500 top-0 right-0"></div>
                 <div className="absolute text-[5.5rem] font-extrabold top-[170px] right-[40px]" >{info?.talla ?? ''}</div>
+              </div>
+            </div>
 
+            <div className="flex-1 flex-row overflow-hidden rounded-xl bg-gray-100">
+              <div className="h-[500px] [&_div.model]:cursor-pointer scrollbar-special [&_div.model:hover]:bg-gray-100 [&_div.model.selected:hover]:bg-indigo-100  [&_div.model]:border-b-1 overflow-y-scroll flex flex-col border rounded-xl">
+                <div className="sticky top-0 bg-gray-100 p-4 flex flex-row justify-between">
+                  <h2 className="font-bold text-[16px]">Lista de tallas base</h2>
+                  <div>
+                    <ul className="flex w-[150px] flex-row justify-end rounded-full p-[2px] gap-2 [&_div]:cursor-pointer [&_div:hover]:bg-gray-200">
+                      <li>
+                        <div className="rounded-full w-9 h-9 hover:text-red-600 transition-colors flex justify-center items-center" data-action="clear">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eraser"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3" /><path d="M18 13.3l-6.3 -6.3" /></svg>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="rounded-full w-9 h-9 transition-colors flex justify-center items-center" data-action="add">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="px-4 py-1 lista flex flex-col gap-2">
+                  {
+                    modelosimpresion && modelosimpresion.map((modelo,index)=>(
+                      <div key={index} onClick={actualizarModelos} data-position={index} className={`model flex flex-row justify-between px-4 py-5 text-[12px] rounded-lg ${modelo.selected ? 'bg-indigo-100 outline-indigo-300 outline outline-[1px] text-indigo-500 selected' : 'text-gray-400'}`}>
+                        <span>{modelo.articulo}</span>
+                        {
+                          modelo.selected
+                          ?
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-circle-dot"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 6.66a2 2 0 0 0 -1.977 1.697l-.018 .154l-.005 .149l.005 .15a2 2 0 1 0 1.995 -2.15z" /></svg>
+                          :
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /></svg>
+                        }
+                      </div>
+                    ))
+                  }
+                </div>
               </div>
-              <div>ds</div>
             </div>
-            <div className="flex-1 flex-row justify-between ">
-              <div className="[&_div]:h-[30px] h-[500px] [&_div]:border [&_div]:cursor-pointer scrollbar-special [&_div:hover]:bg-gray-400 [&_div:hover]:text-white [&_div]:border-b-1 overflow-y-scroll">
-                {
-                  colores && colores.map((color,index)=>(
-                    <div key={index} onClick={()=>seleccionarColor(color)} className={`${color.selected ? 'bg-gray-500 text-white' : ''}`}>{color.nom}</div>
-                  ))
-                }
-              </div>
-            </div>
+
           </div>
-          {/* <div className="h-[100px]"></div> */}
+          <div className="h-[100px]"></div>
         </div>
       </div>
     </>

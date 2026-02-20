@@ -13,7 +13,7 @@ function TemplatePrecios(children){
     // console.e
     switch(action){
       case 'eliminar':
-        if(position){
+        if(position !== 1){
           openmodal({
             open:true,
             content: <div>Desea elminar el modelo de precios seleccionado?.<br/> Cualquier modificacion realizada se perderá.</div>,
@@ -38,11 +38,13 @@ function TemplatePrecios(children){
         setInfo(pricemodels=>[...pricemodels,INITIAL_PRICE])
         break;
       case 'vincular':
-        // console.log("La nueva lista de modelos es el siguiente:",modelos.filter(row=>!Object.keys(row).includes('pricemodel')))
         console.log("La nueva lista de modelos es el siguiente:",modelos)
+        if(modelos.filter(row=>!Object.keys(row).includes('pricemodel')).length == 0){
+          toast.error('No hay modelos disponibles para vincular. Por favor verifique.', { theme: "colored" })
+          return 0
+        }
         openmodal({
           open:true,
-          // content: <ListaModelos modelos={modelos.filter(row=>!row.pricemodel || ((row.pricemodel ?? -1) == position))} setmodelos={setmodelos} info={[]} actions={(models)=>{
           content: <ListaModelos modelos={modelos.filter(row=>(row?.pricemodel ?? -1) == position || !Object.keys(row).includes('pricemodel'))} setmodelos={setmodelos} info={[]} pricemodel={position} actions={(models)=>{
             // setmodelos(models.map((row,key)=> key == position ? {...row,pricemodel:position} : row))
             setmodelos([...modelos.filter(row=>!models.map(m=>m.idx).includes(row.idx)),...models])
@@ -96,7 +98,8 @@ function TemplatePrecios(children){
             <Input name={'precio6_b'} dataset={[{origen:'precio6'},{position:1},{pricemodel:position}]} title="Distribuidor($)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio6?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
           </div>
         </div>
-        <div className="absolute top-2 right-2 flex flex-row gap-2 p-1 border rounded-full bg-white">
+        {/* <div className="absolute top-2 right-2 flex flex-row gap-2 p-1 border rounded-full bg-gray-200 shadow-lg"> */}
+        <div className="absolute top-2 right-2 flex flex-row gap-2 p-1 border rounded-full">
           <div className="rounded-full w-9 h-9 hover:text-red-600 hover:bg-gray-300 hover:cursor-pointer transition-colors flex justify-center items-center" data-action="eliminar" onClick={onclick} data-position={position}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
           </div>
