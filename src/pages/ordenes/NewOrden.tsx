@@ -32,6 +32,7 @@ export function NewOrden() {
   const [insumos,setInsumos] = useState([])
   const [requerimientos,setRequerimientos] = useState([])
   const [tallaslist,setTallaslist] = useState([])
+  const [tallasfracciones,setTallasfracciones] = useState([])
   const [modelos,setModelos] = useState([])
   const disponible = useRef(null)
   const disponible_detalle = useRef(null)
@@ -102,14 +103,15 @@ export function NewOrden() {
     if(position == 5){
       url_save = 'ordenes/saveFaseFraccionamiento'
       data = new FormData()
-      const validacion = Object.keys(disponible.current).reduce((c,v)=>c + (disponible.current[v] ?? 0),0) - modelos.reduce((c,v)=>c + tallaslist.filter(r=>r.selected)[0].tallas.reduce((c,v2)=>c + parseInt(v[v2.desc] ?? 0),0),0)
+      const validacion = Object.keys(disponible.current).reduce((c,v)=>c + (disponible.current[v] ?? 0),0) - modelos.reduce((c,v)=>c + tallasfracciones.filter(r=>r.selected)[0].tallas.reduce((c,v2)=>c + parseInt(v[v2.desc] ?? 0),0),0)
 
       if(validacion < 0) {
         toast.error('El saldo pendiente no puede ser menor a 0. Por favor verifique.', { theme: "colored" })
         return 0
       }
+      console.log("La info de modelos es:",modelos)
       data.append('info',JSON.stringify(modelos))
-      data.append('tallasbase',JSON.stringify(tallaslist.filter(row=>row.selected)[0]))
+      data.append('tallasbase',JSON.stringify(tallasfracciones.filter(row=>row.selected)[0]))
       data.append('idreceta',orden[0]?.id_receta ?? '')
       data.append('id',urlparams.id)
     }
@@ -190,6 +192,7 @@ export function NewOrden() {
             setInsumos(resp[6])
             setRequerimientos(resp[7])
             setTallaslist(resp[8])
+            setTallasfracciones(resp[8])
             setModelos(resp[9])
             disponible.current = resp[10]
             disponible_detalle.current = resp[11]
@@ -381,7 +384,7 @@ export function NewOrden() {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
                 }
                 {
-                  position == 5 && <SeccionConfiguracion corte={corte} setopen={setOpen} info={orden} setorden={setOrden} openmodal={openModal} tallastemplate={tallaslist} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current} disponible_detalle={disponible_detalle.current}/>
+                  position == 5 && <SeccionConfiguracion corte={corte} setopen={setOpen} info={orden} setorden={setOrden} openmodal={openModal} tallaslist={tallasfracciones} setTallasfracciones={setTallasfracciones} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current} disponible_detalle={disponible_detalle.current}/>
                 }
                 {
                   position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos} setmodelos={setModelos}/>

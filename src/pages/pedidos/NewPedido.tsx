@@ -125,6 +125,7 @@ export default function NewPedido(){
   }
   useEffect(()=>{
     if(urlparams.id){
+      const TIPO_PEDIDO = {'TELAS':0,'AVIOS':1,'ADICIONALES':2}
       setOpenloader(true)
       const pp = async () => {
         await Consulta({url: 'produccion/pedido/' + urlparams.id,})
@@ -132,7 +133,8 @@ export default function NewPedido(){
             console.log("Busqueda info pedido:",resp)
             setInfo(resp[0])
             setRegistros(resp[1])
-            setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
+            // setTipo(resp[0].tipo == 'TELAS' ? 0 : 1)
+            setTipo(TIPO_PEDIDO[resp[0].tipo])
             setOpenloader(false)
           })
           .catch((err)=>{
