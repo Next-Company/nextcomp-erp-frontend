@@ -3,7 +3,6 @@ import { Input } from "../../../components/Atoms/Input/Input";
 import ColoresBase from "./ColoresBase";
 import { InputSelect } from "../../../components/Atoms/Input/InputSelect";
 import { Search } from "../../../components/Atoms/Search/Search";
-import { Button } from "../../../components/Atoms/Button/Button";
 
 const EQUIVALENTSIZES = {
   'st':{'1':'st','2':'st','3':'st'},
@@ -293,15 +292,15 @@ function FraccionadoByReceta(children:any){
 }
 
 export default function SeccionConfiguracion(children:any) {
-  const {openmodal,setOpenloader,info,tallaslist,setTallasfracciones,orden,setopen,setorden,modelos,setModelos,disponible,corte,disponible_detalle} = children
+  const {openmodal,info,tallaslist,setTallasfracciones,setopen,modelos,setModelos,disponible,corte,disponible_detalle,usareceta,setUsaReceta} = children
   // const [tallaslist,setTallasList] = useState(tallastemplate)
   const [newdisponible,setNewDisponible] = useState(disponible)
   const [newdisponibledetalle,setNewDisponibleDetalle] = useState(disponible_detalle)
-  const [usareceta,setUsaReceta] = useState(0)
+  // const [usareceta,setUsaReceta] = useState(0)
   const contenedor = useRef(null)
 
   const salamandra_receta = (event)=>{
-    if(event.detail.name == 'condicion'){
+    if(event.detail.name == 'fracciones_con_receta'){
       console.log("Dento de la condicon la infor es:",event.detail.valor,corte,newdisponibledetalle,tallaslist)
 
       setUsaReceta(event.detail.valor == 'SI' ? 1 : 0)
@@ -375,7 +374,7 @@ export default function SeccionConfiguracion(children:any) {
       // setModelos([])
 
       setModelos([...modelos.reduce((c,v)=>{
-        c.push({
+        const contenido = {
           ...Object.keys(v).reduce((c2,k)=>{
             if(!oldtemplatesizes.includes(k)){
               if(k == 'fracciones'){
@@ -391,7 +390,9 @@ export default function SeccionConfiguracion(children:any) {
             }
             return c2
           },{})
-        })
+        }
+        Reflect.deleteProperty(contenido,'idx')
+        c.push(contenido)
         return c
       },[])])
     }
@@ -477,14 +478,15 @@ export default function SeccionConfiguracion(children:any) {
             }
             <InputSelect 
               title={'UsaReceta'}
-              name={"condicion"} 
+              name={"fracciones_con_receta"} 
               data={
                 [
                   { indice: 0, option: 'NO' }, 
                   { indice: 1, option: 'SI' } 
                 ]
               } 
-              df={info.length > 0 ? info[0].estado_orden : null} formref={contenedor} placeholder={'Numero de la orden'}
+              // df={info.length > 0 ? info[0].estado_orden : null} formref={contenedor} placeholder={'Numero de la orden'}
+              df={parseInt(usareceta)} formref={contenedor} placeholder={'Numero de la orden'}
             />
           </div>
         </div> 

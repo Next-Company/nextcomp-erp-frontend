@@ -34,6 +34,7 @@ export function NewOrden() {
   const [tallaslist,setTallaslist] = useState([])
   const [tallasfracciones,setTallasfracciones] = useState([])
   const [modelos,setModelos] = useState([])
+  const [usareceta,setUsaReceta] = useState(0)
   const disponible = useRef(null)
   const disponible_detalle = useRef(null)
   
@@ -115,6 +116,7 @@ export function NewOrden() {
       }
       // console.log("La info  de modelos es:",modelos)
       data.append('info',JSON.stringify(modelos))
+      data.append('usareceta',usareceta)
       data.append('tallasoriginal',JSON.stringify(tallaslist.filter(row=>row.selected)[0]))
       data.append('tallasbase',JSON.stringify(tallasfracciones.filter(row=>row.selected)[0]))
       data.append('idreceta',orden[0]?.id_receta ?? '')
@@ -187,6 +189,7 @@ export function NewOrden() {
       const pp = async () => {
         await Consulta({url: 'produccion/getordenesbyid/' + urlparams.id,})
           .then(resp => {
+            console.log("Info oconsulta orden:",resp)
             setOrden(resp[0])
             setMolde(resp[1])
             setCorte(resp[2])
@@ -196,8 +199,9 @@ export function NewOrden() {
             setInsumos(resp[6])
             setRequerimientos(resp[7])
             setTallaslist(resp[8])
-            setTallasfracciones(resp[8])
+            setTallasfracciones(resp[12])
             setModelos(resp[9])
+            setUsaReceta(resp[0][0].fracciones_con_receta)
             disponible.current = resp[10]
             disponible_detalle.current = resp[11]
           })
@@ -388,22 +392,22 @@ export function NewOrden() {
                   position == 4 && <SeccionMateriales info={materiales} orden={urlparams.id}/>
                 }
                 {
-                  position == 5 && <SeccionConfiguracion corte={corte} setopen={setOpen} info={orden} setorden={setOrden} openmodal={openModal} tallaslist={tallasfracciones} setTallasfracciones={setTallasfracciones} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current} disponible_detalle={disponible_detalle.current}/>
+                  position == 5 && <SeccionConfiguracion corte={corte} setopen={setOpen} info={orden} setorden={setOrden} openmodal={openModal} tallaslist={tallasfracciones} setTallasfracciones={setTallasfracciones} orden={urlparams.id} setOpenloader={setOpenloader} modelos={modelos} setModelos={setModelos} disponible={disponible.current} disponible_detalle={disponible_detalle.current} usareceta={usareceta} setUsaReceta={setUsaReceta}/>
                 }
                 {
                   position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos} setmodelos={setModelos}/>
                 }
                 {
-                  position == 7 && <SeccionImpresiones orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos}/>
+                  position == 7 && <SeccionImpresiones orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos} tallasbase={tallasfracciones.filter(row=>row.selected)[0].tallas} setTallasfracciones={setTallasfracciones} formparent={form}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">
-                <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button>
+                {/* <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button> */}
                 {
-                  position == 7
-                  ? <ButtonLoader type={'submit'} tipo={'accept'} loading={false}>Imprimir</ButtonLoader>
-                  // ? <ButtonLo action={imprimiretiquetas} type={'button'} tipo={'accept'}>Imprimir</Button>
-                  : <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                  position !== 7 && <>
+                    <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button>
+                    <Button type={'submit'} tipo={'success'}>Guardar</Button>
+                  </>
                 }
               </div>
             </form>
