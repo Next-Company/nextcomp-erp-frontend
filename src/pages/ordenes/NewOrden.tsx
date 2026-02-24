@@ -398,7 +398,7 @@ export function NewOrden() {
                   position == 6 && <SeccionPrecios orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos} setmodelos={setModelos}/>
                 }
                 {
-                  position == 7 && <SeccionImpresiones orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos} tallasbase={tallasfracciones.filter(row=>row.selected)[0].tallas} setTallasfracciones={setTallasfracciones} formparent={form}/>
+                  position == 7 && <SeccionImpresiones orden={orden} setorden={setOrden} setopen={setOpen} openmodal={openModal} modelos={modelos} tallasbase={tallasfracciones.filter(row=>row.selected)[0].tallas} setOpenloader={setOpenloader} setTallasfracciones={setTallasfracciones} formparent={form}/>
                 }
               </div>
               <div className="flex justify-end gap-2 mt-2">

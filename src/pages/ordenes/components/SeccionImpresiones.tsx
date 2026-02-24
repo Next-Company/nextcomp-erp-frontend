@@ -20,7 +20,7 @@ const INITIAL_MODELS = [
 ]
 
 export default function SeccionImpresiones(children:any) {
-  const { orden, modelos, tallasbase, openmodal, setopen, formparent } = children;
+  const { orden, modelos, tallasbase, openmodal, setopen, formparent, setOpenloader } = children;
   const [info,setInfo] =  useState({oc:'0000000',producto:'PANTALON MEGA',estilo:'CLASICO',tela:'DENIM',base:'BAGGY',color:'NEGRO',talla:'S/T',precio_oferta:'149.90',precio_original:'149.90'});
   const [moneda,setMoneda] = useState('PEN')
   const [tallas,setTallas] = useState(tallasbase.map(row=>({...row,selected:true})))
@@ -63,7 +63,8 @@ export default function SeccionImpresiones(children:any) {
       controls: true,
       content: <div>Desea continuar con proceso de impresio de etiquetas?.<br/> El proceso puede tomar unos minutos.</div>,
       action: async () => {
-        setLoading(true)
+        // setLoading(true)
+        setOpenloader(true)
         try {          
           // if(!colores.filter(t=>t.selected).length){
           //   toast.error("Debe seleccionar por lo menos 1 de los colores del listado. Verifique.",{ theme: "colored"})
@@ -75,7 +76,7 @@ export default function SeccionImpresiones(children:any) {
             }
           })
           .then((resp)=>{
-            setLoading(false)
+            // setLoading(false)
             console.log("La respuestad el servidor es:",resp)
             const info = resp.data
             
@@ -96,7 +97,7 @@ export default function SeccionImpresiones(children:any) {
             
           })
           .catch((err)=>{
-            setLoading(false)
+            // setLoading(false)
             toast.error('Se produjo un error al momento de imprimir las etiquetas.', { theme: "colored" })
           })
           
@@ -104,7 +105,7 @@ export default function SeccionImpresiones(children:any) {
           toast.error('Se produjo un error al momento de imprimir las etiquetas.', { theme: "colored" })
           
         } finally {
-          setLoading(false)
+          setOpenloader(false)
         }
       }
     })
