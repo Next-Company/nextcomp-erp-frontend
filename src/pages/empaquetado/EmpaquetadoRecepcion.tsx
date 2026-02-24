@@ -272,6 +272,7 @@ export default function EmpaqueadoRecepcion() {
   const [registros, setRegistros] = useState([])
   const [facturas, setFacturas] = useState([])
   const [panelactive, setPanelActive] = useState(0)
+  const [tallasbase,setTallasbase] = useState([])
   const navigate = useNavigate()
 
   const onsubmit = (e) => {
@@ -478,6 +479,7 @@ export default function EmpaqueadoRecepcion() {
       open: true,
       content: <Ordenes mode={0} actions={(item)=>{
         console.log("El pedidos seleccionado matemia es :",item)
+        // setTallasbase(item.tallasbase)
         setInfo(row=>({...row,id_orden_origen:item.idx,nro_orden_origen:item.oc}))
         setOpenloader(true)
         setOpen(false)

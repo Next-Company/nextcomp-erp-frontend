@@ -180,7 +180,7 @@ export default function SeccionImpresiones(children:any) {
           <hr/>
           <div className="flex-1 flex flex-row gap-[30px] mb-2">
             <div className="flex-1 flex-row overflow-hidden rounded-xl bg-gray-100">
-              <div className="h-[500px] [&_div.model]:cursor-pointer scrollbar-special [&_div.model:hover]:bg-gray-100 [&_div.model.selected:hover]:bg-indigo-100 [&_div.model]:border-b-1 overflow-y-scroll flex flex-col border rounded-xl">
+              <div className="h-[500px] [&_div.model]:cursor-pointer scrollbar-special [&_div.model:hover]:bg-gray-200 [&_div.model.selected:hover]:bg-indigo-100 [&_div.model]:border-b-1 overflow-y-scroll flex flex-col border rounded-xl">
                 <div className="sticky top-0 px-4 py-3 flex flex-row justify-between items-center bg-gray-100">
                   <h2 className="font-bold text-[16px]">Lista de modelos</h2>
                   <div>
@@ -245,7 +245,7 @@ export default function SeccionImpresiones(children:any) {
             </div>
 
             <div className="flex-1 flex-row overflow-hidden rounded-xl bg-gray-100">
-              <div className="h-[500px] [&_div.model]:cursor-pointer scrollbar-special [&_div.model:hover]:bg-gray-100 [&_div.model.selected:hover]:bg-indigo-100  [&_div.model]:border-b-1 overflow-y-scroll flex flex-col border rounded-xl">
+              <div className="h-[500px] [&_div.model]:cursor-pointer scrollbar-special [&_div.model:hover]:bg-gray-200 [&_div.model.selected:hover]:bg-indigo-100  [&_div.model]:border-b-1 overflow-y-scroll flex flex-col border rounded-xl">
                 <div className="sticky top-0 bg-gray-100 p-4 flex flex-row justify-between">
                   <h2 className="font-bold text-[16px]">Lista de tallas base</h2>
                   <div>

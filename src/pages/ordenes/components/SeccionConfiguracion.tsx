@@ -473,7 +473,7 @@ export default function SeccionConfiguracion(children:any) {
           <div className="w-[800px] flex flex-row gap-3" ref={contenedor}>
             {
               tallaslist.length > 0
-              ? <InputSelect title={'TallasFormato'} name={"tallasbase"} data={tallaslist.map(row=>({indice:row.idx,option:row.tallasformateado}))} df={info.length > 0 ? info[0].tallasbase : null} formref={contenedor} />
+              ? <InputSelect title={'TallasFormato'} name={"tallasbase"} data={tallaslist.map(row=>({indice:row.idx,option:row.tallasformateado}))} df={info.length > 0 ? info[0].tallasfracciones : null} formref={contenedor} />
               : <Input name={''} defaults={null} title="Ruta" type="text" />
             }
             <InputSelect 
