@@ -769,10 +769,6 @@ export default function NewGuia(){
               
             </form>
           </div>
-
-
-
-
         </div>
 
       {/* </div> */}

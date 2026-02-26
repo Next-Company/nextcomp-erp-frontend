@@ -604,7 +604,8 @@ export default function TrackWorkers(){
   },[])
   return(
     <>
-      <div className="directory flex flex-col m-2 rounded-md w-full relative border bg-white overflow-hidden">
+      {/* <div className="directory flex flex-col m-2 rounded-md w-full relative border bg-white overflow-hidden"> */}
+      <div className='notpadding h-full'>
         <APIProvider apiKey={'AIzaSyAoogN_c7uL6osdLW6doI3NJjA_8I_fJwY'}>
         {/* <APIProvider apiKey={'Your API key here'}> */}
           {/* <Map defaultZoom={10} defaultCenter={{lat: 53.54992, lng: 10.00678}}> */}
@@ -736,6 +737,7 @@ export default function TrackWorkers(){
             </AdvancedMarker>
           </Map>
         </APIProvider>        
+      {/* </div> */}
       </div>
     </>
   )
