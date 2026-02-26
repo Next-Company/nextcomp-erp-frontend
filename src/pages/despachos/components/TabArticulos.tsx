@@ -185,7 +185,7 @@ export default function TabArticulos(){
               tipo !== 1
               ?
               <>
-                <td className="text-center" colSpan={tipo == 1 ? 2 : 10}></td>
+                <td className="text-center" colSpan={tipo == 1 ? 2 : (3 + tallasbase.length)}></td>
                 <td className="text-center"><strong className="text-[14px]">TOTAL:</strong></td>
                 <td className="text-center text-[16px] italic">{registros.reduce((carry, value) => {
                   return carry + parseFloat(value.cantidad)

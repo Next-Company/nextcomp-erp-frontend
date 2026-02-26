@@ -328,7 +328,7 @@ const ResultContentBox = ({result,changepositionmap})=>{
                     <div>{JSON.stringify(row)}</div>
                     <div></div>
                   </div>
-                  <div className='bg-gray-200 rounded-lg w-[80px] h-[80px]'></div>
+                  {/* <div className='bg-gray-200 rounded-lg w-[80px] h-[80px]'></div> */}
                 </div>
               </div>
             )
@@ -609,6 +609,7 @@ export default function TrackWorkers(){
         <APIProvider apiKey={'AIzaSyAoogN_c7uL6osdLW6doI3NJjA_8I_fJwY'}>
         {/* <APIProvider apiKey={'Your API key here'}> */}
           {/* <Map defaultZoom={10} defaultCenter={{lat: 53.54992, lng: 10.00678}}> */}
+          {/* 3f1c80801592fe5c50c80d70 */}
           <Map mapId='f85e5903510adef7379942d5' disableDefaultUI={true} defaultZoom={15} defaultCenter={{lat: -12.07147840019903, lng: -76.99764673360458}} >
           {/* <Map mapId='f85e5903510adef7379942d5' disableDefaultUI={true} defaultZoom={15} defaultCenter={defaultposition}> */}
             {

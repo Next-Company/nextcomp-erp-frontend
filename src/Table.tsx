@@ -8,7 +8,7 @@ import { TextArea } from "./components/Atoms/Input/TextArea";
 import { Input } from "./components/Atoms/Input/Input";
 
 
-export function Table({ setedit, info, setselect, setrefresh, loading }) {
+export function TableSoporte({ setedit, info, setselect, setrefresh, loading }) {
   const [data, setData] = useState(info)
   const [estado, setEstado] = useState('ALL')
   const { openModal } = useContext(ModalWindowContext)
