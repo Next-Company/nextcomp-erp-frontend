@@ -179,6 +179,8 @@ const EmpaqueadoDistribucion = lazy(()=>import('./pages/empaquetado/EmpaquetadoD
 const LayoutServicios = lazy(()=>import('./pages/servicios/LayoutServicios.tsx'))
 const ListaServicios = lazy(()=>import('./pages/servicios/ListaServicios.tsx'))
 const NewServicio = lazy(()=>import('./pages/servicios/NewServicio.tsx'))
+const LayoutLocales = lazy(()=>import('./pages/locales/LayoutLocales.tsx'))
+const TrackWorkers = lazy(()=>import('./pages/locales/TrackWorkers.tsx'))
 
 const routes = [
   {
@@ -447,6 +449,13 @@ const routes = [
           { path: "",element: <ListaProveedores />, error: <ErrorController/> },
           { path: "nuevo",element: <NewProveedor />, error: <ErrorController/> },
           { path: "nuevo/:id",element: <NewProveedor />, error: <ErrorController/> }
+        ]
+      },
+      {
+        path: "locales",
+        element: <Suspense><PrivateRoute><LayoutLocales/></PrivateRoute></Suspense>,
+        children: [
+          { path: "tracker",element: <TrackWorkers />, error: <ErrorController/> },
         ]
       }
     ]
