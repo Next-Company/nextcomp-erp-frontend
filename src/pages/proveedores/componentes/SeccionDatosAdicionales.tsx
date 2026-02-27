@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { Input } from "../../../components/Atoms/Input/Input"
 import Table from "../../../components/Atoms/Table/Table"
 import LocalProveedor from "./LocaProveedor"
-import { isFormElement } from "react-router-dom/dist/dom"
 
 export default function SeccionDatosAdicionales({info,form,setorden,openModal,setOpen,locales,setLocales}){
   const [loading,setLoading] = useState(false)
@@ -14,7 +13,11 @@ export default function SeccionDatosAdicionales({info,form,setorden,openModal,se
       open: true,
       header: false,
       controls: false,
-      content: <LocalProveedor />,
+      content: <LocalProveedor action={(datos)=>{
+        console.log("Los datos recibidos del local son:",datos)
+        setLocales([...locales,{nombre_local: datos[0][1], tipo_local: datos[1][1], direccion: datos[2][1], referencia: datos[3][1], latitud: datos[4][1], longitud: datos[5][1]}])
+        setOpen(false)
+      }} />,
       action: async () => {
 
       }
@@ -33,8 +36,10 @@ export default function SeccionDatosAdicionales({info,form,setorden,openModal,se
           open: true,
           header: false,
           controls: false,
-          content: <LocalProveedor info={locales[position]} action={()=>{
-
+          content: <LocalProveedor info={locales[position]} action={(datos)=>{
+            console.log("Los datos recibidos del local son:",datos)
+            setLocales(locales.map((loc, key) => key == position ? {...loc, nombre_local: datos[0][1], tipo_local: datos[1][1], direccion: datos[2][1], referencia: datos[3][1], latitud: datos[4][1], longitud: datos[5][1]} : loc))
+            setOpen(false)
           }} />,
           action: async () => {}
         }
@@ -70,7 +75,7 @@ export default function SeccionDatosAdicionales({info,form,setorden,openModal,se
               <th className="lg:table-cell min-w-[300px]">NombreLocal</th>  
               <th className="lg:table-cell min-w-[200px]">Tipo</th>
               <th className="lg:table-cell min-w-[100px]">Direccion</th>
-              <th className="lg:table-cell text-center">Ubigeo</th>
+              <th className="lg:table-cell text-center">Referencia</th>
               <th className="lg:table-cell text-center">Latitud</th>
               <th className="lg:table-cell text-center">Longitud</th>
               <th className="lg:table-cell">Acciones</th>

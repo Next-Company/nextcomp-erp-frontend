@@ -1,12 +1,9 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "../../components/Atoms/Button/Button";
-import { Input } from "../../components/Atoms/Input/Input";
-import { InputSelect } from "../../components/Atoms/Input/InputSelect";
 import { toast } from "react-toastify";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { Consulta } from "../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
-import { ButtonLoader } from "../../components/Atoms/Button/ButtonLoader";
 import SeccionDatosPrincipales from "./componentes/SeccionDatosPrincipales";
 import SeccionDatosAdicionales from "./componentes/SeccionDatosAdicionales";
 
@@ -31,12 +28,13 @@ export function NewProveedor() {
         return 0
       }
     }
+    url_save = urlparams.id ? 'proveedores/updateproveedor/' + urlparams.id : 'proveedores/saveproveedor'
+    method = urlparams.id ? 'PUT' : 'POST'
+    data = new FormData(e.target)
+    data.append('locales',JSON.stringify(locales))
 
-    if(position == 0){
-      url_save = urlparams.id ? 'proveedores/updateproveedor/' + urlparams.id : 'proveedores/saveproveedor'
-      method = urlparams.id ? 'PUT' : 'POST'
-      data = new FormData(e.target)
-    }
+    // if(position == 0){
+    // }
     const PARAMS_MODAL = {
       open: true,
       header: false,
@@ -53,8 +51,8 @@ export function NewProveedor() {
         .then(resp => {
           console.log("La informacion recibida es:",resp)
           if(resp.ok){
+            navigate("/main/proveedores/")
             toast.success(resp.message, { theme: "colored" })
-            // navigate("/main/proveedores/")
           }else{
             toast.error(resp.message, { theme: "colored" })
           }
@@ -140,13 +138,19 @@ export function NewProveedor() {
             </ul>
             <hr />
             <form ref={form} onSubmit={onsubmit} className="flex flex-col flex-1 overflow-hidden">
-              <div className="flex-1 overflow-y-auto scrollbar-special">
+              {/* <div className="flex-1 overflow-y-auto scrollbar-special">
                 {
                   position == 0 && <SeccionDatosPrincipales info={orden} form={form} setorden={setOrden}/>
                 }
                 {
                   position == 1 && <SeccionDatosAdicionales info={locales} form={form} setorden={setOrden} openModal={openModal} setOpen={setOpen} locales={locales} setLocales={setLocales}/>
                 }
+              </div> */}
+              <div className={`flex-1 overflow-y-auto scrollbar-special ${position == 0 ? 'block' : 'hidden'}`}>
+                <SeccionDatosPrincipales info={orden} form={form} setorden={setOrden}/>
+              </div>
+              <div className={`flex-1 overflow-y-auto scrollbar-special ${position == 1 ? 'block' : 'hidden'}`}>
+                <SeccionDatosAdicionales info={locales} form={form} setorden={setOrden} openModal={openModal} setOpen={setOpen} locales={locales} setLocales={setLocales}/>
               </div>
               <div className="flex justify-end gap-2 mt-2">
                 <Button action={cancelarcreacion} type={'button'} tipo={'default'}>Cancelar</Button>

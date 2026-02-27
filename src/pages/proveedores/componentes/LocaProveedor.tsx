@@ -5,14 +5,23 @@ import { useRef, useState } from "react";
 import { InputSelect } from "../../../components/Atoms/Input/InputSelect";
 import { InputTest } from "../../../components/Atoms/Input/InputTest";
 
+const DEFAULT_POSITION = {lat: -12.07147840019903, lng: -76.99764673360458}
+
 export default function LocalProveedor(children){
   const {info = {}, action = ()=>{} } = children
-  const [position,setPosition] = useState({lat: -12.07147840019903, lng: -76.99764673360458})
-  console.log("La posicion actual es:",position)
+  const [data,setData] = useState(info)
+  // const [position,setPosition] = useState({lat: -12.07147840019903, lng: -76.99764673360458})
+  // console.log("La posicion actual es:",position)
+  console.log("La informacion del local es:",data)
   const form = useRef(null)
   const guardar = ()=>{
     const data = new FormData(form.current)
     console.log("La info del formualrio es:",Array.from(data.entries()))
+    action(Array.from(data.entries()))
+  }
+  const changeposition = (e)=>{
+    setData({...data, latitud: e.latLng.lat(), longitud: e.latLng.lng()})
+    // setPosition({lat: e.latLng.lat(), lng: e.latLng.lng()})
   }
   return(
     <>
@@ -27,26 +36,28 @@ export default function LocalProveedor(children){
           <div>
             <div className="flex flex-col gap-3">
               <div className="flex gap-3">
-                <Input name={'nombre_local'} title="NombreLocal" defaults={Object.keys(info).length > 0 ? info?.nombre_local : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
+                <Input name={'nombre_local'} title="NombreLocal" defaults={Object.keys(data).length > 0 ? data?.nombre_local : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
                 <InputSelect title={'TipoLocal'} name={"tipo_local"} data={
                   [
-                    { indice: 'OTROS', option: 'OTROS', selected: true },
-                    { indice: 'SERVICIOS', option: 'SERVICIOS' },
-                    { indice: 'TELAS', option: 'TELAS' },
-                    { indice: 'AVIOS', option: 'AVIOS' }
+                    { indice: 'TALLER', option: 'TALLER', selected: true },
+                    { indice: 'ALMACEN', option: 'ALMACEN' },
+                    { indice: 'PLANTA', option: 'PLANTA' },
+                    { indice: 'DEPOSITO', option: 'DEPOSITO' },
+                    { indice: 'OFICINA', option: 'OFICINA' },
+                    { indice: 'OTROS', option: 'OTROS' }
                   ]} 
-                  df={Object.keys(info).length > 0 ? info?.tipo_local : null} placeholder={'Seleccione el tipo de producto a registrar.'} 
+                  df={Object.keys(data).length > 0 ? data?.tipo_local : null} placeholder={'Seleccione el tipo de producto a registrar.'} 
                 />
                 <div className="w-[45%]">
-                  <Input name={'direccion'} title="Direccion" defaults={Object.keys(info).length > 0 ? info.direccion : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
+                  <Input name={'direccion'} title="Direccion" defaults={Object.keys(data).length > 0 ? data.direccion : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-[35%]">
-                  <Input name={'referencia'} title="Referencia" defaults={Object.keys(info).length > 0 ? info.referencia : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
+                  <Input name={'referencia'} title="Referencia" defaults={Object.keys(data).length > 0 ? data.referencia : null} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
                 </div>
-                <InputTest name={'latitud'} title="Latitud" defaults={Object.keys(info).length > 0 ? info.latitud : position.lat} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
-                <InputTest name={'longitud'} title="Longitud" defaults={Object.keys(info).length > 0 ? info.longitud : position.lng} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
+                <InputTest name={'latitud'} title="Latitud" defaults={Object.keys(data).length > 0 ? data.latitud : DEFAULT_POSITION.lat} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
+                <InputTest name={'longitud'} title="Longitud" defaults={Object.keys(data).length > 0 ? data.longitud : DEFAULT_POSITION.lng} type="text" placeholder={'Descripcion adicional del producto a crear.'}/>
               </div>
             </div>
           </div>
@@ -57,10 +68,8 @@ export default function LocalProveedor(children){
           <hr/>
           <div className='notpadding h-full bg-red-400 flex-1'>
             <APIProvider apiKey={'AIzaSyAoogN_c7uL6osdLW6doI3NJjA_8I_fJwY'}>
-              <Map mapId='f85e5903510adef7379942d5' disableDefaultUI={true} defaultZoom={15} defaultCenter={{lat: -12.07147840019903, lng: -76.99764673360458}}></Map>
-              <AdvancedMarker position={{lat: position.lat, lng: position.lng}} gmpDraggable={true} onDragEnd={(e)=>{
-                setPosition({lat: e.latLng.lat(), lng: e.latLng.lng()})
-              }}>
+              <Map mapId='f85e5903510adef7379942d5' cameraControl={true} disableDefaultUI={true} defaultZoom={15} defaultCenter={{lat: -12.07147840019903, lng: -76.99764673360458}}></Map>
+              <AdvancedMarker position={{lat: (parseFloat(data?.latitud ?? DEFAULT_POSITION.lat)), lng: (parseFloat(data?.longitud ?? DEFAULT_POSITION.lng))}} gmpDraggable={true} onDragEnd={changeposition}>
                 <div className='w-[25px] h-[25px] bg-white rounded-full'>
                   <Pin
                     glyphColor={'black'}
