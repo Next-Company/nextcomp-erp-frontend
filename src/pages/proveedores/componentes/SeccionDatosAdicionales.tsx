@@ -28,18 +28,20 @@ export default function SeccionDatosAdicionales({info,form,setorden,openModal,se
       case 'delete':
         
         break;
-      case 'edit':
+      case 'edit':{
         const PARAMS_MODAL = {
           open: true,
           header: false,
           controls: false,
-          content: <LocalProveedor info={locales[position]} />,
-          action: async (local) => {
-            // setLocales(locales => {)
-          }
+          content: <LocalProveedor info={locales[position]} action={()=>{
+
+          }} />,
+          action: async () => {}
         }
         openModal(PARAMS_MODAL)
         break;
+
+      }
       default:
         break;
     }
