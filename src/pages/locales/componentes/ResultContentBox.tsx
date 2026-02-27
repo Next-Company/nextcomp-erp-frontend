@@ -4,14 +4,18 @@ import DetailResultContentBox from "./DetailResultContentBox"
 export default function ResultContentBox({result,changepositionmap}){
   const [infoproveedor,setInfoProveedor] = useState([])
   const [showdetail,setShowdetail] = useState(false)
+  const [taller,setTaller] = useState({})
+  const [tallerid,setTallerId] = useState(null)
   useEffect(()=>{
 
   },[])
   const showinfo = (e)=>{
     const id = e.target.dataset.id
-    const info = result[id].info[0]
     setShowdetail(true)
-    changepositionmap({lat:info.latitud,lng:info.longitud})
+    setTaller(result[id])
+    setTallerId(result[id].idx)
+    changepositionmap({lat:parseFloat(result[id].latitud),lng:parseFloat(result[id].longitud)})
+    console.log("info taller:",taller)
   }
   return(
     <>
@@ -23,8 +27,8 @@ export default function ResultContentBox({result,changepositionmap}){
               <div key={key} className='p-4 min-h-[150px] cursor-pointer border-b-[1px] border-b-gray-300 hover:bg-gray-100' data-id={key} onClick={showinfo}>
                 <div className='flex flex-row gap-2 pointer-events-none'>
                   <div className='flex-1 text-left'>
-                    <div className='capitalize text-[16px] font-bold text-wrap'>{row.nom}</div>
-                    <div>{row.idx}HOAL</div>
+                    <div className='capitalize text-[16px] font-bold text-wrap'>{row.nombre_local}</div>
+                    <div>{row.idx}</div>
                     <div>{JSON.stringify(row)}</div>
                     <div></div>
                   </div>
@@ -33,7 +37,7 @@ export default function ResultContentBox({result,changepositionmap}){
               </div>
             )
           }
-          {showdetail && <DetailResultContentBox setshowdetail={setShowdetail} />}
+          {showdetail && <DetailResultContentBox taller={taller} setshowdetail={setShowdetail} />}
           {/* <div className={`absolute top-[50px] ${!showdetail ? 'hidden' : ''} right-0 bottom-[20px] bg-white w-[400px] rounded-[20px] overflow-hidden shadow-2xl`} style={{transform:'translateX(420px)'}}>
             <div className='w-full'>
               <div className='realtive h-[200px] bg-emerald-300 '>

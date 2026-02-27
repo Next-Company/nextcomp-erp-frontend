@@ -1,19 +1,43 @@
 import { useEffect, useState } from "react"
 import { Consulta } from "../../../utils/utils"
 
-export default function DetailResultContentBox({setshowdetail}) {
+export default function DetailResultContentBox({taller,setshowdetail}) {
+  console.log()
   const [tabposition,setTabposition] = useState('1')
   const [procesos,setProcesos] = useState([])
+  const [loading,setLoading] = useState(false)
+  const [info,setInfo] = useState(taller)
+  const [tallerid,setTallerId] = useState(taller.idx)
   const closeDetailResult = ()=>{
     setshowdetail(false)
   }
   useEffect(()=>{
-    const pp = Consulta({url:'locales/getprocesosencurso/1'})
-    pp.then(resp=>{
-      console.log("aasdffd",resp)
-      setProcesos(resp)
-    })
-    console.log("asfas",pp)
+    console.log("Dentro de la seccion detalle del taller!!!")
+  },[])
+  useEffect(()=>{
+    console.log("Buscando nueva informacion del taller")
+    // setLoading(true)
+
+    // Consulta({url:'locales/getprocesosencurso/1'})
+    // .then(resp=>{
+
+    // })
+    // .catch(err=>{
+
+    // })
+    // .finally(()=>{
+    //   setLoading(false)
+    // })
+    // const pp = Consulta({url:'locales/getprocesosencurso/1'})
+    // pp.then(resp=>{
+    //   console.log("aasdffd",resp)
+    //   setProcesos(resp)
+    // })
+    // console.log("asfas",pp)
+    return ()=>{
+        setshowdetail(false)
+        setInfo({})
+      }
   },[])
   return(
     <>
@@ -26,7 +50,7 @@ export default function DetailResultContentBox({setshowdetail}) {
           </div>
           <div>
             <div className='px-5 pt-5 pb-2 text-left'>
-              <div className='text-[22px]' style={{fontWeight:'500'}}>Telas Aladin</div>
+              <div className='text-[22px]' style={{fontWeight:'500'}}>{info.nombre_local}</div>
               <div className='pt-2'>4,0 {`(1495)`}</div>
             </div>
             <div>
