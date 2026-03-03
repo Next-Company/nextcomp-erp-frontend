@@ -32,7 +32,7 @@ const [models,setModels] = useState(modelos)
                 models.length > 0 && models.map((row,key)=>(
                   <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${row?.selected ? 'selected' : ''}`}>
                     {/* <td className="text-center">{row?.selected ? 'selected' : ''}</td> */}
-                    <td className="text-center">{row.selected}</td>
+                    <td className="text-center">{key + 1}</td>
                     <td className="text-center">{row.articulo.toUpperCase()}</td>
                     <td className="text-center">{row.color.toUpperCase()}</td>
                     <td className="w-[150px]">

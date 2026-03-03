@@ -107,7 +107,7 @@ export default function NewPedido(){
           console.log("La respuestad del servidor es:",resp)
           setOpenloader(false)
           if(resp.ok){
-            // navigate('/main/pedidos/')
+            navigate('/main/pedidos/')
             toast.success('Nuevo pedido guardado con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.message, { theme: "colored" })
