@@ -1,0 +1,1 @@
+export const INITIAL_PRICE = {precio1:[0,0],precio2:[0,0],precio3:[0,0],precio4:[0,0],precio5:[0,0],precio6:[0,0]}

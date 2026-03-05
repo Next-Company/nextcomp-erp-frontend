@@ -1,15 +1,23 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "../../../components/Atoms/Button/Button"
 
 export default function ListaModelos(children){
   const {modelos,actions,pricemodel} = children
-const [models,setModels] = useState(modelos)
-  console.log("Hola desde la listra de modelos")
+  const [models,setModels] = useState(modelos)
+  // const [models,setModels] = useState([])
+  // useEffect(()=>{
+  //   return ()=>{
+  //     console.log("Desmontado componente ListaModelos")
+  //   }
+  // },[])
+  console.log("Hola desde la listra de modelos:",modelos)
   // const {modelos,setmodelos,info=[]} = children
   const addmodelo = (e) => {
     const position = parseInt(e.target.dataset.position)
-    console.log("Dentro de add modelos",modelos,position)
-    setModels(row=>[...row.map((modelo,key)=> key == position ? {...modelo,selected:!modelo?.selected,pricemodel:pricemodel} : modelo)])
+    // console.log("Dentro de add modelos",modelos,position,[...row.map((modelo,key)=> key == position ? {...modelo,selected:true,pricemodel:pricemodel} : modelo)])
+    setModels(row=>[...row.map((modelo,key)=> key == position ? {...modelo,selected:!modelo?.selected,pricemodel:modelo?.selected ? 0 : pricemodel} : modelo)])
+    // setModels(row=>[...row.map((modelo,key)=> key == position ? {...modelo,selected:true,pricemodel:pricemodel} : modelo)])
+    // setModels({mensaje:'hola mundo'})
   }
   const guardar = () => {
     actions(models)
@@ -33,8 +41,8 @@ const [models,setModels] = useState(modelos)
                   <tr key={key} className={`focus-visible:[&_input]:outline-[0px] group focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent ${row?.selected ? 'selected' : ''}`}>
                     {/* <td className="text-center">{row?.selected ? 'selected' : ''}</td> */}
                     <td className="text-center">{key + 1}</td>
+                    <td className="text-center">{row.id_receta_CAB}</td>
                     <td className="text-center">{row.articulo.toUpperCase()}</td>
-                    <td className="text-center">{row.color.toUpperCase()}</td>
                     <td className="w-[150px]">
                       <ul className="flex flex-row justify-end">
                         <li>
