@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { Consulta } from "../../../utils/utils"
 
 export default function DetailResultContentBox({info,setshowdetail}) {
-  console.log()
+  // const [info,setInfo] = useState(taller)
   const [tabposition,setTabposition] = useState('1')
   const [procesos,setProcesos] = useState([])
   const [loading,setLoading] = useState(false)
@@ -13,7 +13,8 @@ export default function DetailResultContentBox({info,setshowdetail}) {
     setshowdetail(false)
   }
   useEffect(()=>{
-    console.log("Dentro de la seccion detalle del taller!!!")
+    console.log("Dentro de la seccion detalle del taller!!!",info)
+
     const callback = (entries,observer)=>{
       entries.forEach(entry=>{
         if(!entry.isIntersecting){
@@ -31,46 +32,53 @@ export default function DetailResultContentBox({info,setshowdetail}) {
     }
     const io = new IntersectionObserver(callback,options)
     if(contenedor.current) io.observe(document.querySelector('.head_detail'))
+
+    if(info.idx){
+      setLoading(true)
+      const pp = Consulta({url:'locales/getprocesosencurso/' + info.idx})
+      pp.then(resp=>{
+        console.log("aasdffd",resp)
+        setProcesos(resp)
+        setLoading(false)
+      })
+    }
+
     return ()=>{
       io.disconnect()
     }
   },[])
-  useEffect(()=>{
-    console.log("Buscando nueva informacion del taller",info)
-    // setLoading(true)
-
-    // Consulta({url:'locales/getprocesosencurso/1'})
-    // .then(resp=>{
-
-    // })
-    // .catch(err=>{
-
-    // })
-    // .finally(()=>{
-    //   setLoading(false)
-    // })
-    setLoading(true)
-    const pp = Consulta({url:'locales/getprocesosencurso/1'})
-    pp.then(resp=>{
-      console.log("aasdffd",resp)
-      setProcesos(resp)
-      setLoading(false)
-    })
-    // console.log("asfas",pp)
-  },[info])
+  // useEffect(()=>{
+  //   console.log("Buscando nueva informacion del taller",info)
+  //   setLoading(true)
+  //   const pp = Consulta({url:'locales/getprocesosencurso/' + info.idx})
+  //   pp.then(resp=>{
+  //     console.log("aasdffd",resp)
+  //     setProcesos(resp)
+  //     setLoading(false)
+  //   })
+  // },[])
   return(
     <>
-      <div className={`bobr viewtransition absolute top-[50px] right-0 bottom-[20px] bg-white w-[400px] rounded-[20px] overflow-hidden shadow-2xl`} style={{transform:'translateX(420px)'}}>
-        <div ref={contenedor} className='w-full h-full text-[14px] overflow-y-auto overflow-x-hidden scrollbar-special'>
+      <div className={`bobr viewtransition absolute top-[50px] right-0 bottom-[20px] bg-white w-[405px] rounded-[20px] overflow-hidden shadow-2xl`} style={{transform:'translateX(420px)'}}>
+        <div ref={contenedor} className='w-full h-full text-[14px] overflow-y-scroll overflow-x-hidden scrollbar-special'>
           <div className='head_detail realtive h-[200px] bg-emerald-300 bg-no-repeat bg-cover' style={{backgroundImage:"url('https://picsum.photos/400/300')"}}>
             <div className='absolute w-[38px] h-[38px] bg-white rounded-full flex flex-row justify-center items-center cursor-pointer right-4 top-2 hover:bg-gray-100 z-20' onClick={closeDetailResult}>
               <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
             </div>
-            <div className="absolute text-[18px] w-full z-10 bg-white top-0 p-4 font-bold title_special op0">{info.nombre_local}</div>
+            <div className="absolute text-[18px] w-full z-10 bg-white top-0 p-4 font-bold title_special op0 shadow-lg">{info.nombre_local}</div>
           </div>
           <div className='px-5 pt-5 pb-2 text-left'>
             <div className='text-[20px]' style={{fontWeight:'500'}}>{info.nombre_local}</div>
-            <div className='pt-2'>4,0 {`(1495)`}</div>
+            <div className='pt-2 text-[12px] flex items-center gap-2'>
+              <span>4,0 {`(1495)`}{info.idx}</span>
+              <div className="flex flex-row">
+                <div className="w-[15px] h-[15px] bg-contain" style={{backgroundImage:'url(//maps.gstatic.com/consumer/images/icons/2x/ic_star_rate_14.png)'}}></div>
+                <div className="w-[15px] h-[15px] bg-contain" style={{backgroundImage:'url(//maps.gstatic.com/consumer/images/icons/2x/ic_star_rate_14.png)'}}></div>
+                <div className="w-[15px] h-[15px] bg-contain" style={{backgroundImage:'url(//maps.gstatic.com/consumer/images/icons/2x/ic_star_rate_14.png)'}}></div>                        
+                <div className="w-[15px] h-[15px] bg-contain" style={{backgroundImage:'url(//maps.gstatic.com/consumer/images/icons/2x/ic_star_rate_half_14.png)'}}></div>
+                <div className="w-[15px] h-[15px] bg-contain" style={{backgroundImage:'url(//maps.gstatic.com/consumer/images/icons/2x/ic_star_rate_empty_14.png)'}}></div>
+              </div>
+            </div>
           </div>
           <div className="sticky top-[50px] bg-white">
             <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-[25px] [&_button]:pr-[25px] [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
@@ -138,49 +146,108 @@ export default function DetailResultContentBox({info,setshowdetail}) {
               </div>
             }
             {
-              tabposition == '2' && <div className='h-[800px] w-full p-2 flex flex-col gap-2'>
+              tabposition == '2' && <div className='w-full p-2 flex flex-col gap-2'>
                 {
                   loading 
                   ? 
                     'Cargando...'
                   :
-                  procesos[0].map(row=>
-                    <div className='rounded-2xl bg-gray-400 text-[12px] p-3 flex flex-col gap-2'>
-                      <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
-                        <div>Tipo</div>
-                        <div>{row.tipo}</div>
-                      </div>
-                      <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
-                        <div>Proveedor</div>
-                        <div>{row.proveedor.slice(0,45) + '...'}</div>
-                      </div>
-                      {/* <div className='flex gap-3'>
-                        <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
-                          <div>FecEmision</div>
-                          <div>{row.fec_emision}</div>
+                    procesos[0].length > 0
+                    ?
+                      procesos[0].map(row=>
+                        <div className='rounded-2xl bg-gray-400 text-[12px] p-3 flex flex-col gap-2'>
+                          {/* <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                            <div>Tipo</div>
+                            <div>{row.tipo}</div>
+                          </div> */}
+                          {/* <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                            <div>Proveedor</div>
+                            <div>{row.proveedor.slice(0,45) + '...'}</div>
+                          </div> */}
+                          <div className='flex gap-3 justify-between'>
+                            <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                              <div>Tipo</div>
+                              <div>{row.tipo}</div>
+                            </div>
+                            <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                              <div>FecEmision</div>
+                              <div>{row.fec_emision}</div>
+                            </div>
+                            <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                              <div>FecRetorno</div>
+                              <div>{row.fec_retorno}</div>
+                            </div>
+                          </div>
+                          <div>
+                            <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                              <div>Responsable</div>
+                              <div>{row.responsable}</div>
+                            </div>
+                          </div>
                         </div>
-                        <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
-                          <div>FecRetorno</div>
-                          <div>{row.fec_retorno}</div>
-                        </div>
-                        <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
-                          <div>Responsable</div>
-                          <div>{row.responsable}</div>
-                        </div>
-                      </div> */}
-                    </div>
-                  )
+                      )
+                  :
+                    'Sin resultados'
                 }
               </div>
             }
             {
-              tabposition == '3' && <div className='h-[800px] w-full'>
-                Contenido3
+              tabposition == '3' && <div className='w-full p-1 flex flex-col gap-2'>
+                {
+                  loading 
+                  ? 
+                    'Cargando...'
+                  :
+                    procesos[1].length > 0
+                    ?
+                    procesos[1].map(row=>
+                      <div className='rounded-2xl bg-gray-400 text-[12px] p-3 flex flex-col gap-2'>
+                        <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                          <div>Tipo</div>
+                          <div>{row.tipo}</div>
+                        </div>
+                        <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                          <div>Proveedor</div>
+                          <div>{row.proveedor.slice(0,45) + '...'}</div>
+                        </div>
+                        {/* <div className='flex gap-3'>
+                          <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                            <div>FecEmision</div>
+                            <div>{row.fec_emision}</div>
+                          </div>
+                          <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                            <div>FecRetorno</div>
+                            <div>{row.fec_retorno}</div>
+                          </div>
+                          <div className='[&_div:first-child]:text-[10px] [&_div:first-child]:font-black text-left'>
+                            <div>Responsable</div>
+                            <div>{row.responsable}</div>
+                          </div>
+                        </div> */}
+                      </div>
+                    )
+                    :
+                      'Sin resultados'
+                }
               </div>
             }
             {
-              tabposition == '4' && <div className='h-[800px] w-full'>
-                Contenido4
+              tabposition == '4' && <div className='w-full p-1 flex flex-col gap-2'>
+                {
+                  loading 
+                  ? 
+                    'Cargando...'
+                  :
+                    procesos[2].length > 0
+                    ?
+                      procesos[2].map(row=>
+                        <div className='rounded-2xl bg-gray-400 text-[12px] p-3 flex flex-col gap-2'>
+                          hola
+                        </div>
+                      )
+                    :
+                      'Sin resultados'
+                }
               </div>
             }
           </div>
