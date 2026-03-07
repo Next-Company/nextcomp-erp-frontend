@@ -96,6 +96,7 @@ export function ModalWindow() {
                 </header>
                 :
                 <header className={`h-[45px] bg-green-400/0 rounded-t-md flex justify-end items-center`}>
+                {/* <header className={`bg-green-400/0 rounded-t-md flex justify-end items-center p-[5px]`}> */}
                   <div className="flex gap-2">
                     <div className="w-[30px] h-[30px] rounded-full hover:bg-gray-200 flex justify-center items-center cursor-pointer transition-[background-color] close-modal">
                       <svg viewBox="0 0 24 24" width="20" height="20" preserveAspectRatio="xMidYMid meet" focusable="false" className="style-scope yt-icon"><g className="style-scope yt-icon"><path d="M12.7,12l6.6,6.6l-0.7,0.7L12,12.7l-6.6,6.6l-0.7-0.7l6.6-6.6L4.6,5.4l0.7-0.7l6.6,6.6l6.6-6.6l0.7,0.7L12.7,12z" className="style-scope yt-icon"></path></g></svg>
