@@ -2,7 +2,7 @@ import TableContext from "./Context/TableContext"
 
 const HeadTable = ({children})=>{
   return(
-    <thead className="text-left sticky top-0 bg-white">
+    <thead className="text-left sticky top-0 bg-gray-300 [&_th]:font-bold">
       {children}
     </thead>
   )

@@ -125,12 +125,15 @@ export function NewOrden() {
     if(position == 6){
       url_save = 'ordenes/saveFasePrecios'
       data = new FormData()
-      console.log("Lalista de precios es:",orden[0].precios)
-      if(modelos.filter(row=>!Object.keys(row).includes('pricemodel')).length > 0){
+      console.log("Lalista de precios es:",orden[0],modelos)
+
+      // if(modelos.filter(row=>!Object.keys(row).includes('pricemodel')).length > 0){
+      if(modelos.filter(row=>(row.pricemodel ?? 0) == 0).length > 0){
         toast.error('Existen modelos que no tienen vinculado un modelo de precios. Por favor verifique.',{theme:'colored'})
         return 0;
       }
-      if(!(orden[0].precios && orden[0].precios.length > 1)){
+      console.log("La validacion es:",orden[0].precios,orden[0].precios.length)
+      if(!(orden[0].precios && orden[0].precios.length >= 1)){
         toast.error('No ha ingresado ningun precio. Por favor verifique.',{theme:'colored'})
         return 0;
       }
@@ -154,7 +157,7 @@ export function NewOrden() {
         })
         .then(resp => {
           if(resp.ok){
-            navigate("/main/ordenes/")
+            // navigate("/main/ordenes/")
             toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.mensaje, { theme: "colored" })
@@ -273,7 +276,7 @@ export function NewOrden() {
         Consulta({url:'ordenes/updateSkuModels/' + urlparams.id,params:{method:'PUT'}})
         .then(res=>{
           if (res.ok) {
-            // navigate('/main/ordenes/')
+            navigate('/main/ordenes/')
             toast.success('Información actualizada correctamente.',{theme:'colored'})
           } else {
             toast.error(res.mensaje,{theme:'colored'})

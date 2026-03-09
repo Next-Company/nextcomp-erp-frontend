@@ -2,9 +2,15 @@ import { toast } from "react-toastify";
 import { Input } from "../../../components/Atoms/Input/Input";
 import ListaModelos from "./ListaModelos";
 import { INITIAL_PRICE } from "../constants/constants";
+import { useEffect } from "react";
 
 export default function TemplatePrecios(children){
   const {orden, position, info, setInfo, setopen, openmodal, modelos, setmodelos} = children
+
+  useEffect(()=>{
+    console.log("La info de la orden template es la siguiente:",orden)
+  },[])
+
   const onclick = (e)=>{
     const action = e.target.dataset.action;
     const position = parseInt(e.target.dataset.position);
@@ -99,12 +105,12 @@ export default function TemplatePrecios(children){
           <hr/>
           <div className="flex flex-row gap-3">
             <Input name={'idx'} defaults={orden.length > 0 ? orden[0].idx : null} type="hidden" />
-            <Input name={'precio1_a'} dataset={[{origen:'precio1'},{position:0},{pricemodel:position}]} title="Hangta(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio1?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio mall'}/>
-            <Input name={'precio2_a'} dataset={[{origen:'precio2'},{position:0},{pricemodel:position}]} title="Retail(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio2?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio mall'}/>
-            <Input name={'precio3_a'} dataset={[{origen:'precio3'},{position:0},{pricemodel:position}]} title="Promo(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio3?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio mall'}/>
-            <Input name={'precio4_a'} dataset={[{origen:'precio4'},{position:0},{pricemodel:position}]} title="Unidad(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio4?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio gamarra'}/>
-            <Input name={'precio5_a'} dataset={[{origen:'precio5'},{position:0},{pricemodel:position}]} title="PorMayor(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio5?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio gamarra'}/>
-            <Input name={'precio6_a'} dataset={[{origen:'precio6'},{position:0},{pricemodel:position}]} title="Distribuidor(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio6?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio gamarra'}/>
+            <Input name={'precio1_a'} dataset={[{origen:'precio1'},{position:0},{pricemodel:position}]} title="Hangta(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio1?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio mall'}/>
+            <Input name={'precio2_a'} dataset={[{origen:'precio2'},{position:0},{pricemodel:position}]} title="Retail(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio2?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio mall'}/>
+            <Input name={'precio3_a'} dataset={[{origen:'precio3'},{position:0},{pricemodel:position}]} title="Promo(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio3?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio mall'}/>
+            <Input name={'precio4_a'} dataset={[{origen:'precio4'},{position:0},{pricemodel:position}]} title="Unidad(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio4?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio gamarra'}/>
+            <Input name={'precio5_a'} dataset={[{origen:'precio5'},{position:0},{pricemodel:position}]} title="PorMayor(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio5?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio gamarra'}/>
+            <Input name={'precio6_a'} dataset={[{origen:'precio6'},{position:0},{pricemodel:position}]} title="Distribuidor(S/)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio6?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio gamarra'}/>
           </div>
         </div>
         <div className="flex flex-col gap-3 mt-2 pb-2">
@@ -115,12 +121,12 @@ export default function TemplatePrecios(children){
           <hr/>
           <div className="flex flex-row gap-3">
             <Input name={'idx'} defaults={orden.length > 0 ? orden[0].idx : null} type="hidden" />
-            <Input name={'precio1_b'} dataset={[{origen:'precio1'},{position:1},{pricemodel:position}]} title="Hangta($)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio1?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
-            <Input name={'precio2_b'} dataset={[{origen:'precio2'},{position:1},{pricemodel:position}]} title="Retail($)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio2?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
-            <Input name={'precio3_b'} dataset={[{origen:'precio3'},{position:1},{pricemodel:position}]} title="Promo($)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio3?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
-            <Input name={'precio4_b'} dataset={[{origen:'precio4'},{position:1},{pricemodel:position}]} title="Unidad($)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio4?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
-            <Input name={'precio5_b'} dataset={[{origen:'precio5'},{position:1},{pricemodel:position}]} title="PorMayor($)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio5?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
-            <Input name={'precio6_b'} dataset={[{origen:'precio6'},{position:1},{pricemodel:position}]} title="Distribuidor($)" defaults={orden.length > 0 ? orden[0].precios?.[position]?.precio6?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
+            <Input name={'precio1_b'} dataset={[{origen:'precio1'},{position:1},{pricemodel:position}]} title="Hangta($)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio1?.[0] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
+            <Input name={'precio2_b'} dataset={[{origen:'precio2'},{position:1},{pricemodel:position}]} title="Retail($)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio2?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
+            <Input name={'precio3_b'} dataset={[{origen:'precio3'},{position:1},{pricemodel:position}]} title="Promo($)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio3?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
+            <Input name={'precio4_b'} dataset={[{origen:'precio4'},{position:1},{pricemodel:position}]} title="Unidad($)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio4?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
+            <Input name={'precio5_b'} dataset={[{origen:'precio5'},{position:1},{pricemodel:position}]} title="PorMayor($)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio5?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
+            <Input name={'precio6_b'} dataset={[{origen:'precio6'},{position:1},{pricemodel:position}]} title="Distribuidor($)" defaults={orden.length > 0 ? orden[0].precios?.[position-1]?.precio6?.[1] ?? 0 : 0} type="number" verify="true" placeholder={'Precio aguas verdes y outlet'}/>
           </div>
         </div>
         {/* <div className="absolute top-2 right-2 flex flex-row gap-2 p-1 border rounded-full bg-gray-200 shadow-lg"> */}

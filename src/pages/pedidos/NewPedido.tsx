@@ -9,6 +9,7 @@ import { InputSelect } from "../../components/Atoms/Input/InputSelect"
 import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import Productos from "../../components/Common/Productos"
+import Table from "../../components/Atoms/Table/Table"
 
 const CuerpoInforme = ({info,tipo})=>{
   const [ruta,setRuta] = useState("")
@@ -353,23 +354,26 @@ export default function NewPedido(){
             <hr />
           </div>
           <div className="text-left overflow-scroll scrollbar-special h-full flex flex-col flex-1 pt-2">
-
             <form ref={form} onSubmit={onsubmit} onChange={()=>{}} onInputCapture={onchange}>
-              <div className={` flex-col gap-3 flex`}>
+              <div className={`flex-col gap-3 flex`}>
                 <div className="flex items-center gap-2 mt-1">
                   <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
                   <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
                 </div>
                 <hr/> 
-                <div className="flex gap-3">
-                  <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="hidden" />
+                <div className="flex flex-col w-[30%]">
                   <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden"/>
                   <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true" placeholder="Nuevo proveedor" />
+                </div>
+                <div className="flex gap-3 w-[45%]">
+                  <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
+                  <Input name={'orden_ref'} defaults={Object.keys(info).length > 0 && info.orden_ref ? info.orden_ref : null} title="NroOrden" type="hidden" />
                   <Input name={'fec_emision'} defaults={Object.keys(info).length > 0 && info.fec_emision ? info.fec_emision : null} title="FechaEmisión" type="date" verify="true" placeholder="Texto complementario"/>
                   {/* <Input name={'proveedor'} defaults={Object.keys(info).length > 0 && info.proveedor ? info.proveedor : null} title="Proveedor" type="text" /> */}
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   <Input name={'fec_retorno'} defaults={Object.keys(info).length > 0 && info.fec_retorno ? info.fec_retorno : null} title="FechaEntrega" type="date" verify="true" placeholder="Texto complementario"/>
+                </div>
+                <div className="flex flex-col gap-3 w-[30%]">
                   <InputSelect title={'Emisor'} name={"emisor"} data={
                     [
                       { indice: 'NEXT', option: 'NEXT', selected: true }, 
@@ -379,7 +383,12 @@ export default function NewPedido(){
                     placeholder={'Info referencial'}
                   />
                 </div>
-                <div className="flex gap-3">
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
+                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
+                </div>
+                <hr/> 
+                <div className="flex flex-col gap-3">
                   <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" verify="true" placeholder={'Info referencial'}/>
                   <InputSelect title={'TipoPedido'} formref={form} name={"tipo"} data={
                     [
@@ -423,11 +432,100 @@ export default function NewPedido(){
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
-                  <span className="inline-block align-middle text-[12px]">Datos de los artículos a solicitar</span>
+                  <span className="inline-block align-middle text-[12px] font-bold">Datos de los artículos a solicitar</span>
                 </div>
                 <div>
-                  <div className="h-[370px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                  <div className="scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] pt-2">
+                    <Table
+                      actions={
+                        [
+                          {
+                            name:'add',
+                            trigger:searchproducto,
+                            icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                          },
+                          {
+                            name:'clear',
+                            trigger:()=>{},
+                            icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eraser"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3" /><path d="M18 13.3l-6.3 -6.3" /></svg>
+                          }
+                        ]
+                      }
+                      headcontent={
+                        <tr>
+                          <th className="lg:table-cell w-[500px]">Descripcion</th>  
+                          <th className="lg:table-cell">Modelo</th>
+                          <th className="lg:table-cell">#Corte</th>
+                          <th className="lg:table-cell">Color</th>
+                          <th className="lg:table-cell">Rollos</th>
+                          <th className="lg:table-cell">Cantidad</th>
+                          <th className="lg:table-cell">Unidad</th>
+                          {
+                            tipo == 1 && <th className="lg:table-cell">Conversion(UND)</th>
+                          }
+                          <th className="lg:table-cell">Precio</th>
+                          <th className="lg:table-cell">Importe</th>
+                          <th className="lg:table-cell">Anulado</th>
+                          <th className="lg:table-cell">Acciones</th>
+                        </tr>
+                      }
+                      bodycontent={
+                        registros.length > 0 && registros.map((row,key)=>(
+                          <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                            {/* <td className="text-center">{row.producto}</td> */}
+                            {
+                              tipo == 2
+                              ? <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
+                              : <td className="text-center">{row.producto}</td>
+                            }
+                            {/* {
+                              tipo == 2 || row.origen == 'manual'
+                              ? <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
+                              : <td className="text-center">{row.producto}</td>
+                            } */}
+                            <td><input type="text" onChange={editvalue} data-position={key} data-name="modelo" value={row.modelo} /></td>
+                            <td><input type="text" onChange={editvalue} data-position={key} data-name="corte" value={row.corte} /></td>
+                            <td><input type="text" onChange={editvalue} data-position={key} data-name="color" value={row.color} /></td>
+                            <td><input type="number" onChange={editvalue} data-position={key} data-name="rollos" value={row.rollos} /></td>
+                            <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} /></td>
+                            <td><input type="text" onChange={editvalue} data-position={key} data-name="unidad" value={row.unidad} /></td>
+                            {
+                              tipo == 1 && <td><input type="number" onChange={editvalue} data-position={key} data-name="conversion" value={row.conversion} /></td>
+                            }
+                            <td><input type="number" onChange={editvalue} data-position={key} step=".001" data-name="precio" value={row.precio} /></td>
+                            <td><input type="number" readOnly onChange={editvalue} data-position={key} data-name="importe" value={(row.cantidad*row.precio).toFixed(3)} /></td>
+                            <td><input type="checkbox" id="anulado" onChange={editvalue} data-position={key} data-name="anulado" checked={row.anulado}  /></td>
+                            <td className="w-[250px]">
+                              <ul className="flex flex-row justify-end">
+                                <li>
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="clone" onClick={onclick} data-position={key}>
+                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-copy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                  </div>
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                        ))
+                      }
+                    />
+
+
+                    {/* <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell w-[500px]">Descripcion</th>  
@@ -450,17 +548,11 @@ export default function NewPedido(){
                         {
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              {/* <td className="text-center">{row.producto}</td> */}
                               {
                                 tipo == 2
                                 ? <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
                                 : <td className="text-center">{row.producto}</td>
                               }
-                              {/* {
-                                tipo == 2 || row.origen == 'manual'
-                                ? <td><input type="text" onChange={editvalue} data-position={key} data-name="producto" value={row.producto} /></td>
-                                : <td className="text-center">{row.producto}</td>
-                              } */}
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="modelo" value={row.modelo} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="corte" value={row.corte} /></td>
                               <td><input type="text" onChange={editvalue} data-position={key} data-name="color" value={row.color} /></td>
@@ -510,7 +602,6 @@ export default function NewPedido(){
                           </td>
                           <td className="text-center">-</td>
                           <td className="text-center">-</td>
-                          {/* <td className="text-center">-</td> */}
                           <td className="text-center text-[14px] font-bold">
                             {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(3)}
                           </td>
@@ -539,16 +630,15 @@ export default function NewPedido(){
                           </td>
                         </tr>
                       </tfoot>
-                    </table>
+                    </table> */}
                   </div>
                 </div>
                 <div>
                   <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={4} />
                 </div>
               </div>
-              <div className="flex justify-between gap-2 mt-2 p-1">
+              {/* <div className="flex justify-between gap-2 mt-2 p-1">
                 <div className="flex flex-row gap-2">
-                  {/* <Button action={showinforme} tipo={'success'}>Informe</Button> */}
                   <div>
                     <Button action={vistaprevia} type={'button'} tipo={'accept'}>
                       <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
@@ -559,9 +649,21 @@ export default function NewPedido(){
                   <Button action={() => navigate('/main/pedidos/')} type={'button'} tipo={'default'}>Cancelar</Button>
                   <Button type={'submit'} tipo={'success'}>Guardar</Button>
                 </div>  
-                {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
-              </div>
+              </div> */}
             </form>
+          </div>
+          <div className="flex justify-between gap-2 mt-2 p-1">
+            <div className="flex flex-row gap-2">
+              <div>
+                <Button action={vistaprevia} type={'button'} tipo={'accept'}>
+                  <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-eye-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M11.669 17.994q -5.18 -.18 -8.669 -5.994q 3.6 -6 9 -6t 9 6" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
+                </Button>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button action={() => navigate('/main/pedidos/')} type={'button'} tipo={'default'}>Cancelar</Button>
+              <Button type={'button'} action={onsubmit} tipo={'success'}>Guardar</Button>
+            </div>  
           </div>
         </div>
       {/* </div> */}

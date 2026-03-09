@@ -10,15 +10,17 @@ import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import { InputTest } from "../../components/Atoms/Input/InputTest"
 import Ordenes from "../../components/Common/Ordenes"
+import Table from "../../components/Atoms/Table/Table"
 
 export default function NewMuestra(){
   const [estampado,setEstampado] = useState([])
   const urlparams = useParams()
   const [info,setInfo] = useState({id_proveedor_CAB:null,proveedor:''})
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
-  const form = useRef()
+  const form = useRef(null)
   const [registros,setRegistros] = useState([])
   const [tallasbase,setTallasbase] = useState(['st','xs','s','m','l','xl','xxl'])
+  const [tipo,setTipo] = useState('MUESTRA_PROTOTIPO')
   const navigate = useNavigate()
 
   const onsubmit = (e)=>{
@@ -28,9 +30,11 @@ export default function NewMuestra(){
 
     for(const element of form.current.querySelectorAll("input[verify='true']")){
       if(element.value == ''){
-        console.log("El elmento culpable es el siguiente:",element)
+        console.log("El elmento culpable es el siguiente:",element.name)
+        if(e)
+
         toast.error('Debe completar los campos obligatorios', { theme: "colored" })
-	  return 0
+	      return 0
       }
     }
 
@@ -57,8 +61,8 @@ export default function NewMuestra(){
         }})
         .then(resp => {
           setOpenloader(false)
-          navigate('/main/muestras/')
-          toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+          // navigate('/main/muestras/')
+          toast.success('Guia muestra generado con éxito!!', { theme: "colored" })
         })
         .catch((err)=>{
           setOpenloader(false)
@@ -84,6 +88,7 @@ export default function NewMuestra(){
             setRegistros(resp[1])
             setTallasbase(resp[2].tallas.map(row=>row.desc))
             setOpenloader(false)
+            setTipo(resp[0].tipo)
             console.log("Opportynity never die!!!!",resp)
           })
           .catch((err)=>{
@@ -95,6 +100,16 @@ export default function NewMuestra(){
           })
       }
       pp()
+    }
+    const EVENT_LISTENER = (e)=>{
+      if(e.detail.name == 'tipo'){
+        console.log("adasdflasjdfl:",e.detail)
+        setTipo(e.detail.indice)
+      }
+    }
+    if(form.current) form.current.addEventListener('salamandra',EVENT_LISTENER)
+    return ()=>{
+      if(form.current) form.current.removeEventListener('salamandra',EVENT_LISTENER)
     }
   },[])
 
@@ -196,51 +211,66 @@ export default function NewMuestra(){
                 <hr/>
                 <div className="flex flex-col gap-3">
                   <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <div className="w-[320px]">
-                    <InputSelect title={'Tipo'} name={"tipo"} data={
-                      [
-                        { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true },
-                        { indice: 'REPARACION', option: 'REPARACION' },
-                        { indice: 'PRESTAMO', option: 'PRESTAMO' },
-                        { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },
-                        { indice: 'INTERNO', option: 'INTERNO' }
-                      ]} 
-                      df={Object.keys(info).length > 0 ? info.tipo : null} 
-                      placeholder={'Info referencial'}
-                    />
-
+                  <div className="w-[45%] flex flex-row gap-3">
+                    <div className="w-[300px]">
+                      <InputSelect title={'Tipo'} name={"tipo"} data={
+                        [
+                          { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true },
+                          { indice: 'REPARACION', option: 'REPARACION' },
+                          { indice: 'PRESTAMO', option: 'PRESTAMO' },
+                          { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },
+                          { indice: 'INTERNO', option: 'INTERNO' }
+                        ]} 
+                        df={Object.keys(info).length > 0 ? info.tipo : null} 
+                        placeholder={'Info referencial'}
+                        formref={form}
+                      />
+                    </div>
                     <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" />
-                    <Input name={'orden_ref'} title="OrdenProducción" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" verify="true" action={busquedaOrdenProduccion} mode={'static'} placeholder={'Info referencial'}/>
-                    
+                    <Input name={'orden_ref'} title="OrdenProducción" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" verify={['MUESTRA_PROTOTIPO'].includes(tipo) ? 'true' : 'false'} action={busquedaOrdenProduccion} mode={'static'} placeholder={'Info referencial'}/>
                   </div>
-                  <div className="flex flex-row gap-3 w-[45%]">
+                  <div className="flex flex-row gap-3 w-[40%]">
                     <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" />
-                    
                     <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true" placeholder={'Info referencial'}/>
                   </div>
                   <div className="flex flex-row gap-3 w-[60%]">
                     <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true" placeholder={'Info referencial'}/>
                     <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true" placeholder={'Info referencial'}/>
-                    <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Info referencial'}/>
                   </div>
+                </div>
+                <div className="w-[45%]">
+                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} placeholder={'Info referencial'}/>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
                   <span className="inline-block align-middle text-[12px]">Información principal de la guia</span>
                 </div>
                 <hr/>
-                <div className="flex gap-3 w-[58%]">
+                <div className="flex gap-3 w-[48%]">
                   <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true" placeholder={'Info referencial'}/>
                   <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true" placeholder={'Info referencial'}/>                                   
                 </div>
-                <div className="flex flex-row gap-3 w-[80%]">
+                <div className="flex flex-row gap-3 w-[60%]">
                   <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" placeholder={'Info referencial'}/>
-                  <Input name={'destino'} title="Destino" defaults={Object.keys(info).length > 0 ? info.destino : null} type="text" verify="true" placeholder={'Info referencial'}/>
                   <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" verify="true" placeholder={'Info referencial'}/>
                   <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" placeholder={'Info referencial'}/>
                 </div>
-                <div className="flex flex-row gap-3 w-[55%]">
+                <div className="w-[45%]">
+                  <Input name={'destino'} title="Destino" defaults={Object.keys(info).length > 0 ? info.destino : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                </div>
+                <div className="flex flex-row gap-3 w-[35%]">
                   <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" verify="true" placeholder={'Info referencial'}/>
+                  {/* <InputSelect title={'Estado'} name={"estado"} data={
+                    [
+                      { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
+                      { indice: 'FINALIZADO', option: 'FINALIZADO' }, 
+                      { indice: 'ANULADO', option: 'ANULADO' }, 
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.estado : null} 
+                    placeholder={'Info referencial'}
+                  /> */}
+                </div>
+                <div className="flex flex-row gap-3 w-[25%]">
                   <InputSelect title={'Estado'} name={"estado"} data={
                     [
                       { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
@@ -257,12 +287,80 @@ export default function NewMuestra(){
                 </div>
                 {/* <hr/> */}
                 <div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
-                    <span className="inline-block align-middle text-[12px]">Artículos</span>
-                  </div>
-                  <div className="h-[400px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
+                  <div className="scrollbar-special overflow-y-scroll border-t-[.2px] border-b-[.2px] pt-2">
+                    <Table
+                      actions={
+                        [
+                          {
+                            'name':'add',
+                            'trigger':nuevoregistro,
+                            'icon':<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                          },
+                          {
+                            name:'clear',
+                            trigger:()=>{},
+                            icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eraser"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3" /><path d="M18 13.3l-6.3 -6.3" /></svg>
+                          }
+                        ]
+                      }
+                      headcontent={
+                        <tr>
+                          <th className="lg:table-cell w-[500px]">Descripcion</th>  
+                          {
+                            tallasbase.map(talla=>
+                              <th className="lg:table-cell">{talla.toUpperCase()}</th>
+                            )
+                          }
+                          <th className="lg:table-cell">Cantidad</th>
+                          <th className="lg:table-cell">Adicional</th>
+                          <th className="lg:table-cell">Acciones</th>
+                        </tr>
+                      }
+                      bodycontent={
+                        registros.length > 0 && registros.map((row,key)=>(
+                          <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
+                            <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
+                            {
+                              tallasbase.map(talla=>
+                                <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} step={0.01} value={row[talla]}/></td>    
+                              )
+                            }
+                            <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" step={0.01} value={row.cantidad} /></td>
+                            <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
+                            <td className="w-[250px]">
+                              <ul className="flex flex-row justify-end">
+                                <li>
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                  </div>
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                        ))
+                      }
+                    />
+                    {/* <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
                       <thead className="text-left sticky top-0 bg-white">
                         <tr>
                           <th className="lg:table-cell w-[500px]">Descripcion</th>  
@@ -271,12 +369,6 @@ export default function NewMuestra(){
                               <th className="lg:table-cell">{talla.toUpperCase()}</th>
                             )
                           }
-                          {/* <th className="lg:table-cell">XS / 26</th>
-                          <th className="lg:table-cell">S / 28</th>
-                          <th className="lg:table-cell">M / 30</th>
-                          <th className="lg:table-cell">L / 32</th>
-                          <th className="lg:table-cell">XL / 34</th>
-                          <th className="lg:table-cell">XXL / 36</th> */}
                           <th className="lg:table-cell">Cantidad</th>
                           <th className="lg:table-cell">Adicional</th>
                           <th className="lg:table-cell">Acciones</th>
@@ -287,20 +379,11 @@ export default function NewMuestra(){
                           registros.length > 0 && registros.map((row,key)=>(
                             <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                               <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
-
                               {
                                 tallasbase.map(talla=>
                                   <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} step={0.01} value={row[talla]}/></td>    
                                 )
                               }
-
-                              {/* <td><input data-name="xs" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xs}/></td>
-                              <td><input data-name="s" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.s}/></td>
-                              <td><input data-name="m" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.m}/></td>
-                              <td><input data-name="l" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.l}/></td>
-                              <td><input data-name="xl" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xl}/></td>
-                              <td><input data-name="xxl" type="number" onChange={editvalue} data-position={key} step={0.01} value={row.xxl}/></td> */}
-                              
                               <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" step={0.01} value={row.cantidad} /></td>
                               <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo}  /></td>
                               <td className="w-[250px]">
@@ -347,7 +430,7 @@ export default function NewMuestra(){
                           </td>
                         </tr>
                       </tfoot>
-                    </table>
+                    </table> */}
                   </div>
                 </div>
                 <div>

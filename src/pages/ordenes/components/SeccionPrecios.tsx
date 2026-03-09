@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { INITIAL_PRICE } from "../constants/constants";
 import TemplatePrecios from "./TemplatePrecios";
 
 
 export default function SeccionPrecios(children:any) {
   const {orden, setorden, setopen, openmodal, modelos, setmodelos} = children
-  const [info,setInfo] = useState([INITIAL_PRICE])
+  const [info,setInfo] = useState(orden[0].precios ?? [INITIAL_PRICE])
+
+  useEffect(()=>{
+    console.log("La info de la orden es :",orden)
+  },[])
 
   const onchange = (e)=>{
     console.log("EL input referen es:",e.target.dataset.origen)
