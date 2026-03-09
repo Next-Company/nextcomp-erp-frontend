@@ -1,224 +1,16 @@
-import { createMemoryRouter, useAsyncError, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "../../components/Atoms/Button/Button"
 import { useContext, useEffect, useRef, useState } from "react"
 import { Consulta } from "../../utils/utils"
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext"
 import { toast } from "react-toastify";
-import { Input } from "../../components/Atoms/Input/Input"
-import { InputSelect } from "../../components/Atoms/Input/InputSelect"
-import { TextArea } from "../../components/Atoms/Input/TextArea"
 import Proveedores from "../../components/Common/Proveedores"
 import Ordenes from "../../components/Common/Ordenes"
-
-const VentanaDescuentos = ({idguia,penalidadestipo,penalidades,setpenalidades})=>{
-  const { openModal,setOpen } = useContext(ModalWindowContext)
-  const [registros,setRegistros] = useState(penalidades)
-
-  const nuevoregistro = ()=>{
-    console.log("Registros actuales :",registros)
-    setRegistros([...registros,{idguia:idguia,idx:'',penalidad:'',observacion:'',importe:0}])
-  }
-  useEffect(()=>{
-    console.log("Lista de penalidades :",penalidadestipo.current)
-  },[])
-  const onclick = (e)=>{
-    const action = e.target.dataset.action
-    const position = e.target.dataset.position
-    switch(action){
-      case 'delete':
-        setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
-        break;
-      default :
-    }
-  }
-  const editvalue = (e)=>{
-    if(e.target.dataset.name == 'penalidad'){
-      setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,idx:e.target.value,penalidad:e.target.options[e.target.selectedIndex].text} : row))
-    }else{
-      setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,[e.target.dataset.name]:e.target.dataset.name == 'observacion' ? e.target.value : parseFloat(e.target.value)} : row))
-    }
-  } 
-  const agregar = ()=>{
-    setpenalidades(registros)
-    setOpen(false)
-  }
-  return(
-    <div className="flex flex-col gap-2 w-[950px]">
-      <div className="flex justify-start items-center">
-        <h2 className="font-medium text-[16px] pr-2">Registro de descuentos /</h2>
-        <span className="text-blue-500 font-bold">
-          Nueva Penalidad
-        </span>
-      </div>
-      <div>
-        <div className="h-[350px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2 mb-2"> 
-          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
-            <thead className="text-left sticky top-0 bg-white">
-              <tr>
-                <th className="lg:table-cell">Penalidad</th>  
-                <th className="lg:table-cell">Observacion</th>  
-                <th className="lg:table-cell">Importe</th>
-                <th className="lg:table-cell">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                registros.length > 0 && registros.map((row,key)=>(
-                  <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                    <td>
-                      {
-                        penalidadestipo.current.length > 0 &&
-                        <select onChange={editvalue} data-name="penalidad" data-position={key} className="w-full bg-transparent h-[40px] outline-none text-center">
-                          <option key={-1} defaultValue={''}></option>
-                          {
-                            penalidadestipo.current.map((item, index) => <option key={index} value={item.idx} selected={item.idx == row.idx ? true : false } defaultValue={item.idx ?? null}>{item.penalidad}</option>)
-                          }
-                        </select> 
-                      }
-                    </td>
-                    <td><input className="h-[40px]" type="text" onChange={editvalue} data-position={key} data-name="observacion" defaultValue={row.observacion ?? ''} /></td>
-                    <td><input className="h-[40px]" type="number" onChange={editvalue} data-position={key} data-name="importe" step={0.01} defaultValue={row.importe ?? 0} /></td>
-                    <td className="w-[180px]">
-                      <ul className="flex flex-row justify-end">
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-position={key}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                          </div>
-                        </li>
-                      </ul>
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
-            <tfoot className="sticky bottom-0">
-              <tr>
-                <td colSpan={10} >
-                  <div className="flex flex-row justify-center">
-                    <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
-                      +
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-      <div className="flex justify-end gap-2">
-        <Button type={'button'} tipo={'default'} action={()=>openModal(false)}>Cancelar</Button>
-        <Button type={'button'} tipo={'default'} action={agregar}>Guardar</Button>
-      </div>
-    </div>
-  )
-}
-
-const VentanaReprogramacion = ({idguia,reprogramacion,setreprogramacion})=>{
-  const { openModal,setOpen } = useContext(ModalWindowContext)
-  const [registros,setRegistros] = useState(reprogramacion)
-
-  const nuevoregistro = ()=>{
-    console.log("Registros actuales :",registros)
-    setRegistros([...registros,{idguia:idguia,idx:'',fecha_entrega:'',observacion:''}])
-  }
-  const onclick = (e)=>{
-    const action = e.target.dataset.action
-    const position = e.target.dataset.position
-    switch(action){
-      case 'delete':
-        setRegistros(registros.filter((row,key)=>key !== parseInt(position) ))
-        break;
-      default :
-    }
-  }
-  const editvalue = (e)=>{
-    setRegistros(registros.map((row,key)=>key == e.target.dataset.position ? {...row,[e.target.dataset.name]:e.target.dataset.name == 'observacion' ? e.target.value : e.target.value} : row))
-  } 
-  const agregar = ()=>{
-    setreprogramacion(registros)
-    setOpen(false)
-  }
-  return(
-    <div className="flex flex-col gap-2 w-[950px]">
-      <div className="flex justify-start items-center">
-        <h2 className="font-medium text-[16px] pr-2">Registro de reprogramación /</h2>
-        <span className="text-blue-500 font-bold">
-          Nueva Reprogramación
-        </span>
-      </div>
-      <div>
-        <div className="h-[350px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2 mb-2"> 
-          <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-white [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300">
-            <thead className="text-left sticky top-0 bg-white">
-              <tr>
-                <th className="lg:table-cell">NuevaFecha</th>  
-                <th className="lg:table-cell">Observacion</th>  
-                <th className="lg:table-cell">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                registros.length > 0 && registros.map((row,key)=>(
-                  <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                    <td><input className="h-[40px]" type="date" onChange={editvalue} data-position={key} data-name="fecha_entrega" value={row.fecha_entrega ?? 0} /></td>
-                    <td><input className="h-[40px]" type="text" onChange={editvalue} data-position={key} data-name="observacion" value={row.observacion ?? ''} /></td>
-                    <td className="w-[180px]">
-                      <ul className="flex flex-row justify-end">
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-position={key}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review" data-id={row.idx}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                          </div>
-                        </li>
-                      </ul>
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
-            <tfoot className="sticky bottom-0">
-              <tr>
-                <td colSpan={10} >
-                  <div className="flex flex-row justify-center">
-                    <div onClick={nuevoregistro} className="bg-green-500 w-[100px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
-                      +
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-      <div className="flex justify-end gap-2">
-        <Button type={'button'} tipo={'default'} action={()=>openModal(false)}>Cancelar</Button>
-        <Button type={'button'} tipo={'default'} action={agregar}>Guardar</Button>
-      </div>
-    </div>
-  )
-}
+import SeccionPrincipal from "./componentes/SeccionDatos"
+import SeccionDescuentos from "./componentes/SeccionDescuentos"
+import SeccionReprogramacion from "./componentes/SeccionReprogramacion"
 
 export default function NewGuia(){
-  const [estampado,setEstampado] = useState([])
   const urlparams = useParams()
   const [info,setInfo] = useState({id_proveedor_CAB:null,proveedor:''})
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
@@ -233,6 +25,8 @@ export default function NewGuia(){
   const [tallasbase,setTallasbase] = useState([])
   // const [infop,setInfop] = useState([])
   const [servicio,setServicio] = useState('CONFECCION')
+  const [condicionpago,setCondicionPago] = useState(0)
+  const [positiontab,setPositionTab] = useState(0)
   const navigate = useNavigate()
 
   const onsubmit = (e)=>{
@@ -280,7 +74,7 @@ export default function NewGuia(){
         .then(resp => {
           console.log("Respuesta de la consulta :",resp)
           setOpenloader(false)
-          navigate('/main/guias/')
+          // navigate('/main/guias/')
           if(resp.ok){
             toast.success('La guia de servicio fue generada con éxito!!', { theme: "colored" })
           }else{
@@ -298,7 +92,8 @@ export default function NewGuia(){
     })
   }
   useEffect(()=>{
-    if(urlparams.id){      
+    if(urlparams.id){
+      setCondicionPago(4)
       setOpenloader(true)
       const pp = async () => {
         await Consulta({url: 'produccion/guia/' + urlparams.id,})
@@ -306,7 +101,7 @@ export default function NewGuia(){
             console.log("info guia :",resp)
             setInfo(resp[0])
             resp[0].distribucion !== 'PQT' ? setRegistros(resp[1]) : setPaquetes(resp[1])
-
+            setCondicionPago(parseInt(resp[0].condicion_pago))
             setDistribucion(resp[0].distribucion)
             setPenalidades(resp[2])
             penalidadestipo.current = resp[3]
@@ -347,6 +142,9 @@ export default function NewGuia(){
       if(event.detail.name == 'distribucion'){
         // setDistribucion(event.detail.valor == 'PAQUETES' ? 'PQT' : 'TLL')
         setDistribucion({GLOBALES:'GLB',TALLAS:'TLL',PAQUETES:'PQT'}[event.detail.valor])
+      }
+      if(event.detail.name == 'condicion_pago'){
+        setCondicionPago(event.detail.indice)
       }
     };
     form.current.addEventListener("salamandra", handleInputChange);
@@ -474,30 +272,30 @@ export default function NewGuia(){
     }
     openModal(params_modal)
   }
-  const opendescuentos = ()=>{
-    let params_modal = null
-    params_modal = {
-      open:true,
-      content: <VentanaDescuentos idguia={urlparams.id ?? 0} penalidadestipo={penalidadestipo} penalidades={penalidades} setpenalidades={setPenalidades} />,
-      controls: false,
-      header: false,
-      action:()=>{
-      }
-    }
-    openModal(params_modal)
-  }
-  const openreprogramacion = ()=>{
-    let params_modal = null
-    params_modal = {
-      open:true,
-      content: <VentanaReprogramacion idguia={urlparams.id ?? 0} reprogramacion={reprogramacion} setreprogramacion={setReprogramacion} />,
-      controls: false,
-      header: false,
-      action:()=>{
-      }
-    }
-    openModal(params_modal)
-  }
+  // const opendescuentos = ()=>{
+  //   let params_modal = null
+  //   params_modal = {
+  //     open:true,
+  //     content: <SeccionDescuentos idguia={urlparams.id ?? 0} penalidadestipo={penalidadestipo} penalidades={penalidades} setpenalidades={setPenalidades} />,
+  //     controls: false,
+  //     header: false,
+  //     action:()=>{
+  //     }
+  //   }
+  //   openModal(params_modal)
+  // }
+  // const openreprogramacion = ()=>{
+  //   let params_modal = null
+  //   params_modal = {
+  //     open:true,
+  //     content: <SeccionReprogramacion idguia={urlparams.id ?? 0} reprogramacion={reprogramacion} setreprogramacion={setReprogramacion} />,
+  //     controls: false,
+  //     header: false,
+  //     action:()=>{
+  //     }
+  //   }
+  //   openModal(params_modal)
+  // }
   const cancelarguia = ()=>{
     openModal({
       header:false,
@@ -509,9 +307,6 @@ export default function NewGuia(){
       }
     })
   }
-  // useEffect(()=>{
-  //   console.log("Los valores del nuevo registro son:",registros)
-  // },[registros])
   return(
     <>
       {/* <div className="directory flex flex-col lg:p-4 sm:p-1 lg:m-2 rounded-md w-full relative bg-white"> */}
@@ -524,253 +319,74 @@ export default function NewGuia(){
             <hr />
           </div>
           
-          <div className="text-left  h-full flex flex-col flex-1 pt-2 overflow-hidden">
+          <div className="text-left  h-full flex flex-col flex-1 overflow-hidden">
+            <ul className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button:hover]:text-gray-700 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button.active:hover]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
+              <button className={`group ${positiontab == 0 && 'active'}`} onClick={() => setPositionTab(0)} data-estado="ALL">
+                <span className="relative h-[100%] flex items-center pointer-events-none">
+                  Datos principales
+                  <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%] bg-"></span>
+                </span>
+              </button>
+              {/* <button className={`group flex-row items-center gap-1 ${position == 1 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => {}} data-estado="FNLZ"> */}
+              <button className={`group flex-row items-center gap-1 ${positiontab == 1 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPositionTab(1)} data-estado="FNLZ">
+                <span className="relative h-[100%] flex items-center pointer-events-none">
+                  Penalidades
+                  <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                </span>
+              </button>
+              <button className={`group flex-row items-center gap-1 ${positiontab == 2 && 'active'} ${!urlparams.id && 'pointer-events-none'}`} onClick={() => setPositionTab(2)} data-estado="FNLZ">
+                <span className="relative h-[100%] flex items-center pointer-events-none">
+                  Reprogramaciones
+                  <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
+                </span>
+              </button>
+            </ul>
+            <hr />
             <form ref={form} onSubmit={onsubmit} className="overflow-y-scroll scrollbar-special">
-              <div className={` flex-col gap-3 h-full flex`}>
-                <div className="flex items-center gap-2 mt-2">
-                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
-                  <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
-                </div>
-                <hr/>
-                <div className="flex gap-3">
-                  <Input name={'idx'} defaults={Object.keys(info).length > 0 ? info.idx : null} type="hidden" />
-                  <Input name={'id_orden_CAB'} defaults={Object.keys(info).length > 0 ? info.id_orden_CAB : null} type="hidden" verify="true" />
-                  <Input name={'tipo'} defaults={'SERVICIOS'} type="hidden" placeholder={'Info referencial'}/>
-                  <Input name={'id_corte_CAB'} defaults={Object.keys(info).length > 0 ? info.id_corte_CAB : null} type="hidden"/>
-                  <div className="w-[300px]">
-                    {
-                      fases.length > 0
-                      ? <InputSelect title={'Servicio'} name={"servicio"} data={fases.map(fase=>({indice:fase.ruta,option:fase.ruta}))} formref={form} df={Object.keys(info).length > 0 ? info.servicio : null} placeholder={'Info referencial'}
-                      />
-                      : <Input name={''} defaults={null} type="text" title="Servicio" />
-                    }
-                  </div>
-                  <Input name={'orden_ref'} title="OP/OC" defaults={Object.keys(info).length > 0 ? info.orden_ref : null} type="text" action={listaordenes} mode={'static'} verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'id_proveedor_CAB'} defaults={Object.keys(info).length > 0 ? info.id_proveedor_CAB : null} type="hidden" verify="true"/>
-                  <Input name={'modelo'} title="Modelo" defaults={Object.keys(info).length > 0 ? info.modelo : null} type="text" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'marca'} title="Marca" defaults={Object.keys(info).length > 0 ? info.marca : null} type="text" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'producto'} title="Producto" defaults={Object.keys(info).length > 0 ? info.producto : null} type="text" verify="true" placeholder={'Info referencial'}/>
-                </div>
-                <div className="flex flex-row gap-3">
-                  <Input name={'proveedor'} title="Proveedor" defaults={Object.keys(info).length > 0 ? info.proveedor : null} type="text" action={nuevoproveedor} mode={'static'} verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'fec_emision'} title="FecEmision" defaults={Object.keys(info).length > 0 ? info.fec_emision : null} type="date" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'fec_retorno'} title="FecRetorno" defaults={Object.keys(info).length > 0 ? info.fec_retorno : null} type="date" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'costo'} title="Costo" defaults={Object.keys(info).length > 0 ? info.costo : null} type="number" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'fec_recepcion'} title="FecRecepcion" defaults={Object.keys(info).length > 0 ? info.fec_recepcion : null} type="date" placeholder={'Info referencial'}/>
-                </div>
-                <div className="flex flex-row gap-3">
-                  <Input name={'responsable'} title="Responsable" defaults={Object.keys(info).length > 0 ? info.responsable : null} type="text" verify="true" placeholder={'Info referencial'}/>
-                  <Input name={'motivo_traslado'} title="Motivo traslado" defaults={Object.keys(info).length > 0 ? info.motivo_traslado : null} type="text" verify="true" placeholder={'Info referencial'}/>
-                  <InputSelect title={'Estado'} name={"estado"} data={
-                    [
-                      { indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, 
-                      { indice: 'FINALIZADO', option: 'FINALIZADO' }, 
-                      { indice: 'ANULADO', option: 'ANULADO' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.estado : null} 
-                    placeholder={'Info referencial'}
-                  />
-                  <InputSelect title={'TipoDistribucion'} formref={form} name={"distribucion"} data={
-                    [
-                      { indice: 'TLL', option: 'TALLAS', selected: true }, 
-                      { indice: 'GLB', option: 'GLOBALES' }, 
-                      { indice: 'PQT', option: 'PAQUETES' }, 
-                    ]} 
-                    df={Object.keys(info).length > 0 ? info.distribucion : null} 
-                    placeholder={'Info referencial'}
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
-                  <span className="inline-block align-middle text-[12px]">Detalle de los artículos</span>
-                </div>
-                <div className={`${distribucion == 'PQT' && 'hidden'}`}>
-                  <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-1"> 
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
-                      <thead className="text-left sticky top-0 bg-white">
-                        <tr>
-                          <th className="lg:table-cell w-[500px]">Descripcion</th>
-                          <th className="lg:table-cell">Disponibles</th>
-                          {/* {
-                            registros.length > 0 && registros[0].tallasbase.map(talla=>
-                              <th className="lg:table-cell">{talla.toUpperCase()}</th>    
-                            )
-                          } */}
-                          {
-                            tallasbase.length > 0 && tallasbase.map(talla=>
-                              <th className="lg:table-cell">{talla.toUpperCase()}</th>    
-                            )
-                          }
-                          <th className="lg:table-cell">Cantidad</th>
-                          <th className="lg:table-cell">Adicional</th>
-                          <th className="lg:table-cell">Acciones</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                          registros.length > 0 && registros.map((row,key)=>(
-                            <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              <td><input type="text" onChange={editvalue} data-name="articulo" data-position={key} value={row.articulo} /></td>
-                              <td className="text-center w-[150px]">{urlparams.id ? (row.disponible_total + row.cantidad) : row.disponible_total}</td>
-                              {
-                                tallasbase.map(talla=>
-                                  <td><input data-name={talla} type="number" onChange={editvalue} data-position={key} value={row[talla] ?? 0} className="fracciones"/></td>    
-                                ) 
-                              }
-                              <td><input type="number" onChange={editvalue} data-position={key} data-name="cantidad" value={row.cantidad} className="fracciones"/></td>
-                              <td><input type="checkbox" id="isprototipo" onChange={editvalue} data-position={key} data-name="isprototipo" checked={row.isprototipo} className="fracciones"/></td>
-                              <td className="w-[250px]">
-                                <ul className="flex flex-row justify-end">
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </td>
-                            </tr>
-                          ))
-                        }
-                      </tbody>
-                      <tfoot className="sticky bottom-0">
-                        <tr>
-                          <td colSpan={12} >
-                            <div className="flex flex-row justify-center">
-                              <div onClick={nuevoregistro} className="bg-green-500 w-[250px] h-[20px] flex flex-row justify-center items-center text-center rounded-xl text-white text-[15px] font-bold cursor-pointer hover:bg-green-600">
-                                +
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-                <div className={`${distribucion !== 'PQT' && 'hidden'}`}>
-                  <span>Paquetes:</span>
-                  <div className="h-[380px] scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] mt-2"> 
-                    <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
-                      <thead className="text-left sticky top-0 bg-white">
-                        <tr>
-                          <th className="lg:table-cell w-[500px]">Paquete</th>
-                          <th className="lg:table-cell">XS / 26</th>
-                          <th className="lg:table-cell">S / 28</th>
-                          <th className="lg:table-cell">M / 30</th>
-                          <th className="lg:table-cell">L / 32</th>
-                          <th className="lg:table-cell">XL / 34</th>
-                          <th className="lg:table-cell">XXL / 36</th>
-                          <th className="lg:table-cell">Cantidad</th>
-                          <th className="lg:table-cell">Acciones</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                          paquetes.length > 0 && paquetes.map((row,key)=>(
-                            <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
-                              <td><input type="text" onChange={editpaquete} data-name="articulo" data-position={key} value={row.articulo} /></td>
-                              <td><input data-name="xs" type="number" onChange={editpaquete} data-position={key} value={row.xs} className="fracciones"/></td>
-                              <td><input data-name="s" type="number" onChange={editpaquete} data-position={key} value={row.s} className="fracciones"/></td>
-                              <td><input data-name="m" type="number" onChange={editpaquete} data-position={key} value={row.m} className="fracciones"/></td>
-                              <td><input data-name="l" type="number" onChange={editpaquete} data-position={key} value={row.l} className="fracciones"/></td>
-                              <td><input data-name="xl" type="number" onChange={editpaquete} data-position={key} value={row.xl} className="fracciones"/></td>
-                              <td><input data-name="xxl" type="number" onChange={editpaquete} data-position={key} value={row.xxl} className="fracciones"/></td>
-                              <td><input type="number" onChange={editpaquete} data-position={key} data-name="cantidad" value={row.cantidad} className="fracciones"/></td>
-                              <td className="w-[250px]">
-                                <ul className="flex flex-row justify-end">
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-position={key}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="download">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="review">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="rounded-full w-9 h-9 hover:bg-gray-300 transition-colors flex justify-center items-center" data-action="edit" onClick={()=>{}}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </td>
-                            </tr>
-                          ))
-                        }
-                      </tbody>
-                      <tfoot className="sticky bottom-0">
-                        <tr>
-                          <td colSpan={10} >
-                            <div className="flex flex-row justify-center">
-                              <div onClick={nuevopaquete} className="bg-blue-500 w-[200px] h-[25px] flex flex-row justify-center items-center text-center rounded-md text-white text-[15px] font-bold cursor-pointer hover:bg-blue-600">
-                                +
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-                <div>
-                  <TextArea title="Observaciones" name="observaciones" valor={Object.keys(info).length > 0 ? info.observaciones : null} rows={4} />
-                </div>
-                <div className="flex justify-between gap-2 mt-2">
-                  {/* <Button action={formatotallas} type={'button'} tipo={'accept'}>Formato</Button> */}
-                  <div className="flex flex-row gap-1">
-                    {
-                      urlparams.id && <>
-                        <Button type={'button'} tipo={'accept'} action={opendescuentos}>{`Configurar penalidades - Total: S/.${penalidades.length > 0 ? penalidades.reduce((carry,row)=>{carry += row.importe; return carry;},0).toFixed(2) : 0.00}`}</Button>
-			                  <Button type={'button'} tipo={'warning'} action={openreprogramacion}>{`Reprogramacion de despacho`}</Button>
-                      </>                   
-                    }
-                  </div>
-                  <div className="flex flex-row gap-2">
-                    {/* <Button action={() => navigate('/main/guias/')} type={'button'} tipo={'default'}>Cancelar</Button> */}
-                    <Button action={cancelarguia} type={'button'} tipo={'default'}>Cancelar</Button>
-                    <Button type={'submit'} tipo={'success'}>Guardar</Button>
-                  </div>
-                  {/* <Button action={nuevoproveedor} type={'button'} tipo={'default'}>Proveedor</Button> */}
-                </div>
-
+              <div className={`${positiontab !== 0 && 'hidden'}`}>
+                <SeccionPrincipal 
+                  info={info}
+                  fases={fases}
+                  condicionpago={condicionpago}
+                  form={form}
+                  listaordenes={listaordenes}
+                  nuevoproveedor={nuevoproveedor}
+                  distribucion={distribucion}
+                  nuevoregistro={nuevoregistro}
+                  setCondicionPago={setCondicionPago}
+                  tallasbase={tallasbase}
+                  registros={registros}
+                  editvalue={editvalue}
+                  urlparams={urlparams}
+                  paquetes={paquetes}
+                  editpaquete={editpaquete}
+                  nuevopaquete={nuevopaquete}
+                  onclick={onclick}
+                />
               </div>
-
-              
-              
+              <div className={`${positiontab !== 1 && 'hidden'}`}>
+                <SeccionDescuentos idguia={urlparams.id ?? 0} penalidadestipo={penalidadestipo} penalidades={penalidades} setpenalidades={setPenalidades} />
+              </div>
+              <div className={`${positiontab !== 2 && 'hidden'}`}>
+                <SeccionReprogramacion idguia={urlparams.id ?? 0} reprogramacion={reprogramacion} setreprogramacion={setReprogramacion} />
+              </div>
             </form>
           </div>
+          <div className="flex justify-end gap-2 mt-3">
+            {/* <div className="flex flex-row gap-1">
+              {
+                urlparams.id && <>
+                  <Button type={'button'} tipo={'accept'} action={opendescuentos}>{`Configurar penalidades - Total: S/.${penalidades.length > 0 ? penalidades.reduce((carry,row)=>{carry += row.importe; return carry;},0).toFixed(2) : 0.00}`}</Button>
+                  <Button type={'button'} tipo={'warning'} action={openreprogramacion}>{`Reprogramacion de despacho`}</Button>
+                </>                   
+              }
+            </div> */}
+            <div className="flex flex-row gap-2">
+              <Button action={cancelarguia} type={'button'} tipo={'default'}>Cancelar</Button>
+              <Button action={onsubmit} type={'button'} tipo={'success'}>Guardar</Button>
+            </div>
+          </div>
         </div>
-
       {/* </div> */}
     </>
   )

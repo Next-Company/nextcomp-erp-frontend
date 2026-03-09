@@ -624,3 +624,14 @@ div.other>div {
 .Toastify__toast-container {
   width: fit-content;
 }
+.viewtransition{
+  view-transition-name: detail;
+}
+::view-transition-group(root) { animation: none; }
+.title_special{
+  opacity: 1;
+  transition: opacity ease .250s;
+}
+.op0{
+  opacity: 0;
+}

@@ -154,7 +154,7 @@ export function NewOrden() {
         })
         .then(resp => {
           if(resp.ok){
-            // navigate("/main/ordenes/")
+            navigate("/main/ordenes/")
             toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.mensaje, { theme: "colored" })
@@ -225,13 +225,9 @@ export function NewOrden() {
       .then(resp=>{
         console.log("El resultado de la consulta es:",resp)
         setTallaslist(resp[3])
-        // setTallaslist(resp[3].map((item,key)=>key == 0 ? {...item,selected:true} : item))
         setFases(resp[0])
         setMaterialesRef(resp[1])
         setOrden([{oc:resp[2].resp}])
-        // setTallaslist(resp[3])
-        
-        // console.log("El correlativo actual es:",resp[2])
       })
       .catch(err=>{
         console.log(err)
@@ -239,22 +235,9 @@ export function NewOrden() {
       .finally(()=>{
         setOpenloader(false)
       })
-
-      // Consulta({url:'ordenes/getfasesproduccion'})
-      // .then(resp=>{ 
-      //   console.log("Las fases de produccion son :",resp)
-      //   setFases(resp)
-      // })
-      // .catch(err=>{
-      //   console.log(err)
-      // })
-      // .finally(()=>{
-      //   setOpenloader(false)
-      // })
     }
   },[])
   const testkey2 = (e)=>{
-    // console.log("El target de testkey2 es:",e.target)
     if(position == 3 && ['numero_corte','fec_emision'].includes(e.target.name)){
       const padre = e.target.closest('div#cuerpo_ingresos')
       const indice = parseInt(padre.dataset.position)
@@ -262,16 +245,11 @@ export function NewOrden() {
     }
   }
   const testkey = (e)=>{
-    // console.log("El targe dl evento key es:",e.target.name)
     if(position == 3 && ['numero_corte','fec_emision'].includes(e.target.name)){
       const padre = e.target.closest('div#cuerpo_ingresos')
       const indice = parseInt(padre.dataset.position)
       setCorte(corte=>corte.map((row,key)=>key == indice ? {...row,[e.target.name]:e.target.value} : row))
     }
-    // for(let element of form.current.querySelectorAll("input[data-group='combo'")){
-    //   acumulador += element.value == '' ? 0 : parseInt(element.value)
-    // }
-    // form.current.querySelector("input[name='acumulado']").value = acumulador
   }
   const cancelarorden = ()=>{
     openModal({
@@ -284,33 +262,31 @@ export function NewOrden() {
       }
     })
   }
-  const actualizarcombos = ()=>{
-    const pp = async () => {
-      setOpenloader(true)
-      await Consulta({url: 'ordenes/updatecombos/combos'})
-        .then(resp => {
-          console.log("Opportunity never die!!!!",resp)
-        })
-        .catch((err)=>{
-          setOpenloader(false)
-          toast.error('Se produjo un error!!', { theme: "colored" })
-        })
-        .finally(()=>{
-          setOpenloader(false)
-        })
-    }
+  const updatesku = ()=>{
     openModal({
       open: true,
       header: false,
       controls: true,
-      content: <div>Desea proceder con la actualizaion de los combos de la orden?.</div>,
+      content: <div>Desea proceder con la actualización de los sku's por modelo?.<br/> El proceso puede tardar unos minutos.</div>,
       action: ()=>{
-        pp()
+        setOpenloader(true)
+        Consulta({url:'ordenes/updateSkuModels/' + urlparams.id,params:{method:'PUT'}})
+        .then(res=>{
+          if (res.ok) {
+            // navigate('/main/ordenes/')
+            toast.success('Información actualizada correctamente.',{theme:'colored'})
+          } else {
+            toast.error(res.mensaje,{theme:'colored'})
+          }
+        })
+        .catch(error=>{
+          toast.error('',{theme:'colored'})
+        })
+        .finally(()=>{
+          setOpenloader(false)
+        })
       }
     })
-  }
-  const imprimiretiquetas = ()=>{
-    console.log("Imprimiendo etiquetas.....")
   }
   return (
     <>
@@ -404,8 +380,12 @@ export function NewOrden() {
               <div className="flex justify-end gap-2 mt-2">
                 {/* <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button> */}
                 {
-                  position !== 7 && <>
+                  position !== 7 &&
+                  <>
                     <Button action={cancelarorden} type={'button'} tipo={'default'}>Cancelar</Button>
+                    {
+                      position == 5 && <Button action={updatesku} type={'button'} tipo={'warning'}>Actualizar SKU</Button>
+                    }
                     <Button type={'submit'} tipo={'success'}>Guardar</Button>
                   </>
                 }

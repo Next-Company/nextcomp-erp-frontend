@@ -1,4 +1,4 @@
-import {AdvancedMarker, APIProvider, ControlPosition, Map, MapControl, Marker, Pin, toLatLngLiteral, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
+import {AdvancedMarker, APIProvider, ControlPosition, Map, MapControl, Marker, Pin, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createClient } from '@supabase/supabase-js'
 import { Consulta } from '../../utils/utils';
@@ -164,6 +164,11 @@ export function TrackWorkers_1(){
   )
 }
 
+
+
+
+
+
 export default function TrackWorkers(){
   // Estado del componente o custom hook
   console.log("Reenderizado del modulo")
@@ -273,7 +278,45 @@ export default function TrackWorkers(){
     });
   },[]);
   // const [position,setPosition] = useState({lat:-12.0743177,lng:-76.9916131})
+  
+  useEffect(()=>{
+    console.log("Ejecutando el efecto neuvamenteo")
+    const handleRealtimeChanges = (payload) => {
+      handleNewServerPosition({lat:payload.new.latitud,lng:payload.new.longitud})
+      // console.log('Cambio recibido:', payload)
+      // setTimeout(()=>{
+      //   setPosition({lat:payload.new.latitud,lng:payload.new.longitud})
+      // },2000)
+      // setMarkerState({
+      //   currentPosition: { lat: payload.new.latitud, lng: payload.new.longitud }, 
+      //   startPoint: { lat: 0, lng: 0, timestamp: 0 }, 
+      //   endPoint: { lat: 0, lng: 0, timestamp: 0 }, 
+      //   duration: 2000, 
+      //   animationFrameId: null
+      // })
+    }
 
+    // Suscripción para escuchar cambios en la tabla 'nombre_de_mi_tabla'
+    const channel = supabase
+      .channel('schema-db-changes') // Nombre único para tu canal
+      .on(
+        'postgres_changes', // Tipo de evento para cambios en la base de datos
+        { 
+          event: '*', // Escuchar todos los eventos (INSERT, UPDATE, DELETE)
+          schema: 'public',
+          table: 'testgps' // Reemplaza con el nombre de tu tabla
+        },
+        handleRealtimeChanges
+      )
+      .subscribe()
+
+    // Opcional: Asegúrate de eliminar el canal cuando ya no sea necesario 
+    // (p. ej., al desmontar un componente en React/Vue)
+    return () => {
+      console.log("Removiendo canal")
+      supabase.removeChannel(channel)
+    }
+  },[])
   return(
     <>
       {/* <div className="directory flex flex-col m-2 rounded-md w-full relative border bg-white overflow-hidden"> */}
@@ -298,7 +341,7 @@ export default function TrackWorkers(){
             }
             {
               talleres.length > 0 && talleres.map(taller=>
-                <AdvancedMarker position={{lat: parseFloat(taller.latitud), lng: parseFloat(taller.longitud)}}>
+                <AdvancedMarker position={{lat: taller.info[0].latitud, lng: taller.info[0].longitud}}>
                   <div className='w-[25px] h-[25px] bg-white rounded-full'>
                     {/* <img src={'/src/assets/elenex.svg'} width={32} height={32} /> */}
                     {/* <div className='w-[50px] h-[50px] rounded-full bg-purple-400'></div> */}
@@ -306,7 +349,7 @@ export default function TrackWorkers(){
                       // background={'#0f9d58'}
                       // borderColor={'#006425'}
                       glyphColor={'black'}
-                      glyphText={taller.nombre_local}
+                      glyphText={'Telas Aladino'}
                     />
                     {/* <div>Telas Aladino</div> */}
                   </div>

@@ -64,20 +64,19 @@ export default function SeccionImpresiones(children:any) {
       content: <div>Desea continuar con proceso de impresio de etiquetas?.<br/> El proceso puede tomar unos minutos.</div>,
       action: async () => {
         // setLoading(true)
+        // setOpenloader(true)
         setOpenloader(true)
-        try {          
-          // if(!colores.filter(t=>t.selected).length){
-          //   toast.error("Debe seleccionar por lo menos 1 de los colores del listado. Verifique.",{ theme: "colored"})
-          //   return 0
-          // }
-          Consulta({url:'almacen/imprimiretiquetasbyorden/' + orden[0].idx, params: {
-              method:'POST', 
-              body:data
-            }
-          })
-          .then((resp)=>{
-            // setLoading(false)
-            console.log("La respuestad el servidor es:",resp)
+        Consulta({url:'almacen/imprimiretiquetasbyorden/' + orden[0].idx, params: {
+            method:'POST', 
+            body:data
+          }
+        })
+        .then((resp)=>{
+          // setOpenloader(false)
+          console.log("La respuestad el servidor es:",resp)
+          if(!resp.ok) {
+            toast.error(resp.mensaje,{theme:'colored'})
+          } else {
             const info = resp.data
             
             // Primero deciframos el codigo morse a letras del alfabeto
@@ -94,19 +93,23 @@ export default function SeccionImpresiones(children:any) {
             const url = URL.createObjectURL(blob);
             // const url = URL.createObjectURL(new Blob([new Uint8Array(info.data)], { type: 'application/pdf' }));
             window.open(url, '_blank');
-            
-          })
-          .catch((err)=>{
-            // setLoading(false)
-            toast.error('Se produjo un error al momento de imprimir las etiquetas.', { theme: "colored" })
-          })
-          
-        } catch (error) {
+          }
+        })
+        .catch((err)=>{
+          // setLoading(false)
           toast.error('Se produjo un error al momento de imprimir las etiquetas.', { theme: "colored" })
-          
-        } finally {
+          // toast.error('Se produjo un error al momento de imprimir las etiquetas.', { theme: "colored" })
+        })
+        .finally(()=>{
           setOpenloader(false)
-        }
+        })
+        // try {          
+          
+        // } catch (error) {
+        //   toast.error('Se produjo un error al momento de imprimir las etiquetas.', { theme: "colored" })
+        // } finally {
+        //   setOpenloader(false)
+        // }
       }
     })
 
