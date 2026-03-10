@@ -225,16 +225,12 @@ export default function ListaGuias() {
         setOpenloader(false)
         setInfo(resp)
         setInfoestado(resp)
-        // setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
-        // logout()
-        // toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
         console.log("Horror en la consulta de base de datos")
-        // setOpenloader(false)
       })
   }, [])
 
@@ -251,19 +247,7 @@ export default function ListaGuias() {
         .then(resp => {
           console.log(resp)
           setOpenloader(false)
-          // lista.current.querySelector('button.active').classList.remove('active')
-          // e.target.classList.add('active')
-          // console.log("EL filt4ro 1 es:",resp.filter(row=>row.cantidad_servicio <= row.ingresos))
           setInfoestado(resp)
-          // if (estado == 1) {
-          //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-          // }
-          // if (estado == 2) {
-          //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-          // }
-          // if (estado == 3) {
-          //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-          // }
           setEstado(estado)
         })
         .catch((error) => {
@@ -303,43 +287,23 @@ export default function ListaGuias() {
   const nuevoservicio = () => {
     navigate('/main/guias/nuevo')
   }
-  // const showinforme = async ()=>{
-
-  //   const params_modal = {
-  //     open:true,
-  //     content: <CuerpoInforme cuerpo={""} />,
-  //     controls: true,
-  //     header: false,
-  //     action:async ()=>{
-  //     }
-  //   }
-  //   openModal(params_modal)
-  // }
-  const busquedaglobal = async (input) => {
+  const busquedaglobal = async (input,signal) => {
+    setOpenloader(true)
     Consulta({
       // url: 'produccion/getListaGuias/' + (input.value == '' ? '_' : input.value ), params: {
       url: 'produccion/getListaGuias/' + (input.value + ` ${estado}`).trim(), params: {
-        method: 'GET'
+        method: 'GET',
+        signal
       }
     })
       .then(resp => {
         console.log(resp)
         setOpenloader(false)
         setInfoestado(resp)
-        // setInfo(resp)
-        // if (estado == 1) {
-        //   setInfoestado(resp.filter(row => row.cantidad_servicio > row.ingresos && !['ANULADO', 'FINALIZADO'].includes(row.estado)))
-        // }
-        // if (estado == 2) {
-        //   setInfoestado(resp.filter(row => row.cantidad_servicio <= row.ingresos))
-        // }
-        // if (estado == 3) {
-        //   setInfoestado(resp.filter(row => row.estado == 'ANULADO'))
-        // }
-        // setInfoestado(resp.filter(row=>row.estado == 'PENDIENTE'))
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
+        if((error.name ?? '') !== 'AbortError') toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
         console.log("Horror en la consulta de base de datos")

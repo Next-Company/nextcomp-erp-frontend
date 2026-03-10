@@ -34,7 +34,6 @@ function VentanaIngresosTable({position,data,setregistros,registros,tallasbase})
       : row))
     // console.log("INfo del reduce :",ingreso.despachos[0].fracciones.filter(row=>row.talla == 'xs'))
   }
-  console.log("INfo del mango :",data)
   // console.log("INfo del reduce :",Object.values(data.despachos[0].fracciones.filter(row=>row.talla == 'xs')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0)) 
   return(
     <>
@@ -136,7 +135,6 @@ export default function VentanaIngresos({registros,setregistros,setopen,tallasba
   },[])
   // console.log("La info de la copia es :",copia)
   const actualizar = ()=>{
-    console.log("Banana:",copia)
     const kk = copia.map(row=>
       ({...row,
         despacho:row.fracciones_despacho.length > 0 
@@ -152,7 +150,6 @@ export default function VentanaIngresos({registros,setregistros,setopen,tallasba
         ? tallasbase.map(item=>({talla:item,cantidad:row.fracciones_despacho[0][item],caidos:row.fracciones_despacho[1][item],incompletos:row.fracciones_despacho[2][item]}))
         : []
       }))
-      console.log("Enoelmaiz :",kk)
 
     setregistros(reg=>reg.map((row,key)=>{
       return row.id_item == kk[0].id_item ? kk[0] : row 

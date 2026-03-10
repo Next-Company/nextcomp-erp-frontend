@@ -33,7 +33,6 @@ export default function SeccionImpresiones(children:any) {
 
   useEffect(()=>{
     const handleInputChange = (event) => {
-      console.log("Hola Ivon",event.detail.valor,event.detail)
       if(event.detail.name == 'distribucion'){
         setDistribucion(event.detail.indice)
       }

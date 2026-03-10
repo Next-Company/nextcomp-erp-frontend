@@ -125,7 +125,6 @@ export default function NewDespacho() {
   useEffect(() => {
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
-      console.log("Hola Ivon")
       setTipo(event.detail.valor == 'PEDIDOS' ? 1 : (event.detail.valor == 'SERVICIOS' ? 2 : 0))
       setRegistros([])
     };

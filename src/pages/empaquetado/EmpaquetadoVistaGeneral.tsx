@@ -262,7 +262,6 @@ export default function EmpaquetadoVistaGeneral() {
               })
               .catch((err) => {
                 setOpenloader(false)
-                console.log("Palta con piña:",err)
                 toast.error('Se produjo un error!!', { theme: "colored" })
               })
             }

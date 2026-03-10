@@ -400,7 +400,6 @@ export default function ListaOrdenes() {
   //   console.log("Hacia adelante : ",position)
   // }
   const regulalizzet = ()=>{
-    console.log("dentro de lizzet")
     setOpenloader(true)
     Consulta({url: 'ordenes/lizzet/22'})
     .then(resp => {

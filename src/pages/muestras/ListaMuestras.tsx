@@ -313,11 +313,13 @@ export default function ListaMuestras() {
   //   }
   //   openModal(params_modal)
   // }
-  const busquedaglobal = async (input) => {
+  const busquedaglobal = async (input,signal) => {
+    setOpenloader(true)
     Consulta({
       // url: 'produccion/getListaMuestras/' + (input.value == '' ? '_' : input.value), params: {
       url: 'produccion/getListaMuestras/' + (input.value + ` ${estado}`).trim(), params: {
-        method: 'GET'
+        method: 'GET',
+        signal
       }
     })
       .then(resp => {
@@ -329,6 +331,7 @@ export default function ListaMuestras() {
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
+        if((error.name ?? '') !== 'AbortError') toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
         console.log("Horror en la consulta de base de datos")

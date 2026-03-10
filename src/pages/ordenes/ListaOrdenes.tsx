@@ -438,28 +438,31 @@ export default function ListaOrdenes() {
         break;
     } 
   }
-  const busqueda_search = async (e,setDisabled)=>{
+  const busqueda_search = async (e,signal)=>{
     console.log('El comando presionado es :',e.code,'-',e.keyCode)
     setOpenloader(true)
-    setDisabled(true)
+    // setDisabled(true)
     Consulta({
-      url: 'ordenes/getordenes/' + e.value + ` ${estado}`
+      url: 'ordenes/getordenes/' + e.value + ` ${estado}`,
+      params:{
+        signal
+      }
     })
     .then(resp => {
       console.log('Resultado de busqueda de orden:',resp)
       setOrdenes(resp)
       setOpenloader(false)
-      setDisabled(false)
+      // setDisabled(false)
       return 'hola juan'
     })
     .catch((error) => {
-      console.log(error)
-      toast.error('Error en la consulta de base', { theme: "colored" })
+      console.log("El error abort es ",error.name)
+      if((error.name ?? '') !== 'AbortError') toast.error('Error en la consulta de base', { theme: "colored" })
       // logout()
     })
     .finally(()=>{
       console.log("Horror en la consulta de base de datos")
-      setOpenloader(false)
+      // setOpenloader(false)
     })
   }
 
@@ -576,7 +579,6 @@ export default function ListaOrdenes() {
   //   console.log("Hacia adelante : ",position)
   // }
   const regulalizzet = ()=>{
-    console.log("dentro de lizzet")
     setOpenloader(true)
     Consulta({url: 'ordenes/lizzet/22'})
     .then(resp => {

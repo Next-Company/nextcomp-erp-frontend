@@ -92,6 +92,7 @@ export async function Consulta({ url, params = {} }) {
       const msg = JSON.stringify({ statuscode: 401, message: 'Usuario no autorizado o credenciales vencidas.' })
       return Promise.reject(msg)
     default:
+      console.log("IUNfo abort data:",data)
       throw new Error('Otro codigo de error')
   }
 }

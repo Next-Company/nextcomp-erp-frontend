@@ -105,11 +105,13 @@ export default function ListaProveedores() {
   const nuevoretiro = () => {
     navigate('/main/proveedores/nuevo')
   }
-  const busquedaproducto = (input)=>{
+  const busquedaproducto = (input,signal)=>{
     // console.log(input.value)
     setOpenloader(true)
     Consulta({
-      url: 'proveedores/listarproveedores/' + input.value})
+      url: 'proveedores/listarproveedores/' + input.value,
+      params:{signal}
+    })
     .then(resp => {
       setOpenloader(false)
       setInfo(resp.result)
@@ -117,9 +119,10 @@ export default function ListaProveedores() {
     })
     .catch((error) => {
       console.log(error)
+      if((error.name ?? '') !== 'AbortError') toast.error('Error en la consulta de base', { theme: "colored" })
     })
     .finally(() => {
-      setOpenloader(false)
+      // setOpenloader(false)
     })
   }
   return (

@@ -139,7 +139,6 @@ export default function NewServicio(){
       pp()
     }
     const handleInputChange = (event) => {
-      console.log("Hola Ivon",event.detail)
       if(event.detail.name == 'condicion_pago'){
         setCondicionPago(event.detail.indice)
         // setTipo(event.detail.valor == 'PRODUCCION' ? 0 : 1)

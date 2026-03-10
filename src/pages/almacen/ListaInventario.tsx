@@ -199,12 +199,13 @@ export default function ListaInventarioAlmacen() {
       })
 
   }
-  const filtrarpedidos = (input)=>{
+  const filtrarpedidos = (input,signal)=>{
     // console.log(input.value)
     setOpenloader(true)
     Consulta({
       url: 'almacen/listarinventario/' + input.value, params: {
-        method: 'GET'
+        method: 'GET',
+        signal
       }
     })
       .then(resp => {
@@ -216,6 +217,7 @@ export default function ListaInventarioAlmacen() {
       })
       .catch((error) => {
         console.log(error)
+        if((error.name ?? '') !== 'AbortError') toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
         setOpenloader(false)

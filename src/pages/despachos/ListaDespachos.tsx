@@ -236,7 +236,6 @@ export default function ListaDespachos() {
               })
               .catch((err) => {
                 setOpenloader(false)
-                console.log("Palta con piña:",err)
                 toast.error('Se produjo un error!!', { theme: "colored" })
               })
             }
@@ -355,11 +354,12 @@ export default function ListaDespachos() {
     openModal(params_modal)
   }
 
-  const busquedaglobal = async (input) => {
+  const busquedaglobal = async (input,signal) => {
     setOpenloader(true)
     Consulta({
       url: 'produccion/getListaDespachos/' + estado + '/' + (input.value == '' ? '' : input.value), params: {
-        method: 'GET'
+        method: 'GET',
+        signal
       }
     })
       .then(resp => {
@@ -368,6 +368,7 @@ export default function ListaDespachos() {
       })
       .catch((error) => {
         console.log("El mnesaje de error es:", error)
+        if((error.name ?? '') !== 'AbortError') toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
         console.log("Horror en la consulta de base de datos")

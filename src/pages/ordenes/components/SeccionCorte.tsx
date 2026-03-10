@@ -12,7 +12,6 @@ function CombosInsumos(children){
   const onclickinsumos = (e)=>{
     const action = e.target.dataset.action
     const id = parseInt(e.target.dataset.id)
-    console.log("La vena es:",action,id)
     switch (action) {
       case 'select':
         setInsu(row=>row.includes(id) ? row.filter(item=>item !== id) : [...row,id])
@@ -99,7 +98,6 @@ function CombosInsumos(children){
 
 function CuerpoCorte(children){
   let {info,setcorte,position,quitar,form,setopen,openmodal,insumos,tallaslist} = children
-  console.log("El chapuloin colorado 2: ",info,tallaslist)
   const [active,setActive] = useState(1)
   const onclick = (e)=>{
     const position = e.target.dataset.position
@@ -311,14 +309,11 @@ function CuerpoCorte(children){
 
 export default function SeccionCorte(children){
   let {info,setcorte,form,setopen,openmodal,orden,insumos,tallaslist} = children
-  // console.log("El chapuloin colorado : ",info)
   // useEffect(()=>{
   //   form.current.addEve
   // },[])
   const addcorte = ()=>{
     // setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:[]}]))
-    console.log("Tomate barraza:",orden)
-    console.log("Pecjepojkpep:",orden[0].combos)
     // setcorte(orden[0].combos.map(row=>({idx:'',numnero_corte:''})))
     setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:orden[0].combos }]) )
   }

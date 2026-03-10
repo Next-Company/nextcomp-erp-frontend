@@ -310,12 +310,13 @@ export default function ListaRetiros() {
       })
 
   }
-  const filtrarpedidos = (input)=>{
+  const filtrarpedidos = (input,signal)=>{
     // console.log(input.value)
     setOpenloader(true)
     Consulta({
       url: 'produccion/getListaPedidos/' + input.value + ' ' + `${estado}`, params: {
-        method: 'GET'
+        method: 'GET',
+        signal
       }
     })
       .then(resp => {
@@ -327,6 +328,7 @@ export default function ListaRetiros() {
       })
       .catch((error) => {
         console.log(error)
+        if((error.name ?? '') !== 'AbortError') toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
         setOpenloader(false)

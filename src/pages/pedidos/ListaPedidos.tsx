@@ -351,27 +351,29 @@ export default function ListaPedidos() {
       })
 
   }
-  const filtrarpedidos = (input)=>{
+  const filtrarpedidos = (input,signal)=>{
     // console.log(input.value)
     setOpenloader(true)
     Consulta({
       url: 'produccion/getListaPedidos/' + input.value + ' ' + `${estado}`, params: {
-        method: 'GET'
+        method: 'GET',
+        signal
       }
     })
-      .then(resp => {
-        setOpenloader(false)
-        setInfo(resp)
-        setInfoestado(resp)
-        // setInfoestado(resp.filter(row => row.estado == estado))
-        // setInfoestado(resp.filter(row => row.orden_ref.toLowerCase().includes(input.value.toLowerCase())))
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-      .finally(() => {
-        setOpenloader(false)
-      })
+    .then(resp => {
+      setOpenloader(false)
+      setInfo(resp)
+      setInfoestado(resp)
+      // setInfoestado(resp.filter(row => row.estado == estado))
+      // setInfoestado(resp.filter(row => row.orden_ref.toLowerCase().includes(input.value.toLowerCase())))
+    })
+    .catch((error) => {
+      console.log(error)
+      if((error.name ?? '') !== 'AbortError') toast.error('Error en la consulta de base', { theme: "colored" })
+    })
+    .finally(() => {
+      // setOpenloader(false)
+    })
   }
 
   return (

@@ -54,7 +54,6 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
       : row))
     // console.log("INfo del reduce :",ingreso.despachos[0].fracciones.filter(row=>row.talla == 'xs'))
   }
-  console.log("INfo del mango :",data)
   // console.log("INfo del reduce :",Object.values(data.despachos[0].fracciones.filter(row=>row.talla == 'xs')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0)) 
   return(
     <>
@@ -167,7 +166,6 @@ function CuerpoIngresos({registros,setregistros,setopen}){
     //   toast.error('No se han realizado cambios en el despacho. Por favor verifique.', { theme: "colored" })
     //   return 0
     // }
-    console.log("Banana:",copia)
     const kk = copia.map(row=>
       ({...row,
         despacho:row.fracciones_despacho.length > 0 
@@ -183,7 +181,6 @@ function CuerpoIngresos({registros,setregistros,setopen}){
         ? ['xs','s','m','l','xl','xxl'].map(item=>({talla:item,cantidad:row.fracciones_despacho[0][item],caidos:row.fracciones_despacho[1][item],incompletos:row.fracciones_despacho[2][item]}))
         : []
       }))
-      console.log("Enoelmaiz :",kk)
 
     // setregistros(reg=>[...reg.filter((row,key)=>row.id_combo !== kk[0].id_combo),kk[0]])
     setregistros(reg=>reg.map((row,key)=>{
@@ -235,7 +232,6 @@ function CuerpoIngresosXPQ({registros,setregistros,setopen}){
   },[])
   // console.log("La info de la copia es :",copia)
   const actualizar = ()=>{
-    console.log("Banana:",copia)
     const kk = copia.map(row=>
       ({...row,
         despacho:row.fracciones_despacho.length > 0 
@@ -251,7 +247,6 @@ function CuerpoIngresosXPQ({registros,setregistros,setopen}){
         ? ['xs','s','m','l','xl','xxl'].map(item=>({talla:item,cantidad:row.fracciones_despacho[0][item],caidos:row.fracciones_despacho[1][item],incompletos:row.fracciones_despacho[2][item]}))
         : []
       }))
-      console.log("Enoelmaiz :",kk)
 
     setregistros(reg=>reg.map((row,key)=>{
       return row.id_item == kk[0].id_item ? kk[0] : row 
@@ -376,7 +371,6 @@ export default function EmpaqueadoDistribucion() {
   useEffect(() => {
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
-      console.log("Hola Ivon")
       setTipo(event.detail.valor == 'PEDIDOS' ? 1 : (event.detail.valor == 'SERVICIOS' ? 2 : 0))
       setRegistros([])
     };
@@ -508,7 +502,6 @@ export default function EmpaqueadoDistribucion() {
         setOpen(false)
         Consulta({ url: 'produccion/guia/' + item.idx })
           .then(resp => {
-            // console.log("PPPDPDPDPDPDPDPPD:",resp)
             setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor, distribucion: item.distribucion }))
             console.log("Los registros de la guia son:", resp[1])
             // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))

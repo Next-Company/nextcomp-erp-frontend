@@ -30,7 +30,6 @@ function FraccionadoByModelo(children:any){
     const position = e.target.dataset.position
     const checked = e.target.checked
     setmodelos(modelos.map((modelo,key)=>key == position ? {...modelo,idreceta: (checked ? orden[0].id_receta : null), articulo: (checked ? orden[0].modelos : '')} : modelo))
-    // console.log("HOla jupiter",orden,position,e.target.checked)
   }
   return(
     <>

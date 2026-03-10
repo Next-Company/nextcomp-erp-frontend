@@ -34,9 +34,7 @@ export function TrackWorkers__(){
     let idanimate = null
     let acumulado = 0
     
-    console.log("Tomate",delta)
     setReposition(prev=>{
-      console.log("Lady bu",prev)
       let contador = prev.contador
 
       if(prev.acumulado >= 1000){
@@ -49,7 +47,6 @@ export function TrackWorkers__(){
         }
         acumulado = 0
       } else {
-        console.log("Munra",prev.delta)
         acumulado += (delta - prev.delta)
         idanimate = requestAnimationFrame(animate)
       }

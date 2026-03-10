@@ -164,7 +164,6 @@ function CuerpoIngresos({registros,setregistros,setopen}){
 }
 
 function CuerpoCorte({info,setcorte,position,quitar,form}){
-  console.log("El chapuloin colorado 2: ",info)
   const [active,setActive] = useState(1)
   const [data,setData] = useState([
     {concepto:'INGRESSOS','xs':0,'s':0,'m':0,'l':0,'xl':0,'xxl':0},
@@ -376,7 +375,6 @@ export default function NewDespacho() {
   useEffect(() => {
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
-      console.log("Hola Ivon")
       setTipo(event.detail.valor == 'PEDIDOS' ? 1 : (event.detail.valor == 'SERVICIOS' ? 2 : 0))
       setRegistros([])
     };
@@ -506,7 +504,6 @@ export default function NewDespacho() {
         setOpen(false)
         Consulta({ url: 'produccion/guia/' + item.idx })
           .then(resp => {
-            // console.log("PPPDPDPDPDPDPDPPD:",resp)
             setInfo(info => ({ ...info, id_guia_origen: item.idx, nro_guia_origen: item.idx, id_proveedor_CAB: item.id_proveedor_CAB, proveedor: item.proveedor }))
             console.log("Los registros de la guia son:", resp[1])
             // setRegistros(resp[1].map(row => ({ ...row, despacho: 0, caidos: 0 })))

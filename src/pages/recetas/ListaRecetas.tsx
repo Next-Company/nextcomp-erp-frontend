@@ -222,12 +222,13 @@ export default function ListaRecetas() {
       })
 
   }
-  const busquedaproducto = (input)=>{
+  const busquedaproducto = (input,signal)=>{
     // console.log(input.value)
     setOpenloader(true)
     Consulta({
       url: 'productos/productosTotal/' + input.value, params: {
-        method: 'GET'
+        method: 'GET',
+        signal
       }
     })
       .then(resp => {
@@ -239,9 +240,10 @@ export default function ListaRecetas() {
       })
       .catch((error) => {
         console.log(error)
+        if((error.name ?? '') !== 'AbortError') toast.error('Error en la consulta de base', { theme: "colored" })
       })
       .finally(() => {
-        setOpenloader(false)
+        // setOpenloader(false)
       })
   }
 

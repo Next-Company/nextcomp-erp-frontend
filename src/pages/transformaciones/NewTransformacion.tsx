@@ -339,7 +339,6 @@ export default function NewTransformacion(){
       })
     }
     const handleInputChange = (event) => {
-      console.log("Hola Ivon",event.detail.valor,event.detail)
       if(event.detail.name == 'servicio'){
         setServicio(event.detail.valor)
       }

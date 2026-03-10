@@ -41,7 +41,6 @@ function CuerpoDespachoTest({position,data,setregistros,registros}){
       : row))
     // console.log("INfo del reduce :",ingreso.despachos[0].fracciones.filter(row=>row.talla == 'xs'))
   }
-  console.log("INfo del mango :",data)
   // console.log("INfo del reduce :",Object.values(data.despachos[0].fracciones.filter(row=>row.talla == 'xs')[0]).filter(item=>typeof item === 'number').reduce((c,v)=>c+v,0)) 
   return(
     <>
@@ -154,7 +153,6 @@ function CuerpoIngresos({registros,setregistros,setopen}){
     //   toast.error('No se han realizado cambios en el despacho. Por favor verifique.', { theme: "colored" })
     //   return 0
     // }
-    console.log("Banana:",copia)
     const kk = copia.map(row=>
       ({...row,
         despacho:row.fracciones_despacho.length > 0 
@@ -170,7 +168,6 @@ function CuerpoIngresos({registros,setregistros,setopen}){
         ? ['xs','s','m','l','xl','xxl'].map(item=>({talla:item,cantidad:row.fracciones_despacho[0][item],caidos:row.fracciones_despacho[1][item],incompletos:row.fracciones_despacho[2][item]}))
         : []
       }))
-      console.log("Enoelmaiz :",kk)
 
     // setregistros(reg=>[...reg.filter((row,key)=>row.id_combo !== kk[0].id_combo),kk[0]])
     setregistros(reg=>reg.map((row,key)=>{
@@ -222,7 +219,6 @@ function CuerpoIngresosXPQ({registros,setregistros,setopen}){
   },[])
   // console.log("La info de la copia es :",copia)
   const actualizar = ()=>{
-    console.log("Banana:",copia)
     const kk = copia.map(row=>
       ({...row,
         despacho:row.fracciones_despacho.length > 0 
@@ -238,7 +234,6 @@ function CuerpoIngresosXPQ({registros,setregistros,setopen}){
         ? ['xs','s','m','l','xl','xxl'].map(item=>({talla:item,cantidad:row.fracciones_despacho[0][item],caidos:row.fracciones_despacho[1][item],incompletos:row.fracciones_despacho[2][item]}))
         : []
       }))
-      console.log("Enoelmaiz :",kk)
 
     setregistros(reg=>reg.map((row,key)=>{
       return row.id_combo == kk[0].id_combo ? kk[0] : row 
@@ -281,7 +276,6 @@ export default function EmpaqueadoRecepcion() {
     console.log("Los datos del formulario son:", registros)
     // console.log("El estado de la fase es:",form.current.elements.fase.value)
 
-    console.log("Papaya salada")
     if(registros.length > 0 && tipo == 2 && fase == 0){
       if(registros.filter(row=>row.fracciones_despacho.length > 0).length > 0){
         toast.error('Si piensa registrar algún despacho seleccione primero la fase de despacho.', { theme: "colored" })
@@ -314,7 +308,7 @@ export default function EmpaqueadoRecepcion() {
       }
     }
 
-    console.log("Papaya salada:",registros.reduce((c,v)=>c + (v.despacho ?? 0),0),registros.reduce((c,v)=>c + (v.incompleto ?? 0),0))
+    // console.log("info:",registros.reduce((c,v)=>c + (v.despacho ?? 0),0),registros.reduce((c,v)=>c + (v.incompleto ?? 0),0))
     if(!(registros.reduce((c,v)=>c + (v.despacho ?? 0),0) > 0 || registros.reduce((c,v)=>c + (v.incompleto ?? 0),0) > 0 || registros.reduce((c,v)=>c + (v.caidos ?? 0),0) > 0)){
       toast.error("Debe registrar el ingreso de despacho, caidos o incompletos",{theme:"colored"})
       return 0
@@ -365,7 +359,6 @@ export default function EmpaqueadoRecepcion() {
   useEffect(() => {
     const handleInputChange = (event) => {
       // setTipo(event.detail.valor == 'PEDIDOS' ? 1 : 0)
-      console.log("Hola Ivon")
       setTipo(event.detail.valor == 'PEDIDOS' ? 1 : (event.detail.valor == 'SERVICIOS' ? 2 : 0))
       setRegistros([])
     };

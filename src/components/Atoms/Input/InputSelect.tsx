@@ -46,7 +46,6 @@ export function InputSelect({ title, name, data, df, formref=null, placeholder=n
 
   useEffect(() => {
     // console.log("El valor de df es:",df)
-    console.log("Hola urano cmo vamo:",select)
     // const result = info.findIndex(row => row.indice == df)
     // console.log(result)
     // setSelect(result == -1 ? 0 : result)
