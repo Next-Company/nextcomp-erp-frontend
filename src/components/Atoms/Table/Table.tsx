@@ -16,9 +16,9 @@ const BodyTable = ({children})=>{
 }
 const FooterTable = ({children})=>{
   return(
-    <footer>
+    <tfoot className="sticky bottom-0 bg-white [&_tr]:h-[50px]">
       {children}
-    </footer>
+    </tfoot>
   )
 }
 export default function Table(children){

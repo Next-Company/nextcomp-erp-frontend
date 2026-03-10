@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
 import DetailResultContentBox from "./DetailResultContentBox"
-import { createPortal } from "react-dom"
+import { createPortal, flushSync } from "react-dom"
 
 export default function ResultContentBox({result,changepositionmap}){
-  const [infoproveedor,setInfoProveedor] = useState([])
   const [showdetail,setShowdetail] = useState(false)
   const [taller,setTaller] = useState({})
   const [tallerid,setTallerId] = useState(null)
@@ -12,12 +11,16 @@ export default function ResultContentBox({result,changepositionmap}){
   },[])
   const showinfo = (e)=>{
     const id = e.target.dataset.id ?? e.currentTarget.dataset.id
-    // console.log("EL ide del camppo es:",id)
-    document.startViewTransition(()=>setTaller(result[id]))
-    setTallerId(result[id].idx)
+    const selectedtaller = result[id]
+
+    document.startViewTransition(()=>{
+      flushSync(()=>{
+        setTaller(selectedtaller)
+        setTallerId(selectedtaller.idx)
+        setShowdetail(true)
+      })
+    })
     changepositionmap({lat:parseFloat(result[id].latitud),lng:parseFloat(result[id].longitud)})
-    setShowdetail(true)
-    // console.log("info taller:",taller)
   }
   return(
     <>
@@ -51,10 +54,6 @@ export default function ResultContentBox({result,changepositionmap}){
             )
           }
           {showdetail && <DetailResultContentBox key={tallerid} info={{...taller}} setshowdetail={setShowdetail} />}
-          {/* {showdetail && createPortal(
-            <DetailResultContentBox key={tallerid} taller={{...taller}} setshowdetail={setShowdetail} />
-          )} */}
-          {/* {showdetail && <DetailResultContentBox info={{...taller}} setshowdetail={setShowdetail} />} */}
         </div>
       </div>
     </>

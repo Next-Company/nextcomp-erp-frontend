@@ -356,7 +356,7 @@ export default function TrackWorkers(){
             >
               <div className='w-[25px] h-[25px] bg-white rounded-full relative'>
                 <img src={'/src/assets/elenex.svg'} width={32} height={32} />
-                <div className='absolute bg-orange-400 w-[100px] h-[100px]'></div>
+                {/* <div className='absolute bg-orange-400 w-[100px] h-[100px]'></div> */}
               </div>
             </AdvancedMarker>
             <AdvancedMarker 

@@ -80,7 +80,7 @@ export default function ControlsMap({talleres,settalleres}) {
       </MapControl>
       <MapControl position={ControlPosition.TOP_LEFT}>
         <div className={`w-[380px] has-[:focus]:h-[400px] has-[:focus]:rounded-[20px] has-[:focus]:border-gray-300 has-[:focus]:bg-white overflow-hidden m-[15px] z-[10] ${!showresultbox && 'shadow-lg'} rounded-full`}>
-          <div className='rounded-full bg-white border border-gray-300 py-3 pl-[24px] pr-[18px] flex flex-row items-center gap-6 has-[:focus]:rounded-none has-[:focus]:border-0 has-[:focus]:border-b-[1px]'>
+          <div className='rounded-full bg-white border border-gray-300 py-3 pl-[24px] pr-[18px] flex flex-row items-center gap-6 has-[:focus]:rounded-none has-[:focus]:border-1 has-[:focus]:border-b-[1px]'>
             {/* <div className='flex flex-col gap-[3px] [&_div]:h-[2px] [&_div]:w-[20px] [&_div]:bg-gray-500'>
               <div></div>
               <div></div>

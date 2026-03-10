@@ -202,6 +202,8 @@ export function NewOrden() {
             setInsumos(resp[6])
             setRequerimientos(resp[7])
             setTallaslist(resp[8])
+            
+            // settallaslist(info=>info.map(row=> ({...row,selected: row.idx == event.detail.indice ? true : false }) ))
             setTallasfracciones(resp[12])
             setModelos(resp[9])
             setUsaReceta(resp[0][0].fracciones_con_receta)

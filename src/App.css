@@ -222,3 +222,6 @@ div.pepe:hover{
 div:has(> div.map_controller){
   height: 100%;
 }
+.trasladar{
+  transform: translateX(-20px);
+}

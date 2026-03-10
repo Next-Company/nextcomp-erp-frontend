@@ -388,7 +388,7 @@ export default function NewPedido(){
                   <span className="inline-block align-middle text-[12px]">Datos de la orden de producción</span>
                 </div>
                 <hr/> 
-                <div className="flex flex-col gap-3">
+                <div className="flex gap-3 w-[45%]">
                   <Input name={'forma_pago'} defaults={Object.keys(info).length > 0 && info.forma_pago ? info.forma_pago : null} title="FormaPago" type="text" verify="true" placeholder={'Info referencial'}/>
                   <InputSelect title={'TipoPedido'} formref={form} name={"tipo"} data={
                     [
@@ -399,11 +399,15 @@ export default function NewPedido(){
                     df={Object.keys(info).length > 0 ? info.tipo : null} 
                     placeholder={'Info referencial'}
                   />
+                </div>
+                <div className="flex gap-3 w-[50%]">
                   <Input name={'responsable'} defaults={Object.keys(info).length > 0 && info.responsable ? info.responsable : null} title="GiradoPor" type="text" verify="true" placeholder={'Info referencial'}/>
                   <Input name={'nro_contacto'} defaults={Object.keys(info).length > 0 && info.nro_contacto ? info.nro_contacto : null} title="NroContacto" type="text" verify="true" placeholder={'Info referencial'}/>
+                </div>
+                <div className="w-[35%]">
                   <Input name={'produccion'} defaults={Object.keys(info).length > 0 && info.produccion ? info.produccion : null} title="Produccion" type="text" placeholder={'Info referencial'}/>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-3 w-[60%]">
                   <InputSelect title={'Moneda'} name={"moneda"} data={
                     [
                       { indice: 'S', option: 'SOLES', selected: true }, 
@@ -428,14 +432,27 @@ export default function NewPedido(){
                     df={Object.keys(info).length > 0 ? info.igv : null} 
                     placeholder={'Info referencial'}
                   />
+                </div>
+                {/* <div className="w-[22%]">
+                  <InputSelect title={'IGV'} name={"igv"} data={
+                    [
+                      { indice: '0', option: 'INAFECTO', selected: true }, 
+                      { indice: '1', option: 'AFECTO' }, 
+                    ]} 
+                    df={Object.keys(info).length > 0 ? info.igv : null} 
+                    placeholder={'Info referencial'}
+                  />
+                </div> */}
+                <div className="w-[30%]">
                   <InputSelect title={'Estado'} name={"estado"} data={[{ indice: 'PENDIENTE', option: 'PENDIENTE', selected: true }, { indice: 'TRANSITO', option: 'TRANSITO' }, { indice: 'FINALIZADO', option: 'FINALIZADO' }, { indice: 'ANULADO', option: 'ANULADO' }]} df={Object.keys(info).length > 0 ? info.estado : null} placeholder={'Info referencial'}/>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>
-                  <span className="inline-block align-middle text-[12px] font-bold">Datos de los artículos a solicitar</span>
+                  <span className="inline-block align-middle text-[12px]">Datos de los artículos a solicitar</span>
                 </div>
+                <hr/>
                 <div>
-                  <div className="scrollbar-special rounded-md overflow-y-scroll border-t-[.2px] border-b-[.2px] pt-2">
+                  <div className="scrollbar-special overflow-y-scroll">
                     <Table
                       actions={
                         [
@@ -521,6 +538,22 @@ export default function NewPedido(){
                             </td>
                           </tr>
                         ))
+                      }
+                      footercontent={
+                        <tr>
+                          <td colSpan={4} className="text-right"></td>
+                          <td className="text-center"><strong className="text-[14px]">TOTAL: </strong></td>
+                          <td className="text-center text-[14px] font-bold">
+                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad)),0).toFixed(3)}
+                          </td>
+                          <td className="text-center">-</td>
+                          <td className="text-center">-</td>
+                          <td className="text-center text-[14px] font-bold">
+                            {registros.reduce((acc,row)=> acc + (parseFloat(row.cantidad) * parseFloat(row.precio)),0).toFixed(3)}
+                          </td>
+                          <td></td>
+                          <td></td>
+                        </tr>
                       }
                     />
 
