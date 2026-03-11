@@ -10,12 +10,15 @@ const colorfase = {
 export default function Pedidos(children){
   let {actions = ()=>{}} = children
   let [lista,setLista] = useState([])
+  let [loading,setLoading] = useState(false)
   useEffect(()=>{
+    setLoading(true)
     const buscarproveedor = async ()=>{
       await Consulta({url: 'produccion/getListaPedidos'})
       .then(resp => {
         console.log("La respuesta es:",resp)
         setLista(resp.filter(row=>row.estado !== 'ANULADO'))
+        setLoading(false)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -31,14 +34,16 @@ export default function Pedidos(children){
     buscarproveedor()
   },[])
   
-  const searchproveedor = (input)=>{
-    // console.log("EL valor consultado es:",input.value)
-    // console.log("La ruta de consulta es :",'produccion/searchproveedor/'+input.value)  
+  const searchproveedor = (input,signal)=>{
+    setLoading(true)
     const buscarproveedor = async ()=>{
-      // await Consulta({url: 'produccion/searchpedido/'+ (input.value == '' ? '_' : input.value )})
-      await Consulta({url: 'produccion/getListaPedidos/'+ input.value})
+      await Consulta({
+        url: 'produccion/getListaPedidos/'+ input.value,
+        params: { signal }
+      })
       .then(resp => {
         setLista(resp)
+        setLoading(false)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -72,7 +77,7 @@ export default function Pedidos(children){
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={searchproveedor} />
         </div>
-        <div className="h-[550px] w-[1100px] scrollbar-special rounded-md overflow-y-scroll ">
+        <div className="h-[550px] w-[1100px] scrollbar-special rounded-md overflow-y-scroll relative">
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr:nth-child(n):hover]:bg-gray-300">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
@@ -86,47 +91,56 @@ export default function Pedidos(children){
               </tr>
             </thead>
             <tbody>
-              {lista.length > 0 && lista.map((row,key)=>(
-                <tr onClick={onclick} data-position={key} data-action="add">
-                  <td>{row.idx}</td>
-                  <td>{row.orden_ref}</td>
-                  <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
-                  <td>{row.proveedor}</td>
-                  <td>{row.fec_emision}</td>
-                  <td>{row.fec_retorno}</td>
-                  <td className="w-[250px]">
-                    <ul className="flex flex-row justify-end">
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-position={key} data-action="add" onClick={onclick}>
-                          <svg  xmlns="http://www.w3.org/2000/svg"  width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
-                        </div>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-              ))}
+              {lista.length > 0 
+                ? lista.map((row,key)=>(
+                  <tr onClick={onclick} data-position={key} data-action="add">
+                    <td>{row.idx}</td>
+                    <td>{row.orden_ref}</td>
+                    <td><div className={`w-[80px] bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                    <td>{row.proveedor}</td>
+                    <td>{row.fec_emision}</td>
+                    <td>{row.fec_retorno}</td>
+                    <td className="w-[250px]">
+                      <ul className="flex flex-row justify-end">
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="review">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="" onClick={()=>{}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-position={key} data-action="add" onClick={onclick}>
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="16" height="16" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                ))
+                : <tr><td className="h-[45px]" colSpan={7}>Sin resultados</td></tr>
+              }
             </tbody>
           </table>
+          {
+            loading && <div className="h-[100%] w-[100%] absolute top-0">
+              <div className="h-[100%] w-[100%] bg-white opacity-80"></div>
+              <h2 className="h-[100%] w-[100%] flex justify-center items-center absolute top-0">Cargando...</h2>
+            </div>
+          }
         </div>
       </div>
     </>

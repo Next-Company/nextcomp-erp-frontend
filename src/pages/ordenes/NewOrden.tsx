@@ -157,7 +157,7 @@ export function NewOrden() {
         })
         .then(resp => {
           if(resp.ok){
-            // navigate("/main/ordenes/")
+            navigate("/main/ordenes/")
             toast.success('La orden ingresada fue guardada con éxito!!', { theme: "colored" })
           }else{
             toast.error(resp.mensaje, { theme: "colored" })

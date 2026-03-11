@@ -20,12 +20,15 @@ export default function Modelos(children){
   const { logout} = useContext(AuthPermitions)
   let {actions = ()=>{}} = children
   let [lista,setLista] = useState([])
+  let [loading,setLoading] = useState(false)
   useEffect(()=>{
+    setLoading(true)
     const buscarproveedor = async ()=>{
       await Consulta({url: 'ordenes/getordenes/' + 'EN PROCESO'})
       .then(resp => {
         console.log("La info de modelo es:",resp)
         setLista(resp)
+        setLoading(false)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -45,14 +48,19 @@ export default function Modelos(children){
     buscarproveedor()
   },[])
   
-  const searchordenes = (input)=>{
+  const searchordenes = (input,signal)=>{
     // console.log("EL valor consultado es:",input.value)
     // console.log("La ruta de consulta es :",'produccion/searchordenes/'+input.value)  
+    setLoading(true)
     const buscarproveedor = async ()=>{
       // await Consulta({url: 'ordenes/getordenes/'+ input.value})
-      await Consulta({url: 'ordenes/getordenes/'+ input.value + ' EN PROCESO'})
+      await Consulta({
+        url: 'ordenes/getordenes/'+ input.value + ' EN PROCESO',
+        params: {signal}
+      })
       .then(resp => {
         setLista(resp)
+        setLoading(false)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -84,7 +92,7 @@ export default function Modelos(children){
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={searchordenes} />
         </div>
-        <div className="h-[550px] w-[1100px] scrollbar-special rounded-md overflow-y-scroll ">
+        <div className="h-[550px] w-[1100px] scrollbar-special rounded-md overflow-y-scroll relative">
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
@@ -101,7 +109,8 @@ export default function Modelos(children){
               </tr>
             </thead>
             <tbody>
-              {lista.length > 0 && lista.map((row,key)=>(
+              {lista.length > 0 
+              ? lista.map((row,key)=>(
                 <tr key={key} data-position={key} data-action="add" onClick={onclick}>
                   <td className="h-[50px]">{row.oc}</td>
                   <td>{row.id_corte}</td>
@@ -112,9 +121,17 @@ export default function Modelos(children){
                   <td>{row.modelos}</td>
                   <td><div className={`min-w-[40px] text-white text-center text-[8px] rounded-l-full text-nowrap px-2 rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status] ?? 'bg-gray-400'}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
                 </tr>
-              ))}
+              ))
+              : <tr><td className="h-[45px]" colSpan={8}>Sin resultados</td></tr>
+            }
             </tbody>
           </table>
+          {
+            loading && <div className="h-[100%] w-[100%] absolute top-0">
+              <div className="h-[100%] w-[100%] bg-white opacity-80"></div>
+              <h2 className="h-[100%] w-[100%] flex justify-center items-center absolute top-0">Cargando...</h2>
+            </div>
+          }
         </div>
       </div>
     </>

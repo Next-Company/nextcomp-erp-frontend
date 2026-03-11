@@ -425,7 +425,7 @@ export default function ListaGuias() {
                         </tr>
                       ))
                       :
-                      <tr className="h-[40px]"><td colSpan={14} className="text-center"><span>Datos no encontrados</span></td></tr>
+                      <tr className="h-[40px]"><td colSpan={15} className="text-center"><span>Datos no encontrados</span></td></tr>
                   }
                 </tbody>
                 {/* <tfoot className="absolute bottom-0 w-full bg-yellow-300"> */}

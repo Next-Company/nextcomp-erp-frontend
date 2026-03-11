@@ -31,6 +31,7 @@ export default function Ordenes(children){
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
+        setIspending(false)
       })
       .catch((err)=>{
         // console.log("Mensaje de error es :",JSON.parse(err).statuscode == 401)
@@ -42,20 +43,25 @@ export default function Ordenes(children){
       })
       .finally(()=>{
         // setOpenloader(false)
-        setIspending(false)
+        // setIspending(false)
       })
     }
     buscarproveedor()
   },[])
   
-  const searchordenes = (input)=>{
+  const searchordenes = (input,signal)=>{
     // console.log("EL valor consultado es:",input.value)
     // console.log("La ruta de consulta es :",'produccion/searchordenes/'+input.value)  
     const buscarproveedor = async ()=>{
+      setIspending(true)
       // await Consulta({url: 'ordenes/getordenes/'+ input.value})
-      await Consulta({url: (mode ? 'ordenes/getordenescorte/' : 'ordenes/getordenesfull/') + input.value})
+      await Consulta({
+        url: (mode ? 'ordenes/getordenescorte/' : 'ordenes/getordenesfull/') + input.value,
+        params: {signal}
+      })
       .then(resp => {
         setLista(resp)
+        setIspending(false)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
         // toast.success('Estampado guardado con éxito!!', { theme: "colored" })
@@ -88,7 +94,7 @@ export default function Ordenes(children){
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={searchordenes} />
         </div>
-        <div className="h-[550px] w-[1100px] scrollbar-special rounded-md overflow-y-scroll ">
+        <div className="h-[550px] w-[1100px] scrollbar-special rounded-md overflow-y-scroll relative">
           <table className="w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-300 [&_tbody_tr:nth-child(2n-1):hover]:bg-gray-300 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100">
             <thead className="text-left sticky top-0 bg-white">
               <tr>
@@ -106,15 +112,8 @@ export default function Ordenes(children){
             </thead>
             <tbody>
               {
-                ispending
-                ?
-                <tr>
-                  <td colSpan={8} className="text-center p-4">
-                    <span className="loading loading-spinner loading-lg">Loading...</span>
-                  </td>
-                </tr>
-                :
-                lista.length > 0 && lista.map((row,key)=>(
+                lista.length > 0 
+                ? lista.map((row,key)=>(
                   <tr key={key} data-position={key} data-action="add" onClick={onclick}>
                     <td className="h-[50px]">{row.oc}</td>
                     <td>{row.id_corte}</td>
@@ -126,11 +125,27 @@ export default function Ordenes(children){
                     <td><div className={`min-w-[40px] text-white text-center text-[8px] rounded-l-full text-nowrap px-2 rounded-r-full ${colorfase[row.status_servicio ? row.status_servicio : row.status] ?? 'bg-gray-400'}`}>{row.status_servicio ? row.status_servicio : row.status}</div></td>
                   </tr>
                 ))
+                : <tr><td className="h-[45px]" colSpan={8}>Sin resultados</td></tr>
               }
             </tbody>
           </table>
+          {
+            ispending && <div className="h-[100%] w-[100%] absolute top-0">
+              <div className="h-[100%] w-[100%] bg-white opacity-80"></div>
+              <h2 className="h-[100%] w-[100%] flex justify-center items-center absolute top-0">Cargando...</h2>
+            </div>
+          }
         </div>
       </div>
     </>
   )
 }
+
+// ispending
+//                 ?
+//                 <tr>
+//                   <td colSpan={8} className="text-center p-4">
+//                     <span className="loading loading-spinner loading-lg">Loading...</span>
+//                   </td>
+//                 </tr>
+//                 :

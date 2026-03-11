@@ -4,13 +4,18 @@ export function Search(children){
   const { config,action = ()=>{} } = children
   const [disabled,setDisabled] = useState(false)
   const textsearch = useRef(null)
-  const [busqueda,setBusqueda] = useState()
+  const [busqueda,setBusqueda] = useState('')
+  const [initial,setInitial] = useState(false)
   // const ref = useRef(null)
   const onclick = (e) => {
   }
   let timer = useRef(null)
   useEffect(()=>{
     console.log("Dentro el useefeect query")
+    if (!initial) {
+      setInitial(true)
+      return
+    }
     const controller = new AbortController()
     const signal = controller.signal
     if(timer) clearTimeout(timer.current)

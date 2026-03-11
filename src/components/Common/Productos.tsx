@@ -9,13 +9,16 @@ export default function Productos(children){
   let {actions = ()=>{}, closemodal} = children
   let [lista,setLista] = useState([])
   let [selected,setSelected] = useState([])
+  let [loading,setLoading] = useState(false)
   // let [selected,setSelected] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
+      setLoading(true)
       await Consulta({url: 'productos/productoslist/50'})
       .then(resp => {
         console.log("La respuesta de la consulta de es de a cco:",resp)
         setLista(resp.map((row)=>({...row,selected:false})))
+        setLoading(false)
         // setLista(resp[0])
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
@@ -36,12 +39,17 @@ export default function Productos(children){
     buscarproveedor()
   },[])
   
-  const searchproveedor = (input)=>{
+  const searchproveedor = (input,signal)=>{
     const buscarproveedor = async ()=>{
+      setLoading(true)
       // await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
-      await Consulta({url: 'productos/searchproducto/'+ input.value})
+      await Consulta({
+        url: 'productos/searchproducto/'+ input.value,
+        params:{signal}
+      })
       .then(resp => {
         setLista(resp.map((row)=>({...row,selected:false})))
+        setLoading(false)
         // setLista(resp)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
@@ -57,22 +65,9 @@ export default function Productos(children){
     }
     buscarproveedor()
   }
-  // const onclick = (e)=>{
-  //   let action = e.target.dataset.action
-  //   console.log("La accion es la siguiente:",action)
-  //   switch(action){
-  //     case 'add':
-  //       actions(lista[e.target.dataset.position])
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }
   const onclick = (e)=>{
-    // actions(lista[e.target.dataset.position])
     let position = e.target.dataset.position ?? e.currentTarget.dataset.position
     let action = e.target.dataset.action ?? e.currentTarget.dataset.action
-    // console.log("La informacion es:",lista,lista[position])
     switch(action){
       case 'add':
         const item = lista[position]
@@ -99,28 +94,12 @@ export default function Productos(children){
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={searchproveedor} />
         </div>
-        {/* <div className="[&_div]:p-1 [&_div]:pl-2 [&_div]:pr-3 [&_div]:bg-orange-400 [&_div]:text-white [&_div]:rounded-full flex text-[8px] gap-2 [&_div]:flex [&_div]:gap-1 [&_div]:items-center">
-          <div>
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="14"  height="14"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
-            Codigo
-          </div>
-          <div>
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="14"  height="14"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
-            Producto
-          </div>
-        </div> */}
-        <div className="h-[500px] w-[1000px] scrollbar-special rounded-md overflow-y-scroll ">
+        <div className="h-[500px] w-[1000px] scrollbar-special rounded-md overflow-y-scroll relative">
           <table className={`w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300`}>
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell">Id</th>  
-                <th className="lg:table-cell">
-                  Codigo
-                  {/* <div className="flex flew-row justify-center items-center gap-2">
-                    <span>Codigo</span>
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="14"  height="14"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-filter"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z" /></svg>
-                  </div> */}
-                </th>  
+                <th className="lg:table-cell">Codigo</th>  
                 <th className="lg:table-cell">Producto</th>
                 <th className="lg:table-cell">Color</th>
                 <th className="lg:table-cell">Talla</th>
@@ -128,7 +107,8 @@ export default function Productos(children){
               </tr>
             </thead>
             <tbody>
-              {lista.length > 0 && lista.map((row,key)=>(
+              {lista.length > 0 
+              ? lista.map((row,key)=>(
                 <tr className={`${selected.find((item)=>item.idxsub == row.idxsub && item.id_producto_CAB == row.id_producto_CAB) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
                   <td>{row.idxsub}</td>
                   <td>{row.cod_producto}</td>
@@ -165,9 +145,17 @@ export default function Productos(children){
                     </ul>
                   </td>
                 </tr>
-              ))}
+              ))
+              : <tr><td className="h-[45px]" colSpan={6}>Sin resultados</td></tr>
+            }
             </tbody>
           </table>
+          {
+            loading && <div className="h-[100%] w-[100%] absolute top-0">
+              <div className="h-[100%] w-[100%] bg-white opacity-80"></div>
+              <h2 className="h-[100%] w-[100%] flex justify-center items-center absolute top-0">Cargando...</h2>
+            </div>
+          }
         </div>
         <div className="flex flex-row justify-end mt-2 gap-2">
           <Button type="button" tipo="default" action={cerrarmodal}>Cancelar</Button>

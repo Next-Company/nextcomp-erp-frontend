@@ -9,13 +9,16 @@ export default function Presentacion(children){
   let {actions = ()=>{}, closemodal} = children
   let [lista,setLista] = useState([])
   let [selected,setSelected] = useState([])
+  let [loading,setLoading] = useState(false)
   // let [selected,setSelected] = useState([])
   useEffect(()=>{
+    setLoading(true)
     const buscarproveedor = async ()=>{
       await Consulta({url: 'productos/productosPresentacion'})
       .then(resp => {
         console.log("La respuesta de la consulta de es de a cco:",resp)
         setLista(resp.map((row)=>({...row,selected:false})))
+        setLoading(false)
         // setLista(resp[0])
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
@@ -36,12 +39,17 @@ export default function Presentacion(children){
     buscarproveedor()
   },[])
   
-  const busqueda = (input)=>{
+  const busqueda = (input,signal)=>{
+    setLoading(true)
     const buscarestilo = async ()=>{
       // await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
-      await Consulta({url: 'productos/productosPresentacion/'+ input.value})
+      await Consulta({
+        url: 'productos/productosPresentacion/'+ input.value,
+        params:{signal}
+      })
       .then(resp => {
         setLista(resp.map((row)=>({...row,selected:false})))
+        setLoading(false)
         // setLista(resp)
         // setOpenloader(false)
         // navigate('/main/guias/inicio')
@@ -80,18 +88,18 @@ export default function Presentacion(children){
         <div className="w-full mb-2">
           <Search config={{ width: '100%' }} action={busqueda} />
         </div>
-        <div className="h-[500px] w-[1000px] scrollbar-special rounded-md overflow-y-scroll ">
+        <div className="h-[500px] w-[1000px] scrollbar-special rounded-md overflow-y-scroll relative">
           <table className={`w-[100%] border-collapse border-red-100 [&_th]:font-[600] [&_th]:text-center [&_th]:pt-3 [&_th]:pb-3 [&_tr]:border-b [&_td]:p-[6px] [&_tbody_tr:hover]:bg-gray-100 text-[12px] [&_tbody_tr:hover]:outline-red-600 [&_tbody_tr:hover]:outline-1 [&_tbody_tr:hover]:outline-double [&_tbody_tr:hover]:cursor-pointer lg:[&_tr:hover_ul]:visible lg:[&_ul]:invisible [&_tbody_tr:nth-child(2n-1)]:bg-gray-100 [&_tbody_tr.selected:nth-child(n)]:bg-rose-300`}>
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell">Id</th>  
                 <th className="lg:table-cell">Nombre</th>
-                {/* <th className="lg:table-cell">Descripcion</th> */}
                 <th className="lg:table-cell">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {lista.length > 0 && lista.map((row,key)=>(
+              {lista.length > 0 
+              ? lista.map((row,key)=>(
                 <tr className={`${selected.find((item)=>item.idxsub == row.idxsub && item.id_producto_CAB == row.id_producto_CAB) ? 'selected' : ''}`} key={key} data-position={key} data-action="add" onClick={onclick}>
                   <td>{row.idx}</td>
                   <td>{row.nom}</td>
@@ -125,9 +133,17 @@ export default function Presentacion(children){
                     </ul>
                   </td>
                 </tr>
-              ))}
+              ))
+              : <tr><td className="h-[45px]" colSpan={4}>Sin resultados</td></tr>
+            }
             </tbody>
           </table>
+          {
+            loading && <div className="h-[100%] w-[100%] absolute top-0">
+              <div className="h-[100%] w-[100%] bg-white opacity-80"></div>
+              <h2 className="h-[100%] w-[100%] flex justify-center items-center absolute top-0">Cargando...</h2>
+            </div>
+          }
         </div>
         <div className="flex flex-row justify-end mt-2 gap-2">
           <Button type="button" tipo="default" action={cerrarmodal}>Cancelar</Button>

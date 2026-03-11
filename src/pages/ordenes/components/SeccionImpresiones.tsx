@@ -219,30 +219,34 @@ export default function SeccionImpresiones(children:any) {
               </div>
             </div>
             <div className="">
-              <div className="relative border border-gray-300 rounded-xl overflow-hidden w-[450px] shadow-xl shadow-black/40">
-                <div className="text-left px-[2rem] pt-[2rem] pb-[1.5rem] text-[12px]">
-                  <div className="text-[1.2rem] font-bold">OP:{info?.oc ?? ''}</div>
-                  <div className="font-bold text-[2.5rem]"><input type="text" value={info?.producto ?? ''}/></div>
-                  <div className="text-[1.8rem]"><input type="text" value={info?.estilo !== '' ? info?.estilo : '--'}/></div>
-                  <div className="text-[1.8rem]"><input type="text" value={info?.base !== '' ? info?.base : '--'}/></div>
-                  <div className="text-[1.8rem]"><input type="text" value={info?.color ?? ''}/></div>
-                  <div className="text-[1.8rem]"><input type="text" value={info?.tela !== '' ? info?.tela : '--'}/></div>
-                  <div className="flex justify-between text-[1.8rem] font-semibold">
-                    <div>ORIGINAL</div>
-                    <div><input className="w-[150px] text-right" type="text" value={`${moneda == 'PEN' ? 'S/' : '$'}${info?.precio_original ?? ''}`}/></div>
+              <div className="relative border border-gray-300 rounded-xl overflow-hidden h-[500px] w-[450px] shadow-xl shadow-black/40">
+                <div className="text-left px-[2rem] pt-[2rem] pb-[1.5rem] text-[12px] z-10">
+                  {/* <div className="text-[1.2rem] font-bold">OP:{info?.oc ?? ''}</div> */}
+                  <div className="font-bold text-[2.5rem] mb-[40px]"><input type="text" value={info?.producto ?? ''}/></div>
+                  <div className="text-[1.3rem]"><input className="font-bold" type="text" value={info?.estilo !== '' ? info?.estilo : '--'}/></div>
+                  <div className="text-[1.3rem]"><input className="font-bold" type="text" value={info?.base !== '' ? info?.base : '--'}/></div>
+                  <div className="text-[1.3rem]"><input className="font-bold" type="text" value={info?.color ?? ''}/></div>
+                  <div className="text-[1.3rem]"><input className="font-bold" type="text" value={info?.tela !== '' ? info?.tela : '--'}/></div>
+                  <div className="text-[1.3rem]"><input className="font-bold" type="text" value={info?.tela !== '' ? info?.tela : '--'}/></div>
+                  <div className="h-[70px]"></div>
+                  <div className="text-[1.8rem] font-semibold z-20 relative">
+                    <div className="text-[1.2rem]">PRECIO ORIGINAL</div>
+                    <div><input className="text-left text-[3.5rem] bg-transparent font-extrabold" type="text" value={`${moneda == 'PEN' ? 'S/' : '$'}${info?.precio_original ?? ''}`}/></div>
                   </div>
-                  <div className="flex justify-between text-[1.8rem] font-semibold">
+                  {/* <div className="flex justify-between text-[1.8rem] font-semibold">
                     <div>OFERTA</div>
                     <div><input className="w-[150px] text-right" type="text" value={`${moneda == 'PEN' ? 'S/' : '$'}${info?.precio_oferta ?? ''}`}/></div>
-                  </div>
-                  <div className="h-[80px] overflow-hidden bg-contain">
-                    <img src="/images/codebar.png" height={400} width={380}/>
-                  </div>
-                  <div className="text-center text-[1.2rem] font-semibold" style={{fontSize: '22px',letterSpacing: '18px',transform: 'scale(1, .8)'}}>7750062152898</div>
+                  </div> */}
+                  {/* <div className="text-center text-[1.2rem] font-semibold" style={{fontSize: '22px',letterSpacing: '18px',transform: 'scale(1, .8)'}}>7750062152898</div> */}
                 </div>
-                <div className="absolute w-[25px] h-[100px] bg-blue-500 top-0"></div>
-                <div className="absolute w-[25px] h-[290px] bg-blue-500 top-0 right-0"></div>
-                <div className="absolute text-[3.5rem] font-extrabold top-[200px] right-[40px]" >{info?.talla ?? ''}</div>
+                <div className="absolute w-[25px] h-[100px] top-0" style={{backgroundColor:'#374348'}}></div>
+                <div className="h-[20px] w-[220px] bg-contain absolute right-0 top-[270px]">
+                  <div className="absolute w-[300px] h-[200px] left-0" >
+                    <img src="/images/codebar.png" style={{transform:'rotateZ(90deg) scaleY(.7)'}}/>
+                  </div>
+                </div>
+                {/* <div className="absolute w-[25px] h-[290px] bg-blue-500 top-0 right-0"></div> */}
+                <div className="absolute text-[3.5rem] font-extrabold" style={{top:'120px',right:'30px'}}>{info?.talla ?? ''}</div>
               </div>
             </div>
 
