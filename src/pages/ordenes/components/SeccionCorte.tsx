@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Button } from "../../../components/Atoms/Button/Button"
 import { InputTest } from "../../../components/Atoms/Input/InputTest"
 import { InputSelect } from "../../../components/Atoms/Input/InputSelect"
 import { Input } from "../../../components/Atoms/Input/Input"
+import { ModalWindowContext } from "../../../components/ModalWindow/ModalWindowContext"
 
 function CombosInsumos(children){
   const {actions,closemodal,insumos = [],c_insumos=[],setcorte,position_corte,position_combo,info} = children
@@ -97,7 +98,7 @@ function CombosInsumos(children){
 }
 
 function CuerpoCorte(children){
-  let {info,setcorte,position,quitar,form,setopen,openmodal,insumos,tallaslist} = children
+  const {info,setcorte,position,quitar,form,setopen,openmodal,insumos,tallaslist} = children
   const [active,setActive] = useState(1)
   const onclick = (e)=>{
     const position = e.target.dataset.position
@@ -308,25 +309,21 @@ function CuerpoCorte(children){
 }
 
 export default function SeccionCorte(children){
-  let {info,setcorte,form,setopen,openmodal,orden,insumos,tallaslist} = children
-  // useEffect(()=>{
-  //   form.current.addEve
-  // },[])
+  const {info,setcorte,form,orden,insumos,tallaslist} = children
+  const {openModal, setOpen} = useContext(ModalWindowContext)
   const addcorte = ()=>{
-    // setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:[]}]))
-    // setcorte(orden[0].combos.map(row=>({idx:'',numnero_corte:''})))
     setcorte(info=>([...info,{idx:'',numero_corte:'',estado_corte:'PENDIENTE',fec_emision:null,combos:orden[0].combos }]) )
   }
-  const deletecorte = ()=>{
-    setcorte(corte=>corte.filter((row,key)=>key !== 0))
-  }
+  // const deletecorte = ()=>{
+  //   setcorte(corte=>corte.filter((row,key)=>key !== 0))
+  // }
   const deletecorte2 = (indice)=>{
     setcorte(corte=>corte.filter((row,key)=>key !== indice))
   }
   return <>
     <div className={`flex flex-col gap-3 pt-2`}>
       {
-        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form} setopen={setopen} openmodal={openmodal} insumos={insumos} tallaslist={tallaslist}/>)
+        info.length > 0 && info.map((row,key)=><CuerpoCorte info={row} setcorte={setcorte} position={key} quitar={deletecorte2} form={form} setopen={setOpen} openmodal={openModal} insumos={insumos} tallaslist={tallaslist}/>)
       }
       <div className="sticky bottom-0">
         <div className="flex gap-3 flex-wrap justify-end">

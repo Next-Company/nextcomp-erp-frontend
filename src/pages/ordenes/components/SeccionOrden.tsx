@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "../../../components/Atoms/Button/Button";
 import Productos from "../../../components/Common/Productos";
 import Pedidos from "../../../components/Common/Pedidos";
@@ -12,6 +12,7 @@ import { TextArea } from "../../../components/Atoms/Input/TextArea";
 import Insumos from "../../../components/Common/Insumos";
 import InsumosCombos from "./InsumosCombos";
 import TallasCombos from "./TallasCombos";
+import { ModalWindowContext } from "../../../components/ModalWindow/ModalWindowContext";
 
 function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
   const image = useRef(null)
@@ -59,10 +60,15 @@ function ImageUpload({actions,setopen,setdataimg,dataimg,id}){
 
 
 
-export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dataimg,setDataimg,setinsumos,insumos,requerimientos,setrequerimientos,tallaslist,settallaslist}){
+// export default function SeccionOrden({info,form,setorden,setopen,openmodal,fases,materiales,dataimg,setDataimg,setinsumos,insumos,requerimientos,setrequerimientos,tallaslist,settallaslist}){
+export default function SeccionOrden({info,form,setorden,fases,materiales,dataimg,setDataimg,setinsumos,insumos,requerimientos,setrequerimientos,tallaslist,settallaslist}){
   console.log("Reenderizado del componente SeccionOrden",tallaslist)
   const [tipopedido,setTipopedido] = useState(1)
   const [panelactive,setPanelActive] = useState(0)
+
+  const {openModal, setOpen} = useContext(ModalWindowContext)
+  const openmodal = openModal 
+  const setopen = setOpen
   // const [dataimg,setDataimg] = useState([])
   useEffect(()=>{
     const handleSalamandra = (event) => {

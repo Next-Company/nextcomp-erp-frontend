@@ -11,7 +11,7 @@ const Menu = ({info})=>{
             return(
               <>
                 {
-                  row.items.map(item=>(
+                  row.items.map((item,key)=>(
                     <ul className='[&_li:hover]:bg-gray-100 [&_li]:flex [&_li]:items-center [&_li]:cursor-pointer'>
                       <li data-action='new_folder' onClick={item.action}>
                         <div className='flex gap-4 p-2 select-none cursor-pointer w-[100%]'>
@@ -33,9 +33,6 @@ const Menu = ({info})=>{
 }
 
 export function Header({ logout, credentials }) {
-  // const { isAuthenticated, logout } = useContext(AuthPermitions)
-  // const [isvisible, setIsvisible] = useState(false)
-  // console.log("Mis credenciales son :",credentials)
   const user = credentials !== '' ? JSON.parse(credentials) : {}
   const navigate = useNavigate()
   // const sidenav = useRef()
@@ -62,9 +59,6 @@ export function Header({ logout, credentials }) {
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></svg>
         </div>
         <div className="flex items-center gap-5 cursor-pointer">
-          {/* <div className='sm:hidden lg:block' onClick={openMenu}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></svg>
-          </div> */}
           <svg id="Capa_1" className="w-[30px]" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 107.84 124.51"><defs></defs><path className="cls-1" style={{ fillRule: 'evenodd' }} d="M297.91,309.05,312,300.88l13.1,16.46-27.23,15.75L253.3,307.32V255.89l44.61-25.71,27.23,15.7L312,262.33l-14.13-8.17-23.77,13.75v3.3h32.05V292H274.14v3.3Zm-.27,34.81-27-15.53-27-15.6V250.48l27-15.54,27-15.59,27,15.59,27,15.54v62.25l-27,15.6Zm41.09-86.24v52.57l-20.9-26.31Z" transform="translate(-243.72 -219.35)" /></svg>
           <div className="flex flex-row justify-between items-center">
             <ul className="list-none min-w-[300px] flex [&_div.button:hover]:bg-gray-100 [&_div.button]:cursor-pointer [&_div.button]:text-nowrap [&_div.button]:pl-5 [&_div.button]:pr-5 [&_div.button]:flex [&_div.button]:justify-center [&_div.button]:items-center [&_div.button]:h-[50px] [&_div.button.active]:text-blue-500 [&_div.button]:text-gray-600 [&_div.button]:rounded-none [&_div.button:hover]:outline-none [&_div.button]:font-[inherit] [&_div.button]:font-semibold [&_div.button.active:hover]:bg-blue-50">
@@ -103,37 +97,13 @@ export function Header({ logout, credentials }) {
                   Solicitudes
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
-                {/* <Menu info={
-                  [
-                    {
-                      items: [
-                        { title:'Nueva Carpeta', action:()=>{}, submenu:[] }
-                      ],
-                      division:true
-                    },
-                    {
-                      items: [
-                        { title:'Subir archivo', action:()=>{}, submenu:[] },
-                        { title:'Subir carpeta', action:()=>{}, submenu:[] },
-                        { title:'Informacion carpeta', action:()=>{}, submenu:[] }
-                      ],
-                      division:true
-                    },
-                    {
-                      items: [
-                        { title:'Ocultar', action:()=>{}, submenu:[] }
-                      ],
-                      division:false
-                    }
-                  ]
-                }/> */}
               </div>
               <div className={`button group relative`} onClick={()=>{}}>
                 <span className="relative h-[100%] flex items-center pointer-events-none">
                   Logística
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
-		<Menu info={
+                <Menu info={
                   [
                     {
                       items: [
@@ -157,12 +127,6 @@ export function Header({ logout, credentials }) {
                 </span>
                 <Menu info={
                   [
-                    // {
-                    //   items: [
-                    //     { title:'General', action:()=>{}, submenu:[] }
-                    //   ],
-                    //   division:true
-                    // },
                     {
                       items: [
                         { title:'Recetas', action:()=>navigate("/main/recetas"), submenu:[] },
@@ -181,30 +145,6 @@ export function Header({ logout, credentials }) {
                   Reportes
                   <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                 </span>
-                {/* <Menu info={
-                  [
-                    {
-                      items: [
-                        { title:'Nueva Carpeta', action:()=>{}, submenu:[] }
-                      ],
-                      division:true
-                    },
-                    {
-                      items: [
-                        { title:'Subir archivo', action:()=>{}, submenu:[] },
-                        { title:'Subir carpeta', action:()=>{}, submenu:[] },
-                        { title:'Informacion carpeta', action:()=>{}, submenu:[] }
-                      ],
-                      division:true
-                    },
-                    {
-                      items: [
-                        { title:'Ocultar', action:()=>{}, submenu:[] }
-                      ],
-                      division:false
-                    }
-                  ]
-                }/> */}
               </div>
             </ul>
           </div>

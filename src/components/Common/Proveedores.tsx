@@ -5,8 +5,8 @@ import { AuthPermitions } from "../../contexts/contexts"
 
 export default function Proveedores(children){
   const { logout} = useContext(AuthPermitions)
-  let {actions = ()=>{}} = children
-  let [lista,setLista] = useState([])
+  const {actions = ()=>{}} = children
+  const [lista,setLista] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
       await Consulta({url: 'produccion/proveedoreslist/50'})
@@ -32,6 +32,7 @@ export default function Proveedores(children){
   },[])
   
   const searchproveedor = (input)=>{
+    console.log("Se ejecuta busqueda del proveedor")
     // console.log("EL valor consultado es:",input.value)
     // console.log("La ruta de consulta es :",'produccion/searchproveedor/'+input.value)  
     const buscarproveedor = async ()=>{
@@ -50,11 +51,11 @@ export default function Proveedores(children){
         // setOpenloader(false)
       })
     }
-    buscarproveedor()
+    // buscarproveedor()
   }
   const onclick = (e)=>{
-    let action = e.target.dataset.action ?? e.currentTarget.dataset.action
-    let position = e.target.dataset.position ?? e.currentTarget.dataset.position
+    const action = e.target.dataset.action ?? e.currentTarget.dataset.action
+    const position = e.target.dataset.position ?? e.currentTarget.dataset.position
     switch(action){
       case 'add':
         actions(lista[position])

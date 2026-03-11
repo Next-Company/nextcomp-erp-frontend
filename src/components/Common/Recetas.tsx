@@ -6,9 +6,9 @@ import { AuthPermitions } from "../../contexts/contexts"
 
 export default function Recetas(children){
   const { logout} = useContext(AuthPermitions)
-  let {actions = ()=>{}, closemodal} = children
-  let [lista,setLista] = useState([])
-  let [selected,setSelected] = useState([])
+  const {actions = ()=>{}, closemodal} = children
+  const [lista,setLista] = useState([])
+  const [selected,setSelected] = useState([])
   useEffect(()=>{
     const buscarproveedor = async ()=>{
       await Consulta({url: 'productos/recetaslist'})
@@ -36,6 +36,7 @@ export default function Recetas(children){
   },[])
   
   const searchproveedor = (input)=>{
+    console.log("Dentro de search proveedor")
     const buscarproveedor = async ()=>{
       // await Consulta({url: 'productos/searchproducto/'+ (input.value == '' ? '_' : input.value )})
       await Consulta({url: 'productos/recetaslist/'+ input.value})
@@ -57,8 +58,8 @@ export default function Recetas(children){
     buscarproveedor()
   }
   const onclick = (e)=>{
-    let position = e.target.dataset.position ?? e.currentTarget.dataset.position
-    let action = e.target.dataset.action ?? e.currentTarget.dataset.action
+    const position = e.target.dataset.position ?? e.currentTarget.dataset.position
+    const action = e.target.dataset.action ?? e.currentTarget.dataset.action
     // console.log("La informacion es:",lista,lista[position])
     switch(action){
       case 'add':
