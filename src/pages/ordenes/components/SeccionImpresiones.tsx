@@ -77,20 +77,13 @@ export default function SeccionImpresiones(children:any) {
             toast.error(resp.mensaje,{theme:'colored'})
           } else {
             const info = resp.data
-            
-            // Primero deciframos el codigo morse a letras del alfabeto
             const traduccion = window.atob(info)
-            // Creamos un contenedor de cajas con un numero de cajas igual a la longitud de la traduccion
             const nuevo_contenedor = new Uint8Array(traduccion.length);
-            // Obtenemos el codigo ASCII de cada letra usando el metodo charCodeAt() y lo guardamos en cada caja del contenedor
             for (let i = 0; i < traduccion.length; i++) {
               nuevo_contenedor[i] = traduccion.charCodeAt(i);
             }
-            // Envolvemos el contenedor en otro contenedor del tipo Blob, que es un contenedor de archivos que se puede abrir en el navegador, y le decimos que es un PDF
             const blob = new Blob([nuevo_contenedor], { type: 'application/pdf' });
-            // Generamos una URL temporal para abrir el PDF en una nueva pestaña
             const url = URL.createObjectURL(blob);
-            // const url = URL.createObjectURL(new Blob([new Uint8Array(info.data)], { type: 'application/pdf' }));
             window.open(url, '_blank');
           }
         })

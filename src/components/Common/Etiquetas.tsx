@@ -88,21 +88,14 @@ export default function Etiquetas(params){
       .then((resp)=>{
         setLoading(false)
         console.log("La respuestad el servidor es:",resp)
-        const info = resp.data
-        
-        // Primero deciframos el codigo morse a letras del alfabeto
+        const info = resp.data      
         const traduccion = window.atob(info)
-        // Creamos un contenedor de cajas con un numero de cajas igual a la longitud de la traduccion
         const nuevo_contenedor = new Uint8Array(traduccion.length);
-        // Llenamos el contenedor con los valores en codigo ASCII de cada letra
         for (let i = 0; i < traduccion.length; i++) {
           nuevo_contenedor[i] = traduccion.charCodeAt(i);
         }
-        // Etiquetamos el contenedor como un archivo PDF
         const blob = new Blob([nuevo_contenedor], { type: 'application/pdf' });
-        // Generamos una URL temporal para abrir el PDF en una nueva pestaña
         const url = URL.createObjectURL(blob);
-        // const url = URL.createObjectURL(new Blob([new Uint8Array(info.data)], { type: 'application/pdf' }));
         window.open(url, '_blank');
         
       })
