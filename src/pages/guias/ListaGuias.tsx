@@ -316,7 +316,7 @@ export default function ListaGuias() {
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px] flex flex-row"><strong>Guias de traslado</strong></h2>
+              <h2 className="font-medium text-[16px] flex flex-row"><strong>Ordenes de servicio</strong></h2>
               {/* <div className="rounded-l-full rounded-r-full w-[200px] bg-gray-500 text-white">GUIAS</div> */}
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
