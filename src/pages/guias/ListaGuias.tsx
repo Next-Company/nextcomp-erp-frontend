@@ -8,6 +8,17 @@ import { toast } from "react-toastify";
 import { colorfase } from "../../utils/utils";
 
 const apiUrl = import.meta.env.VITE_API_URL
+
+// ============================================================================
+// [parche-temporal 2026-06-25] PARCHE TEMPORAL — quitar al implementar
+// correctamente roles y permisos.
+// La anulación de órdenes de servicio exige esta contraseña fija en el modal de
+// confirmación. NO es seguridad real (queda visible en el bundle JS); solo evita
+// anulaciones accidentales/no autorizadas hasta tener control de acceso por rol.
+// Sale a TODOS, incluido idx=18.
+const PASSWORD_ANULAR_TEMPORAL = 'elenex123!'
+// ============================================================================
+
 // const colorfase = {
 //   'CONFECCION':'bg-purple-500',
 //   'ESTAMPADO':'bg-gray-500',
@@ -83,12 +94,27 @@ export default function ListaGuias() {
     let params_modal = null
     switch (action) {
       case 'anulate':
+        // [parche-temporal 2026-06-25] La anulación ahora exige contraseña fija (PASSWORD_ANULAR_TEMPORAL).
+        // Antes solo confirmaba sin clave. Quitar este parche al tener roles/permisos.
         params_modal = {
           open: true,
-          content: <div>Desea anular el servicio seleccionado?. Tenga en cuenta de que el <br /> proceso no es reversible.</div>,
+          content: (
+            <div className="flex flex-col gap-2">
+              <div>Desea anular el servicio seleccionado?. Tenga en cuenta de que el <br /> proceso no es reversible.</div>
+              {/* [parche-temporal 2026-06-25] Campo de contraseña requerido para confirmar la anulación */}
+              <label className="text-[12px] font-semibold text-gray-600">Contraseña para anular</label>
+              <input id="pass-anular-servicio" type="password" autoComplete="off" placeholder="Ingrese la contraseña" className="border border-gray-300 rounded px-2 py-1 outline-none focus:border-red-400" />
+            </div>
+          ),
           controls: true,
           header: false,
-          action: () => {
+          action: (modalNode) => {
+            // [parche-temporal 2026-06-25] Validación local de la contraseña fija ANTES de anular.
+            const claveIngresada = (modalNode?.querySelector('#pass-anular-servicio') as HTMLInputElement | null)?.value ?? ''
+            if (claveIngresada !== PASSWORD_ANULAR_TEMPORAL) {
+              toast.error('Contraseña incorrecta. No se anuló el servicio.', { theme: 'colored' })
+              return
+            }
             setOpenloader(true)
             Consulta({
               // url: (distribucion == 'PQT' ? 'produccion/anularguiaxpq/' : 'produccion/anularguia/') + id, params: {
@@ -316,7 +342,7 @@ export default function ListaGuias() {
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px] flex flex-row"><strong>Guias de traslado</strong></h2>
+              <h2 className="font-medium text-[16px] flex flex-row"><strong>Ordenes de servicio</strong></h2>
               {/* <div className="rounded-l-full rounded-r-full w-[200px] bg-gray-500 text-white">GUIAS</div> */}
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />

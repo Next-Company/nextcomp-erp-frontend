@@ -283,6 +283,10 @@ function DatosPrincipales({info,form,setorden,setopen,openmodal,fases,materiales
         {/* <div className="w-[60%]">
           <Input name={'det'} title="Detalle" defaults={info.length > 0 ? info[0].det : null} type="text" verify="true" placeholder={'Descripcion adicional del producto a crear.'}/>
         </div> */}
+        {/* NUEVO: input "Descripcion de programa" -> campo det (tbl2_productos.det). Cambio quirurgico, opcional (sin verify). */}
+        <div className="w-[60%]">
+          <Input name={'det'} title="Descripcion de programa" defaults={info.length > 0 ? info[0].det : null} type="text" placeholder={'Descripcion del programa.'}/>
+        </div>
       </div>
       <div className="flex items-center gap-2">
         <div className="w-[6px] h-[6px] rounded-full bg-gray-500"></div>

@@ -4,6 +4,8 @@ import { Consulta } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
+// [superadmin-delete 2026-06-25] Contexto de credenciales para gatear el botón eliminar solo al superadmin next@next.com (idx 18)
+import { AuthPermitions } from "../../contexts/contexts";
 import { toast } from "react-toastify";
 import { colorfase } from "../../utils/utils";
 import { Input } from "../../components/Atoms/Input/Input";
@@ -17,6 +19,9 @@ const colordespacho = {
   'PEDIDOS_ADICIONALES': 'bg-green-500',
   'MUESTRA_PROTOTIPO': 'bg-violet-500'
 }
+// FIX 2026-08-03: alias visual de tipo. El valor guardado en BD sigue siendo 'MUESTRA_PROTOTIPO'
+// (histórico intacto, sin migración); solo se muestra "GUIA INTERNA" al usuario.
+const tipoLabel = (t) => ({ 'MUESTRA_PROTOTIPO': 'GUIA INTERNA' }[t] ?? t)
 
 const ExportFilters = ({ close, update }) => {
   const [stage, setStage] = useState(1)
@@ -161,6 +166,8 @@ export default function ListaDespachos() {
   const navigate = useNavigate()
   const lista = useRef()
   const { openModal, config, setOpenloader, setOpen } = useContext(ModalWindowContext)
+  // [superadmin-delete 2026-06-25] credenciales del usuario logueado (idx) para gatear el botón eliminar
+  const { credentials } = useContext(AuthPermitions)
   // const [refresh,setRefresh] = useState(false)
 
   const onclick = (e) => {
@@ -171,6 +178,7 @@ export default function ListaDespachos() {
     let params_modal = null
     switch (action) {
       case 'delete':
+        console.log("Iniciando eliminado")
         params_modal = {
           open: true,
           content: <div>Desea eliminar el registro seleccionado?. Tenga en cuenta de que el <br /> proceso no es reversible.</div>,
@@ -404,19 +412,19 @@ export default function ListaDespachos() {
               <ul ref={lista} className="list-none min-w-[300px] flex [&_button:hover]:bg-gray-100 [&_button]:cursor-pointer [&_button]:text-nowrap [&_button]:pl-5 [&_button]:pr-5 [&_button]:flex [&_button]:justify-center [&_button]:items-center [&_button]:h-[50px] [&_button.active]:text-blue-500 [&_button]:text-gray-400 [&_button]:rounded-none [&_button:hover]:outline-none [&_button]:font-[inherit] [&_button]:font-semibold [&_button.active:hover]:bg-blue-50">
                 <button className="group active" data-estado="SERVICIOS" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Por Servicios
+                    Por orden de servicios
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
                 <button className="group" data-estado="PEDIDOS" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Por Pedidos
+                    Por orden de compra
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
                 <button className="group" data-estado="MUESTRA_PROTOTIPO" onClick={filtrarestado}>
                   <span className="relative h-[100%] flex items-center pointer-events-none">
-                    Por Muestras
+                    Por guia interna
                     <span className="absolute bottom-0 group-[.active]:border-b-[3px] group-[.active]:border-b-blue-500 flex items-center w-[100%] h-[100%]"></span>
                   </span>
                 </button>
@@ -506,7 +514,7 @@ export default function ListaDespachos() {
                               <>
                               <td>{row.idx}</td>
                                 <td className="font-bold">{row.idguia_ref}</td>
-                                <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho[row.tipo]}`}>{row.tipo}</div></td>
+                                <td><div className={`w-full bg- text-white text-center text-[8px] rounded-l-full rounded-r-full ${colordespacho[row.tipo]}`}>{tipoLabel(row.tipo)}</div></td>
                                 <td>{row.proveedor}</td>
                                 <td className="font-bold">{row.fec_emision_guia}</td>
                                 <td className="font-bold">{row.fec_despacho}</td>
@@ -514,11 +522,16 @@ export default function ListaDespachos() {
                           }
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
-                              <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-distribucion={row.distribucion}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                              {/* [superadmin-delete 2026-06-25] Solo el superadmin next@next.com (idx 18) ve el botón eliminar del ingreso. Antes: visible para todos (sin restricción). */}
+                              {Number(JSON.parse(credentials).idx) === 18 && <li>
+                                {/* [superadmin-delete 2026-06-25] className original del botón (gris): "rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" */}
+                                <div className="rounded-full w-9 h-9 bg-red-100 hover:bg-red-200 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx} data-distribucion={row.distribucion}>
+                                  {/* [superadmin-delete 2026-06-25] Icono trash (outline) original — conservado, comentado */}
+                                  {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg> */}
+                                  {/* [superadmin-delete 2026-06-25] NUEVO: icono ELIMINAR en rojo, relleno y notorio */}
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#dc2626" className="icon icon-tabler icons-tabler-filled icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16z" /><path d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z" /></svg>
                                 </div>
-                              </li>
+                              </li>}
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx} data-idguia={row.id_guia_origen ?? row.id_pedido_origen} data-distribucion={row.distribucion}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>

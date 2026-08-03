@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Atoms/Button/Button";
 import { ModalWindowContext } from "../../components/ModalWindow/ModalWindowContext";
 import { toast } from "react-toastify";
+// [superadmin-delete 2026-06-25] Contexto de credenciales para gatear el botón eliminar solo al superadmin next@next.com (idx 18)
+import { AuthPermitions } from "../../contexts/contexts";
 // import { colortipomuestras } from "../../utils/utils";
 const apiUrl = import.meta.env.VITE_API_URL
 const colorfase = {
@@ -15,6 +17,9 @@ const colorfase = {
   'COMPLEMENTO': 'bg-amber-500',
   'INTERNO': 'bg-cyan-500'
 }
+// FIX 2026-08-03: alias visual. El valor guardado en BD sigue siendo 'MUESTRA_PROTOTIPO'
+// (histórico intacto, sin migración); solo se muestra "GUIA INTERNA" al usuario.
+const tipoLabel = (t) => ({ 'MUESTRA_PROTOTIPO': 'GUIA INTERNA' }[t] ?? t)
 // const CuerpoInforme_ = ({ cuerpo }) => {
 //   return (
 //     <>
@@ -76,6 +81,8 @@ export default function ListaMuestras() {
   const [infoestado, setInfoestado] = useState([])
   const navigate = useNavigate()
   const { openModal, config, setOpenloader } = useContext(ModalWindowContext)
+  // [superadmin-delete 2026-06-25] credenciales del usuario (idx) para gatear el botón eliminar
+  const { credentials } = useContext(AuthPermitions)
   const [estado, setEstado] = useState('PENDIENTE')
   // const [refresh,setRefresh] = useState(false)
   console.log("Rerenderizado!!!")
@@ -113,7 +120,7 @@ export default function ListaMuestras() {
               })
           }
         }
-        // openModal(params_modal)
+        openModal(params_modal)
         break;
       case 'download':
         params_modal = {
@@ -344,7 +351,7 @@ export default function ListaMuestras() {
         <div className="flex flex-col flex-1 pl-2 pr-2 h-full">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium text-[16px]"><strong>Muestras y Complementos</strong></h2>
+              <h2 className="font-medium text-[16px]"><strong>Guía interna</strong></h2>
               <div className="w-[500px] mb-1">
                 <Search config={{ width: '250px' }} action={busquedaglobal} />
               </div>
@@ -402,7 +409,7 @@ export default function ListaMuestras() {
                       ? infoestado.map((row, key) => (
                         <tr key={key} className="">
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.idx}</td>
-                          <td><div className={`text-white text-center text-[8px] px-3 rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{row.tipo}</div></td>
+                          <td><div className={`text-white text-center text-[8px] px-3 rounded-l-full rounded-r-full ${colorfase[row.tipo]}`}>{tipoLabel(row.tipo)}</div></td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.proveedor ? row.proveedor.length > 40 ? row.proveedor.substr(0, 40) + '...' : row.proveedor : row.responsable}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.producto}</td>
                           <td className={`${row.dias_pendientes < 0 && 'text-red-600'}`}>{row.marca}</td>
@@ -417,11 +424,16 @@ export default function ListaMuestras() {
                           {/* <td>{row.estado == 'PENDIENTE' ? <div className={`w-[5px] h-[5px] bg-red-600 rounded-full`}></div> : 'hola'}</td> */}
                           <td className="w-[250px]">
                             <ul className="flex flex-row justify-end">
-                              <li>
-                                <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                              {/* [superadmin-delete 2026-06-25] Solo el superadmin next@next.com (idx 18) ve el botón eliminar de la muestra/complemento. Antes: visible para todos. */}
+                              {Number(JSON.parse(credentials).idx) === 18 && <li>
+                                {/* [superadmin-delete 2026-06-25] className original del botón (gris): "rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" */}
+                                <div className="rounded-full w-9 h-9 bg-red-100 hover:bg-red-200 transition-colors flex justify-center items-center" data-action="delete" onClick={onclick} data-id={row.idx}>
+                                  {/* [superadmin-delete 2026-06-25] Icono trash (outline) original — conservado, comentado */}
+                                  {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg> */}
+                                  {/* [superadmin-delete 2026-06-25] NUEVO: icono ELIMINAR en rojo, relleno y notorio */}
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#dc2626" className="icon icon-tabler icons-tabler-filled icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16z" /><path d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z" /></svg>
                                 </div>
-                              </li>
+                              </li>}
                               <li>
                                 <div className="rounded-full w-9 h-9 hover:bg-gray-100 transition-colors flex justify-center items-center" data-action="download" onClick={onclick} data-id={row.idx}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>

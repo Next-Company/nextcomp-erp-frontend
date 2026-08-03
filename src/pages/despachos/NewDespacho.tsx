@@ -25,6 +25,10 @@ const colorfase = {
   'BORDADO': 'bg-yellow-500',
 }
 
+const currentIssueDate = new Date().toISOString().split('T')[0];
+
+console.log("Fecha actual de emision", currentIssueDate)
+
 export default function NewDespacho() {
   const [tipo, setTipo] = useState(2)
   const urlparams = useParams()
@@ -109,7 +113,24 @@ export default function NewDespacho() {
               navigate('/main/despachos/')
               toast.success(resp.message, { theme: "colored" })
             }else{
-              toast.error(resp.message, { theme: "colored" })  
+              // FIX 2026-08-03: mostrar el motivo del error (ej. "La orden de producción no es válida")
+              // en un popup informativo para el usuario, en lugar de solo el toast.
+              // Original:
+              // toast.error(resp.message, { theme: "colored" })
+              openModal({
+                open: true,
+                header: false,
+                controls: false,
+                content: (
+                  <div className="flex flex-col items-center gap-3 p-4 text-center max-w-[420px]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="#dc2626" viewBox="0 0 16 16">
+                      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                    </svg>
+                    <strong className="text-[16px]">No se pudo registrar el ingreso</strong>
+                    <span className="text-[14px] text-gray-600">{resp.message}</span>
+                  </div>
+                )
+              })
             }
           })
           .catch((err) => {
@@ -365,13 +386,28 @@ export default function NewDespacho() {
                     [
                       { indice: 'SERVICIOS', option: 'SERVICIOS', selected: true },
                       { indice: 'PEDIDOS', option: 'PEDIDOS' },
-                      { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO' },
+                      // FIX 2026-08-03: renombrar solo la etiqueta visible a "GUIA INTERNA".
+                      // Se mantiene indice='MUESTRA_PROTOTIPO' (valor guardado en BD) para no
+                      // romper registros existentes, filtros, mapas de color ni el buscador de guías.
+                      // Original:
+                      // { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO' },
+                      { indice: 'MUESTRA_PROTOTIPO', option: 'GUIA INTERNA' },
                     ]}
                     df={Object.keys(info).length > 0 ? info.tipo : null}
                     placeholder="Texto complementario"
                   />
                   <Input name={'fec_despacho'} defaults={Object.keys(info).length > 0 && info.fec_despacho ? info.fec_despacho : null} title="FechaEmisionIngreso" type="date" placeholder="Texto complementario"/>
-                  <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" placeholder="Texto complementario"/>
+
+                  {/* <Input name={'fec_emision_guia'} defaults={Object.keys(info).length > 0 && info.fec_emision_guia ? info.fec_emision_guia : null} title="FechaEmisionGuia" type="date" placeholder="Texto complementario"/> */}
+
+                  <Input
+                      name="fec_emision_guia"
+                      defaults={info?.fec_emision_guia ?? currentIssueDate}
+                      title="FechaEmisionGuia"
+                      type="date"
+                      readonly
+                  />
+                  
                   <Input name={'ruc'} defaults={Object.keys(info).length > 0 ? info.ruc : null} type="hidden" />
                   {
                     tipo == 1

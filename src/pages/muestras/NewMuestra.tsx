@@ -215,7 +215,9 @@ export default function NewMuestra(){
                     <div className="w-[300px]">
                       <InputSelect title={'Tipo'} name={"tipo"} data={
                         [
-                          { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true },
+                          // FIX 2026-08-03: alias visual (indice sin cambios = valor real en BD).
+                          // { indice: 'MUESTRA_PROTOTIPO', option: 'MUESTRA_PROTOTIPO', selected: true },
+                          { indice: 'MUESTRA_PROTOTIPO', option: 'GUIA INTERNA', selected: true },
                           { indice: 'REPARACION', option: 'REPARACION' },
                           { indice: 'PRESTAMO', option: 'PRESTAMO' },
                           { indice: 'COMPLEMENTO', option: 'COMPLEMENTO' },

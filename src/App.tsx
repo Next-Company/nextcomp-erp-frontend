@@ -172,6 +172,8 @@ const ListaProveedores = lazy(() => import('./pages/proveedores/ListaProveedores
 const NewProveedor = lazy(() => import('./pages/proveedores/NewProveedor.tsx').then(module => ({ default: module.NewProveedor })));
 const LayoutMantenimiento = lazy(() => import('./pages/mantenimiento/LayoutMantenimiento.tsx'));
 const Configuracion = lazy(()=>import('./pages/mantenimiento/Configuracion.tsx'))
+const LayoutAlmacenes = lazy(() => import('./pages/almacenes/LayoutAlmacenes.tsx'));
+const ListaAlmacenes = lazy(() => import('./pages/almacenes/ListaAlmacenes.tsx'));
 const EmpaquetadoVistaGeneral = lazy(()=>import('./pages/empaquetado/EmpaquetadoVistaGeneral.tsx'))
 const LayoutEmpaquedado = lazy(()=>import('./pages/empaquetado/LayoutEmpaquetado.tsx'))
 const EmpaqueadoRecepcion = lazy(()=>import('./pages/empaquetado/EmpaquetadoRecepcion.tsx'))
@@ -406,6 +408,13 @@ const routes = [
           //     { path: "cuadre", element: <CuadreCorte /> },
           //   ]
           // }
+        ]
+      },
+      {
+        path: "almacenes",
+        element: <Suspense><PrivateRoute><LayoutAlmacenes/></PrivateRoute></Suspense>,
+        children: [
+          { path: "", element: <ListaAlmacenes />, error: <ErrorController/> },
         ]
       },
       {

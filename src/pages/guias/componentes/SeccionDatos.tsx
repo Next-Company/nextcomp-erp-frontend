@@ -291,12 +291,17 @@ export default function SeccionPrincipal({
             <thead className="text-left sticky top-0 bg-white">
               <tr>
                 <th className="lg:table-cell w-[500px]">Paquete</th>
-                <th className="lg:table-cell">XS / 26</th>
+                {/* <th className="lg:table-cell">XS / 26</th>
                 <th className="lg:table-cell">S / 28</th>
                 <th className="lg:table-cell">M / 30</th>
                 <th className="lg:table-cell">L / 32</th>
                 <th className="lg:table-cell">XL / 34</th>
-                <th className="lg:table-cell">XXL / 36</th>
+                <th className="lg:table-cell">XXL / 36</th> */}
+                {
+                  tallasbase.length > 0 && tallasbase.map(talla =>
+                    <th key={talla} className="lg:table-cell">{talla.toUpperCase()}</th>
+                  )
+                }
                 <th className="lg:table-cell">Cantidad</th>
                 <th className="lg:table-cell">Acciones</th>
               </tr>
@@ -306,12 +311,17 @@ export default function SeccionPrincipal({
                 paquetes.length > 0 && paquetes.map((row,key)=>(
                   <tr key={key} className="focus-visible:[&_input]:outline-[0px] focus-visible:[&_input]:bg-gray-200 focus-visible:[&_input]:border-black focus-visible:[&_input]:bg-transparent [&_input]:text-center [&_input]:p-[2px] [&_input]:w-full [&_input]:bg-transparent">
                     <td><input type="text" onChange={editpaquete} data-name="articulo" data-position={key} value={row.articulo} /></td>
-                    <td><input data-name="xs" type="number" onChange={editpaquete} data-position={key} value={row.xs} className="fracciones"/></td>
+                    {/* <td><input data-name="xs" type="number" onChange={editpaquete} data-position={key} value={row.xs} className="fracciones"/></td>
                     <td><input data-name="s" type="number" onChange={editpaquete} data-position={key} value={row.s} className="fracciones"/></td>
                     <td><input data-name="m" type="number" onChange={editpaquete} data-position={key} value={row.m} className="fracciones"/></td>
                     <td><input data-name="l" type="number" onChange={editpaquete} data-position={key} value={row.l} className="fracciones"/></td>
                     <td><input data-name="xl" type="number" onChange={editpaquete} data-position={key} value={row.xl} className="fracciones"/></td>
-                    <td><input data-name="xxl" type="number" onChange={editpaquete} data-position={key} value={row.xxl} className="fracciones"/></td>
+                    <td><input data-name="xxl" type="number" onChange={editpaquete} data-position={key} value={row.xxl} className="fracciones"/></td> */}
+                    {
+                      tallasbase.map(talla =>
+                        <td key={talla}><input data-name={talla} type="number" onChange={editpaquete} data-position={key} value={row[talla] ?? 0} className="fracciones"/></td>
+                      )
+                    }
                     <td><input type="number" onChange={editpaquete} data-position={key} data-name="cantidad" value={row.cantidad} className="fracciones"/></td>
                     <td className="w-[250px]">
                       <ul className="flex flex-row justify-end">
