@@ -508,11 +508,25 @@ export function NewReceta() {
       url_save = urlparams.id ? 'productos/updateProducto' : 'productos/generateProducto'
       method = urlparams.id ? 'PUT' : 'POST'
 
-      for (const element of form.current.querySelectorAll("input[verify='true']")) {
-        if(element.tagName == 'INPUT' && element.value == ''){
-          console.log("El input problematico es :",element)
-          toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
-          return 0
+      // --- ORIGINAL (comentado): bloqueaba TODO guardado si algún campo verify='true' estaba vacío.
+      // En edición, productos legacy (p.ej. idx 292379: presentacion/base/estilo/coleccion vacíos)
+      // nunca podían guardarse, lo que impedía editar "Descripcion de programa" (det). Cambio quirurgico.
+      // for (const element of form.current.querySelectorAll("input[verify='true']")) {
+      //   if(element.tagName == 'INPUT' && element.value == ''){
+      //     console.log("El input problematico es :",element)
+      //     toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
+      //     return 0
+      //   }
+      // }
+      // NUEVO: validar obligatorios solo en CREACION (sin urlparams.id). En EDICION se permite
+      // guardar aunque existan campos legacy vacíos, para poder editar campos como 'det'.
+      if(!urlparams.id){
+        for (const element of form.current.querySelectorAll("input[verify='true']")) {
+          if(element.tagName == 'INPUT' && element.value == ''){
+            console.log("El input problematico es :",element)
+            toast.error('Debe ingresar la información correspondiente al campo seleccionado. Por favor verifique.', { theme: "colored" })
+            return 0
+          }
         }
       }
       // if(form.current.elements['materiales_produccion'].value == '[]' || form.current.elements['materiales_produccion'].value == null){
@@ -654,11 +668,20 @@ export function NewReceta() {
       // const indice = parseInt(padre.dataset.position)
       // form.current.elements['nom'].value = 'hola felix'
     }
-    const articulo = form.current.elements['rubro'].value
-    const estilo = form.current.elements['estilo'].value
-    const base = form.current.elements['base'].value
-    const modelo = form.current.elements['modelo'].value
-    setNom(articulo + ' ' + base + ' ' + modelo)
+    // --- ORIGINAL (comentado): recomponía la SubClase (nom) en CADA tecla de CUALQUIER input del
+    // form; por eso al escribir en "Descripcion de programa" (det) se sobreescribía la SubClase.
+    // const articulo = form.current.elements['rubro'].value
+    // const estilo = form.current.elements['estilo'].value
+    // const base = form.current.elements['base'].value
+    // const modelo = form.current.elements['modelo'].value
+    // setNom(articulo + ' ' + base + ' ' + modelo)
+    // NUEVO: recomponer SubClase solo al editar un campo que la compone (rubro/base/modelo). Cambio quirurgico.
+    if(['rubro','base','modelo'].includes(e.target.name)){
+      const articulo = form.current.elements['rubro'].value
+      const base = form.current.elements['base'].value
+      const modelo = form.current.elements['modelo'].value
+      setNom(articulo + ' ' + base + ' ' + modelo)
+    }
   }
   const cancelarcreacion = ()=>{
     openModal({
